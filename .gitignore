@@ -281,7 +281,6 @@ fabric.properties
 *.pages
 *.rtf
 notes.txt
-maintenance_mode_state.txt
 *.wpd
 *.wps
 
