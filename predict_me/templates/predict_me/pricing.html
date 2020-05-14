@@ -1,0 +1,466 @@
+{% extends "predict_me/inc/master.html" %}
+{% load static %}
+
+{% block title %}
+Pricing
+{% endblock title %}
+
+{% block customcss %}
+<link href="{% static 'assets/css/pages/pricing/pricing-4.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock customcss %}
+
+{% block content %}
+<!-- begin:: Content -->
+<div class="kt-container  kt-grid__item kt-grid__item--fluid">
+    <!--begin::Portlet-->
+    <div class="kt-portlet">
+        <form method="POST">
+        <form class="kt-portlet__body kt-portlet__body--fit" method="POST">
+            {% csrf_token %}
+
+            <!--begin::Basic Pricing 4-->
+            <div class="kt-pricing-4">
+                <div class="kt-pricing-4__top">
+                    <div class="kt-pricing-4__top-container kt-pricing-4__top-container--fixed">
+                        <div class="kt-pricing-4__top-header">
+                            <div class="kt-pricing-4__top-title kt-font-dark">
+                                <h1>Transparent & Simple Pricing</h1>
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__top-body">
+
+                            <!--begin::Pricing Items-->
+                            <div class="kt-pricing-4__top-items">
+
+                                <!--begin::Pricing Item-->
+                                <div class="kt-pricing-4__top-item">
+                                    <span class="kt-pricing-1__icon kt-font-brand"><i
+                                            class="fa flaticon-piggy-bank"
+                                            style="font-size: 5rem;margin-top: 3.6rem;"></i></span>
+                                    <h2 class="kt-pricing-4__subtitle">Starter</h2>
+                                    <div class="kt-pricing-4__features">
+                                        <span>Fundraising</span><br>
+
+                                    </div>
+                                    <span class="kt-pricing-4__label">$</span>
+                                    <span class="kt-pricing-4__price">65</span>
+                                    <div class="kt-pricing-4__btn">
+                                        {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="starter" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <!--begin::Mobile Pricing Table-->
+                                    <div class="kt-pricing-4__top-items-mobile">
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Predictive Model</span>
+                                            <span>Best Performing Model</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>30 days Account Fee</span>
+                                            <span>$15</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Billing Cycle Data Limit/Records</span>
+                                            <span>200 records</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Per Data/Record Fee</span>
+                                            <span>$0.25 (total $50)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Additional Fee Per Extra Data/Record</span>
+                                            <span>$0.50</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Will Unused Data/Record Carry Over Next Month?</span>
+                                            <span>No (use it or lose it)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Output Data File</span>
+                                            <span>CSV Data File</span>
+                                        </div>
+
+
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Dashboard Summary and Analytics View</span>
+                                            <span>Yes</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span class="font-weight-bold">Total Cost Per Month</span>
+                                            <span class="font-weight-bold">$150</span>
+                                        </div>
+
+                                        <div class="kt-pricing-4__top-btn">
+                                              {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="starter" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!--end::Mobile Pricing Table-->
+                                </div>
+
+                                <!--end::Pricing Items-->
+
+                                <!--begin::Pricing Items-->
+                                <div class="kt-pricing-4__top-item">
+                                    <span class="kt-pricing-4__icon kt-font-info" style="color: #f3c623 !important;">
+																	<i class="fa flaticon-gift"></i>
+																</span>
+                                    <h2 class="kt-pricing-4__subtitle">Professional</h2>
+                                    <div class="kt-pricing-4__features">
+                                        <span>Fundraising</span><br>
+
+                                    </div>
+                                    <span class="kt-pricing-4__label">$</span>
+                                    <span class="kt-pricing-4__price">115</span>
+                                    <div class="kt-pricing-4__btn">
+                                       {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="professional" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+                                    </div>
+
+                                    <!--begin::Mobile Pricing Table-->
+                                    <div class="kt-pricing-4__top-items-mobile">
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Predictive Model</span>
+                                            <span>Best Performing Model </span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>30 days Account Fee</span>
+                                            <span>$15</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Billing Cycle Data Limit/Records</span>
+                                            <span>400 records</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Per Data/Record Fee</span>
+                                            <span>$0.25 (total $100)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Additional Fee Per Extra Data/Record</span>
+                                            <span>$0.50</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Will Unused Data/Record Carry Over Next Month?</span>
+                                            <span>No (use it or lose it)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Output Data File</span>
+                                            <span>CSV Data File</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Predictive Model Report Summary</span>
+                                            <span>In PDF</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Dashboard Summary and Analytics View</span>
+                                            <span>Yes</span>
+                                        </div>
+
+
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span class="font-weight-bold">Total Cost Per Month</span>
+                                            <span class="font-weight-bold">$300</span>
+                                        </div>
+
+                                        <div class="kt-pricing-4__top-btn">
+                                         {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="professional" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!--end::Mobile Pricing Table-->
+                                </div>
+
+                                <!--end::Pricing Items-->
+
+                                <!--begin::Pricing Items-->
+                                <div class="kt-pricing-4__top-item">
+																<span class="kt-pricing-4__icon kt-font-info"
+                                                                      style="color: #d7385e !important;">
+																	<i class="fa flaticon-rocket"></i>
+																</span>
+                                    <h2 class="kt-pricing-4__subtitle">Expert</h2>
+                                    <div class="kt-pricing-4__features">
+                                        <span>Fundraising</span><br>
+
+                                    </div>
+                                    <span class="kt-pricing-4__label">$</span>
+                                    <span class="kt-pricing-4__price">165</span>
+                                    <div class="kt-pricing-4__btn">
+                                     {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="expert" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+                                    </div>
+
+                                    <!--begin::Mobile Pricing Table-->
+                                    <div class="kt-pricing-4__top-items-mobile">
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Predictive Model</span>
+                                            <span>Best Performing Model</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>30 days Account Fee</span>
+                                            <span>$15</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Billing Cycle Data Limit/Records</span>
+                                            <span>600 records</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Per Data/Record Fee</span>
+                                            <span>$0.25 (total $150)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Additional Fee Per Extra Data/Record</span>
+                                            <span>$0.50</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Will Unused Data/Record Carry Over Next Month?</span>
+                                            <span>No (use it or lose it)</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Output Data File</span>
+                                            <span>CSV Data File</span>
+                                        </div>
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Predictive Model Report Summary</span>
+                                            <span>In PDF</span>
+                                        </div>
+                                         <div class="kt-pricing-4__top-item-mobile">
+                                            <span>Dashboard Summary and Analytics View</span>
+                                            <span>Yes</span>
+                                        </div>
+
+                                        <div class="kt-pricing-4__top-item-mobile">
+                                            <span class="font-weight-bold">Total Cost Per Month</span>
+                                            <span class="font-weight-bold">$165</span>
+                                        </div>
+
+                                        <div class="kt-pricing-4__top-btn">
+                                        {% if request.user.is_authenticated %}
+                                       <button type="submit" class="btn btn-brand btn-upper text-white btn-bold" value="expert" name="type">
+                                            Choose
+                                        </button>
+                                        {% else %}
+                                        <a href="{% url 'register' %}" class="btn btn-brand btn-upper text-white btn-bold">
+                                            Create an Account
+                                        </a>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!--end::Mobile Pricing Table-->
+                                </div>
+
+                                <!--end::Pricing Items-->
+                            </div>
+
+                            <!--end::Pricing Items-->
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-pricing-4__bottom">
+                    <div class="kt-pricing-4__bottok-container kt-pricing-4__bottok-container--fixed">
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                               Predictive Model
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Best Performing Model
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Best Performing Model
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Best Performing Model
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                30 days Account Fee
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $15
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $15
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $15
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Billing Cycle Data Limit/Records
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                200 records
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                400 records
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                600 records
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Per Data/Record Fee
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.25 (total $50)
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.25 (total $100)
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.25 (total $150)
+                            </div>
+                        </div>
+
+                         <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Additional Fee Per Extra Data/Record
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.50
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.50
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $0.50
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Will Unused Data/Record Carry Over Next Month?
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                No (use it or lose it)
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                No (use it or lose it)
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                No (use it or lose it)
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Output Data File
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                CSV Data File
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                CSV Data File
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                CSV Data File
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Predictive Model Report Summary
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                In PDF
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                In PDF
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                In PDF
+                            </div>
+                        </div>
+                        <div class="kt-pricing-4__bottom-items">
+                            <div class="kt-pricing-4__bottom-item">
+                                Dashboard Summary and Analytics View
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Yes
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Yes
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                Yes
+                            </div>
+                        </div>
+
+
+                        <div class="kt-pricing-4__bottom-items" style="background-color: #75daad;">
+                            <div class="kt-pricing-4__bottom-item">
+                                Total Cost Per Month
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $65
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $115
+                            </div>
+                            <div class="kt-pricing-4__bottom-item">
+                                $165
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </form>
+            <!--end::Basic Pricing 4-->
+
+<!--            Start pricing notes-->
+            <section>
+                <p>* best performing model: model selected based on the top performance. For e.g: Logistic Regression, Random Forest.</p>
+                <p>* additional fee per extra data/record: will be charged $.50 per extra data outside of monthly limits.</p>
+                <p>* will unused data/record carry over next month: No, it is use or lose it within the 30 days period.</p>
+            </section>
+<!--            End pricing notes-->
+        </div>
+    </div>
+
+    <!--end::Portlet-->
+</div>
+
+<!-- end:: Content -->
+
+{% endblock content %}

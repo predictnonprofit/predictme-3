@@ -1,0 +1,34 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+
+[packages]
+pathtools = "*"
+django = "*"
+pillow = "*"
+numpy = "*"
+pandas = "*"
+xlrd = "*"
+pandas-datareader = "*"
+djangorestframework = "*"
+django-storages = "*"
+stripe = "*"
+django-crispy-forms = "*"
+psycopg2-binary = "*"
+django-maintenance-mode = "*"
+weasyprint = "*"
+xhtml2pdf = "*"
+pip = "*"
+timeago = "*"
+six = "*"
+django-widget-tweaks = "*"
+django-countries = "*"
+gunicorn = "*"
+whitenoise = "*"
+
+[requires]
+python_version = "3.8"

@@ -1,0 +1,11 @@
+{% if errors %}
+<div class="error invalid-feedback d-inline">
+    <ul class="errorlist">
+        {% for error in errors %}
+
+         <li>{{error}}</li>
+
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

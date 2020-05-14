@@ -1,0 +1,289 @@
+{% extends "predict_me/inc/master.html" %}
+{% load static %}
+
+{% block title %}
+About us
+{% endblock title %}
+
+
+{% block customcss %}
+<link href="{% static 'assets/css/pages/support-center/home-1.css' %}" rel="stylesheet" type="text/css"/>
+<style>
+    .ftco-blocks-cover-1{
+        margin-bottom: 50px;
+    }
+    .ftco-blocks-cover-1 .ftco-service-image-1 {
+        margin-top: -70px;
+        position: static;
+    }
+
+    .ftco-cover-1 {
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+
+    }
+
+    .ftco-cover-1, .ftco-cover-1 .container > .row {
+        height: 100vh;
+        min-height: 600px;
+    }
+
+    .ftco-cover-1 > .container {
+        position: relative;
+    }
+
+    .ftco-cover-1.overlay {
+        position: relative;
+    }
+
+    .ftco-cover-1.overlay:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: .5;
+        background: #000;
+    }
+
+    .ftco-cover-1.overlay h1 {
+        color: #fff;
+        font-size: 3rem;
+    }
+
+    .ftco-cover-1.overlay p {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .ftco-cover-1.overlay p a {
+        color: #fff;
+        text-decoration: underline;
+        font-weight: 700;
+    }
+
+    .ftco-cover-1.overlay p a:hover {
+        text-decoration: none;
+    }
+
+    .ftco-cover-1.overlay form .form-control, .ftco-cover-1.overlay form .btn {
+        height: 55px;
+        border-radius: 4px;
+    }
+
+    .ftco-cover-1.overlay form .form-control {
+        padding-left: 20px;
+        padding-right: 20px;
+        border-color: transparent;
+        margin-right: 10px;
+    }
+
+    .ftco-cover-1.overlay form .btn {
+        border-color: transparent;
+    }
+
+    dt {
+        margin-left: 50px;
+        list-style: disc;
+        display: list-item;
+
+    }
+
+    #main {
+        font-family: "Titillium Web";
+        font-size: 18px;
+    }
+
+</style>
+{% endblock customcss %}
+
+
+{% block content %}
+<!--Content-->
+
+<section id="main">
+    <div class="kt-body kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-grid--stretch" id="kt_body">
+        <div class="kt-content  kt-content--fit-top  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
+             id="kt_content">
+
+            <!-- begin:: Content -->
+
+            <!-- begin:: Hero -->
+            <div class="ftco-blocks-cover-1">
+                <div class="ftco-cover-1 overlay"
+                     style="background-image: url({% static 'assets/media/about/About Us Image.jpg' %})">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-lg-6 text-center">
+                                <h1>About Us</h1>
+                                <p>Who is Predict ME</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- end:: Hero -->
+
+            <!-- begin:: Section -->
+            <div class="kt-container ">
+                <div class="content">
+
+
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            What is Predict Me?
+                        </div>
+
+                        <div class="kt-section__content">
+                            <p>
+                                Predict Me is a web-based application that focuses on providing donation likelihood
+                                prediction
+                                based on a donor’s historical data. Our intelligence solution uses data science
+                                analytics and
+                                algorithms to provide an optimized probability of a donor to donate.
+                            </p>
+
+
+                            <p class="font-italic text-center my-5">Don’t work for your donor data; let data work for
+                                you!</p>
+
+                            <p> We will analyze your demographic patterns, educational levels, donor giving trends, and
+                                other
+                                important variables to predict future donations.</p>
+
+                            <p>
+                                Our main goal is to help all our clients make substantial, distinctive, and lasting
+                                improvements
+                                in their performance to fuel their success story. We aim to connect nonprofits,
+                                charities and
+                                NGOs with the right people that care about their cause.
+                            </p>
+                            <p>
+                                Uncover the trends and patterns hiding within your donor datasets – identify who is
+                                willing to
+                                donate.
+                            </p>
+                            <p class="font-italic text-center my-5">
+                                Revolutionize your fundraising through data science and analytics!
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            Our Ideal Clients
+                        </div>
+                        <p>
+                            <b>So, who is Predict Me for? </b> If you are in the fundraising industry, then this tool is
+                            for
+                            you! Any entity that accepts individual donations and has an individual donor can use this
+                            application to predict the likelihood of donors who will donate in the future.
+                        </p>
+                    </div>
+
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            Some of our leading clients’ niches include:
+                        </div>
+                        <p>
+                        <div class="kt-section__content">
+                            <div class="row">
+                                <div class="col">
+                                    <ul>
+                                        <li><b>Human and social services</b></li>
+                                        <li><b>Religion-related organizations</b></li>
+                                        <li><b>Arts and culture</b></li>
+                                        <li><b>Education-related entities</b></li>
+                                    </ul>
+                                </div>
+                                <div class="col">
+                                    <ul>
+                                        <li><b>Health and hospitals</b></li>
+                                        <li><b>International organizations</b></li>
+                                        <li><b>Environmental and animals related organizations </b></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            Why Predict Me?<br/>
+                            <span style="font-size: 18px">Here’s why you need to work with us. </span>
+                        </div>
+
+                        <p>
+                        <dl>
+                            <dt>Reach Out to Potential Donors Using Data Science and Analytics</dt>
+                            <dd>
+                                You already have lots of valuable data, but how do you use that information to make an
+                                impact on
+                                your mission? That’s where Predict Me steps in. We will predict the likelihood of a
+                                donor to
+                                donate using the data you have.
+                            </dd>
+                            <dt>Ask The Right Donors</dt>
+                            <dd>
+                                We understand how important it is to get a new donor. Donors are the heartbeat of many
+                                organizations. However, continuously asking the wrong donors for donations will often
+                                annoy or
+                                scare them away. At Predict Me, we ensure that you are always asking the right people!
+                            </dd>
+
+                            <dt>Make Informed Decisions. Save Time and Resources</dt>
+                            <dd>
+                                With Predict Me, you don’t have to spend a lot of time, money, and resources finding a
+                                donor.
+                                With our targeted approach and strategy, we will help you identify your next potential
+                                donor to
+                                increase your fundraising and prudently utilize your organization’s limited resources.
+                            </dd>
+                            <dt>Unlock More Potential from Existing Members and Donors</dt>
+                            <dd>
+                                Many organizations recognize the potential of data. However, most of them struggle to
+                                turn the
+                                data into actionable insights to improve their operations. The conventional approach to
+                                analytics has slowed down many organizations, thus the need for a specific tool to
+                                predict
+                                outcomes.
+                            </dd>
+                            <dt>
+                                Improve Your Organization’s Efficiency…Wow Your Donors and Grantors!
+                            </dt>
+                            <dd>
+                                Developing a proper targeting model to distinguish donors from non-donors can boost the
+                                fundraiser's efficiency and reduce fundraising costs. Through predictive modeling,
+                                fundraisers
+                                can create donor segmentation for more direct fundraising campaigns to target potential
+                                donors.
+                                Through our modeling, analytics, and the right sets of reliable data, we help you find
+                                the right
+                                likelihood prospects. No more random contacting of potential donors!
+                            </dd>
+                        </dl>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end:: iconbox -->
+
+        </div>
+    </div>
+</section>
+
+<!--./Content-->
+{% endblock content %}
+
+
+{% block customjs %}
+<script>
+
+</script>
+{% endblock customjs %}

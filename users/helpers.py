@@ -1,0 +1,156 @@
+import re
+
+REGEX_PATTERS = {
+    "NAME": re.compile(r"^(?=.{1,40}$)[a-zA-Z]+(?:[-'\s][a-zA-Z]+)*$", re.IGNORECASE),  # full name
+    "PHONE": re.compile(r"([+]?\d{1,2}[.\s]?)?(\d{3}[.-]?){2}\d{4}"),  # phone with country code
+    "EMAIL": re.compile(r"^([0-9a-zA-Z].*?@([0-9a-zA-Z].*\.\w{2,4}))$", re.IGNORECASE),  # email address
+    "ALPHNUM": re.compile(r"^[A-Za-z0-9\s]+[A-Za-z0-9\s]+$(\.0-9+)?", re.IGNORECASE),  # Alphanumeric with Spaces
+    "ZIP": re.compile(r"[0-9]{5}(-[0-9]{4})?", re.IGNORECASE),  # zip code pattern
+    "URL": re.compile(r"^(https?:\/\/)?([\da-z\.-]+\.[a-z\.]{2,6}|[\d\.]+)([\/:?=&#]{1}[\da-z\.-]+)*[\/\?]?$",
+                      re.IGNORECASE),  # URL pattern
+    "CITY": re.compile(r"^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$", re.IGNORECASE),  # city name pattern
+}
+
+
+def input_required(value):
+    """Validate if value is empty or not
+
+            Args:
+                value: The Name parameter
+            Returns:
+                The return value. True if not empty, False otherwise.
+
+            """
+    if value == "" or value is None:
+        return False
+    else:
+        return True
+
+
+def validate_name(name):
+    """Validate Name Function
+
+        Args:
+            name: The Name parameter
+        Returns:
+            The return value. True for valid name, False otherwise.
+
+        """
+    if REGEX_PATTERS['NAME'].search(name):
+        return True
+    else:
+        return False
+
+
+def validate_email(email):
+    """Validate Email Function
+
+        Args:
+            email: The Email Address parameter
+        Returns:
+            The return value. True for valid email, False otherwise.
+
+        """
+    if REGEX_PATTERS['EMAIL'].search(email):
+        return True
+    else:
+        return False
+
+
+def validate_phone(phone):
+    """Validate Phone Function
+
+        Args:
+            phone: The phone number
+        Returns:
+            The return value. True for valid phone, False otherwise.
+
+        """
+    if REGEX_PATTERS['PHONE'].search(phone):
+        return True
+    else:
+        return False
+
+
+def validate_alphnum(text):
+    """Validate alphanumeric Function
+
+        Args:
+            text: The text
+        Returns:
+            The return value. True for valid alphanumeric, False otherwise.
+
+        """
+    if REGEX_PATTERS['ALPHNUM'].search(text):
+        return True
+    else:
+        return False
+
+
+def validate_zip(zip):
+    """Validate zip Function
+
+        Args:
+            zip: The zip
+        Returns:
+            The return value. True for valid zip, False otherwise.
+
+        """
+    if REGEX_PATTERS['ZIP'].search(zip):
+        return True
+    else:
+        return False
+
+
+def validate_url(url):
+    """Validate url Function
+
+        Args:
+            url: The url
+        Returns:
+            The return value. True for valid url, False otherwise.
+
+        """
+    if REGEX_PATTERS['URL'].search(url):
+        return True
+    else:
+        return False
+
+
+def validate_city(city):
+    """Validate city Function
+
+        Args:
+            city: The city name
+        Returns:
+            The return value. True for valid city, False otherwise.
+
+        """
+    if REGEX_PATTERS['CITY'].search(city):
+        return True
+    else:
+        return False
+
+
+def validate_password(password: str):
+    password = password.strip()
+    error_and_bool = []  # first True|False, second the error msg
+    """will validate the password to match the required conditions
+
+    Arguments:
+        password {[str]} -- password will validate
+    
+    Contain at least six characters
+    Include at least one letter and one number
+    Not repeat the same character more than two times in a row
+    Not include white spaces
+    """
+    all_chars = []
+    for ch in password:
+        all_chars.append(ch)
+    
+    if len(all_chars) < 6:
+        error_and_bool = [False, "Password is short, Minimum lenght 7 characters!"]
+        return error_and_bool
+
+    

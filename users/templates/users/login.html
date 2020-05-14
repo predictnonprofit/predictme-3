@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- begin::Head -->
+<head>
+    <base href="../../../">
+    <meta charset="utf-8"/>
+    <title>Login | Predict ME</title>
+    <meta name="description" content="Login page Predict ME">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--begin::Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
+
+    <!--end::Fonts -->
+
+    <!--begin::Page Custom Styles(used by this page) -->
+    <link href="{% static 'assets/css/pages/login/login-5.css' %}" rel="stylesheet" type="text/css"/>
+
+    <!--end::Page Custom Styles -->
+
+    <!--begin::Global Theme Styles(used by all pages) -->
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css"/>
+
+    <!--end::Global Theme Styles -->
+
+    <!--begin::Layout Skins(used by all pages) -->
+
+    <!--end::Layout Skins -->
+     <!-- Custom Style -->
+     <link rel="stylesheet" href="{% static 'assets/css/mycolors.css' %}">
+
+    <link rel="icon" type="image/png" href="{% static 'assets/media/logos/Predict Me Fav.png' %}"/>
+</head>
+
+<!-- end::Head -->
+
+<!-- begin::Body -->
+<body class="kt-page--loading-enabled kt-page--loading kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header--minimize-topbar kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-page--loading">
+<header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light py-3" style="background-color: #f2f2f2 !important;">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand d-flex align-items-center " style="color: #000;">
+                <strong>Predict ME</strong>
+            </a>
+            <div id="navbarSupportedContent" class="collapse navbar-collapse" style="flex-grow: unset;">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active"><a href="/" class="nav-link "> Home </a></li>
+                    <li class="nav-item active"><a href="{% url 'pricing' %}" class="nav-link">
+                        Pricing</a></li>
+                    <li class="nav-item active"><a href="{% url 'about' %}" class="nav-link "> About </a>
+                    </li>
+                    <li class="nav-item active"><a href="{% url 'model-desc' %}" class="nav-link "> Model </a>
+                    </li>
+                    <li class="nav-item active"><a href="{% url 'faq' %}" class="nav-link "> FAQ </a></li>
+                    <li class="nav-item active"><a href="{% url 'contact' %}" class="nav-link"> Contact</a>
+                    </li>
+                    <li class="nav-item active"><a href="{% url 'login' %}" class="nav-link"> Login</a></li>
+                    <li class="nav-item active"><a href="{% url 'register' %}" class="nav-link">
+                        Register</a></li>
+
+                </ul>
+            </div>
+            <button type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler"><span class="navbar-toggler-icon"></span></button>
+
+        </div>
+    </nav>
+</header>
+<!-- begin::Page loader -->
+
+<!-- end::Page Loader -->
+
+<!-- begin:: Page -->
+<div class="kt-grid kt-grid--ver kt-grid--root kt-page">
+    <div class="kt-grid kt-grid--hor kt-grid--root  kt-login kt-login--v5 kt-login--signin" id="kt_login">
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile"
+             style="background-image: url({% static 'assets/media/bg/bg-3.jpg' %});">
+            <div class="kt-login__left">
+                <div class="kt-login__wrapper">
+                    <div class="kt-login__content">
+                        <a class="kt-login__logo" href="#">
+                            <img src="{% static 'assets/media/logos/Predict Me Logo.png' %}">
+                        </a>
+                        <h3 class="kt-login__title">JOIN OUR GREAT COMMUNITY</h3>
+                        <span class="kt-login__desc">
+									Predictive Modeling techniques to increase the likelihood of future donations for nonprofit organizations.
+                                    Predict donors that will donate in the future based on your data
+								</span>
+                        <div class="kt-login__actions">
+                            <a href="{% url 'register' %}" class="btn btn-outline-brand btn-pill"
+                               style="line-height: 26px;">Create an Account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-login__divider">
+                <div></div>
+            </div>
+            <div class="kt-login__right">
+                <div class="kt-login__wrapper">
+                    <div class="kt-login__signin">
+                        <div class="kt-login__head">
+                            <h3 class="kt-login__title">Login To Your Account</h3>
+                        </div>
+                        <div class="kt-login__form">
+                            {% if errors %}
+                            <div class="alert alert-solid-danger alert-bold" role="alert">
+                                <div class="alert-text">{{errors}}</div>
+                            </div>
+                            {% endif %}
+
+                            <form class="kt-form" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input class="form-control" type="text" placeholder="Email Address" name="email"
+                                           autocomplete="off">
+                                    {% if errors %}
+                                    <div id="email-error" class="error invalid-feedback">This field is required.</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-last" type="Password" placeholder="Password"
+                                           name="password">
+                                    {% if errors %}
+                                    <div id="password-error" class="error invalid-feedback">This field is required.</div>
+                                    {% endif %}
+                                </div>
+                                <div class="row kt-login__extra">
+                                    <div class="col kt-align-left">
+                                        <label class="kt-checkbox">
+                                            <input type="checkbox" name="remember"> Remember me
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col kt-align-right">
+                                        <a href="javascript:;" id="kt_login_forgot" class="kt-link">Forget Password
+                                            ?</a>
+                                    </div>
+                                </div>
+                                <div class="kt-login__actions">
+                                    <button type="submit" id="loginBtn" class="btn btn-brand btn-pill btn-elevate">
+                                        Sign In
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="kt-login__forgot">
+                        <div class="kt-login__head">
+                            <h3 class="kt-login__title">Forgotten Password ?</h3>
+                            <div class="kt-login__desc">Enter your email to reset your password:</div>
+                        </div>
+                        <div class="kt-login__form">
+                            <form class="kt-form" action="">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" placeholder="Email" name="email"
+                                           id="kt_email" autocomplete="off">
+                                </div>
+                                <div class="kt-login__actions">
+                                    <button id="kt_login_forgot_submit" class="btn btn-brand btn-pill btn-elevate">
+                                        Request
+                                    </button>
+                                    <button id="kt_login_forgot_cancel" class="btn btn-outline-brand btn-pill">Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end:: Page -->
+
+<!-- begin:: Footer -->
+<footer class="kt-footer  kt-footer--extended  kt-grid__item " id="kt_footer">
+    <div class="kt-footer__bottom">
+        <div class="kt-container--fluid px-4 ">
+            <div class="kt-footer__wrapper">
+                <div class="kt-footer__logo">
+                    <a href="/" class="text-dark">
+                        <div class="kt-footer__copyright">
+                            &nbsp;&copy;&nbsp;
+                            <a class="text-dark" href="/" target="_blank">Predict Me 2020</a>
+                        </div>
+                    </a>
+
+                </div>
+                <div class="kt-footer__menu">
+                    <a href="{% url 'faq' %}" target="_blank"> FAQ </a>
+                    <a href="{% url 'contact' %}" target="_blank">Contact</a>
+                    <a href="{% url 'terms' %}" target="_blank">Terms</a>.
+                    <a href="{% url 'privacy-policy' %}" target="_blank">Privacy Policy</a>.
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- end:: Footer -->
+<!-- begin::Global Config(global config for global JS sciprts) -->
+<script>
+    var KTAppOptions = {
+        "colors": {
+            "state": {
+                "brand": "#374afb",
+                "light": "#ffffff",
+                "dark": "#282a3c",
+                "primary": "#5867dd",
+                "success": "#34bfa3",
+                "info": "#36a3f7",
+                "warning": "#ffb822",
+                "danger": "#fd3995"
+            },
+            "base": {
+                "label": ["#c5cbe3", "#a1a8c3", "#3d4465", "#3e4466"],
+                "shape": ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"]
+            }
+        }
+    };
+</script>
+
+<!-- end::Global Config -->
+
+<!--begin::Global Theme Bundle(used by all pages) -->
+<script src="{% static 'assets/plugins/global/plugins.bundle.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/js/scripts.bundle.js' %}" type="text/javascript"></script>
+
+<!--end::Global Theme Bundle -->
+
+<!--begin::Page Scripts(used by this page) -->
+<script src="{% static 'assets/js/pages/custom/login/login-general.js' %}" type="text/javascript"></script>
+
+<!--end::Page Scripts -->
+</body>
+
+<!-- end::Body -->
+</html>

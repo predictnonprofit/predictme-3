@@ -1,0 +1,176 @@
+{% extends 'dashboard/inc/master.html' %}
+{% load static %}
+
+
+{% block title %}
+New Register Users
+{% endblock title %}
+
+{% block customcss %}
+
+<style>
+    .btn-danger {
+        color: #fff;
+        background-color: #fd1361 !important;
+        border-color: #fc0758 !important;
+    }
+</style>
+
+{% endblock customcss %}
+
+{% block content %}
+
+<section class="my-3">
+    <div class="row">
+        <div class="col-xl">
+            <!--begin::Portlet-->
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Pending Members
+                        </h3>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+    
+                    <!--begin::Section-->
+                    <div class="kt-section">
+                        <span class="kt-section__info">
+                            Active new members accounts
+                        </span>
+                        <div class="kt-section__content">
+                            <table class="table">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Full Name</th>
+                                    <th>Register Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">
+                                        wortmanj@optonline.net
+                                    </th>
+                                    <td>
+                                        Donald Luna
+                                    </td>
+                                    <td>
+                                        02/17/2020 03:55:41 PM
+                                    </td>
+                                    <td>
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <div class="btn-group mr-2" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip"
+                                                        title="Accept the member">
+                                                    <i class="la la-user-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                                        title="Refuse the member, will send an email with refusing message">
+                                                    <i class="la la-user-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        aardo@yahoo.com
+                                    </th>
+                                    <td>
+                                        Payton Hensley
+                                    </td>
+                                    <td>
+                                        01/07/2020 01:10:24 AM
+                                    </td>
+                                    <td>
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <div class="btn-group mr-2" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip"
+                                                        title="Accept the member">
+                                                    <i class="la la-user-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                                        title="Refuse the member, will send an email with refusing message">
+                                                    <i class="la la-user-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        jdhildeb@mac.com
+                                    </th>
+                                    <td>
+                                        Valentino Diaz
+                                    </td>
+                                    <td>
+                                        01/02/2020 10:50:39 PM
+                                    </td>
+                                    <td>
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <div class="btn-group mr-2" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip"
+                                                        title="Accept the member">
+                                                    <i class="la la-user-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                                        title="Refuse the member, will send an email with refusing message">
+                                                    <i class="la la-user-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        bmidd@gmail.com
+                                    </th>
+                                    <td>
+                                        Zaria Estrada
+                                    </td>
+                                    <td>
+                                        01/28/2020 11:32:41 PM
+                                    </td>
+                                    <td>
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <div class="btn-group mr-2" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip"
+                                                        title="Accept the member">
+                                                    <i class="la la-user-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                                        title="Refuse the member, will send an email with refusing message">
+                                                    <i class="la la-user-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+    
+                    <!--end::Section-->
+    
+                </div>
+    
+                <!--end::Form-->
+            </div>
+    
+            <!--end::Portlet-->
+        </div>
+    </div>
+</section>
+
+{% endblock content%}
+
+
+{% block customjs %}
+
+
+{% endblock customjs %}

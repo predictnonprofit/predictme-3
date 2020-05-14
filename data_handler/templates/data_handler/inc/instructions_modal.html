@@ -1,0 +1,164 @@
+<!-- Modal -->
+<div class="modal fade" id="instructionsModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="instructionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="instructionsModalLabel"><span class="u-b">Instructions File Upload</span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <section id="instBody">
+
+                    <div class="inst-content-block my-3">
+                        <h5 class="font-weight-bold">
+                            NOTE:
+                        </h5>
+                        <p class="text-justify">
+                            The number of records that will be used to predict the likelihood of donors donating depends
+                            on
+                            the quality and format of the file provided. To ensure data validations and correct values
+                            formatting, please follow these instructions before uploading your donor file.
+                        </p>
+                    </div>
+
+                    <div class="inst-content-block my-4">
+                        <h5 class="font-weight-bold">
+                            What Do You Need?
+                        </h5>
+                        <p class="text-justify">
+                            It is prudent to note that your donor file <span
+                                style="text-decoration: underline;"><b>MUST</b></span> contain the following column
+                            (information)
+                        </p>
+                        <p>
+                            <ol>
+                                <li class="font-weight-bold">Donor Unique Identifier (ID)</li>
+                                <li class="font-weight-bold">At least three (3) types of data points (text columns) from
+                                    the list below.
+                                    <ol type="a">
+                                        <li> NOTE: In order for the model to run, please supply a <span
+                                                class="b-u">minimum of three (3) text columns</span> on your donor file.
+                                            <ol type="i">
+                                                <li>
+                                                    Donation history is <span class="b-u">NOT</span> a part of this
+                                                    requirement.
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="font-weight-bold">
+                                            Recommended: Country, State, City and Zip Code level data to see Donor
+                                            Predicted via Geo Location (map) feature.
+                                        </li>
+
+                                    </ol>
+                                </li>
+
+                            </ol>
+                        </p>
+
+                    </div>
+
+                    <div class="inst-content-block my-3">
+                        <h5 class="font-weight-bold">
+                            <span class="u-b">
+                                List of Useful Data (Information)
+                            </span>
+                        </h5>
+                        <p class="text-justify">
+                            Your donor file should contain the following columns/information (highly recommended). Use
+                            unique headers for each column. Each column should have a different header name. This helps
+                            the data validation correctly classify the information in the column.
+                        </p>
+                        <div class="row">
+                            <div class="col">
+                                <ul>
+                                    <li>
+                                        <b>Donation History</b> (Example: 2019 Donation, 2018 Donation, 2017 Donation)
+                                    </li>
+                                    <li>
+                                        <b>Donor Age</b>
+                                    </li>
+                                    <li>
+                                        <b>Gender</b>
+                                    </li>
+                                    <li>
+                                        <b>Marital Status</b>
+                                    </li>
+                                    <li>
+                                        <b>Occupation</b>
+                                    </li>
+                                    <li>
+                                        <b>Education Level</b>
+                                    </li>
+                                    <li>
+                                        <b>Income</b>
+                                    </li>
+                                    <li>
+                                        <b>Past Engagement</b> (Example: Volunteer, Mentor, Board Member)
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="col">
+                                <ul>
+                                    <li>
+                                        <b>Past Giving Areas</b> (Health, Education, Program-related etc.)
+                                    </li>
+                                    <li>
+                                        <b>Email Address</b>
+                                    </li>
+                                    <li>
+                                        <b>
+                                            Phone Number
+                                        </b>
+                                    </li>
+                                    <li>
+                                        <b>Geo Location for Map feature</b>
+                                        <ul>
+                                            <li><b>Country</b></li>
+                                            <li><b>State</b></li>
+                                            <li><b>City</b></li>
+                                            <li><b>Zip Code</b></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="inst-content-block my-3">
+                        <h5 class="font-weight-bold">
+                            NOTE:
+                        </h5>
+                        <p class="text-justify">
+                            Your donor file must be a .csv,.xls, or .xlsx. Your donor file may also contain any number
+                            of additional columns. All data points will be returned with the prediction(s) appended file
+                            in the CSV format. Each data column should contain the same type of information. For
+                            example, if you have a column with the header “State,” then you should only include States
+                            in that column. Also, please eliminate all unusual characters from the file, if possible
+                            (for example, $, %, &, commas, etc.).
+                        </p>
+                    </div>
+
+
+
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+                    data-toggle="tooltip" title="Not Accept and Close">
+                    <i class="la la-close"></i>
+                </button>
+                &nbsp;
+                <button type="button" class="btn btn-primary" style="width: 100px;" data-toggle="tooltip"
+                    title="Accept and Upload!">
+                    <i class="fa fa-file-upload"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
