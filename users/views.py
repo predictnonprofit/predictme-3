@@ -24,22 +24,23 @@ def login_view(request):
         member = authenticate(request, email=email, password=password)
         if member is not None:
             login(request, member)
-            if member.is_active is True and member.status == "active":
-                # last role if the status of member account is active
-                messages.success(request, "Login Successfully")
-                return redirect(reverse("profile-overview"))
-
-            elif member.status == "unverified":
-                messages.error(request, "Your account not verified, please verify your account!")
-                return redirect("profile-overview")
-
-            elif member.status == "cancelled":
-                messages.error(request, "Your account is cancelled!")
-                return redirect(reverse("users_canceled"))
-
-            elif member.status == "pending":
-                messages.warning(request, "Your account is pending!")
-                return redirect(reverse("users_pending"))
+            return redirect(reverse("profile-overview"))
+            # if member.is_active is True and member.status == "active":
+            #     # last role if the status of member account is active
+            #     messages.success(request, "Login Successfully")
+            #     return redirect(reverse("profile-overview"))
+            #
+            # elif member.status == "unverified":
+            #     messages.error(request, "Your account not verified, please verify your account!")
+            #     return redirect("profile-overview")
+            #
+            # elif member.status == "cancelled":
+            #     messages.error(request, "Your account is cancelled!")
+            #     return redirect(reverse("users_canceled"))
+            #
+            # elif member.status == "pending":
+            #     messages.warning(request, "Your account is pending!")
+            #     return redirect(reverse("users_pending"))
 
         else:
             errors = "Your Credentials not correct!!"

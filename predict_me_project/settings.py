@@ -151,6 +151,7 @@ LOGIN_URL = "login"
 # LOGOUT_REDIRECT_URL = "dashboard"
 LOGIN_REDIRECT_URL = "profile-overview"
 LOGOUT_REDIRECT_URL = "login"
+# LOGOUT_URL = "login"
 
 # Email Backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
