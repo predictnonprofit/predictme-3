@@ -43,3 +43,6 @@ class PrivacyPolicyView(TemplateView):
 
 class TermsView(TemplateView):
     template_name = 'predict_me/terms.html'
+
+def error_503(request):
+    return render(request, "predict_me/errors/503.html")

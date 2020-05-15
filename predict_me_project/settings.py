@@ -176,3 +176,8 @@ else:
     # for production
     STRIPE_PUBLISHABLE_KEY = ''
     STRIPE_SECRET_KEY = ''
+
+
+# Maintenance mode configurations
+# the template that will be shown by the maintenance-mode page
+MAINTENANCE_MODE_TEMPLATE = '503.html'

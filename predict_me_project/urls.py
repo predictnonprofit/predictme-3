@@ -17,6 +17,7 @@ urlpatterns = [
     path("policy/", predict_views.PrivacyPolicyView.as_view(), name="privacy-policy"),
     path("terms/", predict_views.TermsView.as_view(), name="terms"),
     path("profile/", include("members_app.urls"), name="profile-urls"),
+    path("503", predict_views.error_503, name="503-urls"),
 
 ]
 
