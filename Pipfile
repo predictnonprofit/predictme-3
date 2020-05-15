@@ -29,6 +29,7 @@ django-widget-tweaks = "*"
 django-countries = "*"
 gunicorn = "*"
 whitenoise = "*"
+django-ipware = "*"
 
 [requires]
 python_version = "3.8"
