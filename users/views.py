@@ -24,7 +24,11 @@ def login_view(request):
         member = authenticate(request, email=email, password=password)
         if member is not None:
             login(request, member)
-            return redirect(reverse("profile-overview"))
+            if member.email == "admin@admin.com":
+                return redirect(reverse("dashboard-home"))
+            else:
+                return redirect(reverse("profile-overview"))
+            
             # if member.is_active is True and member.status == "active":
             #     # last role if the status of member account is active
             #     messages.success(request, "Login Successfully")

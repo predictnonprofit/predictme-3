@@ -13,6 +13,7 @@ Company Settings
 {% endblock customcss %}
 
 {% block content %}
+
 <div class="kt-body kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-grid--stretch" id="kt_body">
     <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content">
 
@@ -56,7 +57,7 @@ Company Settings
                                                 <div class="form-group row">
                                                     <label class="col-3 col-form-label" for="name">Website Name</label>
                                                     <div class="col-9">
-                                                         {% render_field form.name|add_error_class:"is-invalid" class="form-control" type="text" name="name" id="name"%}
+                                                         {% render_field form.name|add_error_class:"is-invalid" value=object.name class="form-control" type="text" name="name" id="name"%}
                                                          <div class="error invalid-feedback">{% render_field form.name.errors %}</div>
                                                     </div>
                                                 </div>
@@ -69,7 +70,7 @@ Company Settings
                                                                     class="input-group-text"><i
                                                                         class="la la-at"></i></span></div>
 
-                                                            {% render_field form.email|add_error_class:"is-invalid" class="form-control" type="email" id="email" name="email" placeholder="Email" aria-describedby="basic-addon1"  %}
+                                                            {% render_field form.email|add_error_class:"is-invalid" class="form-control" value=object.email type="email" id="email" name="email" placeholder="Email" aria-describedby="basic-addon1"  %}
                                                             <div class="error invalid-feedback">{% render_field form.email.errors %}</div>
                                                         </div>
                                                         <span class="form-text text-muted">
@@ -87,7 +88,7 @@ Company Settings
                                                                         class="la la-phone"></i></span>
                                                             </div>
 
-                                                            {% render_field form.phone|add_error_class:"is-invalid" class="form-control" type="text" name="phone" placeholder="Phone" aria-describedby="basic-addon1" id="phone"%}
+                                                            {% render_field form.phone|add_error_class:"is-invalid" class="form-control" type="text" name="phone" placeholder="Phone" value=object.phone aria-describedby="basic-addon1" id="phone"%}
                                                             <div class="error invalid-feedback">{% render_field form.phone.errors %}</div>
                                                         </div>
 
@@ -119,7 +120,7 @@ Company Settings
                                                     <label class="col-3 col-form-label" for="url">Website URL</label>
                                                     <div class="col-9">
                                                         <div class="input-group">
-                                                            {% render_field form.url|add_error_class:"is-invalid" type="url" placeholder="predictme.com" class="form-control" name="url" id="url" %}
+                                                            {% render_field form.url|add_error_class:"is-invalid" type="url" value=object.url placeholder="predictme.com" class="form-control" name="url" id="url" %}
                                                             <div class="input-group-append"><span
                                                                     class="input-group-text">.com</span></div>
                                                             <div class="error invalid-feedback">{% render_field form.url.errors %}</div>
@@ -132,7 +133,7 @@ Company Settings
                                                     <div class="col-9">
                                                         <div class="input-group">
 
-                                                            {% render_field form.description placeholder="Describe Predict ME" class="form-control" name="description" id="description" rows="4" %}
+                                                            {% render_field form.description placeholder="Describe Predict ME" value=object.description class="form-control" name="description" id="description" rows="4" %}
                                                         </div>
                                                         <span class="form-text text-muted">For SEO Enhancements.</span>
                                                     </div>
@@ -142,7 +143,7 @@ Company Settings
                                                     <div class="col-9">
                                                         <div class="input-group">
 
-                                                            {% render_field form.keywords placeholder="Keywords refer to Predict ME" class="form-control" name="keywords" id="keywords" rows="4" %}
+                                                            {% render_field form.keywords placeholder="Keywords refer to Predict ME" value=object.keywords class="form-control" name="keywords" id="keywords" rows="4" %}
                                                         </div>
                                                         <span class="form-text text-muted">For SEO Enhancements.</span>
                                                     </div>
@@ -166,7 +167,7 @@ Company Settings
                                                     <label class="col-3 col-form-label" for="city">City</label>
                                                     <div class="col-9">
                                                         <div class="input-group">
-                                                            {% render_field form.city|add_error_class:"is-invalid" type="text" placeholder="City" class="form-control" name="city" id="city" %}
+                                                            {% render_field form.city|add_error_class:"is-invalid" type="text" placeholder="City" value=object.city class="form-control" name="city" id="city" %}
                                                             <div class="error invalid-feedback">{% render_field form.city.errors %}</div>
                                                         </div>
                                                     </div>
@@ -184,7 +185,7 @@ Company Settings
                                                     <div class="col-9">
 
                                                         <div class="input-group">
-                                                            {% render_field form.admin_name|add_error_class:"is-invalid" type="text" placeholder="Admin Name (can be blank)" class="form-control" name="admin_name" id="admin_name" %}
+                                                            {% render_field form.admin_name|add_error_class:"is-invalid" type="text" value=object.admin_name placeholder="Admin Name (can be blank)" class="form-control" name="admin_name" id="admin_name" %}
                                                             <div class="error invalid-feedback">{% render_field form.admin_name.errors %}</div>
                                                         </div>
 
@@ -197,7 +198,7 @@ Company Settings
                                                             <div class="input-group-prepend"><span
                                                                     class="input-group-text"><i
                                                                         class="la la-at"></i></span></div>
-                                                            {% render_field form.admin_email|add_error_class:"is-invalid" aria-describedby="basic-addon1" type="email" placeholder="Admin Email Address (can be blank)" class="form-control" name="admin_email" id="admin_email" %}
+                                                            {% render_field form.admin_email|add_error_class:"is-invalid" value=object.admin_email aria-describedby="basic-addon1" type="email" placeholder="Admin Email Address (can be blank)" class="form-control" name="admin_email" id="admin_email" %}
                                                             <div class="error invalid-feedback">{% render_field form.admin_email.errors %}</div>
                                                         </div>
                                                         <span class="form-text text-muted">Email will not be publicly
@@ -218,10 +219,18 @@ Company Settings
                                                         mode: </label>
                                                     <div class="col-9">
                                                         <div class="kt-checkbox-single">
+                                                            {% if object.status == 1 %}
+                                                            <label class="kt-checkbox">
+                                                                {% render_field form.status type="checkbox" checked="checked" name="status" id="status" %}Maintenance mode
+                                                                <span></span>
+                                                            </label>
+                                                            {% else %}
                                                             <label class="kt-checkbox">
                                                                 {% render_field form.status type="checkbox" name="status" id="status" %}Maintenance mode
                                                                 <span></span>
                                                             </label>
+                                                            {% endif %}
+                                                            
                                                         </div>
                                                         <span class="form-text text-muted">
                                                             This will close the website for the members

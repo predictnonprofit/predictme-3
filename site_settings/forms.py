@@ -30,3 +30,5 @@ class CompanySettingsForm(forms.Form):
                                    validators=[validators.EmailValidator(message="Admin Email Not Valid!")])
     status = forms.BooleanField(label="Website in Maintenance mode:", required=False)
     closed_msg = forms.CharField(label="Closed Message", required=False, widget=forms.Textarea)
+
+    

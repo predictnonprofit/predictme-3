@@ -1,0 +1,63 @@
+<div class="modal fade" id="donerUploadFormModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="donerUploadFormModalLaber" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Upload Your Data File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Data File Uploader
+                        </h3>
+                    </div>
+                </div>
+
+                <!--begin::Form-->
+                <form class="kt-form" enctype="multipart/form-data" method="POST">
+                    <div class="kt-portlet__body">
+                        <div class="form-group form-group-last">
+                            <div class="alert alert-secondary" role="alert">
+                                <div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
+                                <div class="alert-text">
+                                    Any Message want users to notice
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <!-- <label>File Browser</label> -->
+                            <div></div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="donerFile" name="doner_file" />
+                                <label class="custom-file-label" for="donerFile">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+
+                
+
+                <!--end::Form-->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+                data-toggle="tooltip" title="Cancel and close">
+                <i class="la la-close"></i>
+            </button>
+            &nbsp;
+            <button type="button" class="btn btn-primary" style="width: 100px;" data-toggle="tooltip"
+                title="Upload!">
+                <i class="la la-upload"></i>
+            </button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
