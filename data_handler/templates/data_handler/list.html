@@ -18,6 +18,13 @@ Your Data
         }
 
         .vakata-context { z-index:10052 !important; }
+        .kt-checkbox.kt-checkbox--success.kt-checkbox--tick > span {
+            top: -10px;
+        }
+        .mylink-disabled {
+            pointer-events: none;
+            cursor: default;
+          }
     </style>
 {% endblock customcss %}
 
@@ -34,12 +41,24 @@ Your Data
 {% include "data_handler/inc/doner_files_modal.html" %}
 <!-- ./Doner Data Files Modal  -->
 
+<!-- Doner Data Upload Form Modal  -->
+{% include "data_handler/inc/upload_doner_file_form.html" %}
+<!-- ./Doner Data Upload Form Modal  -->
+
 <br />
 <div class="kt-container  kt-grid__item kt-grid__item--fluid">
     <div class="alert alert-light alert-elevate" role="alert">
-        <div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
+        
         <div class="alert-text">
-            You can change the columns as your need
+            <label class="kt-checkbox kt-checkbox--tick kt-checkbox--success" style="top: 6px;">
+                <input type="checkbox" id="agreeDataHandlerCheckBox"> 
+                <span></span>
+            </label>
+            Agree Data Handler upload 
+            <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
+                Terms and Conditions
+            </a>
+            
         </div>
     </div>
     <div class="kt-portlet kt-portlet--mobile">
@@ -66,9 +85,9 @@ Your Data
                         </button>
                     </span>
                     &nbsp;
-                    <span title="Donor File Upload Instructions" data-toggle="tooltip">
-                        <button type="button" class="btn btn-outline-brand" style="width: 100px;" data-target='#instructionsModal' data-toggle="modal">
-                            <i class="fa fa-info"></i>
+                    <span title="Upload Doner File" data-toggle="tooltip">
+                        <button type="button" class="btn btn-outline-brand" disabled style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal" id="dataUploadBtn">
+                            <i class="fa fa-file-upload"></i>
                         </button>
                     </span>
                 </div>
@@ -188,5 +207,16 @@ Your Data
 
         }, 3000);
       });
+
+
+      // enable upload btn by check agree terms and conditions
+      $("#agreeDataHandlerCheckBox").change(function() {
+          var dataUploadBtn = $("#dataUploadBtn");
+        if(this.checked) {
+            dataUploadBtn.removeAttr("disabled");
+        }else{
+            dataUploadBtn.attr("disabled", "disabled");
+        }
+    });
 </script>
 {% endblock customjs %}
