@@ -3,7 +3,7 @@
 
 
 {% block title %}
-Your Data
+Manage your data
 {% endblock title %}
 
 {% block customcss %}
@@ -25,6 +25,8 @@ Your Data
             pointer-events: none;
             cursor: default;
           }
+
+         
     </style>
 {% endblock customcss %}
 
@@ -44,6 +46,10 @@ Your Data
 <!-- Doner Data Upload Form Modal  -->
 {% include "data_handler/inc/upload_doner_file_form.html" %}
 <!-- ./Doner Data Upload Form Modal  -->
+
+<!-- Pay for extra records or update subscription   -->
+{% include "data_handler/inc/extra_records_or_upgrade_sub_modal.html" %}
+<!-- ./Pay for extra records or update subscription   -->
 
 <br />
 <div class="kt-container  kt-grid__item kt-grid__item--fluid">
@@ -67,9 +73,14 @@ Your Data
                 <span class="kt-portlet__head-icon">
                     <i class="kt-font-brand flaticon2-line-chart"></i>
                 </span>
-                <h3 class="kt-portlet__head-title">
-                     Display Your Data
-                    <small>Sorting in local datasource</small>
+                <h3 class="kt-portlet__head-title" style="width: 600px;">
+                     Current data records &nbsp;
+                     <span class="kt-badge kt-badge--unified-danger kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold" style="width: 70px">
+                         400
+                     </span>
+                     <span class="kt-badge kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold" style="width: 70px">
+                         100
+                     </span>
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -86,14 +97,47 @@ Your Data
                     </span>
                     &nbsp;
                     <span title="Upload Doner File" data-toggle="tooltip">
-                        <button type="button" class="btn btn-outline-brand" disabled style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal" id="dataUploadBtn">
+                        <button type="button" class="btn btn-outline-brand my-disabled-btn" disabled style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal" id="dataUploadBtn">
                             <i class="fa fa-file-upload"></i>
                         </button>
                     </span>
                 </div>
             </div>
         </div>
-        <div class="kt-portlet__body">
+
+        <!-- Message when records limit -->
+        <section id="records-msg" class="my-4 mx-auto w-50 text-center">
+            <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-faster">
+                <div class="kt-portlet__body">
+                    <div class="kt-iconbox__body">
+                        <div class="kt-iconbox__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"/>
+                                    <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10"/>
+                                    <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1"/>
+                                    <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="kt-iconbox__desc">
+                            <h3 class="kt-iconbox__title">
+                                <button type="button" data-toggle="modal" class="btn btn-clean btn-bold btn-upper" data-target="#extraRecordsModel">How to solve this: </button>
+                            </h3>
+                            <div class="kt-iconbox__content ">
+                                <small>You are about to rich your records limit!</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ./Message when records limit -->
+
+        <!-- Data Table -->
+
+        <section id="donnerSearchDataTable" class="d-none">
+            <div class="kt-portlet__body">
 
             <!--begin: Search Form -->
             <div class="kt-form kt-form--label-right kt-margin-t-20 kt-margin-b-10">
@@ -161,6 +205,9 @@ Your Data
 
             <!--end: Datatable -->
         </div>
+        </section>
+        
+        <!-- ./Data Table -->
     </div>
 </div>
 
@@ -181,42 +228,9 @@ Your Data
 <!--begin::Page Scripts(used by this page) -->
 <script src="{% static 'assets/js/pages/components/extended/treeview.js' %}" type="text/javascript"></script>
 
+    <!-- Custom Script of data handler list page -->
+    <script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
+    <!-- ./Custom Script of data handler list page -->
 <!--end::Page Scripts -->
 
-<script>
-    // this to delay the doner files but show the spinner first
-    var donerFilesSpinner = $('#donerFilesSpinner');
-    var donerFilesTree = $('#donerFilesTree');
-
-    // This event is fired when the modal has been made visible to the user 
-    $('#donerFilesModal').on('shown.bs.modal', function (e) {
-        //$('#donerFilesModal').modal('handleUpdate'); // to make Dynamic heights
-        setTimeout(function(){
-            // this will be ajax request to grab users files
-
-            // hide the spinner
-            //donerFilesSpinner.addClass("d-none");
-            donerFilesSpinner.fadeOut(1000, function(){
-                donerFilesTree.fadeIn();
-            });
-
-            // show the tree view
-            //donerFilesTree.removeClass("d-none");
-            //donerFilesTree.delay(5000).fadeIn().removeClass("d-none");
-
-
-        }, 3000);
-      });
-
-
-      // enable upload btn by check agree terms and conditions
-      $("#agreeDataHandlerCheckBox").change(function() {
-          var dataUploadBtn = $("#dataUploadBtn");
-        if(this.checked) {
-            dataUploadBtn.removeAttr("disabled");
-        }else{
-            dataUploadBtn.attr("disabled", "disabled");
-        }
-    });
-</script>
 {% endblock customjs %}
