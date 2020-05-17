@@ -87,6 +87,12 @@
 }
 /* Spinner style */
 
+/* Custom font size */
+.form-group label{
+    font-size: 1.1rem !important;
+}
+/* Custom font size */
+
 /* display errors in form */
 .errorlist{
     list-style-type: none;
@@ -97,3 +103,13 @@
     /*content: "❌ ";*/
 }
 /* display errors in form */
+
+/* Pay extra fees form */
+section#payExtraRecordsSection form#payExtraFeesForm input.form-control{
+    cursor: not-allowed !important;
+}
+/* Pay extra fees form */
+
+#upgradeSubscriptionSection .kt-spinner.kt-spinner--dark:before{
+        border: 2px solid #FFF !important;
+}
