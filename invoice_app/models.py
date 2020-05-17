@@ -1,5 +1,6 @@
 from django.db import models
 from membership.models import UserMembership
+from data_handler.models import MemberData
 
 # "Pending", "Processing", "Draft", "Cancelled", "Completed"
 
@@ -10,6 +11,7 @@ INVOICE_STATUS = (
     ("cancelled", "Cancelled"),
     ("completed", "Completed"),
 )
+
 
 class Invoice(models.Model):
     inv_date = models.DateField(auto_now_add=True, editable=False)
@@ -22,8 +24,6 @@ class Invoice(models.Model):
     is_paid = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=INVOICE_STATUS)
 
-    # purchased =
-
 
 class InvoiceItem(models.Model):
     inv_id = models.OneToOneField(Invoice, on_delete=models.CASCADE)
@@ -32,5 +32,9 @@ class InvoiceItem(models.Model):
     rate = models.DecimalField(max_digits=10, decimal_places=4)
 
 
-
-
+class Transactions(models.Model):
+    member_data = models.OneToOneField(MemberData, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.DecimalField(max_digits=5, decimal_places=5, null=True, blank=True)
+    transaction_date = models.DateTimeField(auto_now_add=True)
+    records_count = models.IntegerField()
+    stripe_token = models.CharField(null=True, blank=True, max_length=100)
