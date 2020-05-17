@@ -36,7 +36,6 @@ SUB_RANGE = (
 
 class Subscription(models.Model):
     user_membership = models.ForeignKey(UserMembership, on_delete=models.CASCADE)
-    # plan = models.OneToOneField(Plan, on_delete=models.CASCADE)
     stripe_subscription_id = models.CharField(max_length=60, null=True, blank=True)
     active = models.BooleanField()
     sub_range = models.CharField(max_length=20, choices=SUB_RANGE, null=True, blank=True)
