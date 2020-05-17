@@ -1,5 +1,4 @@
 from django.db import models
-# from users.models import Member
 from django.contrib.auth import get_user_model
 
 MEMBER_TYPE = (

@@ -16,7 +16,7 @@ class CheckMemberStatus:
         # Code to be executed for each request/response after
         # the view is called.
 
-        print(request)
+        print(type(request))
         return response
 
     # def process_request(self, request):

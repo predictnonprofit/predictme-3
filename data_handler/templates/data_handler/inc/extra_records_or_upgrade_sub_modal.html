@@ -1,0 +1,270 @@
+<!-- Modal -->
+<div class="modal fade" id="extraRecordsModel" data-backdrop="static" tabindex="-1" role="dialog"
+     aria-labelledby="extraRecordsModelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="extraRecordsModelLabel">
+                    <span class="u-b">
+                    You have exceeded the allowed records limit
+                </span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <!--begin::Portlet-->
+                <section id="askPayUpgradeSection">
+                    <div class="form-group">
+                        <label>Your data limit exceeds your subscription plan. Here are your options:</label>
+                        <div class="kt-radio-list">
+                            <label class="kt-radio">
+                                <input type="radio" name="action" value="pay" data-id="pay"/>
+                                Pay $.50 cents per additional record
+                                <span></span>
+                            </label>
+                            <label class="kt-radio">
+                                <input type="radio" name="action" value="upgrade" data-id="upgrade"/> Upgrade to the
+                                next Subscription plan.
+                                <span></span>
+                            </label>
+
+                        </div>
+                    </div>
+                </section>
+                <!--end::Portlet-->
+
+                <!--begin::Portlet-->
+                <section id="payExtraRecordsSection" style="display: none;">
+                    <div class="kt-portlet kt-portlet--space">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    Member's payment credential information
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!--begin::Form-->
+                        <form class="kt-form" id="payExtraFeesForm">
+                            <div class="kt-portlet__body">
+                                <div class="form-group ">
+                                    <label>Full Name</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">
+                                            <i class="la la-user"></i>
+                                            </span>
+                                        </div>
+                                        <input disabled="disabled" readonly type="text" class="form-control disabled"
+                                               name="full_name" value="Porter D. Stanley" placeholder="Full Name"
+                                               aria-describedby="basic-addon1">
+                                    </div>
+                                    {% comment %}
+                                        <span class="form-text text-muted">Some help content goes here</span>
+                                    {% endcomment %}
+                                </div>
+
+                                <div class="form-group ">
+                                    <label>Email Address</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">
+                                            <i class="la la-at"></i>
+                                            </span>
+                                        </div>
+                                        <input readonly disabled="disabled" type="email" class="form-control"
+                                               name="email" value="porter@email.com" placeholder="Email"
+                                               aria-describedby="basic-addon1">
+                                    </div>
+                                    {% comment %}
+                                        <span class="form-text text-muted">Some help content goes here</span>
+                                    {% endcomment %}
+                                </div>
+
+                                <div class="form-group ">
+                                    <label>Stripe Card Number</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">
+                                            <i class="fab fa-stripe"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" disabled="disabled" readonly class="form-control"
+                                               name="stripe_card" value="4242424242424242" placeholder="xxxx"
+                                               aria-describedby="basic-addon1">
+                                    </div>
+                                    <span class="form-text text-muted">Your basic credit card number</span>
+                                </div>
+
+                                <div class="form-group row">
+
+                                    <div class="col-md">
+                                        <label>Total records :</label>
+                                        <input type="number" class="form-control" placeholder="000" value="233"/>
+                                        <span class="form-text text-muted font-weight-bold">$.50 cents per additional record</span>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <label>Total amount due :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">
+                                            <i class="la la-dollar"></i>
+                                            </span>
+                                            </div>
+                                            <input type="text" disabled="disabled" readonly class="form-control"
+                                                   name="stripe_card" value="443.2" placeholder="$"
+                                                   aria-describedby="basic-addon1">
+                                        </div>
+                                        <span class="form-text text-muted font-weight-bold"></span>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div class="kt-portlet__foot kt-portlet__foot--fit">
+                                <div class="kt-form__actions kt-form__actions--right">
+                                    <div class="row">
+                                        <div class="col kt-align-left">
+                                            <button data-toggle="tooltip" data-action="pay" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px;">
+                                                Purchase <i class='la la-dollar'></i>
+                                            </button>
+                                            {#                                            <button type="reset" class="btn btn-secondary">Cancel</button>#}
+                                        </div>
+                                        <div class="col kt-align-right">
+                                            <span class="form-text text-muted mt-2">* Will send an invoice of transaction to your email</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!--end::Form-->
+                    </div>
+                </section>
+                <!--end::Portlet-->
+
+                <!--begin::Portlet-->
+                <section style="display: none;" id="upgradeSubscriptionSection">
+                    <div class="kt-portlet kt-portlet--space">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    Select new subscription plane to upgrade
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <!--begin::Form-->
+                            <form class="kt-form" id="upgradeSubscriptionForm">
+
+
+                                <div class="form-group row">
+
+                                    <div class="col-lg-4 text-center">
+
+                                        <label for="upStarter" class="d-block">
+                                           <span class="d-block">
+                                                <i class="flaticon-piggy-bank"
+                                                   style="font-size: 5rem;margin-top: 3.6rem;"></i>
+                                            </span>
+                                            Starter
+                                        </label>
+                                        <label class="kt-radio kt-radio--success">
+                                            <input type="radio" name="upgrade_plane" id="upStarter" value="starter"/>
+                                            <span style="left: 5px;"></span>
+                                        </label>
+
+
+                                        <span class="form-text text-muted font-weight-bold"></span>
+
+                                    </div>
+
+                                    <div class="col-lg-4 text-center">
+
+                                        <label for="upProfessional" class="d-block">
+                                           <span class="d-block" style="color: #f3c623 !important;">
+                                                <i class="flaticon-gift"
+                                                   style="font-size: 5rem;margin-top: 3.6rem;"></i>
+                                            </span>
+                                            Professional
+                                        </label>
+                                        <label class="kt-radio kt-radio--success">
+                                            <input type="radio" name="upgrade_plane" id="upProfessional"
+                                                   value="professional"/>
+                                            <span style="left: 5px;"></span>
+                                        </label>
+
+
+                                        <span class="form-text text-muted font-weight-bold"></span>
+
+                                    </div>
+
+                                    <div class="col-lg-4 text-center">
+
+                                        <label for="upExpert" class="d-block">
+                                           <span class="d-block" style="color:#d7385e !important;">
+                                                <i class="flaticon-rocket"
+                                                   style="font-size: 5rem;margin-top: 3.6rem;"></i>
+                                            </span>
+                                            Expert
+                                        </label>
+                                        <label class="kt-radio kt-radio--success" style="left: 2px;">
+                                            <input type="radio" name="upgrade_plane" id="upExpert" value="expert"/>
+                                            <span style="left: 5px;"></span>
+                                        </label>
+
+
+                                        <span class="form-text text-muted font-weight-bold"></span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                        </div>
+
+                        <div class="kt-portlet__foot kt-portlet__foot--fit mb-2">
+                            <div class="kt-form__actions kt-form__actions--right">
+                                <div class="row">
+                                    <div class="col kt-align-left mb-2">
+                                        <button data-toggle="tooltip" data-action="upgrade" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px;">
+                                            Purchase <i class='la la-dollar'></i>
+                                        </button>
+                                        {#                                            <button type="reset" class="btn btn-secondary">Cancel</button>#}
+                                    </div>
+                                    <div class="col kt-align-right">
+                                        <span class="form-text text-muted mt-2">* Will send an invoice of transaction to your email</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+
+                        <!--end::Form-->
+                    </div>
+                </section>
+                <!--end::Portlet-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeUpgradeModalBtn" data-toggle="tooltip" title="Close"
+                        class="btn btn-danger mr-auto" style="width: 100px;">
+                    <i class="fa fa-times"></i>
+                </button>
+                <button type="button" id="backModalBtn" disabled data-toggle="tooltip" class="btn btn-secondary"
+                        style="width: 100px;">
+                    <i class="flaticon2-left-arrow-1"></i> Back
+                </button>
+                <button data-toggle="tooltip" id="nextBtn" type="button" class="btn btn-primary"
+                        style="width: 130px;">Next <i class="la la-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

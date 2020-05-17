@@ -113,3 +113,11 @@ section#payExtraRecordsSection form#payExtraFeesForm input.form-control{
 #upgradeSubscriptionSection .kt-spinner.kt-spinner--dark:before{
         border: 2px solid #FFF !important;
 }
+
+.my-disabled-btn{
+    cursor: not-allowed !important;
+}
+
+.swal2-popup .swal2-title {
+    font-size: 2rem !important;
+}
