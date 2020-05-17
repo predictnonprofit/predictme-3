@@ -191,6 +191,8 @@
 
     <script>
         $(document).ready(function () {
+            // Autosize the textarea
+            autosize(document.querySelectorAll('textarea'));
             $('.collapse').collapse('hide');
             $('[data-toggle="tooltip"]').tooltip();
         });
