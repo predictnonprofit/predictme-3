@@ -166,39 +166,149 @@ $(function () {
     const uploadDataFileBtn = $("#uploadDataFileBtn");
     const uploadDataFileForm = $("#uploadDataFileForm");
     const donerFileInput = $("#donerFile");
-    uploadDataFileBtn.click(function () {
+    uploadDataFileForm.submit(function (e) {
+        e.preventDefault();
+        const webSiteUrl = window.location.origin;
+        const webSiteMemberUrl = window.location;
         if (donerFileInput.val()) {
-            let timerInterval;
-            swal.fire({
-                title: "Checking...",
-                text: "Checking your file, Please wait...",
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                timer: 2000,
-                timerProgressBar: true,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                    timerInterval = setInterval(() => {
-                        const content = Swal.getContent()
-                        if (content) {
-                            const b = content.querySelector('b')
-                            if (b) {
-                                b.textContent = Swal.getTimerLeft()
+            var timerInterval;
+            $form = $(this);
+            var formData = new FormData(this);
+            const fileName = donerFileInput.val().split(/(\\|\/)/g).pop();  // get the file name to parse it in url
+            // ajax request to data handler init
+            $.ajax({
+                method: "POST",
+                cache: false,
+                processData: false,
+                contentType: false,
+                global: false,
+                timeout: 3000,
+                url: `${webSiteUrl}/dashboard/data/upload/${fileName}`,
+                data: formData,
+                beforeSend: function (xhr, settings) {
+                    let timerInterval;
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    swal.fire({
+                        title: "Uploading...",
+                        text: "Checking your file, Please wait...",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                            timerInterval = setInterval(() => {
+                                const content = Swal.getContent()
+                                if (content) {
+                                    const b = content.querySelector('b')
+                                    if (b) {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }
+                                }
+                            }, 100)
+                        },
+                        onClose: () => {
+                            clearInterval(timerInterval);
+                            $('#columnsDualBoxModal').modal('handleUpdate');
+                            $('#columnsDualBoxModal').modal('show');
+                        }
+                    });
+                },
+                success: function (data, textStatus, jqXHR) {
+                    let timerInterval;
+                    swal.fire({
+                        title: "Extracting...",
+                        text: "Extract the columns from your data file, Please wait...",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                            timerInterval = setInterval(() => {
+                                const content = Swal.getContent()
+                                if (content) {
+                                    const b = content.querySelector('b')
+                                    if (b) {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }
+                                }
+                            }, 100)
+                        },
+                        onClose: () => {
+                            clearInterval(timerInterval);
+                            // $('#columnsDualBoxModal').modal('handleUpdate');
+                            // $('#columnsDualBoxModal').modal('show');
+                            // get the columns select element
+                            const dataFileColumnsSelect = $("#data_file_available_columns");
+                            if (textStatus == "success") {
+                                alert(jqXHR.responseText);
+                                $('#columnsDualBoxModal').modal('handleUpdate');
+                                $('#columnsDualBoxModal').modal('show');
+                                // swAlert("Success", `${jqXHR.responseText}`, "success");
+
+                            } else if (textStatus == "error") {
+                                swAlert("Error", "There is error while extracting!!", "error");
+                            } else {
+                                swAlert("Error", "Unknown error while extracting!!", "error");
                             }
                         }
-                    }, 100)
+                    });
+
+
                 },
-                onClose: () => {
-                    clearInterval(timerInterval);
-                    $('#columnsDualBoxModal').modal('handleUpdate');
-                    $('#columnsDualBoxModal').modal('show');
+                error: function (error) {
+                    //called when there is an error
+                    swAlert("Error", error.message, "error");
+                    //console.log(e.message);
+                },
+                /*complete: function (jqXHR, textStatus) {
+
+                    if(textStatus == "success"){
+                        $('#columnsDualBoxModal').modal('handleUpdate');
+                        $('#columnsDualBoxModal').modal('show');
+                        // swAlert("Success", `${jqXHR.responseText}`, "success");
+
+                    }else if(textStatus == "error"){
+                        swAlert("Error", "There is error while extracting!!", "error");
+                    }else{
+                        swAlert("Error", "Unknown error while extracting!!", "error");
+                    }
+                },*/
+                statusCode: {
+                    404: function () {
+                        swAlert("Error", "Page not Found!!", "error");
+                    },
+                    400: function () {
+                        swAlert("Error", "Bad Request!!!", "error");
+                    },
+                    401: function () {
+                        swAlert("Error", "Unauthorized!!", "error");
+                    },
+                    403: function () {
+                        swAlert("Error", "Forbidden!!", "error");
+                    },
+                    500: function () {
+                        swAlert("Error", "Internal Server Error!!", "error");
+                    },
+                    502: function () {
+                        swAlert("Error", "Bad Gateway!!", "error");
+                    },
+                    503: function () {
+                        swAlert("Error", "Service Unavailable!!", "error");
+                    },
+
                 }
             });
+
         } else {
             swal.fire("Error", "You have to select a file!", "error");
         }
     });
+    /*uploadDataFileBtn.click(function () {
 
+    });
+*/
 
     // here the columns dual box
     // Class definition
@@ -239,10 +349,14 @@ $(function () {
                 var dualListBox = new DualListbox($this.get(0), {
                     addEvent: function (value) {
                         pickedColumns.push(value);
-                        console.log(pickedColumns);
+                        //console.log(pickedColumns);
                     },
                     removeEvent: function (value) {
-                        alert();
+                        let arrayIdx = pickedColumns.indexOf(value);
+                        if (arrayIdx > -1) {
+                            pickedColumns.splice(arrayIdx, 1);
+                        }
+                        //console.log(pickedColumns);
                     },
                     availableTitle: availableTitle,
                     selectedTitle: selectedTitle,
@@ -269,9 +383,38 @@ $(function () {
     }();
     KTDualListbox.init();
 
+    // process button, which will send ajax request with the selected columns
     const processPickedColumnsBtn = $("#processPickedColumnsBtn");
     processPickedColumnsBtn.click(function (e) {
-        alert(pickedColumns);
+        let selectedColumns = JSON.stringify(pickedColumns);
+        // let selectedColumns = pickedColumns;
+        // let selectedColumns = pickedColumns;
+        const webSiteUrl = window.location.origin;
+        const webSiteMemberUrl = window.location;
+
+        // ajax request to data handler init
+        $.ajax({
+            method: "POST",
+            cache: false,
+            url: webSiteUrl + "/dashboard/data/init",
+            dataType: "json",
+            data: {"columns": selectedColumns},
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function (data) {
+                alert(data);
+                // if (data == "OK") {
+                //     alert("Your Data has been updated");
+                //     location.reload();
+                // }
+            },
+            error: function (error) {
+                //called when there is an error
+                swAlert("Error", error.message, "error");
+                //console.log(e.message);
+            }
+        });
     });
 
 });  // end of $(function)

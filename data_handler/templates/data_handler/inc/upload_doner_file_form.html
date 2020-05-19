@@ -21,7 +21,8 @@
                     </div>
 
                     <!--begin::Form-->
-                    <form class="kt-form" enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
+                    <form class="kt-form" enctype="multipart/form-data" method="PUT" id="uploadDataFileForm">
+                        {% csrf_token %}
                         <div class="kt-portlet__body">
 
                             <div class="form-group row mb-0">
@@ -93,8 +94,7 @@
                                                 <div></div>
                                                 <div class="custom-file">
                                                     <input type="file" class="custom-file-input" id="donerFile"
-                                                           name="doner_file"
-                                                           required accept=".xlsx, .csv"/>
+                                                           name="doner_file" required accept=".xlsx, .csv"/>
                                                     <label class="custom-file-label" for="donerFile">Choose file</label>
                                                 </div>
                                             </div>
@@ -126,7 +126,7 @@
                     <i class="la la-close"></i>
                 </button>
                 &nbsp;
-                <button type="button" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
+                <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
                         data-toggle="tooltip"
                         title="Upload!">
                     <i class="la la-upload"></i>

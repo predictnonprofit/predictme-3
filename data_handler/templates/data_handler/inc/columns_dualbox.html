@@ -1,7 +1,3 @@
-<!-- Button trigger modal-->
-{#<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#columnsDualBoxModal">#}
-{#    Launch demo modal#}
-{#</button>#}
 
 <!-- Modal-->
 <div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" tabindex="-1" role="dialog"
@@ -21,17 +17,9 @@
                             <div id="dualBoxBlock" style="margin-left: 120px;">
                                 <form class="kt-form" method="post">
                                     {% csrf_token %}
-                                    <select id="kt_dual_listbox_3" class="dual-listbox" multiple>
+                                    <select id="data_file_available_columns" class="dual-listbox" multiple>
                                     <option value="Donor ID" disabled selected>Donor ID</option>
-                                    <option value="two">Two</option>
-                                    <option value="three">Three</option>
-                                    <option value="Four">Four</option>
-                                    <option value="Five">Five</option>
-                                    <option value="Six">Six</option>
-                                    <option value="Seven">Seven</option>
-                                    <option value="Eight">Eight</option>
-                                    <option value="Nine">Nine</option>
-                                    <option value="Ten">Ten</option>
+
                                 </select>
                                 </form>
                             </div>
