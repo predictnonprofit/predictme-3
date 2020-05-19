@@ -14,5 +14,6 @@ urlpatterns = [
     path("verify", VerifyAccountView.as_view(), name="users_verify"),
     re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
             activate_account, name='activate'),
+    path("google", GoogleAuthenticationView.as_view(), name="auth-google"),
 
 ]

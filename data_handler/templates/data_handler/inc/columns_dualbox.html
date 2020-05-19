@@ -1,0 +1,48 @@
+<!-- Button trigger modal-->
+{#<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#columnsDualBoxModal">#}
+{#    Launch demo modal#}
+{#</button>#}
+
+<!-- Modal-->
+<div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" tabindex="-1" role="dialog"
+     aria-labelledby="columnsDualBoxModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pick columns</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row h-100">
+                        <div class="col-12 my-auto">
+                            <div id="dualBoxBlock" style="margin-left: 120px;">
+                                <form class="kt-form" method="post">
+                                    {% csrf_token %}
+                                    <select id="kt_dual_listbox_3" class="dual-listbox" multiple>
+                                    <option value="Donor ID" disabled selected>Donor ID</option>
+                                    <option value="two">Two</option>
+                                    <option value="three">Three</option>
+                                    <option value="Four">Four</option>
+                                    <option value="Five">Five</option>
+                                    <option value="Six">Six</option>
+                                    <option value="Seven">Seven</option>
+                                    <option value="Eight">Eight</option>
+                                    <option value="Nine">Nine</option>
+                                    <option value="Ten">Ten</option>
+                                </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary font-weight-bold" id="processPickedColumnsBtn">Process</button>
+            </div>
+        </div>
+    </div>
+</div>

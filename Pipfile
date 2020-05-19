@@ -30,6 +30,10 @@ django-countries = "*"
 gunicorn = "*"
 whitenoise = "*"
 django-ipware = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
+django-allauth = "*"
 
 [requires]
 python_version = "3.8"

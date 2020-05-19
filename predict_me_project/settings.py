@@ -27,14 +27,19 @@ DEBUG = True
 if DEBUG is True:
     ALLOWED_HOSTS = ["127.0.0.1", "predictme2.herokuapp.com"]
 
-# Application definition
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "django.contrib.sites",
     'django.contrib.staticfiles',
     "middlewares_app.apps.MiddlewaresAppConfig",
     'widget_tweaks',
@@ -50,6 +55,13 @@ INSTALLED_APPS = [
     "site_settings",
     "membership",
     "activity_app",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.dropbox',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.microsoft',
+
 ]
 
 MIDDLEWARE = [
@@ -70,7 +82,9 @@ ROOT_URLCONF = 'predict_me_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.normpath(os.path.join(BASE_DIR, 'templates')),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -180,5 +194,25 @@ MAINTENANCE_MODE_TEMPLATE = '503.html'
 MAINTENANCE_MODE_IGNORE_URLS = ("dashboard-url")
 
 # deploy tips
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+SITE_ID = 2
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+# fix Error 400: redirect_uri_mismatch
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"

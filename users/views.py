@@ -17,6 +17,7 @@ from pprint import pprint
 from decimal import Decimal
 
 
+
 def login_view(request):
     if request.method == "POST":
         email = request.POST['email']
@@ -283,3 +284,8 @@ def activate_account(request, uidb64, token):
 def logout_view(request):
     logout(request)
     return redirect("land-page")
+
+
+# social_authentication views
+class GoogleAuthenticationView(TemplateView):
+    template_name = "users/social_accounts/google.html"

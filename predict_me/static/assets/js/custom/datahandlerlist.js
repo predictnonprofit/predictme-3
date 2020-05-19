@@ -122,6 +122,7 @@ $(function () {
             text: "You want to abort this operation?",
             icon: 'warning',
             showCancelButton: true,
+            allowOutsideClick: false,
             cancelButtonText: "No",
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
@@ -144,20 +145,138 @@ $(function () {
     purchaseUpgradeExtraBtn.click(function (e) {
         let actionLabel = $(this).data("action");
         const upgradePlanBtn = $('input[name=upgrade_plane]:checked').val();
-        if(actionLabel === "upgrade"){
+        if (actionLabel === "upgrade") {
             if (upgradePlanBtn === "" || upgradePlanBtn === undefined) {
-            swal.fire("Error", "You have to select plan!", "error");
-        } else {
-            swal.fire("Good", `You select ${upgradePlanBtn}`, "success");
-            $(this).attr("disabled", "disabled");
-            $(this).html("<div class='kt-spinner kt-spinner--lg kt-spinner--dark' style='width: 2rem; height: 1.3rem; left: 32px;'></div>");
+                swal.fire("Error", "You have to select plan!", "error");
+            } else {
+                swal.fire("Good", `You select ${upgradePlanBtn}`, "success");
+                $(this).attr("disabled", "disabled");
+                $(this).html("<div class='kt-spinner kt-spinner--lg kt-spinner--dark' style='width: 2rem; height: 1.3rem; left: 32px;'></div>");
 
-        }
+            }
 
-        }else if(actionLabel === "pay"){
+        } else if (actionLabel === "pay") {
             swal.fire("👍", `Purchased done`, "success");
         }
 
     });
 
+
+    // upload data file functionality
+    const uploadDataFileBtn = $("#uploadDataFileBtn");
+    const uploadDataFileForm = $("#uploadDataFileForm");
+    const donerFileInput = $("#donerFile");
+    uploadDataFileBtn.click(function () {
+        if (donerFileInput.val()) {
+            let timerInterval;
+            swal.fire({
+                title: "Checking...",
+                text: "Checking your file, Please wait...",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                timer: 2000,
+                timerProgressBar: true,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                        const content = Swal.getContent()
+                        if (content) {
+                            const b = content.querySelector('b')
+                            if (b) {
+                                b.textContent = Swal.getTimerLeft()
+                            }
+                        }
+                    }, 100)
+                },
+                onClose: () => {
+                    clearInterval(timerInterval);
+                    $('#columnsDualBoxModal').modal('handleUpdate');
+                    $('#columnsDualBoxModal').modal('show');
+                }
+            });
+        } else {
+            swal.fire("Error", "You have to select a file!", "error");
+        }
+    });
+
+
+    // here the columns dual box
+    // Class definition
+    var pickedColumns = [];  // this will hold all columns that user selected
+    var KTDualListbox = function () {
+        // Private functions
+        var initDualListbox = function () {
+            // Dual Listbox
+            var listBoxes = $(".dual-listbox");
+
+            listBoxes.each(function () {
+                var $this = $(this);
+                // get titles
+                var availableTitle = ($this.attr("data-available-title") != null) ? $this.attr("data-available-title") : "Available columns";
+                var selectedTitle = ($this.attr("data-selected-title") != null) ? $this.attr("data-selected-title") : "Picked columns";
+
+                // get button labels
+                var addLabel = ($this.attr("data-add") != null) ? $this.attr("data-add") : "Add";
+                var removeLabel = ($this.attr("data-remove") != null) ? $this.attr("data-remove") : "Remove";
+                var addAllLabel = ($this.attr("data-add-all") != null) ? $this.attr("data-add-all") : "Add All";
+                var removeAllLabel = ($this.attr("data-remove-all") != null) ? $this.attr("data-remove-all") : "Remove All";
+
+                // get options
+                var options = [];
+                $this.children("option").each(function () {
+                    var value = $(this).val();
+                    var label = $(this).text();
+                    options.push({
+                        text: label,
+                        value: value
+                    });
+                });
+
+                // get search option
+                var search = ($this.attr("data-search") != null) ? $this.attr("data-search") : "";
+
+                // init dual listbox
+                var dualListBox = new DualListbox($this.get(0), {
+                    addEvent: function (value) {
+                        pickedColumns.push(value);
+                        console.log(pickedColumns);
+                    },
+                    removeEvent: function (value) {
+                        alert();
+                    },
+                    availableTitle: availableTitle,
+                    selectedTitle: selectedTitle,
+                    addButtonText: addLabel,
+                    removeButtonText: removeLabel,
+                    addAllButtonText: addAllLabel,
+                    removeAllButtonText: removeAllLabel,
+                    options: options,
+                });
+
+
+                if (search == "false") {
+                    dualListBox.search.classList.add("dual-listbox__search--hidden");
+                }
+            });
+        };
+
+        return {
+            // public functions
+            init: function () {
+                initDualListbox();
+            },
+        };
+    }();
+    KTDualListbox.init();
+
+    const processPickedColumnsBtn = $("#processPickedColumnsBtn");
+    processPickedColumnsBtn.click(function (e) {
+        alert(pickedColumns);
+    });
+
 });  // end of $(function)
+
+
+function swAlert(alertTitle, alertMsg, alertType) {
+    swal.fire(`${alertTitle}`, `${alertMsg}`, `${alertType}`);
+}
