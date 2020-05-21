@@ -31,6 +31,7 @@
     <!--begin::Global Theme Styles(used by all pages) -->
     <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/css/mycolors.css' %}" rel="stylesheet" type="text/css" />
 
     <link rel="icon" type="image/png" href="{% static 'assets/media/logos/Predict Me Fav.png' %}" />
 </head>
@@ -570,111 +571,7 @@
                                         <span
                                             class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold kt-hidden-">S</span>
                                     </div>
-                                    <div
-                                        class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-xl">
 
-                                        <!--begin: Head -->
-                                        <div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x"
-                                            style="background-image: url({% static 'assets/media/misc/bg-1.jpg' %})">
-                                            <div class="kt-user-card__avatar">
-                                                <img class="kt-hidden" alt="Pic"
-                                                    src="{% static 'assets/media/users/300_25.jpg' %}" />
-
-                                                <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                                                <span
-                                                    class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">S</span>
-                                            </div>
-                                            <div class="kt-user-card__name">
-                                                Sean Stone
-                                            </div>
-                                            <div class="kt-user-card__badge">
-                                                <span class="btn btn-success btn-sm btn-bold btn-font-md">23
-                                                    messages</span>
-                                            </div>
-                                        </div>
-
-                                        <!--end: Head -->
-
-                                        <!--begin: Navigation -->
-                                        <div class="kt-notification">
-                                            <a href="{% url 'profile-info' %}" class="kt-notification__item">
-                                                <div class="kt-notification__item-icon">
-                                                    <i class="flaticon2-calendar-3 kt-font-success"></i>
-                                                </div>
-                                                <div class="kt-notification__item-details">
-                                                    <div class="kt-notification__item-title kt-font-bold">
-                                                        My Profile
-                                                    </div>
-                                                    <div class="kt-notification__item-time">
-                                                        Account settings and more
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="custom/apps/user/profile-3.html" class="kt-notification__item">
-                                                <div class="kt-notification__item-icon">
-                                                    <i class="flaticon2-mail kt-font-warning"></i>
-                                                </div>
-                                                <div class="kt-notification__item-details">
-                                                    <div class="kt-notification__item-title kt-font-bold">
-                                                        My Messages
-                                                    </div>
-                                                    <div class="kt-notification__item-time">
-                                                        Inbox and tasks
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="custom/apps/user/profile-2.html" class="kt-notification__item">
-                                                <div class="kt-notification__item-icon">
-                                                    <i class="flaticon2-rocket-1 kt-font-danger"></i>
-                                                </div>
-                                                <div class="kt-notification__item-details">
-                                                    <div class="kt-notification__item-title kt-font-bold">
-                                                        My Activities
-                                                    </div>
-                                                    <div class="kt-notification__item-time">
-                                                        Logs and notifications
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="custom/apps/user/profile-3.html" class="kt-notification__item">
-                                                <div class="kt-notification__item-icon">
-                                                    <i class="flaticon2-hourglass kt-font-brand"></i>
-                                                </div>
-                                                <div class="kt-notification__item-details">
-                                                    <div class="kt-notification__item-title kt-font-bold">
-                                                        My Tasks
-                                                    </div>
-                                                    <div class="kt-notification__item-time">
-                                                        latest tasks and projects
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="custom/apps/user/profile-1/overview.html"
-                                                class="kt-notification__item">
-                                                <div class="kt-notification__item-icon">
-                                                    <i class="flaticon2-cardiogram kt-font-warning"></i>
-                                                </div>
-                                                <div class="kt-notification__item-details">
-                                                    <div class="kt-notification__item-title kt-font-bold">
-                                                        Billing
-                                                    </div>
-                                                    <div class="kt-notification__item-time">
-                                                        billing & statements <span
-                                                            class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-badge--rounded">2
-                                                            pending</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <div class="kt-notification__custom kt-space-between">
-                                                <a href="{% url 'logout' %}"
-                                                    class="btn btn-label btn-label-brand btn-sm btn-bold">Sign Out</a>
-                                                <a href="{% url 'pricing' %}" target="_blank"
-                                                    class="btn btn-clean btn-sm btn-bold">Upgrade Plan</a>
-                                            </div>
-                                        </div>
-
-                                        <!--end: Navigation -->
-                                    </div>
                                 </div>
 
                                 <!--end: User bar -->
@@ -698,79 +595,12 @@
                                             <a href="{% url 'profile-overview' %}" class="kt-menu__link">
                                                 <span class="kt-menu__link-text"><span class="kt-menu__link-icon"
                                                         style="color: unset;"><i
-                                                            class="fa fa-coffee"></i></span>Dashboards</span><i
+                                                            class="fa fa-home"></i></span></span><i
                                                     class="kt-menu__ver-arrow la la-angle-right"></i></a>
 
                                         </li>
-                                        <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel"
-                                            data-ktmenu-submenu-toggle="click" aria-haspopup="true">
-                                            <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                                <span class="kt-menu__link-icon"><i
-                                                        class="fa fa-database"></i></span><span
-                                                    class="kt-menu__link-text">Data</span><i
-                                                    class="kt-menu__ver-arrow la la-angle-right"></i>
-                                            </a>
-                                            <div
-                                                class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--left">
-                                                <ul class="kt-menu__subnav">
-                                                    <li class="kt-menu__item  kt-menu__item--submenu"
-                                                        data-ktmenu-submenu-toggle="hover" aria-haspopup="true"><a
-                                                            href="{% url 'data-list' %}"
-                                                            class="kt-menu__link kt-menu__toggle">
-                                                            <span class="kt-menu__link-icon"><i
-                                                                    class="fa fa-chart-bar"></i></span><span
-                                                                class="kt-menu__link-text">View Data</span></a>
-
-                                                    </li>
-                                                    <li class="kt-menu__item  kt-menu__item--submenu"
-                                                        data-ktmenu-submenu-toggle="hover" aria-haspopup="true"><a
-                                                            href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                                            <span class="kt-menu__link-icon"><i
-                                                                    class="fa fa-file-upload"></i></span><span
-                                                                class="kt-menu__link-text">Upload Data</span></a>
-
-                                                    </li>
-
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel"
-                                            data-ktmenu-submenu-toggle="click" aria-haspopup="true">
-                                            <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                                <span class="kt-menu__link-icon">
-                                                    <i class="fa fa-chart-pie"></i></span><span
-                                                    class="kt-menu__link-text">Reports</span>
-
-                                            </a>
-
-                                        </li>
-                                        <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel"
-                                            data-ktmenu-submenu-toggle="click" aria-haspopup="true">
-                                            <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                                <span class="kt-menu__link-icon"><i
-                                                        class="fa fa-dollar-sign"></i></span><span
-                                                    class="kt-menu__link-text">Payment</span><i
-                                                    class="kt-menu__ver-arrow la la-angle-right"></i>
-                                            </a>
-
-                                            <div
-                                                class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--left">
-                                                <ul class="kt-menu__subnav">
-                                                    <li class="kt-menu__item  kt-menu__item--submenu"
-                                                        data-ktmenu-submenu-toggle="hover" aria-haspopup="true"><a
-                                                            href="{% url 'invoice-list' %}"
-                                                            class="kt-menu__link kt-menu__toggle">
-                                                            <span class="kt-menu__link-icon">
-                                                                <i class="fab fa-stripe"></i></span><span
-                                                                class="kt-menu__link-text">Stripe</span></a>
-
-                                                    </li>
 
 
-                                                </ul>
-                                            </div>
-
-                                        </li>
 
                                     </ul>
                                 </div>

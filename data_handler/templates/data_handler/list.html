@@ -1,283 +1,371 @@
 {% extends 'dashboard/inc/master.html' %}
 
 {% load static %}
-
+{% load socialaccount %}
 
 
 {% block title %}
-    Manage your data
+Manage your data
 {% endblock title %}
 
 {% block customcss %}
-    <!--begin::Page Vendors Styles(used by this page) -->
-    <link href="{% static 'assets/plugins/custom/jstree/jstree.bundle.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        .inst-content-block p {
-            font-size: 17px;
-        }
-
-        .inst-content-block li {
-            font-size: 16px;
-        }
-
-        .vakata-context {
-            z-index: 10052 !important;
-        }
-
-        .kt-checkbox.kt-checkbox--success.kt-checkbox--tick > span {
-            top: -10px;
-        }
-
-        .mylink-disabled {
-            pointer-events: none;
-            cursor: default;
-        }
-
-
-    </style>
+<!--begin::Page Vendors Styles(used by this page) -->
+<link href="{% static 'assets/plugins/custom/jstree/jstree.bundle.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/plugins/custom/uppy/uppy.bundle.css' %}" rel="stylesheet" type="text/css" />
 {% endblock customcss %}
 
 {% block content %}
 
 
-    <!-- begin:: Content -->
+<!-- begin:: Content -->
 
-    <!-- Instructions Modal  -->
-    {% include "data_handler/inc/instructions_modal.html" %}
-    <!-- ./Instructions Modal  -->
+<!-- Instructions Modal  -->
+{% include "data_handler/inc/instructions_modal.html" %}
+<!-- ./Instructions Modal  -->
 
-    <!-- Doner Data Files Modal  -->
-    {% include "data_handler/inc/doner_files_modal.html" %}
-    <!-- ./Doner Data Files Modal  -->
+<!-- donor Data Files Modal  -->
+{% include "data_handler/inc/donor_files_modal.html" %}
+<!-- ./donor Data Files Modal  -->
 
-    <!-- Doner Data Upload Form Modal  -->
-    {% include "data_handler/inc/upload_doner_file_form.html" %}
-    <!-- ./Doner Data Upload Form Modal  -->
+<!-- donor Data Upload Form Modal  -->
+{# include "data_handler/inc/upload_donor_file_form.html" #}
+<!-- ./donor Data Upload Form Modal  -->
 
-    <!-- Pay for extra records or update subscription   -->
-    {% include "data_handler/inc/extra_records_or_upgrade_sub_modal.html" %}
-    <!-- ./Pay for extra records or update subscription   -->
+<!-- Pay for extra records or update subscription   -->
+{% include "data_handler/inc/extra_records_or_upgrade_sub_modal.html" %}
+<!-- ./Pay for extra records or update subscription   -->
 
-    <!-- Columns Dual Box   -->
-    {% include "data_handler/inc/columns_dualbox.html" %}
-    <!-- ./Columns Dual Box   -->
+<!-- Columns Dual Box   -->
+{% include "data_handler/inc/columns_dualbox.html" %}
+<!-- ./Columns Dual Box   -->
 
-    <br/>
-    <div class="kt-container  kt-grid__item kt-grid__item--fluid">
-        <div class="alert alert-light alert-elevate" role="alert">
+<br />
+<div class="kt-container  kt-grid__item kt-grid__item--fluid">
+    <div class="alert alert-light alert-elevate" role="alert">
 
-            <div class="alert-text">
-                <label class="kt-checkbox kt-checkbox--tick kt-checkbox--success" style="top: 6px;">
-                    <input type="checkbox" id="agreeDataHandlerCheckBox">
-                    <span></span>
-                </label>
-                Agree Data Handler upload
-                <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
-                    Terms and Conditions
-                </a>
+        <div class="alert-text">
+            <label class="kt-checkbox kt-checkbox--tick kt-checkbox--success" style="top: 6px;">
+                <input type="checkbox" id="agreeDataHandlerCheckBox">
+                <span></span>
+            </label>
+            Agree Data Handler upload
+            <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
+                Terms and Conditions
+            </a>
 
-            </div>
         </div>
-        <div class="kt-portlet kt-portlet--mobile">
-            <div class="kt-portlet__head kt-portlet__head--lg">
-                <div class="kt-portlet__head-label">
+    </div>
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
                 <span class="kt-portlet__head-icon">
                     <i class="kt-font-brand flaticon2-line-chart"></i>
                 </span>
-                    <h3 class="kt-portlet__head-title" style="width: 600px;">
-                        Current data records &nbsp;
-                        <span class="kt-badge kt-badge--unified-danger kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
-                              style="width: 70px">
-                         400
-                     </span>
-                        <span class="kt-badge kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
-                              style="width: 70px">
-                         100
-                     </span>
-                    </h3>
-                </div>
-                <div class="kt-portlet__head-toolbar">
-                    <div class="kt-portlet__head-wrapper">
-                        <button type="button" onclick="history.back();" class="btn btn-clean btn-icon-sm"
-                                data-toggle="tooltip" title="Back">
-                            <i class="la la-long-arrow-left"></i>
+                <h3 class="kt-portlet__head-title" style="width: 600px;">
+                    Current data records &nbsp;
+                    <span
+                        class="kt-badge kt-badge--unified-danger kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
+                        style="width: 70px">
+                        400
+                    </span>
+                    <span
+                        class="kt-badge kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
+                        style="width: 70px">
+                        100
+                    </span>
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <button type="button" onclick="history.back();" class="btn btn-clean btn-icon-sm"
+                        data-toggle="tooltip" title="Back">
+                        <i class="la la-long-arrow-left"></i>
 
-                        </button>
-                        &nbsp;
-                        <span data-toggle="tooltip" title="display you files">
+                    </button>
+                    &nbsp;
+                    <span data-toggle="tooltip" title="display you files">
                         <button type="button" class="btn btn-outline-brand" style="width: 100px;" data-toggle="modal"
-                                data-target="#donerFilesModal">
-                            <i class="fa fa-file-download"></i> 
+                            data-target="#donerFilesModal">
+                            <i class="fa fa-file-download"></i>
                         </button>
                     </span>
-                        &nbsp;
-                        <span title="Upload Doner File" data-toggle="tooltip">
+                    &nbsp;
+                    <span title="Upload Doner File" data-toggle="tooltip">
                         <button type="button" class="btn btn-outline-brand my-disabled-btn" disabled
-                                style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal"
-                                id="dataUploadBtn">
+                            style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal"
+                            id="dataUploadBtn">
                             <i class="fa fa-file-upload"></i>
                         </button>
                     </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message when records limit -->
+        <section id="records-msg" class="my-4 mx-auto w-50 text-center d-none">
+            <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-faster">
+                <div class="kt-portlet__body">
+                    <div class="kt-iconbox__body">
+                        <div class="kt-iconbox__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24" />
+                                    <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
+                                    <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
+                                    <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="kt-iconbox__desc">
+                            <h3 class="kt-iconbox__title">
+                                <button type="button" data-toggle="modal" class="btn btn-clean btn-bold btn-upper"
+                                    data-target="#extraRecordsModel">How to solve this:
+                                </button>
+                            </h3>
+                            <div class="kt-iconbox__content ">
+                                <small>You are about to rich your records limit!</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
+        <!-- ./Message when records limit -->
 
-            <!-- Message when records limit -->
-            <section id="records-msg" class="my-4 mx-auto w-50 text-center d-none">
-                <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-faster">
-                    <div class="kt-portlet__body">
-                        <div class="kt-iconbox__body">
-                            <div class="kt-iconbox__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                     width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24"/>
-                                        <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10"/>
-                                        <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1"/>
-                                        <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1"/>
-                                    </g>
-                                </svg>
+        <!-- No data files uploaded -->
+        <section id="no-data-file-form-msg" class="row justify-content-center my-4">
+            <div class="col-8 text-center">
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                There is no data file, please upload
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!--begin::Form-->
+                    <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
+                        {% csrf_token %}
+                        <div class="kt-portlet__body">
+
+                            <div class="form-group row mb-0">
+                                <div class="col">
+
+                                    <ul class="nav nav-tabs nav-tabs-line nav-fill justify-content-center">
+                                        <li class="nav-item ">
+                                            <a class="nav-link active" data-toggle="tab" href="#upload_data_pane">
+                                                <span class="nav-icon"><i
+                                                        class="icon-xl fas fa-file-upload text-success"></i></span>
+                                                <span class="nav-text">Upload</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link " data-toggle="tab" href="#dropbox_tab_pane">
+                                                <span class="nav-icon"><i style="color: #0060FF;"
+                                                        class="icon-xl fab fa-dropbox"></i></span>
+                                                <span class="nav-text">Dropbox</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#google_drive_pane">
+                                                <span class="nav-icon"><i style="color: #FFD04B;"
+                                                        class="icon-xl fab fa-google-drive"></i></span>
+                                                <span class="nav-text">Google Drive</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#onedrive_tab_pane">
+                                                <span class="nav-icon"><i style="color: #2778D3;"
+                                                        class="icon-xl fas fa-cloud"></i></span>
+                                                <span class="nav-text">OneDrive</span>
+                                            </a>
+                                        </li>
+
+
+
+                                    </ul>
+                                    <div class="tab-content mt-5" id="dataHandlerUploadTabContent">
+
+                                        <div class="tab-pane fade show active" id="upload_data_pane" role="tabpanel"
+                                            aria-labelledby="upload_data_pane">
+
+                                            <div class="form-group">
+
+                                                <!-- <label>File Browser</label> -->
+                                                <div></div>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="donerFile"
+                                                        name="donor_file" required accept=".xlsx, .csv" />
+                                                    <label class="custom-file-label" for="donerFile">Choose file</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="alert alert-secondary" role="alert">
+                                                    <div class="alert-icon"><i
+                                                            class="flaticon-warning kt-font-brand"></i></div>
+                                                    <div class="alert-text">
+                                                        Allowed Files (csv, xlsx)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade " id="dropbox_tab_pane" role="tabpanel"
+                                            aria-labelledby="dropbox_tab_pane">
+                                            <button type="button" class="btn btn-primary border-0 btn-block"
+                                                style="background-color: #0060FF;">
+                                                <i class="icon-xl fab fa-dropbox"></i> Browse
+                                            </button>
+                                        </div>
+                                        <div class="tab-pane fade" id="google_drive_pane" role="tabpanel"
+                                            aria-labelledby="google_drive_pane">
+                                            <a target="_blank"
+                                                href="{% provider_login_url 'google' process="connect" %}"
+                                                class="btn btn-primary border-0 btn-block"
+                                                style="background-color: #1FA463;">
+                                                <i class="icon-xl fab fa-google-drive"></i> Browse
+                                            </a>
+
+                                        </div>
+                                        <div class="tab-pane fade" id="onedrive_tab_pane" role="tabpanel"
+                                            aria-labelledby="onedrive_tab_pane">
+                                            <button type="button" class="btn btn-primary border-0 btn-block"
+                                                style="background-color: #2778D3;">
+                                                <i class="icon-xl fas fa-cloud"></i> Browse
+                                            </button>
+                                        </div>
+
+
+                                    </div>
+                                </div>
                             </div>
-                            <div class="kt-iconbox__desc">
-                                <h3 class="kt-iconbox__title">
-                                    <button type="button" data-toggle="modal" class="btn btn-clean btn-bold btn-upper"
-                                            data-target="#extraRecordsModel">How to solve this:
-                                    </button>
-                                </h3>
-                                <div class="kt-iconbox__content ">
-                                    <small>You are about to rich your records limit!</small>
+
+                        </div>
+
+
+                        <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+                    data-toggle="tooltip" title="Cancel and close">
+                    <i class="la la-close"></i>
+                </button>
+                &nbsp;
+                <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
+                    data-toggle="tooltip" title="Upload!">
+                    <i class="la la-upload"></i>
+                </button>
+                </form>
+                <!--end::Form-->
+                </div>
+            </div>
+        </section>
+        <!-- ./No data files uploaded -->
+
+        <!-- Data Table -->
+
+        <section id="donnerSearchDataTable" class="d-none">
+            <div class="kt-portlet__body">
+
+                <!--begin: Search Form -->
+                <div class="kt-form kt-form--label-right kt-margin-t-20 kt-margin-b-10">
+                    <div class="row align-items-center">
+                        <div class="col-xl-8 order-2 order-xl-1">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+                                    <div class="kt-input-icon kt-input-icon--left">
+                                        <input type="text" class="form-control" placeholder="Search..."
+                                            id="generalSearch">
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                                            <span><i class="la la-search"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+                                    <div class="kt-form__group kt-form__group--inline">
+                                        <div class="kt-form__label">
+                                            <label>Status:</label>
+                                        </div>
+                                        <div class="kt-form__control">
+                                            <select class="form-control bootstrap-select" id="kt_form_status">
+                                                <option value="">All</option>
+                                                <option value="1">Pending</option>
+                                                <option value="2">Delivered</option>
+                                                <option value="3">Canceled</option>
+                                                <option value="4">Success</option>
+                                                <option value="5">Info</option>
+                                                <option value="6">Danger</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+                                    <div class="kt-form__group kt-form__group--inline">
+                                        <div class="kt-form__label">
+                                            <label>Type:</label>
+                                        </div>
+                                        <div class="kt-form__control">
+                                            <select class="form-control bootstrap-select" id="kt_form_type">
+                                                <option value="">All</option>
+                                                <option value="1">Online</option>
+                                                <option value="2">Retail</option>
+                                                <option value="3">Direct</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-            <!-- ./Message when records limit -->
-
-            <!-- No data files uploaded -->
-            <section id="no-data-file-form-msg" class="my-4 mx-auto w-75 ">
-                <div class="kt-portlet kt-callout kt-callout--warning kt-callout--diagonal-bg">
-                    <div class="kt-portlet__body">
-                        <div class="kt-callout__body">
-                            <div class="kt-callout__content">
-                                <h3 class="kt-callout__title">No Data File</h3>
-                                <p class="kt-callout__desc">
-                                    You did not upload any data file yet!
-                                </p>
-                            </div>
-                            <div class="kt-callout__action">
-                                <p class="btn btn-custom btn-bold btn-upper btn-font-sm  btn-warning">
-                                    <i class="la la-exclamation" style="font-size: 3rem;"></i>
-                                </p>
+                        <div class="col-xl-4 order-1 order-xl-2 kt-align-right">
+                            <a href="#" class="btn btn-default kt-hidden">
+                                <i class="la la-cart-plus"></i> New Order
+                            </a>
+                            <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg d-xl-none">
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            <!-- ./No data files uploaded -->
 
-            <!-- Data Table -->
+                <!--end: Search Form -->
+            </div>
+            <div class="kt-portlet__body kt-portlet__body--fit">
 
-            <section id="donnerSearchDataTable" class="d-none">
-                <div class="kt-portlet__body">
+                <!--begin: Datatable -->
+                <div class="kt-datatable" id="ajax_data"></div>
 
-                    <!--begin: Search Form -->
-                    <div class="kt-form kt-form--label-right kt-margin-t-20 kt-margin-b-10">
-                        <div class="row align-items-center">
-                            <div class="col-xl-8 order-2 order-xl-1">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                        <div class="kt-input-icon kt-input-icon--left">
-                                            <input type="text" class="form-control" placeholder="Search..."
-                                                   id="generalSearch">
-                                            <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                                        <span><i class="la la-search"></i></span>
-                                    </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                        <div class="kt-form__group kt-form__group--inline">
-                                            <div class="kt-form__label">
-                                                <label>Status:</label>
-                                            </div>
-                                            <div class="kt-form__control">
-                                                <select class="form-control bootstrap-select" id="kt_form_status">
-                                                    <option value="">All</option>
-                                                    <option value="1">Pending</option>
-                                                    <option value="2">Delivered</option>
-                                                    <option value="3">Canceled</option>
-                                                    <option value="4">Success</option>
-                                                    <option value="5">Info</option>
-                                                    <option value="6">Danger</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                        <div class="kt-form__group kt-form__group--inline">
-                                            <div class="kt-form__label">
-                                                <label>Type:</label>
-                                            </div>
-                                            <div class="kt-form__control">
-                                                <select class="form-control bootstrap-select" id="kt_form_type">
-                                                    <option value="">All</option>
-                                                    <option value="1">Online</option>
-                                                    <option value="2">Retail</option>
-                                                    <option value="3">Direct</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 order-1 order-xl-2 kt-align-right">
-                                <a href="#" class="btn btn-default kt-hidden">
-                                    <i class="la la-cart-plus"></i> New Order
-                                </a>
-                                <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg d-xl-none"></div>
-                            </div>
-                        </div>
-                    </div>
+                <!--end: Datatable -->
+            </div>
+        </section>
 
-                    <!--end: Search Form -->
-                </div>
-                <div class="kt-portlet__body kt-portlet__body--fit">
-
-                    <!--begin: Datatable -->
-                    <div class="kt-datatable" id="ajax_data"></div>
-
-                    <!--end: Datatable -->
-                </div>
-            </section>
-
-            <!-- ./Data Table -->
-        </div>
+        <!-- ./Data Table -->
     </div>
+</div>
 
-    <!-- end:: Content -->
+<!-- end:: Content -->
 
-    <!--End::Row-->
+<!--End::Row-->
 {% endblock content %}
 
 
 {% block customjs %}
-    <!--begin::Page Scripts(used by this page) -->
-    <script src="{% static 'assets/js/pages/crud/metronic-datatable/base/local-sort.js' %}"
-            type="text/javascript"></script>
-    <!--begin::Page Vendors(used by this page) -->
-    <script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}" type="text/javascript"></script>
-    <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
+<!--begin::Page Scripts(used by this page) -->
+<script src="{% static 'assets/js/pages/crud/metronic-datatable/base/local-sort.js' %}" type="text/javascript"></script>
+<!--begin::Page Vendors(used by this page) -->
+<script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
 
-    <!--end::Page Vendors -->
+<!--end::Page Vendors -->
 
-    <!--begin::Page Scripts(used by this page) -->
-    <script src="{% static 'assets/js/pages/components/extended/treeview.js' %}" type="text/javascript"></script>
-    <!--begin::Page Scripts(used by this page)-->
-    <script src="{% static 'assets/js/pages/components/extended/dual-listbox.js' %}"></script>
+<!--begin::Page Scripts(used by this page) -->
+<script src="{% static 'assets/js/pages/components/extended/treeview.js' %}" type="text/javascript"></script>
+<!--begin::Page Scripts(used by this page)-->
+<script src="{% static 'assets/js/pages/components/extended/dual-listbox.js' %}"></script>
 
-    <!-- Custom Script of data handler list page -->
-    <script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
-    <!-- ./Custom Script of data handler list page -->
-    <!--end::Page Scripts -->
+<!-- Custom Script of data handler list page -->
+<script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
+<!--begin::Page Scripts(used by this page)-->
+
+<!--end::Page Scripts-->
+<!-- ./Custom Script of data handler list page -->
+<!--end::Page Scripts -->
 
 {% endblock customjs %}

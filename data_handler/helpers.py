@@ -23,3 +23,10 @@ def extract_columns_names(file_name):
 
     # return all_columns
     return df
+
+
+def handle_uploaded_file(f, fname):
+    full_path = os.path.join("media", fname)
+    with open(full_path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)

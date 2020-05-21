@@ -16,6 +16,7 @@ class FAQView(TemplateView):
     template_name = 'predict_me/faq.html'
 
 
+
 class PricingView(View):
     def get(self, request):
         return render(request, "predict_me/pricing.html")
@@ -28,8 +29,10 @@ class PricingView(View):
         user_membership.member = member
         user_membership.membership = membership
         user_membership.save()
+
         # messages.success(request, f"The plan you selected is {membership.membership_type} plan")
         return redirect(reverse("checkout"))
+
 
 
 class ModelDescView(TemplateView):

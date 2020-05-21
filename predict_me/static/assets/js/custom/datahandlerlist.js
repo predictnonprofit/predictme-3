@@ -173,7 +173,7 @@ $(function () {
         if (donerFileInput.val()) {
             var timerInterval;
             $form = $(this);
-            var formData = new FormData(this);
+            var formData = new FormData($("#uploadDataFileForm")[0]);
             const fileName = donerFileInput.val().split(/(\\|\/)/g).pop();  // get the file name to parse it in url
             // ajax request to data handler init
             $.ajax({
@@ -181,9 +181,9 @@ $(function () {
                 cache: false,
                 processData: false,
                 contentType: false,
-                global: false,
                 timeout: 3000,
                 url: `${webSiteUrl}/dashboard/data/upload/${fileName}`,
+                // url: `${webSiteUrl}/dashboard/data/upload`,
                 data: formData,
                 beforeSend: function (xhr, settings) {
                     let timerInterval;
@@ -242,7 +242,9 @@ $(function () {
                             // get the columns select element
                             const dataFileColumnsSelect = $("#data_file_available_columns");
                             if (textStatus == "success") {
-                                alert(jqXHR.responseText);
+                                // alert(jqXHR.status);
+                                // alert(jqXHR.responseText);
+                                alert(data);
                                 $('#columnsDualBoxModal').modal('handleUpdate');
                                 $('#columnsDualBoxModal').modal('show');
                                 // swAlert("Success", `${jqXHR.responseText}`, "success");
