@@ -25,7 +25,7 @@ class UserMembership(models.Model):
     membership = models.ForeignKey(Membership, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.member.full_name} -> {self.membership.slug}"
+        return f"{self.member.full_name}"
 
 
 SUB_RANGE = (

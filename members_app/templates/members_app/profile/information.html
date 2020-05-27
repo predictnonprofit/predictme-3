@@ -2,189 +2,155 @@
 {% load static %}
 
 {% block title %}
-Personal Information
+Account
 {% endblock title %}
 
-
-{% block content_header %}
-<!-- begin:: Content Head -->
-<div class="kt-subheader   kt-grid__item" id="kt_subheader">
-    <div class="kt-container ">
-
-    </div>
-</div>
-
-<!-- end:: Content Head -->
-{% endblock content_header %}
+{% block pagename %}
+Account Information
+{% endblock pagename %}
 
 {% block content %}
-<div class="kt-body kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-grid--stretch" id="kt_body">
-    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content">
 
-
-        <!-- begin:: Content -->
-        <div class="kt-container  kt-grid__item kt-grid__item--fluid">
-
-            <!--Begin::App-->
-            <div class="kt-grid kt-grid--desktop kt-grid--ver kt-grid--ver-desktop kt-app">
-
-                <!--Begin:: App Aside Mobile Toggle-->
-                <button class="kt-app__aside-close" id="kt_user_profile_aside_close">
-                    <i class="la la-close"></i>
-                </button>
-
-                <!--End:: App Aside Mobile Toggle-->
-
-                <!--Begin:: App Aside-->
-                {% include 'members_app/inc/profile_left_side.html' %}
-                <!--End:: App Aside-->
-
-                <!--Begin:: App Content-->
-                <div class="kt-grid__item kt-grid__item--fluid kt-app__content">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="kt-portlet">
-                                <div class="kt-portlet__head">
-                                    <div class="kt-portlet__head-label">
-                                        <h3 class="kt-portlet__head-title">Account Information <small>change your
-                                            account settings</small></h3>
-                                    </div>
-                                    <div class="kt-portlet__head-toolbar">
-                                        <div class="kt-portlet__head-wrapper">
-                                         
-                                        </div>
-                                    </div>
-                                </div>
-                                <form class="kt-form kt-form--label-right">
-                                    <div class="kt-portlet__body">
-                                        <div class="kt-section kt-section--first">
-                                            <div class="kt-section__body">
-                                                <div class="row">
-                                                    <label class="col-xl-3"></label>
-                                                    <div class="col-lg-9 col-xl-6">
-
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                        Name</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="text" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Job Title</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="text" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                        Website</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="text" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                        Type</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input list="orgList" id="organizationType"
-                                                               name="organizationType"
-                                                               class="form-control">
-                                                        <datalist id="orgList">
-                                                            <option value="Club">Higher Education</option>
-                                                            <option value="Church">Other Education</option>
-                                                            <option value="Health">Health related</option>
-                                                            <option value="Hospitals and Primary Care">Hospitals and
-                                                                Primary Care
-                                                            </option>
-                                                            <option value="Human and Social Services">Human and Social
-                                                                Services
-                                                            </option>
-                                                            <option value="Environment">Environment</option>
-                                                            <option value="Animal">Animal</option>
-                                                            <option value="International">International</option>
-                                                            <option value="Religion">Religion related</option>
-                                                        </datalist>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Annual
-                                                        Revenue</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <select class="form-control" id="annualRevenue">
-                                                            <option value=""></option>
-                                                            <option value="">$5,000 - $50,000</option>
-                                                            <option value="">$50,000 - $100,000</option>
-                                                            <option value="">$100,000 - $250,000</option>
-                                                            <option value="">$250,000 - $500,000</option>
-                                                            <option value="">$500,000 - $1 million</option>
-                                                            <option value="">$1 million - $5 million</option>
-                                                            <option value="">$5 million - $10 million</option>
-                                                            <option value="">$10 million or more</option>
-
-                                                        </select>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Total Staff</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="text" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Number of
-                                                        Volunteer</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="number" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-xl-3 col-lg-3 col-form-label">Number of Board
-                                                        Members</label>
-                                                    <div class="col-lg-9 col-xl-6">
-                                                        <input class="form-control" type="number" value="">
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="kt-portlet__foot">
-                                        <div class="kt-form__actions">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-xl-3">
-                                                </div>
-                                                <div class="col-lg-9 col-xl-9">
-                                                    <button type="reset" class="btn btn-success">Submit</button>&nbsp;
-                                                    <button type="reset" class="btn btn-secondary">Cancel</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+<!-- begin:: Content -->
+<div class="flex-row-fluid ml-lg-8">
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <!--begin::Header-->
+        <div class="card-header py-3">
+            <div class="card-title align-items-start flex-column">
+                <h3 class="card-label font-weight-bolder text-dark">Account Information</h3>
+                <span class="text-muted font-weight-bold font-size-sm mt-1">Change your account settings</span>
+            </div>
+            <div class="card-toolbar">
+                <button type="reset" class="btn btn-success mr-2">Save Changes</button>
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Form-->
+        <form class="form">
+            <div class="card-body">
+                <!--begin::Heading-->
+                <div class="row">
+                    <label class="col-xl-3"></label>
+                    <div class="col-lg-9 col-xl-6">
+                        <!-- <h5 class="font-weight-bold mb-6">Account:</h5> -->
                     </div>
                 </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
+                        Name</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="text" value="">
+                    </div>
+                </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
+                        Website</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="text" value="">
+                    </div>
+                </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Organization
+                        Type</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input list="orgList" id="organizationType"
+                               name="organizationType"
+                               class="form-control form-control-lg form-control-solid">
+                        <datalist id="orgList">
+                            <option value="Club">Higher Education</option>
+                            <option value="Church">Other Education</option>
+                            <option value="Health">Health related</option>
+                            <option value="Hospitals and Primary Care">Hospitals and
+                                Primary Care
+                            </option>
+                            <option value="Human and Social Services">Human and Social
+                                Services
+                            </option>
+                            <option value="Environment">Environment</option>
+                            <option value="Animal">Animal</option>
+                            <option value="International">International</option>
+                            <option value="Religion">Religion related</option>
+                        </datalist>
+                    </div>
 
-                <!--End:: App Content-->
+                </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Annual
+                        Revenue</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <select class="form-control form-control-lg form-control-solid" id="annualRevenue">
+                            <option value=""></option>
+                            <option value="">$5,000 - $50,000</option>
+                            <option value="">$50,000 - $100,000</option>
+                            <option value="">$100,000 - $250,000</option>
+                            <option value="">$250,000 - $500,000</option>
+                            <option value="">$500,000 - $1 million</option>
+                            <option value="">$1 million - $5 million</option>
+                            <option value="">$5 million - $10 million</option>
+                            <option value="">$10 million or more</option>
+
+                        </select>
+                    </div>
+
+                </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Job Title</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="text" value="">
+                    </div>
+                </div>
+                <!--begin::Form Group-->
+                <div class="separator separator-dashed my-5"></div>
+                <!--begin::Form Group-->
+                
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Total Staff</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="text" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Number of
+                        Volunteer</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="number" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label">Number of Board
+                        Members</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <input class="form-control form-control-lg form-control-solid" type="number" value="">
+                    </div>
+                </div>
+                <!--begin::Form Group-->
+                <div class="form-group row">
+                    <label class="col-xl-3 col-lg-3 col-form-label text-danger">Delete my account</label>
+                    <div class="col-lg-9 col-xl-6">
+                        <span data-toggle="tooltip" title="Deactivate your account, please tell us why" data-placement="right">
+                            <button type="button" class="btn btn-light-danger font-weight-bold btn-sm">
+                                <i class="icon-xl la la-trash"></i> Delete your account ?
+                            </button>
+                        </span>
+                    </div>
+                </div>
             </div>
-
-            <!--End::App-->
-        </div>
-
-        <!-- end:: Content -->
+        </form>
+        <!--end::Form-->
     </div>
+    <!--end::Card-->
 </div>
+
+<!-- end:: Content -->
+
 {% endblock content%}
 
 {% block customjs %}

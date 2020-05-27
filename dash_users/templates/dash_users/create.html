@@ -1,368 +1,246 @@
 {% extends 'dashboard/inc/master.html' %}
+
 {% load static %}
-{% block title %} Add New User {% endblock title %}
+
+{% block title %}
+New Member
+{% endblock title %}
+
 {% block customcss %}
-<link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css" />
 {% endblock customcss %}
+
+{% block pagename %}
+Create New Member
+{% endblock pagename %}
+
+
 {% block content %}
-<!-- begin:: Content -->
-<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content">
-
-    <!-- begin:: Content Head -->
-    <div class="kt-subheader   kt-grid__item" id="kt_subheader">
-        <div class="kt-container ">
-            <div class="kt-subheader__main">
-                <h3 class="kt-subheader__title">
-                    New User
-                </h3>
-                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
-                <div class="kt-subheader__group" id="kt_subheader_search">
-											<span class="kt-subheader__desc" id="kt_subheader_total">
-												Enter user details and submit </span>
-                </div>
-            </div>
-            <div class="kt-subheader__toolbar">
-                <a href="#" class="btn btn-default btn-bold">
-                    Back </a>
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-brand btn-bold">
-                        Add
-                    </button>
 
 
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- end:: Content Head -->
-
-    <!-- begin:: Content -->
-    <div class="kt-container  kt-grid__item kt-grid__item--fluid">
-        <div class="kt-wizard-v4" id="kt_user_add_user" data-ktwizard-state="step-first">
-
-            <!--begin: Form Wizard Nav -->
-            <div class="kt-wizard-v4__nav">
-                <div class="kt-wizard-v4__nav-items nav">
-
-                    <!--doc: Replace A tag with SPAN tag to disable the step link click -->
-                    <div class="kt-wizard-v4__nav-item nav-item" data-ktwizard-type="step"
-                         data-ktwizard-state="current">
-                        <div class="kt-wizard-v4__nav-body">
-                            <div class="kt-wizard-v4__nav-number">
-                                1
-                            </div>
-                            <div class="kt-wizard-v4__nav-label">
-                                <div class="kt-wizard-v4__nav-label-title">
-                                    Profile
-                                </div>
-                                <div class="kt-wizard-v4__nav-label-desc">
-                                    User's Personal Information
+ <!--begin::Row-->
+    
+ <div class="d-flex flex-column-fluid">
+    <!--begin::Container-->
+    <div class="container">
+        <div class="card card-custom card-transparent">
+            <div class="card-body p-0">
+                <!--begin: Wizard-->
+                <div class="wizard wizard-4" id="kt_wizard_v4" data-wizard-state="first" data-wizard-clickable="true">
+                    <!--begin: Wizard Nav-->
+                    <div class="wizard-nav">
+                        <div class="wizard-steps">
+                            <!--begin::Wizard Step 1 Nav-->
+                            <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
+                                <div class="wizard-wrapper">
+                                    <div class="wizard-number">1</div>
+                                    <div class="wizard-label">
+                                        <div class="wizard-title">Profile</div>
+                                        <div class="wizard-desc">Member Profile Details</div>
+                                    </div>
                                 </div>
                             </div>
+                            <!--end::Wizard Step 1 Nav-->
+                            <!--begin::Wizard Step 2 Nav-->
+                            <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                                <div class="wizard-wrapper">
+                                    <div class="wizard-number">2</div>
+                                    <div class="wizard-label">
+                                        <div class="wizard-title">Account</div>
+                                        <div class="wizard-desc">Organization's Information</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end::Wizard Step 2 Nav-->
+                            <!--begin::Wizard Step 2 Nav-->
+                            <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                                <div class="wizard-wrapper">
+                                    <div class="wizard-number">3</div>
+                                    <div class="wizard-label">
+                                        <div class="wizard-title">Your Address</div>
+                                        <div class="wizard-desc">Setup Your Address</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end::Wizard Step 2 Nav-->
+                            
+                            <!--begin::Wizard Step 3 Nav-->
+                            <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                                <div class="wizard-wrapper">
+                                    <div class="wizard-number">4</div>
+                                    <div class="wizard-label">
+                                        <div class="wizard-title">Make Payment</div>
+                                        <div class="wizard-desc">Add Payment Options</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end::Wizard Step 3 Nav-->
                         </div>
                     </div>
-                    <div class="kt-wizard-v4__nav-item nav-item" data-ktwizard-type="step">
-                        <div class="kt-wizard-v4__nav-body">
-                            <div class="kt-wizard-v4__nav-number">
-                                2
-                            </div>
-                            <div class="kt-wizard-v4__nav-label">
-                                <div class="kt-wizard-v4__nav-label-title">
-                                    Account
-                                </div>
-                                <div class="kt-wizard-v4__nav-label-desc">
-                                    Organization's Information & Settings
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="kt-wizard-v4__nav-item nav-item" data-ktwizard-type="step">
-                        <div class="kt-wizard-v4__nav-body">
-                            <div class="kt-wizard-v4__nav-number">
-                                3
-                            </div>
-                            <div class="kt-wizard-v4__nav-label">
-                                <div class="kt-wizard-v4__nav-label-title">
-                                    Address
-                                </div>
-                                <div class="kt-wizard-v4__nav-label-desc">
-                                    User's Shipping Address
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="kt-wizard-v4__nav-item nav-item" data-ktwizard-type="step">
-                        <div class="kt-wizard-v4__nav-body">
-                            <div class="kt-wizard-v4__nav-number">
-                                4
-                            </div>
-                            <div class="kt-wizard-v4__nav-label">
-                                <div class="kt-wizard-v4__nav-label-title">
-                                    Submission
-                                </div>
-                                <div class="kt-wizard-v4__nav-label-desc">
-                                    Review and Submit
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--end: Form Wizard Nav -->
-            <div class="kt-portlet">
-                <div class="kt-portlet__body kt-portlet__body--fit">
-                    <div class="kt-grid">
-                        <div class="kt-grid__item kt-grid__item--fluid kt-wizard-v4__wrapper">
-
-                            <!--begin: Form Wizard Form-->
-                            <form class="kt-form" id="kt_user_add_form" method="POST" enctype="multipart/form-data">
-
-                                <!--begin: Form Wizard Step 1-->
-                                <div class="kt-wizard-v4__content" data-ktwizard-type="step-content"
-                                     data-ktwizard-state="current">
-                                    <div class="kt-heading kt-heading--md">User's Profile Details:</div>
-                                    <div class="kt-section kt-section--first">
-                                        <div class="kt-wizard-v4__form">
+                    <!--end: Wizard Nav-->
+                    <!--begin: Wizard Body-->
+                    <div class="card card-custom card-shadowless rounded-top-0">
+                        <div class="card-body p-0">
+                            <div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
+                                <div class="col-xl-12 col-xxl-7">
+                                    <!--begin: Wizard Form-->
+                                    <form class="form mt-0 mt-lg-10 fv-plugins-bootstrap fv-plugins-framework" id="kt_form">
+                                        <!--begin: Wizard Step 1-->
+                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                            <div class="mb-10 font-weight-bold text-dark">Enter your Account Details</div>
+                                            <!--begin::Input-->
+                                            <div class="form-group fv-plugins-icon-container has-success">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="fname" placeholder="First Name" value="John">
+                                                <span class="form-text text-muted">Please enter your first name.</span>
+                                            <div class="fv-plugins-message-container"></div></div>
+                                            <!--end::Input-->
+                                            <!--begin::Input-->
+                                            <div class="form-group fv-plugins-icon-container has-success">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="lname" placeholder="Last Name" value="Wick">
+                                                <span class="form-text text-muted">Please enter your last name.</span>
+                                            <div class="fv-plugins-message-container"></div></div>
+                                            <!--end::Input-->
                                             <div class="row">
-                                                <div class="col-xl-12">
-                                                    <div class="kt-section__body">
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Avatar</label>
-                                                            <div class="col-lg-9 col-xl-6">
-                                                                <div class="kt-avatar kt-avatar--outline"
-                                                                     id="kt_user_add_avatar">
-                                                                    <div class="kt-avatar__holder"
-                                                                         style="background-image: url({% static 'assets/media/users/300_10.jpg' %})"></div>
-                                                                    <label class="kt-avatar__upload"
-                                                                           data-toggle="kt-tooltip"
-                                                                           title="Change avatar">
-                                                                        <i class="fa fa-pen"></i>
-                                                                        <input type="file"
-                                                                               name="kt_user_add_user_avatar">
-                                                                    </label>
-                                                                    <span class="kt-avatar__cancel"
-                                                                          data-toggle="kt-tooltip"
-                                                                          title="Cancel avatar">
-																								<i class="fa fa-times"></i>
-																							</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">First
-                                                                Name</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input class="form-control" type="text" value="Anna">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Last
-                                                                Name</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input class="form-control" type="text" value="Krox">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Email
-                                                                Address</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <div class="input-group">
-                                                                    <div class="input-group-prepend"><span
-                                                                            class="input-group-text"><i
-                                                                            class="la la-at"></i></span></div>
-                                                                    <input type="text" class="form-control"
-                                                                           value="anna.krox@loop.com"
-                                                                           placeholder="Email"
-                                                                           aria-describedby="basic-addon1">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group form-group-last row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Contact
-                                                                Phone</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <div class="input-group">
-                                                                    <div class="input-group-prepend"><span
-                                                                            class="input-group-text"><i
-                                                                            class="la la-phone"></i></span></div>
-                                                                    <input type="text" class="form-control"
-                                                                           value="+45678967456" placeholder="Phone"
-                                                                           aria-describedby="basic-addon1">
-                                                                </div>
-                                                                <span class="form-text text-muted">We'll never share your email with anyone else.</span>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
+                                                <div class="col-xl-6">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Phone</label>
+                                                        <input type="tel" class="form-control form-control-solid form-control-lg is-valid" name="phone" placeholder="phone" value="+61412345678">
+                                                        <span class="form-text text-muted">Please enter your phone number.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Email</label>
+                                                        <input type="email" class="form-control form-control-solid form-control-lg is-valid" name="email" placeholder="Email" value="john.wick@reeves.com">
+                                                        <span class="form-text text-muted">Please enter your email address.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!--end: Form Wizard Step 1-->
-
-                                <!--begin: Form Wizard Step 2-->
-                                <div class="kt-wizard-v4__content" data-ktwizard-type="step-content">
-                                    <div class="kt-section kt-section--first">
-                                        <div class="kt-wizard-v4__form">
-                                            <div class="row">
-                                                <div class="col-xl-12">
-                                                    <div class="kt-section__body">
-                                                        <div class="form-group row">
-                                                            <div class="col-lg-9 col-xl-6">
-                                                                <h3 class="kt-section__title kt-section__title-md">
-                                                                    Organization's Account Details</h3>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                                Name</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input class="form-control" type="text"
-                                                                       value="Loop Inc.">
-                                                                <span class="form-text text-muted">If you want your invoices addressed to a company. Leave blank to use your full name.</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                                Website</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                           placeholder="Username" value="loop">
-                                                                    <div class="input-group-append"><span
-                                                                            class="input-group-text">.com</span></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Organization
-                                                                Type</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input list="orgList" id="organizationType"
-                                                                       name="organizationType"
-                                                                       class="form-control ">
-                                                                <datalist id="orgList">
-                                                                    <option value="Club">Higher Education</option>
-                                                                    <option value="Church">Other Education</option>
-                                                                    <option value="Health">Health related</option>
-                                                                    <option value="Hospitals and Primary Care">Hospitals
-                                                                        and Primary Care
-                                                                    </option>
-                                                                    <option value="Human and Social Services">Human and
-                                                                        Social Services
-                                                                    </option>
-                                                                    <option value="Environment">Environment</option>
-                                                                    <option value="Animal">Animal</option>
-                                                                    <option value="International">International</option>
-                                                                    <option value="Religion">Religion related</option>
-                                                                </datalist>
-                                                                <span class="form-text text-muted">If you want custom type type it normally.</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Annual Revenue Size</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <select class="form-control" id="annualRevenue">
-                                                                    <option value="">$5,000 - $50,000</option>
-                                                                    <option value="">$50,000 - $100,000</option>
-                                                                    <option value="">$100,000 - $250,000</option>
-                                                                    <option value="">$250,000 - $500,000</option>
-                                                                    <option value="">$500,000 - $1 million</option>
-                                                                    <option value="">$1 million - $5 million</option>
-                                                                    <option value="">$5 million - $10 million</option>
-                                                                    <option value="">$10 million or more</option>
-
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                         <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Total Staff</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input type="number" class="form-control" placeholder="0" />
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Number of Volunteers</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input type="number" class="form-control" placeholder="0" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label class="col-xl-3 col-lg-3 col-form-label">Number of Board Members</label>
-                                                            <div class="col-lg-9 col-xl-9">
-                                                                <input type="number" class="form-control" placeholder="0" />
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="kt-separator kt-separator--border-dashed kt-separator--portlet-fit kt-separator--space-lg"></div>
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <!--end: Wizard Step 1-->
+                                        
+                                        <!--begin: Wizard Step 4-->
+                                        <div class="pb-5" data-wizard-type="step-content">
+                                            <div class="mb-10 font-weight-bold text-dark">Organization's Account Details</div>
+                                            
+                                               
+                                                 <div class="form-group">
+                                                  <label>Organization Name:</label>
+                                                  <input type="text" class="form-control form-control-solid" placeholder="Enter Organization Name"/>
+                                                  <span class="form-text text-muted">Please enter your organization name</span>
+                                                 </div>
+                                                 <div class="form-group">
+                                                  <label>Organization Website:</label>
+                                                  <input type="url" class="form-control form-control-solid" placeholder="Enter email"/>
+                                                  <span class="form-text text-muted">We'll never share your email with anyone else</span>
+                                                 </div>
+                                                 <div class="form-group">
+                                                    <label>Organization Type:</label><br />
+                                                    <select id="org_type" class="form-control form-control-solid">
+                                                        <option value="Club">Higher Education</option>
+                                                        <option value="Church">Other Education</option>
+                                                        <option value="Health">Health related</option>
+                                                        <option value="Hospitals and Primary Care">Hospitals and Primary Care
+                                                        </option>
+                                                        <option value="Human and Social Services">Human and Social Services</option>
+                                                        <option value="Environment">Environment</option>
+                                                        <option value="Animal">Animal</option>
+                                                        <option value="International">International</option>
+                                                        <option value="Religion">Religion related</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                 </div>
+                                                 <div class="form-group">
+                                                    <label>Annual Revenue Size:</label><br />
+                                                    <select id="annual_revenue" class="form-control form-control-solid">
+                                                        <option value="$5,000 - $50,000">$5,000 - $50,000</option>
+                                                        <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                                                        <option value="$100,000 - $250,000">$100,000 - $250,000</option>
+                                                        <option value="$250,000 - $500,000">$250,000 - $500,000</option>
+                                                        <option value="$500,000 - $1 million">$500,000 - $1 million</option>
+                                                        <option value="$1 million - $5 million">$1 million - $5 million</option>
+                                                        <option value="$5 million - $10 million">$5 million - $10 million</option>
+                                                        <option value="$10 million or more">$10 million or more</option>
+                                                    </select>
+                                                 </div>
+                                                 <div class="form-group">
+                                                    <label>Total Staff:</label>
+                                                    <input type="number" class="form-control form-control-solid" placeholder="0"/>
+                                                    <!-- <span class="form-text text-muted">We'll never share your email with anyone else</span> -->
+                                                   </div>
+                                                   <div class="form-group">
+                                                    <label>Number of Volunteers:</label>
+                                                    <input type="number" class="form-control form-control-solid" placeholder="0"/>
+                                                    <!-- <span class="form-text text-muted">We'll never share your email with anyone else</span> -->
+                                                   </div>
+                                                   <div class="form-group">
+                                                    <label>Number of Board Members:</label>
+                                                    <input type="number" class="form-control form-control-solid" placeholder="0"/>
+                                                    <!-- <span class="form-text text-muted">We'll never share your email with anyone else</span> -->
+                                                   </div>
+                                              
+                                              
+                                             
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!--end: Form Wizard Step 2-->
-
-                                <!--begin: Form Wizard Step 3-->
-                                <div class="kt-wizard-v4__content" data-ktwizard-type="step-content">
-                                    <div class="kt-heading kt-heading--md">Setup Your Address</div>
-                                    <div class="kt-form__section kt-form__section--first">
-                                        <div class="kt-wizard-v4__form">
-                                            <div class="form-group">
+                                        <!--end: Wizard Step 4-->
+                                        <!--begin: Wizard Step 2-->
+                                        <div class="pb-5" data-wizard-type="step-content">
+                                            <div class="mb-10 font-weight-bold text-dark">Setup Your Address</div>
+                                            <!--begin::Input-->
+                                            <div class="form-group fv-plugins-icon-container has-success">
                                                 <label>Address Line 1</label>
-                                                <input type="text" class="form-control" name="address1"
-                                                       placeholder="Address Line 1" value="Address Line 1">
+                                                <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="address1" placeholder="Address Line 1" value="Address Line 1">
                                                 <span class="form-text text-muted">Please enter your Address.</span>
-                                            </div>
+                                            <div class="fv-plugins-message-container"></div></div>
+                                            <!--end::Input-->
+                                            <!--begin::Input-->
                                             <div class="form-group">
                                                 <label>Address Line 2</label>
-                                                <input type="text" class="form-control" name="address2"
-                                                       placeholder="Address Line 2" value="Address Line 2">
+                                                <input type="text" class="form-control form-control-solid form-control-lg" name="address2" placeholder="Address Line 2" value="Address Line 2">
                                                 <span class="form-text text-muted">Please enter your Address.</span>
                                             </div>
+                                            <!--end::Input-->
                                             <div class="row">
                                                 <div class="col-xl-6">
-                                                    <div class="form-group">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
                                                         <label>Postcode</label>
-                                                        <input type="text" class="form-control" name="postcode"
-                                                               placeholder="Postcode" value="2000">
+                                                        <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="postcode" placeholder="Postcode" value="3000">
                                                         <span class="form-text text-muted">Please enter your Postcode.</span>
-                                                    </div>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                                 <div class="col-xl-6">
-                                                    <div class="form-group">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
                                                         <label>City</label>
-                                                        <input type="text" class="form-control" name="state"
-                                                               placeholder="City" value="London">
+                                                        <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="state" placeholder="City" value="Melbourne">
                                                         <span class="form-text text-muted">Please enter your City.</span>
-                                                    </div>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-xl-6">
-                                                    <div class="form-group">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
                                                         <label>State</label>
-                                                        <input type="text" class="form-control" name="state"
-                                                               placeholder="State" value="VIC">
-                                                        <span class="form-text text-muted">Please enter your Postcode.</span>
-                                                    </div>
+                                                        <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="state" placeholder="State" value="VIC">
+                                                        <span class="form-text text-muted">Please enter your State.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                                 <div class="col-xl-6">
-                                                    <div class="form-group">
-                                                        <label>Country:</label>
-                                                        <select name="country" class="form-control">
+                                                    <!--begin::Select-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Country</label>
+                                                        <select name="country" class="form-control form-control-solid form-control-lg is-valid">
                                                             <option value="">Select</option>
                                                             <option value="AF">Afghanistan</option>
                                                             <option value="AX">Åland Islands</option>
@@ -377,7 +255,7 @@
                                                             <option value="AR">Argentina</option>
                                                             <option value="AM">Armenia</option>
                                                             <option value="AW">Aruba</option>
-                                                            <option value="AU" selected="">Australia</option>
+                                                            <option value="AU" selected="selected">Australia</option>
                                                             <option value="AT">Austria</option>
                                                             <option value="AZ">Azerbaijan</option>
                                                             <option value="BS">Bahamas</option>
@@ -415,8 +293,7 @@
                                                             <option value="CO">Colombia</option>
                                                             <option value="KM">Comoros</option>
                                                             <option value="CG">Congo</option>
-                                                            <option value="CD">Congo, the Democratic Republic of the
-                                                            </option>
+                                                            <option value="CD">Congo, the Democratic Republic of the</option>
                                                             <option value="CK">Cook Islands</option>
                                                             <option value="CR">Costa Rica</option>
                                                             <option value="CI">Côte d'Ivoire</option>
@@ -461,8 +338,7 @@
                                                             <option value="GW">Guinea-Bissau</option>
                                                             <option value="GY">Guyana</option>
                                                             <option value="HT">Haiti</option>
-                                                            <option value="HM">Heard Island and McDonald Islands
-                                                            </option>
+                                                            <option value="HM">Heard Island and McDonald Islands</option>
                                                             <option value="VA">Holy See (Vatican City State)</option>
                                                             <option value="HN">Honduras</option>
                                                             <option value="HK">Hong Kong</option>
@@ -483,8 +359,7 @@
                                                             <option value="KZ">Kazakhstan</option>
                                                             <option value="KE">Kenya</option>
                                                             <option value="KI">Kiribati</option>
-                                                            <option value="KP">Korea, Democratic People's Republic of
-                                                            </option>
+                                                            <option value="KP">Korea, Democratic People's Republic of</option>
                                                             <option value="KR">Korea, Republic of</option>
                                                             <option value="KW">Kuwait</option>
                                                             <option value="KG">Kyrgyzstan</option>
@@ -498,9 +373,7 @@
                                                             <option value="LT">Lithuania</option>
                                                             <option value="LU">Luxembourg</option>
                                                             <option value="MO">Macao</option>
-                                                            <option value="MK">Macedonia, the former Yugoslav Republic
-                                                                of
-                                                            </option>
+                                                            <option value="MK">Macedonia, the former Yugoslav Republic of</option>
                                                             <option value="MG">Madagascar</option>
                                                             <option value="MW">Malawi</option>
                                                             <option value="MY">Malaysia</option>
@@ -554,9 +427,7 @@
                                                             <option value="RU">Russian Federation</option>
                                                             <option value="RW">Rwanda</option>
                                                             <option value="BL">Saint Barthélemy</option>
-                                                            <option value="SH">Saint Helena, Ascension and Tristan da
-                                                                Cunha
-                                                            </option>
+                                                            <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
                                                             <option value="KN">Saint Kitts and Nevis</option>
                                                             <option value="LC">Saint Lucia</option>
                                                             <option value="MF">Saint Martin (French part)</option>
@@ -577,9 +448,7 @@
                                                             <option value="SB">Solomon Islands</option>
                                                             <option value="SO">Somalia</option>
                                                             <option value="ZA">South Africa</option>
-                                                            <option value="GS">South Georgia and the South Sandwich
-                                                                Islands
-                                                            </option>
+                                                            <option value="GS">South Georgia and the South Sandwich Islands</option>
                                                             <option value="SS">South Sudan</option>
                                                             <option value="ES">Spain</option>
                                                             <option value="LK">Sri Lanka</option>
@@ -609,13 +478,11 @@
                                                             <option value="AE">United Arab Emirates</option>
                                                             <option value="GB">United Kingdom</option>
                                                             <option value="US">United States</option>
-                                                            <option value="UM">United States Minor Outlying Islands
-                                                            </option>
+                                                            <option value="UM">United States Minor Outlying Islands</option>
                                                             <option value="UY">Uruguay</option>
                                                             <option value="UZ">Uzbekistan</option>
                                                             <option value="VU">Vanuatu</option>
-                                                            <option value="VE">Venezuela, Bolivarian Republic of
-                                                            </option>
+                                                            <option value="VE">Venezuela, Bolivarian Republic of</option>
                                                             <option value="VN">Viet Nam</option>
                                                             <option value="VG">Virgin Islands, British</option>
                                                             <option value="VI">Virgin Islands, U.S.</option>
@@ -625,90 +492,110 @@
                                                             <option value="ZM">Zambia</option>
                                                             <option value="ZW">Zimbabwe</option>
                                                         </select>
-                                                    </div>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Select-->
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!--end: Form Wizard Step 3-->
-
-                                <!--begin: Form Wizard Step 4-->
-                                <div class="kt-wizard-v4__content" data-ktwizard-type="step-content">
-                                    <div class="kt-heading kt-heading--md">Review your Details and Submit</div>
-                                    <div class="kt-form__section kt-form__section--first">
-                                        <div class="kt-wizard-v4__review">
-                                            <div class="kt-wizard-v4__review-item">
-                                                <div class="kt-wizard-v4__review-title">
-                                                    Your Account Details
+                                        <!--end: Wizard Step 2-->
+                                         <!--begin: Wizard Step 3-->
+                                         <div class="pb-5" data-wizard-type="step-content">
+                                            <div class="mb-10 font-weight-bold text-dark">Enter your Payment Details</div>
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Name on Card</label>
+                                                        <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="ccname" placeholder="Card Name" value="John Wick">
+                                                        <span class="form-text text-muted">Please enter your Card Name.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
-                                                <div class="kt-wizard-v4__review-content">
-                                                    John Wick
-                                                    <br/> Phone: +61412345678
-                                                    <br/> Email: johnwick@reeves.com
-                                                </div>
-                                            </div>
-                                            <div class="kt-wizard-v4__review-item">
-                                                <div class="kt-wizard-v4__review-title">
-                                                    Your Address Details
-                                                </div>
-                                                <div class="kt-wizard-v4__review-content">
-                                                    Address Line 1
-                                                    <br/> Address Line 2
-                                                    <br/> Melbourne 3000, VIC, Australia
+                                                <div class="col-xl-6">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Card Number</label>
+                                                        <input type="text" class="form-control form-control-solid form-control-lg is-valid" name="ccnumber" placeholder="Card Number" value="4444 3333 2222 1111">
+                                                        <span class="form-text text-muted">Please enter your Address.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                             </div>
-                                            <div class="kt-wizard-v4__review-item">
-                                                <div class="kt-wizard-v4__review-title">
-                                                    Payment Details
+                                            <div class="row">
+                                                <div class="col-xl-4">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Card Expiry Month</label>
+                                                        <input type="number" class="form-control form-control-solid form-control-lg is-valid" name="ccmonth" placeholder="Card Expiry Month" value="01">
+                                                        <span class="form-text text-muted">Please enter your Card Expiry Month.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
-                                                <div class="kt-wizard-v4__review-content">
-                                                    Card Number: xxxx xxxx xxxx 1111
-                                                    <br/> Card Name: John Wick
-                                                    <br/> Card Expiry: 01/21
+                                                <div class="col-xl-4">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Card Expiry Year</label>
+                                                        <input type="number" class="form-control form-control-solid form-control-lg is-valid" name="ccyear" placeholder="Card Expire Year" value="21">
+                                                        <span class="form-text text-muted">Please enter your Card Expiry Year.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
+                                                </div>
+                                                <div class="col-xl-4">
+                                                    <!--begin::Input-->
+                                                    <div class="form-group fv-plugins-icon-container has-success">
+                                                        <label>Card CVV Number</label>
+                                                        <input type="password" class="form-control form-control-solid form-control-lg is-valid" name="cccvv" placeholder="Card CVV Number" value="123">
+                                                        <span class="form-text text-muted">Please enter your Card CVV Number.</span>
+                                                    <div class="fv-plugins-message-container"></div></div>
+                                                    <!--end::Input-->
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <!--end: Wizard Step 3-->
+                                        <!--begin: Wizard Actions-->
+                                        <div class="d-flex justify-content-between border-top mt-5 pt-10">
+                                            <div class="mr-2">
+                                                <button class="btn btn-light-primary font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-prev">Previous</button>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-success font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
+                                                <button class="btn btn-primary font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-next">Next Step</button>
+                                            </div>
+                                        </div>
+                                        <!--end: Wizard Actions-->
+                                    <div></div><div></div><div></div></form>
+                                    <!--end: Wizard Form-->
                                 </div>
-
-                                <!--end: Form Wizard Step 4-->
-
-                                <!--begin: Form Actions -->
-                                <div class="kt-form__actions">
-                                    <div class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
-                                         data-ktwizard-type="action-prev">
-                                        Previous
-                                    </div>
-                                    <div class="btn btn-success btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
-                                         data-ktwizard-type="action-submit">
-                                        Submit
-                                    </div>
-                                    <div class="btn btn-brand btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
-                                         data-ktwizard-type="action-next">
-                                        Next Step
-                                    </div>
-                                </div>
-
-                                <!--end: Form Actions -->
-                            </form>
-
-                            <!--end: Form Wizard Form-->
+                            </div>
                         </div>
                     </div>
+                    <!--end: Wizard Bpdy-->
                 </div>
+                <!--end: Wizard-->
             </div>
         </div>
     </div>
-
-    <!-- end:: Content -->
+    <!--end::Container-->
 </div>
 
-<!-- end:: Content -->
+
+<!--End::Row-->
 {% endblock content%}
 
 {% block customjs %}
-<!--begin::Page Scripts(used by this page) -->
-<script src="{% static 'assets/js/pages/custom/user/add-user.js' %}" type="text/javascript"></script>
+<!--begin::Page Scripts(used by this page)-->
+<script src="{% static 'assets/js/pages/custom/wizard/wizard-4.js' %}"></script>
+<script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
+<script>
+    $('#org_type').select2({
+        placeholder: "Select a Country",
+        width: '100%'
+       });
+    $('#annual_revenue').select2({
+        placeholder: "Select an Annual revenue",
+        width: '100%'
+       });
+</script>
+<!--end::Page Scripts-->
+
 {% endblock customjs %}

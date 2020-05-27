@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "middlewares_app.apps.MiddlewaresAppConfig",
     'widget_tweaks',
+    "django_extensions",
     "django_countries",
     "users.apps.UsersConfig",
     "predict_me",

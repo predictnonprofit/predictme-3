@@ -1,0 +1,6 @@
+<option value="Donor ID" disabled value="Donor ID" selected>Donor ID</option>
+{% for column in columns %}
+<option value="{{ column }}">{{ column }}</option>
+{% empty %}
+<option value="0">There is no columns in this file!</option>
+{% endfor %}

@@ -78,6 +78,7 @@ $(function () {
         const actionRadioBtn = $('input[name=action]:checked').val();
 
         if (actionRadioBtn === "pay") {
+            $(".purchaseUpgradeExtraBtn").filter("[data-action='pay']").fadeIn();
             currentShownSection = payExtraRecordsSection;
             askPayUpgradeSection.fadeOut(300, function () {
                 payExtraRecordsSection.fadeIn();
@@ -88,6 +89,7 @@ $(function () {
 
 
         } else if (actionRadioBtn === "upgrade") {
+            $(".purchaseUpgradeExtraBtn").filter("[data-action='upgrade']").fadeIn();
             currentShownSection = upgradeSubscriptionSection;
             askPayUpgradeSection.fadeOut(300, function () {
                 upgradeSubscriptionSection.fadeIn();
@@ -96,6 +98,27 @@ $(function () {
             $(this).attr("disabled", "disabled");
             $(this).addClass("disabled my-disabled-btn");
 
+        }else if (actionRadioBtn === "cancel"){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to abort this operation?",
+                icon: 'warning',
+                showCancelButton: true,
+                allowOutsideClick: false,
+                cancelButtonText: "No",
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    /*Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )*/
+                    $("#extraRecordsModel").modal("hide");
+                }
+            });
         } else {
 
             swal.fire("Oops...", "You have to select one of the two options!", "error");
@@ -106,6 +129,7 @@ $(function () {
 
     // this for the back button when user click back in pay or upgrade subscription dialog
     backBtn.click(function (e) {
+        $(".purchaseUpgradeExtraBtn").fadeOut();
         // alert($('body').hasClass('modal-open'));
         currentShownSection.fadeOut(300, function () {
             askPayUpgradeSection.fadeIn();
@@ -165,261 +189,61 @@ $(function () {
     // upload data file functionality
     const uploadDataFileBtn = $("#uploadDataFileBtn");
     const uploadDataFileForm = $("#uploadDataFileForm");
-    const donerFileInput = $("#donerFile");
+
     uploadDataFileForm.submit(function (e) {
         e.preventDefault();
-        const webSiteUrl = window.location.origin;
-        const webSiteMemberUrl = window.location;
-        if (donerFileInput.val()) {
-            var timerInterval;
-            $form = $(this);
-            var formData = new FormData($("#uploadDataFileForm")[0]);
-            const fileName = donerFileInput.val().split(/(\\|\/)/g).pop();  // get the file name to parse it in url
-            // ajax request to data handler init
-            $.ajax({
-                method: "POST",
-                cache: false,
-                processData: false,
-                contentType: false,
-                timeout: 3000,
-                url: `${webSiteUrl}/dashboard/data/upload/${fileName}`,
-                // url: `${webSiteUrl}/dashboard/data/upload`,
-                data: formData,
-                beforeSend: function (xhr, settings) {
-                    let timerInterval;
-                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                    swal.fire({
-                        title: "Uploading...",
-                        text: "Checking your file, Please wait...",
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        timer: 2000,
-                        timerProgressBar: true,
-                        onBeforeOpen: () => {
-                            Swal.showLoading()
-                            timerInterval = setInterval(() => {
-                                const content = Swal.getContent()
-                                if (content) {
-                                    const b = content.querySelector('b')
-                                    if (b) {
-                                        b.textContent = Swal.getTimerLeft()
-                                    }
-                                }
-                            }, 100)
-                        },
-                        onClose: () => {
-                            clearInterval(timerInterval);
-                            $('#columnsDualBoxModal').modal('handleUpdate');
-                            $('#columnsDualBoxModal').modal('show');
-                        }
-                    });
-                },
-                success: function (data, textStatus, jqXHR) {
-                    let timerInterval;
-                    swal.fire({
-                        title: "Extracting...",
-                        text: "Extract the columns from your data file, Please wait...",
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        onBeforeOpen: () => {
-                            Swal.showLoading()
-                            timerInterval = setInterval(() => {
-                                const content = Swal.getContent()
-                                if (content) {
-                                    const b = content.querySelector('b')
-                                    if (b) {
-                                        b.textContent = Swal.getTimerLeft()
-                                    }
-                                }
-                            }, 100)
-                        },
-                        onClose: () => {
-                            clearInterval(timerInterval);
-                            // $('#columnsDualBoxModal').modal('handleUpdate');
-                            // $('#columnsDualBoxModal').modal('show');
-                            // get the columns select element
-                            const dataFileColumnsSelect = $("#data_file_available_columns");
-                            if (textStatus == "success") {
-                                // alert(jqXHR.status);
-                                // alert(jqXHR.responseText);
-                                alert(data);
-                                $('#columnsDualBoxModal').modal('handleUpdate');
-                                $('#columnsDualBoxModal').modal('show');
-                                // swAlert("Success", `${jqXHR.responseText}`, "success");
+        let dataFileColumnsSelect = $("#data_file_available_columns");
+        let donorFileuploadFormRequest = uploadDonorDataFile($(this));
 
-                            } else if (textStatus == "error") {
-                                swAlert("Error", "There is error while extracting!!", "error");
-                            } else {
-                                swAlert("Error", "Unknown error while extracting!!", "error");
-                            }
-                        }
-                    });
-
-
-                },
-                error: function (error) {
-                    //called when there is an error
-                    swAlert("Error", error.message, "error");
-                    //console.log(e.message);
-                },
-                /*complete: function (jqXHR, textStatus) {
-
-                    if(textStatus == "success"){
-                        $('#columnsDualBoxModal').modal('handleUpdate');
-                        $('#columnsDualBoxModal').modal('show');
-                        // swAlert("Success", `${jqXHR.responseText}`, "success");
-
-                    }else if(textStatus == "error"){
-                        swAlert("Error", "There is error while extracting!!", "error");
-                    }else{
-                        swAlert("Error", "Unknown error while extracting!!", "error");
-                    }
-                },*/
-                statusCode: {
-                    404: function () {
-                        swAlert("Error", "Page not Found!!", "error");
-                    },
-                    400: function () {
-                        swAlert("Error", "Bad Request!!!", "error");
-                    },
-                    401: function () {
-                        swAlert("Error", "Unauthorized!!", "error");
-                    },
-                    403: function () {
-                        swAlert("Error", "Forbidden!!", "error");
-                    },
-                    500: function () {
-                        swAlert("Error", "Internal Server Error!!", "error");
-                    },
-                    502: function () {
-                        swAlert("Error", "Bad Gateway!!", "error");
-                    },
-                    503: function () {
-                        swAlert("Error", "Service Unavailable!!", "error");
-                    },
-
+        $.when(donorFileuploadFormRequest).done(function (data, textStatus, jqXHR) {
+            // console.log(data);
+            // console.log(textStatus);
+            // console.log(jqXHR);
+            if (textStatus === "success" && jqXHR.status === 200) {  // change the condition
+                var optionsList = [];
+                for (var colName of data) {
+                    optionsList.push(new Option(colName, colName));
                 }
-            });
+                dataFileColumnsSelect.html(optionsList);
+                KTDualListbox.init();
+                $('#columnsDualBoxModal').modal('handleUpdate');
+                $('#columnsDualBoxModal').modal('show');
+            } else {
+                swAlert("Error", "There is problem after upload!", "error");
+            }
 
-        } else {
-            swal.fire("Error", "You have to select a file!", "error");
-        }
+        });
+
+
+
     });
     /*uploadDataFileBtn.click(function () {
 
     });
 */
 
-    // here the columns dual box
-    // Class definition
-    var pickedColumns = [];  // this will hold all columns that user selected
-    var KTDualListbox = function () {
-        // Private functions
-        var initDualListbox = function () {
-            // Dual Listbox
-            var listBoxes = $(".dual-listbox");
 
-            listBoxes.each(function () {
-                var $this = $(this);
-                // get titles
-                var availableTitle = ($this.attr("data-available-title") != null) ? $this.attr("data-available-title") : "Available columns";
-                var selectedTitle = ($this.attr("data-selected-title") != null) ? $this.attr("data-selected-title") : "Picked columns";
-
-                // get button labels
-                var addLabel = ($this.attr("data-add") != null) ? $this.attr("data-add") : "Add";
-                var removeLabel = ($this.attr("data-remove") != null) ? $this.attr("data-remove") : "Remove";
-                var addAllLabel = ($this.attr("data-add-all") != null) ? $this.attr("data-add-all") : "Add All";
-                var removeAllLabel = ($this.attr("data-remove-all") != null) ? $this.attr("data-remove-all") : "Remove All";
-
-                // get options
-                var options = [];
-                $this.children("option").each(function () {
-                    var value = $(this).val();
-                    var label = $(this).text();
-                    options.push({
-                        text: label,
-                        value: value
-                    });
-                });
-
-                // get search option
-                var search = ($this.attr("data-search") != null) ? $this.attr("data-search") : "";
-
-                // init dual listbox
-                var dualListBox = new DualListbox($this.get(0), {
-                    addEvent: function (value) {
-                        pickedColumns.push(value);
-                        //console.log(pickedColumns);
-                    },
-                    removeEvent: function (value) {
-                        let arrayIdx = pickedColumns.indexOf(value);
-                        if (arrayIdx > -1) {
-                            pickedColumns.splice(arrayIdx, 1);
-                        }
-                        //console.log(pickedColumns);
-                    },
-                    availableTitle: availableTitle,
-                    selectedTitle: selectedTitle,
-                    addButtonText: addLabel,
-                    removeButtonText: removeLabel,
-                    addAllButtonText: addAllLabel,
-                    removeAllButtonText: removeAllLabel,
-                    options: options,
-                });
-
-
-                if (search == "false") {
-                    dualListBox.search.classList.add("dual-listbox__search--hidden");
-                }
-            });
-        };
-
-        return {
-            // public functions
-            init: function () {
-                initDualListbox();
-            },
-        };
-    }();
-    KTDualListbox.init();
 
     // process button, which will send ajax request with the selected columns
     const processPickedColumnsBtn = $("#processPickedColumnsBtn");
     processPickedColumnsBtn.click(function (e) {
-        let selectedColumns = JSON.stringify(pickedColumns);
-        // let selectedColumns = pickedColumns;
-        // let selectedColumns = pickedColumns;
-        const webSiteUrl = window.location.origin;
-        const webSiteMemberUrl = window.location;
+        let selectedColumnsRequest = sendPickedColumns();
+        $.when(selectedColumnsRequest).done(function (data, textStatus, jqXHR) {
 
-        // ajax request to data handler init
-        $.ajax({
-            method: "POST",
-            cache: false,
-            url: webSiteUrl + "/dashboard/data/init",
-            dataType: "json",
-            data: {"columns": selectedColumns},
-            beforeSend: function (xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-            },
-            success: function (data) {
-                alert(data);
-                // if (data == "OK") {
-                //     alert("Your Data has been updated");
-                //     location.reload();
-                // }
-            },
-            error: function (error) {
-                //called when there is an error
-                swAlert("Error", error.message, "error");
-                //console.log(e.message);
-            }
+            //data, textStatus, jqXHR
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+           /*  if (textStatus === "success") {  // change the condition
+               
+            } else {
+                
+            } */
+
         });
     });
 
-});  // end of $(function)
+}); // end of $(function)
 
 
 function swAlert(alertTitle, alertMsg, alertType) {

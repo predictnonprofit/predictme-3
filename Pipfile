@@ -37,6 +37,7 @@ django-allauth = "*"
 pathlib = "*"
 setuptools = "*"
 lxml = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.8"

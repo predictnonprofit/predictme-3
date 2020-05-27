@@ -5,25 +5,21 @@ var KTLayoutBuilder = function() {
 
 	var exporter = {
 		init: function() {
-			$('#kt-btn-howto').click(function(e) {
-				e.preventDefault();
-				$('#kt-howto').slideToggle();
-			});
 		},
 		startLoad: function(options) {
 			$('#builder_export').
-			addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').
+			addClass('spinner spinner-right spinner-white').
 			find('span').text('Exporting...').
-			closest('.kt-form__actions').
+			closest('.card-footer').
 			find('.btn').
 			attr('disabled', true);
 			toastr.info(options.title, options.message);
 		},
 		doneLoad: function() {
 			$('#builder_export').
-			removeClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').
+			removeClass('spinner spinner-right spinner-primary').
 			find('span').text('Export').
-			closest('.kt-form__actions').
+			closest('.card-footer').
 			find('.btn').
 			attr('disabled', false);
 		},
@@ -149,10 +145,17 @@ var KTLayoutBuilder = function() {
 			e.preventDefault();
 			var _self = $(this);
 			$(_self).
-			addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').
-			closest('.kt-form__actions').
+			addClass('spinner spinner-right spinner-white').
+			closest('.card-footer').
 			find('.btn').
 			attr('disabled', true);
+
+			// keep remember tab id
+			$('.nav[data-remember-tab]').each(function() {
+				var tab = $(this).data('remember-tab');
+				var tabId = $(this).find('.nav-link.active[data-toggle="tab"]').attr('href');
+				$('#' + tab).val(tabId);
+			});
 
 			$.ajax('index.php?demo=' + $(_self).data('demo'), {
 				method: 'POST',
@@ -172,8 +175,8 @@ var KTLayoutBuilder = function() {
 			e.preventDefault();
 			var _self = $(this);
 			$(_self).
-			addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').
-			closest('.kt-form__actions').
+			addClass('spinner spinner-right spinner-primary').
+			closest('.card-footer').
 			find('.btn').
 			attr('disabled', true);
 
@@ -189,38 +192,6 @@ var KTLayoutBuilder = function() {
 		});
 	};
 
-	var keepActiveTab = function() {
-		$('[href^="#kt_builder_"]').click(function(e) {
-			var which = $(this).attr('href');
-			var btn = $('[name="builder_submit"]');
-			var tab = $('[name="builder[tab]"]');
-			if ($(tab).length === 0) {
-				$('<input/>').
-				attr('type', 'hidden').
-				attr('name', 'builder[tab]').
-				val(which).
-				insertBefore(btn);
-			} else {
-				$(tab).val(which);
-			}
-		}).each(function() {
-			if ($(this).hasClass('active')) {
-				var which = $(this).attr('href');
-				var btn = $('[name="builder_submit"]');
-				var tab = $('[name="builder[tab]"]');
-				if ($(tab).length === 0) {
-					$('<input/>').
-					attr('type', 'hidden').
-					attr('name', 'builder[tab]').
-					val(which).
-					insertBefore(btn);
-				} else {
-					$(tab).val(which);
-				}
-			}
-		});
-	};
-
 	var verify = {
 		reCaptchaVerified: function() {
 			return $.ajax('../tools/builder/recaptcha.php?recaptcha', {
@@ -231,7 +202,7 @@ var KTLayoutBuilder = function() {
 			}).fail(function() {
 				grecaptcha.reset();
 				$('#alert-message').
-				removeClass('alert-success kt-hide').
+				removeClass('alert-success d-hide').
 				addClass('alert-danger').
 				html('Invalid reCaptcha validation');
 			});
@@ -244,7 +215,7 @@ var KTLayoutBuilder = function() {
 				exportReadyTrigger = $(this);
 
 				$('#kt-modal-purchase').modal('show');
-				$('#alert-message').addClass('kt-hide');
+				$('#alert-message').addClass('d-hide');
 				grecaptcha.reset();
 			});
 
@@ -252,7 +223,7 @@ var KTLayoutBuilder = function() {
 				e.preventDefault();
 				if (!$('#g-recaptcha-response').val()) {
 					$('#alert-message').
-					removeClass('alert-success kt-hide').
+					removeClass('alert-success d-hide').
 					addClass('alert-danger').
 					html('Invalid reCaptcha validation');
 					return;
@@ -277,7 +248,7 @@ var KTLayoutBuilder = function() {
 					} else {
 						grecaptcha.reset();
 						$('#alert-message').
-						removeClass('alert-success kt-hide').
+						removeClass('alert-success d-hide').
 						addClass('alert-danger').
 						html('Invalid reCaptcha validation');
 					}
@@ -289,7 +260,6 @@ var KTLayoutBuilder = function() {
 	// basic demo
 	var init = function() {
 		exporter.init();
-		keepActiveTab();
 		preview();
 		reset();
 	};

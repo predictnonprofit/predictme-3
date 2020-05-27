@@ -1,6 +1,6 @@
 from django.db import models
 from membership.models import UserMembership
-from data_handler.models import MemberData
+from data_handler.models import MemberDataFile
 
 # "Pending", "Processing", "Draft", "Cancelled", "Completed"
 
@@ -33,7 +33,7 @@ class InvoiceItem(models.Model):
 
 
 class Transactions(models.Model):
-    member_data = models.OneToOneField(MemberData, on_delete=models.SET_NULL, null=True, blank=True)
+    member_data = models.OneToOneField(MemberDataFile, on_delete=models.SET_NULL, null=True, blank=True)
     amount = models.DecimalField(max_digits=5, decimal_places=5, null=True, blank=True)
     transaction_date = models.DateTimeField(auto_now_add=True)
     records_count = models.IntegerField()

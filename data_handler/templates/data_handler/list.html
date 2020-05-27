@@ -3,22 +3,22 @@
 {% load static %}
 {% load socialaccount %}
 
-
 {% block title %}
-Manage your data
+Run Modal
 {% endblock title %}
 
 {% block customcss %}
-<!--begin::Page Vendors Styles(used by this page) -->
+<!--begin::Page Vendors Styles(used by this page)-->
 <link href="{% static 'assets/plugins/custom/jstree/jstree.bundle.css' %}" rel="stylesheet" type="text/css" />
-<link href="{% static 'assets/plugins/custom/uppy/uppy.bundle.css' %}" rel="stylesheet" type="text/css" />
+
 {% endblock customcss %}
 
+{% block pagename %}
+Data Handler
+{% endblock pagename %}
+
+
 {% block content %}
-
-
-<!-- begin:: Content -->
-
 <!-- Instructions Modal  -->
 {% include "data_handler/inc/instructions_modal.html" %}
 <!-- ./Instructions Modal  -->
@@ -39,333 +39,340 @@ Manage your data
 {% include "data_handler/inc/columns_dualbox.html" %}
 <!-- ./Columns Dual Box   -->
 
-<br />
-<div class="kt-container  kt-grid__item kt-grid__item--fluid">
-    <div class="alert alert-light alert-elevate" role="alert">
+<!--begin::Row-->
+<div class="alert alert-custom alert-white shadow-lg fade show mb-5" role="alert">
 
-        <div class="alert-text">
-            <label class="kt-checkbox kt-checkbox--tick kt-checkbox--success" style="top: 6px;">
-                <input type="checkbox" id="agreeDataHandlerCheckBox">
-                <span></span>
-            </label>
-            Agree Data Handler upload
-            <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
-                Terms and Conditions
-            </a>
+    <div class="alert-text">
+        <label class="checkbox checkbox-primary">
+            <input id="agreeDataHandlerCheckBox" type="checkbox" checked="checked">Agree Data Handler upload
+            <span></span>
+        </label>
+        <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
+            Terms and Conditions
+        </a>
+    </div>
 
+</div>
+
+
+<!-- Start when user not upload file yet -->
+<section class="my-5">
+    {% if member_data_file.file_upload_procedure == "None" %}
+    <div class="card card-custom">
+        <div class="card-header card-header-tabs-line">
+            <div class="card-title">
+                <h3 class="card-label">Upload Your data file</h3>
+            </div>
+            <div class="card-toolbar">
+                <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
+                    {% csrf_token %}
+                    <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#upload_tab">
+                                <span class="nav-icon"><i class="icon-xl fas fa-file-upload"></i></span>
+                                <span class="nav-text">Upload</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " data-toggle="tab" href="#google_drive_tab">
+                                <span class="nav-icon"><i style="color: #FFD04B;"
+                                        class="icon-xl fab fa-google-drive"></i></span>
+                                <span class="nav-text">Drive</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#dropbox_tab">
+                                <span class="nav-icon"><i style="color: #0060FF;"
+                                        class="icon-xl fab fa-dropbox"></i></span>
+                                <span class="nav-text">Dropbox</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#onedrive_tab">
+                                <span class="nav-icon"><i style="color: #2778D3;"
+                                        class="icon-xl fas fa-cloud"></i></span>
+                                &nbsp;<span class="nav-text">OneDrive</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="upload_tab" role="tabpanel" aria-labelledby="upload_tab">
+                    <div class="form-group">
+
+                        <!-- <label>File Browser</label> -->
+                        <div></div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="donerFile" name="donor_file" required
+                                accept=".xlsx, .csv" />
+                            <label class="custom-file-label" for="donerFile">Choose file</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="alert alert-custom alert-secondary" role="alert">
+                            <div class="alert-icon">
+                                <i class="flaticon-questions-circular-button"></i>
+                            </div>
+                            <div class="alert-text">Allowed Files (csv, xlsx)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade text-center" id="google_drive_tab" role="tabpanel"
+                    aria-labelledby="google_drive_tab">
+                    <a target="_blank" href="{% provider_login_url 'google' process="connect" %}"
+                        class="btn btn-primary border-0 w-75" style="background-color: #1FA463;">
+                        <i class="icon-xl fab fa-google-drive"></i> Browse
+                    </a>
+                </div>
+                <div class="tab-pane fade text-center" id="dropbox_tab" role="tabpanel" aria-labelledby="dropbox_tab">
+                    <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #0060FF;">
+                        <i class="icon-xl fab fa-dropbox"></i> Browse
+                    </button>
+                </div>
+                <div class="tab-pane text-center fade" id="onedrive_tab" role="tabpanel" aria-labelledby="onedrive_tab">
+                    <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #2778D3;">
+                        <i class="icon-xl fas fa-cloud"></i> Browse
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+                data-toggle="tooltip" title="Cancel and close">
+                <i class="la la-close"></i>
+            </button>
+            &nbsp;
+            <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
+                data-toggle="tooltip" title="Upload!">
+                <i class="la la-upload"></i>
+            </button>
+        </div>
+        </form>
+    </div>
+
+
+    {% else %}
+    {% if member_data_file.all_records_count > member_data_file.allowed_records_count  %}
+    <!-- Start When Member Exceed records -->
+    <div class="card card-custom wave wave-animate wave-danger mb-6 ">
+        <div class="card-body">
+            <div class="d-flex align-items-center p-5">
+                <div class="mr-6">
+
+                    <span class="svg-icon svg-icon-danger svg-icon-4x">
+                        <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Code\Warning-1-circle.svg--><svg
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                            height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <rect x="0" y="0" width="24" height="24" />
+                                <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
+                                <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
+                                <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
+                            </g>
+                        </svg>
+                        <!--end::Svg Icon--></span>
+                </div>
+                <div class="d-flex flex-column">
+                    <a href="#" data-toggle="modal" data-target="#extraRecordsModel"
+                        class="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">
+                        How to solve this
+                    </a>
+                    <div class="text-dark-75">You are about to rich your records limit!</div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="kt-portlet kt-portlet--mobile">
-        <div class="kt-portlet__head kt-portlet__head--lg">
-            <div class="kt-portlet__head-label">
-                <span class="kt-portlet__head-icon">
-                    <i class="kt-font-brand flaticon2-line-chart"></i>
-                </span>
-                <h3 class="kt-portlet__head-title" style="width: 600px;">
-                    Current data records &nbsp;
-                    <span
-                        class="kt-badge kt-badge--unified-danger kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
-                        style="width: 70px">
-                        400
-                    </span>
-                    <span
-                        class="kt-badge kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold font-weight-bold"
-                        style="width: 70px">
-                        100
-                    </span>
-                </h3>
+    <!-- End When Member Exceed records -->
+    {% else %}
+    <!-- Start Data Table -->
+    <div class="card card-custom">
+        <div class="card-header flex-wrap border-0 pt-6 pb-0">
+            <div class="card-title">
+                <h3 class="card-label">Sub-datatable Demo
+                    <span class="d-block text-muted pt-2 font-size-sm">Sub-datatable example with local
+                        datasource</span></h3>
             </div>
-            <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-wrapper">
-                    <button type="button" onclick="history.back();" class="btn btn-clean btn-icon-sm"
-                        data-toggle="tooltip" title="Back">
-                        <i class="la la-long-arrow-left"></i>
-
-                    </button>
-                    &nbsp;
-                    <span data-toggle="tooltip" title="display you files">
-                        <button type="button" class="btn btn-outline-brand" style="width: 100px;" data-toggle="modal"
-                            data-target="#donerFilesModal">
-                            <i class="fa fa-file-download"></i>
-                        </button>
-                    </span>
-                    &nbsp;
-                    <span title="Upload Doner File" data-toggle="tooltip">
-                        <button type="button" class="btn btn-outline-brand my-disabled-btn" disabled
-                            style="width: 100px;" data-toggle="modal" data-target="#donerUploadFormModal"
-                            id="dataUploadBtn">
-                            <i class="fa fa-file-upload"></i>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Message when records limit -->
-        <section id="records-msg" class="my-4 mx-auto w-50 text-center d-none">
-            <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-faster">
-                <div class="kt-portlet__body">
-                    <div class="kt-iconbox__body">
-                        <div class="kt-iconbox__icon">
+            <div class="card-toolbar">
+                <!--begin::Dropdown-->
+                <div class="dropdown dropdown-inline mr-2">
+                    <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="svg-icon svg-icon-md">
+                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                     <rect x="0" y="0" width="24" height="24" />
-                                    <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
-                                    <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
-                                    <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
+                                    <path
+                                        d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z"
+                                        fill="#000000" opacity="0.3" />
+                                    <path
+                                        d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z"
+                                        fill="#000000" />
                                 </g>
                             </svg>
-                        </div>
-                        <div class="kt-iconbox__desc">
-                            <h3 class="kt-iconbox__title">
-                                <button type="button" data-toggle="modal" class="btn btn-clean btn-bold btn-upper"
-                                    data-target="#extraRecordsModel">How to solve this:
-                                </button>
-                            </h3>
-                            <div class="kt-iconbox__content ">
-                                <small>You are about to rich your records limit!</small>
-                            </div>
-                        </div>
+                            <!--end::Svg Icon-->
+                        </span>Export</button>
+                    <!--begin::Dropdown Menu-->
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                        <!--begin::Navigation-->
+                        <ul class="navi flex-column navi-hover py-2">
+                            <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">
+                                Choose an option:</li>
+                            <li class="navi-item">
+                                <a href="#" class="navi-link">
+                                    <span class="navi-icon">
+                                        <i class="la la-print"></i>
+                                    </span>
+                                    <span class="navi-text">Print</span>
+                                </a>
+                            </li>
+                            <li class="navi-item">
+                                <a href="#" class="navi-link">
+                                    <span class="navi-icon">
+                                        <i class="la la-copy"></i>
+                                    </span>
+                                    <span class="navi-text">Copy</span>
+                                </a>
+                            </li>
+                            <li class="navi-item">
+                                <a href="#" class="navi-link">
+                                    <span class="navi-icon">
+                                        <i class="la la-file-excel-o"></i>
+                                    </span>
+                                    <span class="navi-text">Excel</span>
+                                </a>
+                            </li>
+                            <li class="navi-item">
+                                <a href="#" class="navi-link">
+                                    <span class="navi-icon">
+                                        <i class="la la-file-text-o"></i>
+                                    </span>
+                                    <span class="navi-text">CSV</span>
+                                </a>
+                            </li>
+                            <li class="navi-item">
+                                <a href="#" class="navi-link">
+                                    <span class="navi-icon">
+                                        <i class="la la-file-pdf-o"></i>
+                                    </span>
+                                    <span class="navi-text">PDF</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!--end::Navigation-->
                     </div>
+                    <!--end::Dropdown Menu-->
                 </div>
+                <!--end::Dropdown-->
+                <span data-toggle="tooltip" title="Download Your Data">
+                    <button type="button" class="btn btn-primary font-weight-bolder" data-toggle="modal"
+                        data-target="#donerFilesModal">
+                        <i class="icon-xl la la-file-download"></i>
+
+                    </button>
+                </span>
+                <!--end::Button-->
+
             </div>
-        </section>
-        <!-- ./Message when records limit -->
+        </div>
+        <div class="card-body">
 
-        <!-- No data files uploaded -->
-        <section id="no-data-file-form-msg" class="row justify-content-center my-4">
-            <div class="col-8 text-center">
-                <div class="kt-portlet">
-                    <div class="kt-portlet__head">
-                        <div class="kt-portlet__head-label">
-                            <h3 class="kt-portlet__head-title">
-                                There is no data file, please upload
-                            </h3>
-                        </div>
-                    </div>
-
-                    <!--begin::Form-->
-                    <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
-                        {% csrf_token %}
-                        <div class="kt-portlet__body">
-
-                            <div class="form-group row mb-0">
-                                <div class="col">
-
-                                    <ul class="nav nav-tabs nav-tabs-line nav-fill justify-content-center">
-                                        <li class="nav-item ">
-                                            <a class="nav-link active" data-toggle="tab" href="#upload_data_pane">
-                                                <span class="nav-icon"><i
-                                                        class="icon-xl fas fa-file-upload text-success"></i></span>
-                                                <span class="nav-text">Upload</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link " data-toggle="tab" href="#dropbox_tab_pane">
-                                                <span class="nav-icon"><i style="color: #0060FF;"
-                                                        class="icon-xl fab fa-dropbox"></i></span>
-                                                <span class="nav-text">Dropbox</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#google_drive_pane">
-                                                <span class="nav-icon"><i style="color: #FFD04B;"
-                                                        class="icon-xl fab fa-google-drive"></i></span>
-                                                <span class="nav-text">Google Drive</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#onedrive_tab_pane">
-                                                <span class="nav-icon"><i style="color: #2778D3;"
-                                                        class="icon-xl fas fa-cloud"></i></span>
-                                                <span class="nav-text">OneDrive</span>
-                                            </a>
-                                        </li>
-
-
-
-                                    </ul>
-                                    <div class="tab-content mt-5" id="dataHandlerUploadTabContent">
-
-                                        <div class="tab-pane fade show active" id="upload_data_pane" role="tabpanel"
-                                            aria-labelledby="upload_data_pane">
-
-                                            <div class="form-group">
-
-                                                <!-- <label>File Browser</label> -->
-                                                <div></div>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="donerFile"
-                                                        name="donor_file" required accept=".xlsx, .csv" />
-                                                    <label class="custom-file-label" for="donerFile">Choose file</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group ">
-                                                <div class="alert alert-secondary" role="alert">
-                                                    <div class="alert-icon"><i
-                                                            class="flaticon-warning kt-font-brand"></i></div>
-                                                    <div class="alert-text">
-                                                        Allowed Files (csv, xlsx)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade " id="dropbox_tab_pane" role="tabpanel"
-                                            aria-labelledby="dropbox_tab_pane">
-                                            <button type="button" class="btn btn-primary border-0 btn-block"
-                                                style="background-color: #0060FF;">
-                                                <i class="icon-xl fab fa-dropbox"></i> Browse
-                                            </button>
-                                        </div>
-                                        <div class="tab-pane fade" id="google_drive_pane" role="tabpanel"
-                                            aria-labelledby="google_drive_pane">
-                                            <a target="_blank"
-                                                href="{% provider_login_url 'google' process="connect" %}"
-                                                class="btn btn-primary border-0 btn-block"
-                                                style="background-color: #1FA463;">
-                                                <i class="icon-xl fab fa-google-drive"></i> Browse
-                                            </a>
-
-                                        </div>
-                                        <div class="tab-pane fade" id="onedrive_tab_pane" role="tabpanel"
-                                            aria-labelledby="onedrive_tab_pane">
-                                            <button type="button" class="btn btn-primary border-0 btn-block"
-                                                style="background-color: #2778D3;">
-                                                <i class="icon-xl fas fa-cloud"></i> Browse
-                                            </button>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
-                    data-toggle="tooltip" title="Cancel and close">
-                    <i class="la la-close"></i>
-                </button>
-                &nbsp;
-                <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
-                    data-toggle="tooltip" title="Upload!">
-                    <i class="la la-upload"></i>
-                </button>
-                </form>
-                <!--end::Form-->
-                </div>
-            </div>
-        </section>
-        <!-- ./No data files uploaded -->
-
-        <!-- Data Table -->
-
-        <section id="donnerSearchDataTable" class="d-none">
-            <div class="kt-portlet__body">
-
-                <!--begin: Search Form -->
-                <div class="kt-form kt-form--label-right kt-margin-t-20 kt-margin-b-10">
+            <!--begin::Search Form-->
+            <form action="">
+                <div class="mb-7">
                     <div class="row align-items-center">
-                        <div class="col-xl-8 order-2 order-xl-1">
+                        <div class="col-lg-9 col-xl-8">
                             <div class="row align-items-center">
-                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                    <div class="kt-input-icon kt-input-icon--left">
+                                <div class="col-md-4 my-2 my-md-0">
+                                    <div class="input-icon">
                                         <input type="text" class="form-control" placeholder="Search..."
-                                            id="generalSearch">
-                                        <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                                            <span><i class="la la-search"></i></span>
+                                            id="kt_datatable_search_query" />
+                                        <span>
+                                            <i class="flaticon2-search-1 text-muted"></i>
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                    <div class="kt-form__group kt-form__group--inline">
-                                        <div class="kt-form__label">
-                                            <label>Status:</label>
-                                        </div>
-                                        <div class="kt-form__control">
-                                            <select class="form-control bootstrap-select" id="kt_form_status">
-                                                <option value="">All</option>
-                                                <option value="1">Pending</option>
-                                                <option value="2">Delivered</option>
-                                                <option value="3">Canceled</option>
-                                                <option value="4">Success</option>
-                                                <option value="5">Info</option>
-                                                <option value="6">Danger</option>
-                                            </select>
-                                        </div>
+                                <div class="col-md-4 my-2 my-md-0">
+                                    <div class="d-flex align-items-center">
+                                        <label class="mr-3 mb-0 d-none d-md-block">Status:</label>
+                                        <select class="form-control" id="kt_datatable_search_status">
+                                            <option value="">All</option>
+                                            <option value="1">Pending</option>
+                                            <option value="2">Delivered</option>
+                                            <option value="3">Canceled</option>
+                                            <option value="4">Success</option>
+                                            <option value="5">Info</option>
+                                            <option value="6">Danger</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
-                                    <div class="kt-form__group kt-form__group--inline">
-                                        <div class="kt-form__label">
-                                            <label>Type:</label>
-                                        </div>
-                                        <div class="kt-form__control">
-                                            <select class="form-control bootstrap-select" id="kt_form_type">
-                                                <option value="">All</option>
-                                                <option value="1">Online</option>
-                                                <option value="2">Retail</option>
-                                                <option value="3">Direct</option>
-                                            </select>
-                                        </div>
+                                <div class="col-md-4 my-2 my-md-0">
+                                    <div class="d-flex align-items-center">
+                                        <label class="mr-3 mb-0 d-none d-md-block">Type:</label>
+                                        <select class="form-control" id="kt_datatable_search_type">
+                                            <option value="">All</option>
+                                            <option value="1">Online</option>
+                                            <option value="2">Retail</option>
+                                            <option value="3">Direct</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 order-1 order-xl-2 kt-align-right">
-                            <a href="#" class="btn btn-default kt-hidden">
-                                <i class="la la-cart-plus"></i> New Order
-                            </a>
-                            <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg d-xl-none">
-                            </div>
+                        <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+                            <a href="#" class="btn btn-light-primary px-6 font-weight-bold">Search</a>
                         </div>
                     </div>
                 </div>
+            </form>
+            <!--end::Search Form-->
 
-                <!--end: Search Form -->
-            </div>
-            <div class="kt-portlet__body kt-portlet__body--fit">
-
-                <!--begin: Datatable -->
-                <div class="kt-datatable" id="ajax_data"></div>
-
-                <!--end: Datatable -->
-            </div>
-        </section>
-
-        <!-- ./Data Table -->
+            <!--begin: Datatable-->
+            <section id="donorDataTable">
+                <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
+            </section>
+            <!--end: Datatable-->
+        </div>
     </div>
-</div>
+    <!-- End Data Table -->
+    {% endif %}
 
-<!-- end:: Content -->
+    {% endif %}
+
+</section>
+<!-- end when user not upload file yet -->
+
+
+
+
+
+
+
+
 
 <!--End::Row-->
-{% endblock content %}
-
+{% endblock content%}
 
 {% block customjs %}
-<!--begin::Page Scripts(used by this page) -->
-<script src="{% static 'assets/js/pages/crud/metronic-datatable/base/local-sort.js' %}" type="text/javascript"></script>
-<!--begin::Page Vendors(used by this page) -->
-<script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}"></script>
 <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
-
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
-<script src="{% static 'assets/js/pages/components/extended/treeview.js' %}" type="text/javascript"></script>
+<!--end::Page Vendors-->
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/components/extended/dual-listbox.js' %}"></script>
+<script src="{% static 'assets/js/pages/features/miscellaneous/treeview.js' %}"></script>
+<!--begin::Page Scripts(used by this page)-->
+
+<script src="{% static 'assets/js/pages/crud/ktdatatable/base/data-ajax.js' %}"></script>
+
+
 
 <!-- Custom Script of data handler list page -->
 <script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
-<!--begin::Page Scripts(used by this page)-->
 
-<!--end::Page Scripts-->
-<!-- ./Custom Script of data handler list page -->
-<!--end::Page Scripts -->
 
 {% endblock customjs %}

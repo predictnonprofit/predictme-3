@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 
+
 from .managers import CustomUserManager
 
 
@@ -50,6 +51,8 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
 
 
 class UnverifiedMember(models.Model):

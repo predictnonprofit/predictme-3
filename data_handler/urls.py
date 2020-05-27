@@ -6,4 +6,5 @@ urlpatterns = [
     path("init", data_handler_init, name="data-handler-init"),
     # path("upload", data_handler_file_upload, name="data-handler-upload"),
     re_path("^upload/(?P<filename>[^/]+)$", DataHandlerFileUpload.as_view(), name="data-handler-upload"),
+    path("records", RecordsColumnView.as_view(), name="data-handler-records"),
 ]

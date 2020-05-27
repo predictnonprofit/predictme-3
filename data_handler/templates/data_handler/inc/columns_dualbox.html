@@ -11,16 +11,14 @@
                 </button>
             </div>
             <div class="modal-body">
+                
                 <div class="container">
                     <div class="row h-100">
                         <div class="col-12 my-auto">
                             <div id="dualBoxBlock" style="margin-left: 120px;">
-                                <form class="kt-form" method="post">
+                                <form class="kt-form" method="POST">
                                     {% csrf_token %}
-                                    <select id="data_file_available_columns" class="dual-listbox" multiple>
-                                    <option value="Donor ID" disabled selected>Donor ID</option>
-
-                                </select>
+                                    <select id="data_file_available_columns" class="dual-listbox" multiple></select>
                                 </form>
                             </div>
                         </div>

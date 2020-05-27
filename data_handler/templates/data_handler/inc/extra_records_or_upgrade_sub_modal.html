@@ -19,20 +19,20 @@
                 <!--begin::Portlet-->
                 <section id="askPayUpgradeSection">
                     <div class="form-group">
-                        <label>Your data limit exceeds your subscription plan. Here are your options:</label>
-                        <div class="kt-radio-list">
-                            <label class="kt-radio">
-                                <input type="radio" name="action" value="pay" data-id="pay"/>
-                                Pay $.50 cents per additional record
-                                <span></span>
-                            </label>
-                            <label class="kt-radio">
-                                <input type="radio" name="action" value="upgrade" data-id="upgrade"/> Upgrade to the
-                                next Subscription plan.
-                                <span></span>
-                            </label>
-
-                        </div>
+                        <label class="radio radio-success my-2">
+                            <input type="radio" name="action" value="pay" data-id="pay" /> Pay $.50 cents per additional record
+                            <span></span>
+                    </label>
+                    <br />
+                    <label class="radio radio-success my-2">
+                            <input type="radio" name="action" value="upgrade" data-id="pay" /> Upgrade to the next Subscription plan.
+                            <span></span>
+                    </label>
+                    <br />
+                    <label class="radio radio-success my-2">
+                            <input type="radio" name="action" value="cancel" data-id="pay" /> Cancel
+                            <span></span>
+                    </label>
                     </div>
                 </section>
                 <!--end::Portlet-->
@@ -94,7 +94,7 @@
                                             </span>
                                         </div>
                                         <input type="text" disabled="disabled" readonly class="form-control"
-                                               name="stripe_card" value="4242424242424242" placeholder="xxxx"
+                                               name="stripe_card" value="4242.xxxxxxxx" placeholder="xxxx"
                                                aria-describedby="basic-addon1">
                                     </div>
                                     <span class="form-text text-muted">Your basic credit card number</span>
@@ -105,7 +105,7 @@
                                     <div class="col-md">
                                         <label>Total records :</label>
                                         <input type="number" class="form-control" placeholder="000" value="233"/>
-                                        <span class="form-text text-muted font-weight-bold">$.50 cents per additional record</span>
+                                        <span class="form-text text-muted font-weight-bold"><b>$.50 cents per additional record</b></span>
                                     </div>
 
                                     <div class="col-md">
@@ -131,13 +131,11 @@
                                 <div class="kt-form__actions kt-form__actions--right">
                                     <div class="row">
                                         <div class="col kt-align-left">
-                                            <button data-toggle="tooltip" data-action="pay" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px;">
-                                                Purchase <i class='la la-dollar'></i>
-                                            </button>
+                                            
                                             {#                                            <button type="reset" class="btn btn-secondary">Cancel</button>#}
                                         </div>
                                         <div class="col kt-align-right">
-                                            <span class="form-text text-muted mt-2">* Will send an invoice of transaction to your email</span>
+                                            <span class="form-text text-muted mt-2"><b>* Will send an invoice of transaction to your email</b></span>
                                         </div>
                                     </div>
                                 </div>
@@ -175,9 +173,10 @@
                                             </span>
                                             Starter
                                         </label>
-                                        <label class="kt-radio kt-radio--success">
-                                            <input type="radio" name="upgrade_plane" id="upStarter" value="starter"/>
-                                            <span style="left: 5px;"></span>
+                                       
+                                        <label class="radio radio-success">
+                                            <input name="upgrade_plane" id="upStarter" value="starter" type="radio">
+                                            <span></span>
                                         </label>
 
 
@@ -188,16 +187,17 @@
                                     <div class="col-lg-4 text-center">
 
                                         <label for="upProfessional" class="d-block">
-                                           <span class="d-block" style="color: #f3c623 !important;">
-                                                <i class="flaticon-gift"
+                                           <span class="d-block">
+                                                <i class="flaticon-gift text-warning"
                                                    style="font-size: 5rem;margin-top: 3.6rem;"></i>
                                             </span>
                                             Professional
                                         </label>
-                                        <label class="kt-radio kt-radio--success">
+                                        
+                                        <label class="radio radio-success">
                                             <input type="radio" name="upgrade_plane" id="upProfessional"
-                                                   value="professional"/>
-                                            <span style="left: 5px;"></span>
+                                            value="professional" >
+                                            <span></span>
                                         </label>
 
 
@@ -208,15 +208,16 @@
                                     <div class="col-lg-4 text-center">
 
                                         <label for="upExpert" class="d-block">
-                                           <span class="d-block" style="color:#d7385e !important;">
-                                                <i class="flaticon-rocket"
+                                           <span class="d-block">
+                                                <i class="flaticon-rocket text-danger"
                                                    style="font-size: 5rem;margin-top: 3.6rem;"></i>
                                             </span>
                                             Expert
                                         </label>
-                                        <label class="kt-radio kt-radio--success" style="left: 2px;">
-                                            <input type="radio" name="upgrade_plane" id="upExpert" value="expert"/>
-                                            <span style="left: 5px;"></span>
+                                      
+                                        <label class="radio radio-success">
+                                            <input type="radio" name="upgrade_plane" id="upExpert" value="expert" value="professional" >
+                                            <span></span>
                                         </label>
 
 
@@ -234,9 +235,7 @@
                             <div class="kt-form__actions kt-form__actions--right">
                                 <div class="row">
                                     <div class="col kt-align-left mb-2">
-                                        <button data-toggle="tooltip" data-action="upgrade" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px;">
-                                            Purchase <i class='la la-dollar'></i>
-                                        </button>
+                                        
                                         {#                                            <button type="reset" class="btn btn-secondary">Cancel</button>#}
                                     </div>
                                     <div class="col kt-align-right">
@@ -253,14 +252,18 @@
                 <!--end::Portlet-->
             </div>
             <div class="modal-footer">
-                <button type="button" id="closeUpgradeModalBtn" data-toggle="tooltip" title="Close"
-                        class="btn btn-danger mr-auto" style="width: 100px;">
-                    <i class="fa fa-times"></i>
-                </button>
-                <button type="button" id="backModalBtn" disabled data-toggle="tooltip" class="btn btn-secondary"
-                        style="width: 100px;">
-                    <i class="flaticon2-left-arrow-1"></i> Back
-                </button>
+                <button type="button" id="backModalBtn" disabled data-toggle="tooltip" class="btn btn-secondary mr-auto"
+                style="width: 100px;">
+            <i class="flaticon2-left-arrow-1"></i> Back
+        </button>
+
+
+        <button data-toggle="tooltip" data-action="pay" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px; display: none;">
+            Purchase <i class="icon-md la la-dollar"></i>
+        </button>    
+        <button data-toggle="tooltip" data-action="upgrade" type="button" class="btn btn-success mt-2 purchaseUpgradeExtraBtn" style="width: 130px; display: none;">
+            Upgrade <i class="icon-md la la-arrow-up"></i>
+        </button>
                 <button data-toggle="tooltip" id="nextBtn" type="button" class="btn btn-primary"
                         style="width: 130px;">Next <i class="la la-arrow-right"></i>
                 </button>

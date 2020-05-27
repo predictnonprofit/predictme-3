@@ -35,24 +35,26 @@ var KTDatatablesExtensionsFixedheader = function() {
 					},
 				},
 				{
+					width: '75px',
 					targets: 8,
 					render: function(data, type, full, meta) {
 						var status = {
-							1: {'title': 'Pending', 'class': 'kt-badge--brand'},
-							2: {'title': 'Delivered', 'class': ' kt-badge--danger'},
-							3: {'title': 'Canceled', 'class': ' kt-badge--primary'},
-							4: {'title': 'Success', 'class': ' kt-badge--success'},
-							5: {'title': 'Info', 'class': ' kt-badge--info'},
-							6: {'title': 'Danger', 'class': ' kt-badge--danger'},
-							7: {'title': 'Warning', 'class': ' kt-badge--warning'},
+							1: {'title': 'Pending', 'class': 'label-primary'},
+							2: {'title': 'Delivered', 'class': ' label-danger'},
+							3: {'title': 'Canceled', 'class': ' label-primary'},
+							4: {'title': 'Success', 'class': ' label-success'},
+							5: {'title': 'Info', 'class': ' label-info'},
+							6: {'title': 'Danger', 'class': ' label-danger'},
+							7: {'title': 'Warning', 'class': ' label-warning'},
 						};
 						if (typeof status[data] === 'undefined') {
 							return data;
 						}
-						return '<span class="kt-badge ' + status[data].class + ' kt-badge--inline kt-badge--pill">' + status[data].title + '</span>';
+						return '<span class="label ' + status[data].class + ' label-inline label-pill">' + status[data].title + '</span>';
 					},
 				},
 				{
+					width: '75px',
 					targets: 9,
 					render: function(data, type, full, meta) {
 						var status = {
@@ -63,8 +65,8 @@ var KTDatatablesExtensionsFixedheader = function() {
 						if (typeof status[data] === 'undefined') {
 							return data;
 						}
-						return '<span class="kt-badge kt-badge--' + status[data].state + ' kt-badge--dot"></span>&nbsp;' +
-							'<span class="kt-font-bold kt-font-' + status[data].state + '">' + status[data].title + '</span>';
+						return '<span class="label label-' + status[data].state + ' label-dot"></span>&nbsp;' +
+							'<span class="font-weight-bold text-' + status[data].state + '">' + status[data].title + '</span>';
 					},
 				},
 			],

@@ -25,7 +25,7 @@ def login_view(request):
         member = authenticate(request, email=email, password=password)
         if member is not None:
             login(request, member)
-            if member.email == "admin@admin.com":
+            if member.email == "admin@admin.com" or member.email == "admin2@email.com":
                 return redirect(reverse("dashboard-home"))
             else:
                 return redirect(reverse("profile-overview"))

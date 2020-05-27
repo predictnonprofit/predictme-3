@@ -1,8 +1,8 @@
 "use strict";
 var KTDatatablesAdvancedColumnVisibility = function() {
 
-	var initTable1 = function() {
-		var table = $('#kt_table_1');
+	var init = function() {
+		var table = $('#kt_datatable');
 
 		// begin first table
 		table.DataTable({
@@ -24,7 +24,7 @@ var KTDatatablesAdvancedColumnVisibility = function() {
 
 		//main function to initiate the module
 		init: function() {
-			initTable1();
+			init();
 		},
 
 	};
