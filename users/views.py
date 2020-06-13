@@ -3,7 +3,6 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -29,7 +28,7 @@ def login_view(request):
                 return redirect(reverse("dashboard-home"))
             else:
                 return redirect(reverse("profile-overview"))
-            
+
             # if member.is_active is True and member.status == "active":
             #     # last role if the status of member account is active
             #     messages.success(request, "Login Successfully")
@@ -55,6 +54,7 @@ def login_view(request):
 
 
 def register_view(request):
+    from django.contrib.sites.shortcuts import get_current_site
     if request.method == "POST":
         INPUTS_DATA = {}  # this will hold all input values
         INPUTS_ERRORS = defaultdict(list)  # this will hold all errors of every input, if empty then good to go
@@ -168,35 +168,35 @@ def register_view(request):
             # save the new member to db
             new_member = Member()
             new_member.email = INPUTS_DATA['email'].strip()
-            new_member.first_name = INPUTS_DATA['first_name']
-            new_member.last_name = INPUTS_DATA['last_name']
-            new_member.full_name = INPUTS_DATA['full_name']
-            new_member.phone = INPUTS_DATA['phone'] if INPUTS_DATA['phone'] else ""
-            new_member.country = INPUTS_DATA['country']
-            new_member.state = INPUTS_DATA['state'] if INPUTS_DATA['state'] else ""
-            new_member.city = INPUTS_DATA['city']
-            new_member.zip_code = INPUTS_DATA['zip']
-            new_member.org_name = INPUTS_DATA['org_name']
-            new_member.job_title = INPUTS_DATA['job_title'] if INPUTS_DATA['job_title'] else ""
-            new_member.org_website = INPUTS_DATA['org_website'] if INPUTS_DATA['org_website'] else ""
-            new_member.org_type = INPUTS_DATA['org_type']
-            new_member.annual_revenue = INPUTS_DATA['annual_revenue']
-            new_member.total_staff = float(INPUTS_DATA['total_staff']) if INPUTS_DATA['total_staff'] else float(0.0)
-            new_member.num_of_board_members = INPUTS_DATA['number_board_members'] if INPUTS_DATA[
+            new_member.first_name = INPUTS_DATA['first_name'].strip()
+            new_member.last_name = INPUTS_DATA['last_name'].strip()
+            new_member.full_name = INPUTS_DATA['full_name'].strip()
+            new_member.phone = INPUTS_DATA['phone'].strip() if INPUTS_DATA['phone'] else ""
+            new_member.country = INPUTS_DATA['country'].strip()
+            new_member.state = INPUTS_DATA['state'].strip() if INPUTS_DATA['state'] else ""
+            new_member.city = INPUTS_DATA['city'].strip()
+            new_member.zip_code = INPUTS_DATA['zip'].strip()
+            new_member.org_name = INPUTS_DATA['org_name'].strip()
+            new_member.job_title = INPUTS_DATA['job_title'].strip()if INPUTS_DATA['job_title'] else ""
+            new_member.org_website = INPUTS_DATA['org_website'].strip() if INPUTS_DATA['org_website'] else ""
+            new_member.org_type = INPUTS_DATA['org_type'].strip()
+            new_member.annual_revenue = INPUTS_DATA['annual_revenue'].strip()
+            new_member.total_staff = float(INPUTS_DATA['total_staff'].strip()) if INPUTS_DATA['total_staff'] else float(0.0)
+            new_member.num_of_board_members = INPUTS_DATA['number_board_members'].strip() if INPUTS_DATA[
                 'number_board_members'] else ""
-            new_member.num_of_volunteer = INPUTS_DATA['number_volunteer'] if INPUTS_DATA['number_volunteer'] else ""
+            new_member.num_of_volunteer = INPUTS_DATA['number_volunteer'].strip() if INPUTS_DATA['number_volunteer'] else ""
             new_member.status = "unverified"
             new_member.save()
             # print("New member has been saved!")
-            # pprint(INPUTS_DATA)
             member_activate_uid = urlsafe_base64_encode(force_bytes(new_member.pk))
             member_activate_token = account_activation_token.make_token(new_member)
-            print(f"Member Token:->  {member_activate_token} ")
+            # print(f"Member Token:->  {member_activate_token} ")
             new_member.member_register_token = member_activate_token
             new_member.save()
 
             # send verification code to member email
             current_site = get_current_site(request)
+
             full_name = f"{INPUTS_DATA['full_name']}"
             email_subject = "Active Your Account"
             message = render_to_string("users/inc/confirm_email.html", {
@@ -213,7 +213,6 @@ def register_view(request):
             email.send()
             print(f'Verification code Sent to {email_to}')
             messages.success(request, f"Your verification code has sent to your email {INPUTS_DATA['email']}")
-
             return redirect(reverse("users_verify"))
 
     return render(request, "users/register.html")
@@ -221,6 +220,7 @@ def register_view(request):
 
 class CompleteRegister(View):
     def get(self, request):
+
         member = Member.objects.get(email=request.session.get("MEMAIL"))
         return render(request, "users/inc/complete_register.html", context={"member": member})
 
@@ -267,12 +267,19 @@ def activate_account(request, uidb64, token):
     try:
         uid = force_bytes(urlsafe_base64_decode(uidb64))
         member = Member.objects.get(pk=uid)
+        print(member)
     except(TypeError, ValueError, OverflowError, Member.DoesNotExist):
         member = None
     if member is not None and account_activation_token.check_token(member, token):
         member.is_active = True
         member.status = "pending"
         request.session['MEMAIL'] = member.email
+        # set cookie of new member
+        # if not request.COOKIES.get('MEMAIL'):
+        #     response = HttpResponse("Account Activate!")
+        #     response.set_cookie("MEMAIL", member.email)
+
+
         member.save()
         return redirect(reverse("register-complete"))
         # return HttpResponse('Your account has been activate successfully')

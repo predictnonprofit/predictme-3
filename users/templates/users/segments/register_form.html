@@ -1,44 +1,60 @@
-<div class="login-form login-signup" style="max-width: 100% !important;">
+<form class="form" method="POST" id="kt_login_signup_form" action="{% url 'register' %}">
+  {% csrf_token %}
+  <div class="card-header py-1">
+    <div class="card-title">
+      <h3 class="card-label">
+        Sign Up
+        <small>Enter your details to create your account</small>
+      </h3>
+    </div>
+  </div>
+  <div class="card-body">
 
-
-    <!--begin::Form-->
-    <form class="form" novalidate="novalidate" id="kt_login_signup_form">
-        <div class="form-group row">
+    <div class="row">
+      <div class="col-lg">
+        <h3 class="font-size-lg text-dark font-weight-bold mb-6">Personal</h3>
+        <div class="mb-15">
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">First Name *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">First Name *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="First Name" name="first_name" autocomplete="off" />
+              <input class="form-control form-control-solid h-auto" type="text" placeholder="First Name" name="first_name" autocomplete="off" />
                     {% include "users/inc/display_errors.html" with errors=input_errors.first_name %}
+
             </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Last Name *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Last Name *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Last Name" name="last_name" autocomplete="off" />
+              <input class="form-control form-control-solid h-auto " type="text" placeholder="Last Name" name="last_name" autocomplete="off" />
                     {% include "users/inc/display_errors.html" with errors=input_errors.last_name %}
 
             </div>
-        </div>
-        <div class="form-group row">
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Email Address *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Email Address *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Email Address" name="email" autocomplete="off" />
+              <input class="form-control form-control-solid h-auto " type="email" placeholder="Email Address" name="email" autocomplete="off" />
                     {% include "users/inc/display_errors.html" with errors=input_errors.email %}
-            </div>
-            <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Phone Number *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Phone number" name="phone" autocomplete="off" />
-                    {% include "users/inc/display_errors.html" with errors=input_errors.phone %}
 
             </div>
+          </div>
         </div>
 
-        <div class="form-group row">
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark d-block my-3">Country *</label>
+        <h3 class="font-size-lg text-dark font-weight-bold mb-6">Address</h3>
+        <div class="mb-3">
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Phone *</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid h-auto" type="text" placeholder="Phone number" name="phone" autocomplete="off" />
+                    {% include "users/inc/display_errors.html" with errors=input_errors.phone %}
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Country *</label>
+            <div class="col-lg-6">
+              <div class="input-group">
                 <select name="country" id="country"
-                    class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6">
+                    class="form-control form-control-solid h-auto ">
                     <option value="US" selected="selected">United States</option>
                     <option value="Afganistan">Afghanistan</option>
                     <option value="Albania">Albania</option>
@@ -291,102 +307,113 @@
                     <option value="Zimbabwe">Zimbabwe</option>
                 </select>
                 {% include "users/inc/display_errors.html" with errors=input_errors.country %}
-
+              </div>
             </div>
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">State *</label>
-                <select class="form-control" name="state" id="state">
-                    <option value="0" selected disabled hidden>Choose State *</option>
-                    <option value="Alabama">Alabama</option>
-                    <option value="Alaska">Alaska</option>
-                    <option value="Arizona">Arizona</option>
-                    <option value="Arkansas">Arkansas</option>
-                    <option value="California">California</option>
-                    <option value="Colorado">Colorado</option>
-                    <option value="Connecticut">Connecticut</option>
-                    <option value="Delaware">Delaware</option>
-                    <option value="District of Columbia">District of Columbia</option>
-                    <option value="Florida">Florida</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Guam">Guam</option>
-                    <option value="Hawaii">Hawaii</option>
-                    <option value="Idaho">Idaho</option>
-                    <option value="Illinois">Illinois</option>
-                    <option value="Indiana">Indiana</option>
-                    <option value="Iowa">Iowa</option>
-                    <option value="Kansas">Kansas</option>
-                    <option value="Kentucky">Kentucky</option>
-                    <option value="Louisiana">Louisiana</option>
-                    <option value="Maine">Maine</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Massachusetts">Massachusetts</option>
-                    <option value="Michigan">Michigan</option>
-                    <option value="Minnesota">Minnesota</option>
-                    <option value="Mississippi">Mississippi</option>
-                    <option value="Missouri">Missouri</option>
-                    <option value="Montana">Montana</option>
-                    <option value="Nebraska">Nebraska</option>
-                    <option value="Nevada">Nevada</option>
-                    <option value="New Hampshire">New Hampshire</option>
-                    <option value="New Jersey">New Jersey</option>
-                    <option value="New Mexico">New Mexico</option>
-                    <option value="New York">New York</option>
-                    <option value="North Carolina">North Carolina</option>
-                    <option value="North Dakota">North Dakota</option>
-                    <option value="Northern Marianas Islands">Northern Marianas Islands
-                    </option>
-                    <option value="Ohio">Ohio</option>
-                    <option value="Oklahoma">Oklahoma</option>
-                    <option value="Oregon">Oregon</option>
-                    <option value="Pennsylvania">Pennsylvania</option>
-                    <option value="Puerto Rico">Puerto Rico</option>
-                    <option value="Rhode Island">Rhode Island</option>
-                    <option value="South Carolina">South Carolina</option>
-                    <option value="South Dakota">South Dakota</option>
-                    <option value="Tennessee">Tennessee</option>
-                    <option value="Texas">Texas</option>
-                    <option value="Utah">Utah</option>
-                    <option value="Vermont">Vermont</option>
-                    <option value="Virginia">Virginia</option>
-                    <option value="Virgin Islands">Virgin Islands</option>
-                    <option value="Washington">Washington</option>
-                    <option value="West Virginia">West Virginia</option>
-                    <option value="Wisconsin">Wisconsin</option>
-                    <option value="Wyoming">Wyoming</option>
-                </select>
-                {% include "users/inc/display_errors.html" with errors=input_errors.state %}
-
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">State *</label>
+            <div class="col-lg-6">
+              <div class="input-group">
+                <select class="form-control form-control-solid" name="state" id="state">
+                      <option value="0" selected disabled hidden>Choose State *</option>
+                      <option value="Alabama">Alabama</option>
+                      <option value="Alaska">Alaska</option>
+                      <option value="Arizona">Arizona</option>
+                      <option value="Arkansas">Arkansas</option>
+                      <option value="California">California</option>
+                      <option value="Colorado">Colorado</option>
+                      <option value="Connecticut">Connecticut</option>
+                      <option value="Delaware">Delaware</option>
+                      <option value="District of Columbia">District of Columbia</option>
+                      <option value="Florida">Florida</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Guam">Guam</option>
+                      <option value="Hawaii">Hawaii</option>
+                      <option value="Idaho">Idaho</option>
+                      <option value="Illinois">Illinois</option>
+                      <option value="Indiana">Indiana</option>
+                      <option value="Iowa">Iowa</option>
+                      <option value="Kansas">Kansas</option>
+                      <option value="Kentucky">Kentucky</option>
+                      <option value="Louisiana">Louisiana</option>
+                      <option value="Maine">Maine</option>
+                      <option value="Maryland">Maryland</option>
+                      <option value="Massachusetts">Massachusetts</option>
+                      <option value="Michigan">Michigan</option>
+                      <option value="Minnesota">Minnesota</option>
+                      <option value="Mississippi">Mississippi</option>
+                      <option value="Missouri">Missouri</option>
+                      <option value="Montana">Montana</option>
+                      <option value="Nebraska">Nebraska</option>
+                      <option value="Nevada">Nevada</option>
+                      <option value="New Hampshire">New Hampshire</option>
+                      <option value="New Jersey">New Jersey</option>
+                      <option value="New Mexico">New Mexico</option>
+                      <option value="New York">New York</option>
+                      <option value="North Carolina">North Carolina</option>
+                      <option value="North Dakota">North Dakota</option>
+                      <option value="Northern Marianas Islands">Northern Marianas Islands
+                      </option>
+                      <option value="Ohio">Ohio</option>
+                      <option value="Oklahoma">Oklahoma</option>
+                      <option value="Oregon">Oregon</option>
+                      <option value="Pennsylvania">Pennsylvania</option>
+                      <option value="Puerto Rico">Puerto Rico</option>
+                      <option value="Rhode Island">Rhode Island</option>
+                      <option value="South Carolina">South Carolina</option>
+                      <option value="South Dakota">South Dakota</option>
+                      <option value="Tennessee">Tennessee</option>
+                      <option value="Texas">Texas</option>
+                      <option value="Utah">Utah</option>
+                      <option value="Vermont">Vermont</option>
+                      <option value="Virginia">Virginia</option>
+                      <option value="Virgin Islands">Virgin Islands</option>
+                      <option value="Washington">Washington</option>
+                      <option value="West Virginia">West Virginia</option>
+                      <option value="Wisconsin">Wisconsin</option>
+                      <option value="Wyoming">Wyoming</option>
+                  </select>
+                  {% include "users/inc/display_errors.html" with errors=input_errors.state %}
+                  {% include "users/inc/display_errors.html" with errors=input_errors.state %}
+              </div>
             </div>
-
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark d-block my-3">City *</label>
-                <input class="form-control form-control-solid h-auto rounded-lg font-size-h6 py-3 px-6"
-                    style="margin-top: -5px" type="text" placeholder="City" name="city" autocomplete="off" />
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">City *</label>
+            <div class="col-lg-6">
+              <div class="input-group">
+                <input class="form-control form-control-solid h-auto" type="text" placeholder="City" name="city" autocomplete="off" />
                     {% include "users/inc/display_errors.html" with errors=input_errors.city %}
 
+              </div>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row">
+          <div class="form-group row align-items-center">
+            <label class="col-lg-3 col-form-label  text-lg-right">Street Address *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Street Address *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Street Address" name="street_address" autocomplete="off" />
+              <input class="form-control form-control-solid h-auto" type="tex" placeholder="Street Address" name="street_address" autocomplete="off" />
                     {% include "users/inc/display_errors.html" with errors=input_errors.street_address %}
             </div>
+          </div>
+          <div class="form-group row align-items-center">
+            <label class="col-lg-3 col-form-label  text-lg-right">Zip Code *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Zip Code *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Zip Code" name="zip_code" autocomplete="off" />
+              <input class="form-control form-control-solid h-auto" type="text"  placeholder="Zip Code" name="zip_code" autocomplete="off" />
+
                     {% include "users/inc/display_errors.html" with errors=input_errors.zip %}
-
             </div>
+          </div>
         </div>
+      </div>
 
-        <div class="form-group row">
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark d-block my-3">Organization Type *</label>
-                <select name="org_type" id="org_type" class="form-control">
+      <div class="col-lg">
+        <h3 class="font-size-lg text-dark font-weight-bold mb-6">Organizatio</h3>
+        <div class="mb-15">
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Organization Type *</label>
+            <div class="col-lg-6">
+              <select name="org_type" id="org_type" class="form-control">
                     <option selected disabled>Organization Type *</option>
                     <option value="Higher Education">Higher Education</option>
                     <option value="Arts and Culture">Arts and Culture</option>
@@ -408,37 +435,36 @@
                 <input class="form-control d-none mt-2" type="text" value="{{ input_data.other_org_type }}"
                     placeholder="Other Organization Type" name="other_org_type" autocomplete="off" id="other_org_type">
                 {% include "users/inc/display_errors.html" with errors=input_errors.other_org_type %}
-
             </div>
-
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Organization Name * </label>
-                <input class="form-control" type="text" placeholder="Organization Name *" name="org_name"
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Organization Name *</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid" type="text" placeholder="Organization Name *" name="org_name"
                     autocomplete="off" value="{{ input_data.org_name }}">
                 {% include "users/inc/display_errors.html" with errors=input_errors.org_name %}
-
             </div>
-
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Organization Website </label>
-                <input class="form-control" type="text" placeholder="Organization Website" name="org_website"
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Organization Name *</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid" type="text" placeholder="Organization Website" name="org_website"
                     autocomplete="off" value="{{ input_data.org_website }}">
                 {% include "users/inc/display_errors.html" with errors=input_errors.org_website %}
-
-
             </div>
-        </div>
-
-        <div class="form-group row">
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Job Title *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Job Title *</label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="text"
-                    placeholder="Job Title" name="job_title" autocomplete="off" />
-                {% include "users/inc/display_errors.html" with errors=input_errors.job_title %}
+              <input class="form-control form-control-solid h-auto " type="text"
+                   placeholder="Job Title" name="job_title" autocomplete="off" />
+               {% include "users/inc/display_errors.html" with errors=input_errors.job_title %}
             </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Annual Revenue *</label>
             <div class="col-lg-6">
-                <label class="font-size-h6 font-weight-bolder text-dark d-block my-3">Annual Revenue *</label>
-                <select class="form-control form-control-solid py-7 px-6" id="annualRevenue" name="annual_revenue">
+              <select class="form-control form-control-solid " id="annualRevenue" name="annual_revenue">
                     <option selected disabled>Annual Revenue</option>
                     <option value="$5,000 - $50,000">$5,000 - $50,000</option>
                     <option value="$50,000 - $100,000">$50,000 - $100,000</option>
@@ -452,37 +478,37 @@
                 </select>
 
                 {% include "users/inc/display_errors.html" with errors=input_errors.annual_revenue %}
-
             </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark d-block my-3">Total Staff </label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="number"
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Total Staff *</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid h-auto" type="number"
                     placeholder="Total Staff" name="total_staff" autocomplete="off" />
                 {% include "users/inc/display_errors.html" with errors=input_errors.total_staff %}
-
             </div>
-
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Number of Volunteer </label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="number"
-                    placeholder="Number of Volunteer" name="number_volunteer" autocomplete="off" />
-                {% include "users/inc/display_errors.html" with errors=input_errors.number_volunteer %}
-
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Number of Volunteer</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid h-auto" type="number"
+                      placeholder="Number of Volunteer" name="number_volunteer" autocomplete="off" />
+                  {% include "users/inc/display_errors.html" with errors=input_errors.number_volunteer %}
             </div>
-
-            <div class="col-lg-4">
-                <label class="font-size-h6 font-weight-bolder text-dark my-3">Number of Board Members </label>
-                <input class="form-control form-control-solid h-auto py-4 px-4 rounded-lg font-size-h6" type="number"
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Number of Board Members</label>
+            <div class="col-lg-6">
+              <input class="form-control form-control-solid h-auto" type="number"
                     placeholder="Number of Board Members" name="number_board_members" autocomplete="off" />
                 {% include "users/inc/display_errors.html" with errors=input_errors.number_board_members %}
-
-
             </div>
+          </div>
         </div>
-        <div class="form-group row">
+
+        <h3 class="font-size-lg text-dark font-weight-bold mb-6">Accept Terms *</h3>
+        <div class="mb-3">
+          <div class="form-group row">
             <div class="col">
 
                 <label class="checkbox checkbox-primary">
@@ -493,14 +519,18 @@
                 {% include "users/inc/display_errors.html" with errors=input_errors.accepted_privacy_terms %}
             </div>
         </div>
-
-
-        <div class="card-footer text-center">
-            <button type="button" id="kt_login_signup_submit"
-                class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-4" disabled>Submit</button>
-            <button type="button" id="kt_login_signup_cancel"
-                class="btn btn-light-primary font-weight-bolder font-size-h6 px-8 py-4 my-3">Cancel</button>
         </div>
-    </form>
-    <!--end::Form-->
-</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="card-footer text-center">
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <button type="submit" class="btn btn-success mr-2" disabled id="register_btn">Submit</button>
+        <button type="reset" class="btn btn-secondary" id="kt_login_signup_cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>

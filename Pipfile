@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+bpython = "*"
 
 [packages]
 pathtools = "*"
@@ -38,6 +39,9 @@ pathlib = "*"
 setuptools = "*"
 lxml = "*"
 django-extensions = "*"
+python-dateutil = "*"
+google-auth = "*"
+rsa = "*"
 
 [requires]
 python_version = "3.8"

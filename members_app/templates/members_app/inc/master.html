@@ -121,10 +121,10 @@
                                             <span
                                                 class="text-white opacity-70 font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
                                             <span
-                                                class="text-white opacity-90 font-weight-bolder font-size-base d-none d-md-inline mr-4">Sean</span>
+                                                class="text-white opacity-90 font-weight-bolder font-size-base d-none d-md-inline mr-4">{{get_user_membership.member.full_name}}</span>
                                             <span class="symbol symbol-35">
                                                 <span
-                                                    class="symbol-label text-white font-size-h5 font-weight-bold bg-white-o-30">S</span>
+                                                    class="symbol-label text-white font-size-h5 font-weight-bold bg-white-o-30">{{get_user_membership.member.full_name|first}}</span>
                                             </span>
                                         </div>
                                     </div>
@@ -134,13 +134,9 @@
                                         class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg p-0">
                                         <!--begin::Header-->
                                         <div class="d-flex align-items-center p-8 rounded-top">
-                                            <!--begin::Symbol-->
-                                            <div class="symbol symbol-md bg-light-primary mr-3 flex-shrink-0">
-                                                <img src="{% static 'assets/media/users/300_21.jpg' %}" alt="" />
-                                            </div>
-                                            <!--end::Symbol-->
+
                                             <!--begin::Text-->
-                                            <div class="text-dark m-0 flex-grow-1 mr-3 font-size-h5">Sean Stone</div>
+                                            <div class="text-dark m-0 flex-grow-1 mr-3 font-size-h5">{{get_user_membership.member.full_name}}</div>
                                             <span
                                                 class="label label-light-success label-lg font-weight-bold label-inline">3
                                                 messages</span>
@@ -151,7 +147,7 @@
                                         <!--begin::Nav-->
                                         <div class="navi navi-spacer-x-0 pt-5">
                                             <!--begin::Item-->
-                                            <a href="custom/apps/user/profile-1/personal-information.html"
+                                            <a href="{% url 'profile-overview' %}"
                                                 class="navi-item px-8">
                                                 <div class="navi-link">
                                                     <div class="navi-icon mr-2">
@@ -180,37 +176,12 @@
                                                 </div>
                                             </a>
                                             <!--end::Item-->
-                                            <!--begin::Item-->
-                                            <a href="custom/apps/user/profile-2.html" class="navi-item px-8">
-                                                <div class="navi-link">
-                                                    <div class="navi-icon mr-2">
-                                                        <i class="flaticon2-rocket-1 text-danger"></i>
-                                                    </div>
-                                                    <div class="navi-text">
-                                                        <div class="font-weight-bold">My Activities</div>
-                                                        <div class="text-muted">Logs and notifications</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <!--end::Item-->
-                                            <!--begin::Item-->
-                                            <a href="custom/apps/userprofile-1/overview.html" class="navi-item px-8">
-                                                <div class="navi-link">
-                                                    <div class="navi-icon mr-2">
-                                                        <i class="flaticon2-hourglass text-primary"></i>
-                                                    </div>
-                                                    <div class="navi-text">
-                                                        <div class="font-weight-bold">My Tasks</div>
-                                                        <div class="text-muted">latest tasks and projects</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <!--end::Item-->
+                                          
                                             <!--begin::Footer-->
                                             <div class="navi-separator mt-3"></div>
                                             <div class="navi-footer px-8 py-5">
                                                 <a href="{% url 'logout' %}" class="btn btn-light-primary font-weight-bold">Sign Out</a>
-                                                <a href="custom/user/login-v2.html" target="_blank"
+                                                <a href="{% url 'pricing' %}" target="_blank"
                                                     class="btn btn-clean font-weight-bold">Upgrade Plan</a>
                                             </div>
                                             <!--end::Footer-->
@@ -250,7 +221,7 @@
                                                 <i class="flaticon2-shelter text-white icon-1x"></i>
                                             </a>
                                             <!--end::Item-->
-                                          
+
                                             <!--begin::Item-->
                                             <span class="label label-dot label-sm bg-white opacity-75 mx-3"></span>
                                             <a href=""
@@ -267,8 +238,8 @@
                                 <!--begin::Toolbar-->
                                 <div class="d-flex align-items-center">
                                     <!--begin::Button-->
-                                    <a href="#"
-                                        class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">Reports</a>
+                                    <a href="{% url 'profile-overview' %}"
+                                        class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">Profile</a>
                                     <!--end::Button-->
 
                                 </div>

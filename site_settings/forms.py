@@ -4,7 +4,13 @@ from django.core import validators
 import re
 from .models import CompanySettings
 
+# company_data = {
+#     "description": "description",
+#     "keywords": "keywords",
+#     "close_msg": "Close Message"
+# }
 company_data = CompanySettings.objects.get(slug='company')
+
 
 REGEX_PATTERS = {
     "NAME": re.compile(r"^[a-zA-Z '.-]*$", re.IGNORECASE),  # name or first second
@@ -33,5 +39,3 @@ class CompanySettingsForm(forms.Form):
                                    validators=[validators.EmailValidator(message="Admin Email Not Valid!")])
     status = forms.BooleanField(label="Website in Maintenance mode:", required=False)
     closed_msg = forms.CharField(label="Closed Message", required=False, widget=forms.Textarea, initial=company_data.close_msg)
-
-    

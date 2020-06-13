@@ -1,70 +1,8 @@
 /* My Custom Colors and some styles */
 
-.btn-danger {
-    background-color: #fd397a !important;
-    border-color: #fd397a !important;
-    color: #ffffff;
-}
-
-.btn-danger:hover {
-    color: #fff;
-    background-color: #fd1361 !important;
-    border-color: #fc0758 !important;
-}
-
-.btn-outline-danger:hover {
-    color: #ffffff;
-    background-color: #fd397a !important;
-    border-color: #fd397a !important;
-}
-
-.btn-outline-danger:hover {
-    color: #fff;
-    background-color: #fd397a !important;
-    border-color: #fd397a !important;
-}
-
-.btn-outline-danger:not(:disabled):not(.disabled):active,
-.btn-outline-danger:not(:disabled):not(.disabled).active,
-.show>.btn-outline-danger.dropdown-toggle {
-    color: #fff;
-    background-color: #fd397a !important;
-    border-color: #fd397a !important;
-}
-
-.kt-badge--danger {
-    color: #ffffff !important;
-    background: #fd397a !important;
-}
-
-.kt-font-danger {
-    color: #fd397a !important;
-}
-
-.alert.alert-danger {
-    background: #fd397a !important;
-    border: 1px solid #fd397a !important;
-    color: #ffffff;
-}
-
-.alert.alert-outline-danger .alert-text {
-    color: #fd397a !important;
-}
-
-
-
-.alert.alert-outline-danger {
-    border: 1px solid #fd397a !important;
-    color: #fd397a !important;
-}
-
-.alert.alert-outline-danger .alert-icon i {
-    color: #fd397a !important;
-}
-
-.kt-ribbon--danger .kt-ribbon__target {
-    background-color: #fd397a !important;
-    color: #ffffff;
+button:disabled {
+  cursor: not-allowed !important;
+  pointer-events: all !important;
 }
 
 .b-u,

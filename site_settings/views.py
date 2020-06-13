@@ -1,23 +1,30 @@
 from django.shortcuts import (render, reverse, get_object_or_404)
 from django.views.generic import (TemplateView, FormView, UpdateView, DetailView)
+from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import FormMixin
 from .models import CompanySettings
 # from django.views.generic.edit import (UpdateView)
 from .forms import CompanySettingsForm
-from .models import CompanySettings
 from django.contrib import messages
 from django.urls import reverse_lazy
 
 
 
-class CompanySettingsView(SuccessMessageMixin, FormMixin, DetailView):
+class CompanySettingsView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, FormMixin, DetailView):
     template_name = "site_settings/settings.html"
     form_class = CompanySettingsForm
     success_url = reverse_lazy('settings-company')
     model = CompanySettings
     success_message = "Company information updated!"
-    
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
 
     def get_object(self):
         return get_object_or_404(CompanySettings, slug="company")
@@ -42,7 +49,7 @@ class CompanySettingsView(SuccessMessageMixin, FormMixin, DetailView):
             company_settings.status = form.cleaned_data.get("status")
             company_settings.close_msg = form.cleaned_data.get("close_msg")
             company_settings.save()
-            
+
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):

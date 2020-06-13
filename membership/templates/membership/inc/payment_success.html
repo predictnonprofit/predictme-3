@@ -8,57 +8,36 @@ Charge Successfully
 
 {% block customcss %}
 
-<style>
-
-    .kt-callout--danger {
-        background-color: rgba(253, 57, 122, 0.07) !important;
-    }
-
-    .btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled).active, .show > .btn-danger.dropdown-toggle {
-        color: #fff;
-        background-color: #fc0758 !important;
-        border-color: #f40252 !important;
-    }
-
-    .btn-danger:hover {
-        color: #fff;
-        background-color: #fd1361;
-        border-color: #fc0758;
-    }
-
-    .btn-danger {
-        color: #fff;
-        background-color: #fd397a;
-        border-color: #fd397a;
-        color: #ffffff;
-    }
-</style>
 
 {% endblock customcss %}
 
 {% block content %}
-<section class="kt-container my-5" style="min-height: 75vh;">
+<section class="container my-5" style="min-height: 75vh;">
 
-    <div class="kt-portlet kt-callout kt-callout--success">
-        <div class="kt-portlet__body">
-            <div class="kt-callout__body">
-                <div class="kt-callout__content">
-                    <h3 class="kt-callout__title">Register Successfully!</h3>
-                    <p class="kt-callout__desc text-justify">
-                        Your account is inactive, wait until Administrator review and active your account, if you have
-                        any problem
-                        contact us <a href="mailto:email@email.com">predictme@email.com</a> directly<br/>
-                        You will be redirect to login page please wait...
-                    </p>
-                </div>
-                <div class="kt-callout__action">
-                    <button disabled type="button" class="btn btn-custom btn-bold btn-upper btn-font-sm  btn-success">
-                        <span id="paymentCounter">5</span>
-                    </button>
-                </div>
-            </div>
+
+
+  <div class="card card-custom gutter-b bg-light-success">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between p-4 flex-lg-wrap flex-xl-nowrap">
+        <div class="d-flex flex-column mr-5">
+          <a href="#" class="h4 text-dark text-hover-primary mb-5">
+            Register Successfully!
+          </a>
+          <p class="text-dark-50">
+            Your account is inactive, wait until Administrator review and active your account, if you have
+            any problem
+            contact us <a href="mailto:email@email.com">predictme@email.com</a> directly<br />
+            You will be redirect to login page please wait...
+          </p>
         </div>
+        <div class="ml-6 ml-lg-0 ml-xxl-6 flex-shrink-0">
+          <button disabled type="button" class="btn btn-custom btn-bold btn-upper btn-font-sm  btn-success">
+            <span id="paymentCounter">5</span>
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
 
@@ -67,19 +46,18 @@ Charge Successfully
 
 {% block customjs %}
 <script>
-    var sec = 6;
-    setInterval(function () {
-        sec--;
-        if(sec >= 0){
-            document.getElementById("paymentCounter").innerText = sec;
-        }
+  var sec = 6;
+  setInterval(function() {
+    sec--;
+    if (sec >= 0) {
+      document.getElementById("paymentCounter").innerText = sec;
+    }
 
-    }, 1000)
+  }, 1000)
 
-    // timer to redirect member after charge payment successfuly
-    setTimeout(function () {
-        window.location.href = "{% url 'logout' %}";
-    }, 7000);
-
+  // timer to redirect member after charge payment successfuly
+  setTimeout(function() {
+    window.location.href = "{% url 'logout' %}";
+  }, 7000);
 </script>
 {% endblock customjs %}

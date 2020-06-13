@@ -3,13 +3,58 @@
 {% load static %}
 {% load socialaccount %}
 
+
 {% block title %}
-Run Modal
+Manage Your Data
 {% endblock title %}
 
 {% block customcss %}
 <!--begin::Page Vendors Styles(used by this page)-->
+<link href="{% static 'assets/css/custom/stripe_extra_form.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'assets/plugins/custom/jstree/jstree.bundle.css' %}" rel="stylesheet" type="text/css" />
+<style>
+   .myText {
+   text-decoration: line-through;
+   }
+  .row-full {
+    width: 90vw;
+    position: relative;
+    margin-left: -50vw;
+
+    left: 57%;
+
+  }
+
+  #data_handler_table thead {
+    color: #B5B5C3;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+    cursor: pointer;
+  }
+
+  ul.vakata-context,
+  ul.jstree-contextmenu,
+  ul.jstree-default-contextmenu {
+    z-index: 9999;
+  }
+
+  #semitransparent {
+    width: auto;
+    height: 313px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+   
+    -moz-opacity: .80;
+    filter: alpha(opacity=80);
+    opacity: .80;
+  }
+</style>
 
 {% endblock customcss %}
 
@@ -39,311 +84,415 @@ Data Handler
 {% include "data_handler/inc/columns_dualbox.html" %}
 <!-- ./Columns Dual Box   -->
 
+<!-- Records Counter Box   -->
+{% include "data_handler/inc/count_records_progress_modal.html" %}
+<!-- ./Records Counter Box  -->
+
 <!--begin::Row-->
-<div class="alert alert-custom alert-white shadow-lg fade show mb-5" role="alert">
-
-    <div class="alert-text">
-        <label class="checkbox checkbox-primary">
-            <input id="agreeDataHandlerCheckBox" type="checkbox" checked="checked">Agree Data Handler upload
-            <span></span>
-        </label>
-        <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
-            Terms and Conditions
-        </a>
-    </div>
-
-</div>
 
 
 <!-- Start when user not upload file yet -->
-<section class="my-5">
-    {% if member_data_file.file_upload_procedure == "None" %}
-    <div class="card card-custom">
-        <div class="card-header card-header-tabs-line">
-            <div class="card-title">
-                <h3 class="card-label">Upload Your data file</h3>
-            </div>
-            <div class="card-toolbar">
-                <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
-                    {% csrf_token %}
-                    <ul class="nav nav-tabs nav-bold nav-tabs-line">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#upload_tab">
-                                <span class="nav-icon"><i class="icon-xl fas fa-file-upload"></i></span>
-                                <span class="nav-text">Upload</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " data-toggle="tab" href="#google_drive_tab">
-                                <span class="nav-icon"><i style="color: #FFD04B;"
-                                        class="icon-xl fab fa-google-drive"></i></span>
-                                <span class="nav-text">Drive</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#dropbox_tab">
-                                <span class="nav-icon"><i style="color: #0060FF;"
-                                        class="icon-xl fab fa-dropbox"></i></span>
-                                <span class="nav-text">Dropbox</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#onedrive_tab">
-                                <span class="nav-icon"><i style="color: #2778D3;"
-                                        class="icon-xl fas fa-cloud"></i></span>
-                                &nbsp;<span class="nav-text">OneDrive</span>
-                            </a>
-                        </li>
+<section class="my-5 ">
 
+  {% if get_user_membership.data_file_obj.file_upload_procedure == "None" %}
 
-                    </ul>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="upload_tab" role="tabpanel" aria-labelledby="upload_tab">
-                    <div class="form-group">
+  <div class="alert alert-custom alert-white shadow-lg fade show mb-5" role="alert">
 
-                        <!-- <label>File Browser</label> -->
-                        <div></div>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="donerFile" name="donor_file" required
-                                accept=".xlsx, .csv" />
-                            <label class="custom-file-label" for="donerFile">Choose file</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group ">
-                        <div class="alert alert-custom alert-secondary" role="alert">
-                            <div class="alert-icon">
-                                <i class="flaticon-questions-circular-button"></i>
-                            </div>
-                            <div class="alert-text">Allowed Files (csv, xlsx)</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade text-center" id="google_drive_tab" role="tabpanel"
-                    aria-labelledby="google_drive_tab">
-                    <a target="_blank" href="{% provider_login_url 'google' process="connect" %}"
-                        class="btn btn-primary border-0 w-75" style="background-color: #1FA463;">
-                        <i class="icon-xl fab fa-google-drive"></i> Browse
-                    </a>
-                </div>
-                <div class="tab-pane fade text-center" id="dropbox_tab" role="tabpanel" aria-labelledby="dropbox_tab">
-                    <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #0060FF;">
-                        <i class="icon-xl fab fa-dropbox"></i> Browse
-                    </button>
-                </div>
-                <div class="tab-pane text-center fade" id="onedrive_tab" role="tabpanel" aria-labelledby="onedrive_tab">
-                    <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #2778D3;">
-                        <i class="icon-xl fas fa-cloud"></i> Browse
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer d-flex justify-content-between">
-            <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
-                data-toggle="tooltip" title="Cancel and close">
-                <i class="la la-close"></i>
-            </button>
-            &nbsp;
-            <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
-                data-toggle="tooltip" title="Upload!">
-                <i class="la la-upload"></i>
-            </button>
-        </div>
-        </form>
+    <div class="alert-text">
+      <label class="checkbox checkbox-primary">
+        <input id="agreeDataHandlerCheckBox" type="checkbox">Agree Data Handler upload
+        <span></span>
+      </label>
+      <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
+        Terms and Conditions
+      </a>
     </div>
 
+  </div>
+  <div class="card card-custom ">
 
-    {% else %}
-    {% if member_data_file.all_records_count > member_data_file.allowed_records_count  %}
-    <!-- Start When Member Exceed records -->
-    <div class="card card-custom wave wave-animate wave-danger mb-6 ">
-        <div class="card-body">
-            <div class="d-flex align-items-center p-5">
-                <div class="mr-6">
+    <div class="card-header card-header-tabs-line">
+      <div class="card-title">
+        <h3 class="card-label">Upload Your data file</h3>
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+          <div class="btn-group mr-2 mt-3" role="group" aria-label="...">
+            <button data-target='#instructionsModal' data-toggle="modal" type="button" class="btn btn-outline-secondary btn-icon w-80px">
+              <span data-toggle="tooltip" title='Read upload instructions'>
+                <i class="icon-xl la fab la-readme"></i>
+              </span>
+            </button>
+            <a href="{% url 'data-handler-temp-download' %}" class="btn btn-outline-secondary btn-icon w-80px">
+              <span data-toggle="tooltip" title="Download upload instructions template">
+                <i class="icon-xl la la-file-download"></i>
+              </span>
+            </a>
 
-                    <span class="svg-icon svg-icon-danger svg-icon-4x">
-                        <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Code\Warning-1-circle.svg--><svg
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
-                            height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect x="0" y="0" width="24" height="24" />
-                                <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
-                                <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
-                                <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
-                            </g>
-                        </svg>
-                        <!--end::Svg Icon--></span>
-                </div>
-                <div class="d-flex flex-column">
-                    <a href="#" data-toggle="modal" data-target="#extraRecordsModel"
-                        class="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">
-                        How to solve this
-                    </a>
-                    <div class="text-dark-75">You are about to rich your records limit!</div>
-                </div>
-            </div>
+          </div>
+
         </div>
+      </div>
+      <div class="card-toolbar">
+        <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
+          {% csrf_token %}
+          <ul class="nav nav-tabs nav-bold nav-tabs-line">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#upload_tab">
+                <span class="nav-icon"><i class="icon-xl fas fa-file-upload"></i></span>
+                <span class="nav-text">Upload</span>
+              </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" title="Soon!">
+              <a class="nav-link disabled" data-toggle="tab" href="#google_drive_tab">
+                <span class="nav-icon"><i style="color: #FFD04B;" class="icon-xl fab fa-google-drive"></i></span>
+                <span class="nav-text">Drive</span>
+              </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" title="Soon!">
+              <a class="nav-link disabled" data-toggle="tab" href="#dropbox_tab">
+                <span class="nav-icon"><i style="color: #0060FF;" class="icon-xl fab fa-dropbox"></i></span>
+                <span class="nav-text">Dropbox</span>
+              </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" title="Soon!">
+              <a class="nav-link disabled" data-toggle="tab" href="#onedrive_tab">
+                <span class="nav-icon"><i style="color: #2778D3;" class="icon-xl fas fa-cloud"></i></span>
+                &nbsp;<span class="nav-text">OneDrive</span>
+              </a>
+            </li>
+
+
+          </ul>
+      </div>
     </div>
-    <!-- End When Member Exceed records -->
-    {% else %}
-    <!-- Start Data Table -->
-    <div class="card card-custom">
-        <div class="card-header flex-wrap border-0 pt-6 pb-0">
-            <div class="card-title">
-                <h3 class="card-label">Sub-datatable Demo
-                    <span class="d-block text-muted pt-2 font-size-sm">Sub-datatable example with local
-                        datasource</span></h3>
-            </div>
-            <div class="card-toolbar">
-                <!--begin::Dropdown-->
-                <div class="dropdown dropdown-inline mr-2">
-                    <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="svg-icon svg-icon-md">
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="0" y="0" width="24" height="24" />
-                                    <path
-                                        d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z"
-                                        fill="#000000" opacity="0.3" />
-                                    <path
-                                        d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z"
-                                        fill="#000000" />
-                                </g>
-                            </svg>
-                            <!--end::Svg Icon-->
-                        </span>Export</button>
-                    <!--begin::Dropdown Menu-->
-                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                        <!--begin::Navigation-->
-                        <ul class="navi flex-column navi-hover py-2">
-                            <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">
-                                Choose an option:</li>
-                            <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                    <span class="navi-icon">
-                                        <i class="la la-print"></i>
-                                    </span>
-                                    <span class="navi-text">Print</span>
-                                </a>
-                            </li>
-                            <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                    <span class="navi-icon">
-                                        <i class="la la-copy"></i>
-                                    </span>
-                                    <span class="navi-text">Copy</span>
-                                </a>
-                            </li>
-                            <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                    <span class="navi-icon">
-                                        <i class="la la-file-excel-o"></i>
-                                    </span>
-                                    <span class="navi-text">Excel</span>
-                                </a>
-                            </li>
-                            <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                    <span class="navi-icon">
-                                        <i class="la la-file-text-o"></i>
-                                    </span>
-                                    <span class="navi-text">CSV</span>
-                                </a>
-                            </li>
-                            <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                    <span class="navi-icon">
-                                        <i class="la la-file-pdf-o"></i>
-                                    </span>
-                                    <span class="navi-text">PDF</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <!--end::Navigation-->
-                    </div>
-                    <!--end::Dropdown Menu-->
-                </div>
-                <!--end::Dropdown-->
-                <span data-toggle="tooltip" title="Download Your Data">
-                    <button type="button" class="btn btn-primary font-weight-bolder" data-toggle="modal"
-                        data-target="#donerFilesModal">
-                        <i class="icon-xl la la-file-download"></i>
+    <div class="card-body position-relative">
+      <div id="semitransparent" class="text-center bg-gray-200">
+          <h2 class="font-weight-bolder my-35 mx-auto" style="color: #000000;">
+            Pleas read <span class='text-danger cursor-pointer btn-link h2' data-target='#instructionsModal'
+              data-toggle="modal"><b>Donor File Upload Instructions</b></span> and
+            accept the terms to upload the file.
+          </h2>
+      </div>
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="upload_tab" role="tabpanel" aria-labelledby="upload_tab">
+          <div class="form-group">
 
-                    </button>
-                </span>
-                <!--end::Button-->
-
+            <!-- <label>File Browser</label> -->
+            <div></div>
+            <div class="custom-file">
+              <input disabled type="file" class="custom-file-input" id="donerFile" name="donor_file" required
+                accept=".xlsx, .csv" />
+              <label class="custom-file-label" for="donerFile">Choose file</label>
             </div>
+          </div>
+
+          <div class="form-group ">
+            <div class="alert alert-custom alert-secondary" role="alert">
+              <div class="alert-icon">
+                <i class="flaticon-questions-circular-button"></i>
+              </div>
+              <div class="alert-text">Allowed Files (csv, xlsx)</div>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
+        <div class="tab-pane fade text-center" id="google_drive_tab" role="tabpanel" aria-labelledby="google_drive_tab">
+          <a target="_blank" href="{% provider_login_url 'google' process="connect" %}"
+            class="btn btn-primary border-0 w-75" style="background-color: #1FA463;">
+            <i class="icon-xl fab fa-google-drive"></i> Browse
+          </a>
+        </div>
+        <div class="tab-pane fade text-center" id="dropbox_tab" role="tabpanel" aria-labelledby="dropbox_tab">
+          <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #0060FF;">
+            <i class="icon-xl fab fa-dropbox"></i> Browse
+          </button>
+        </div>
+        <div class="tab-pane text-center fade" id="onedrive_tab" role="tabpanel" aria-labelledby="onedrive_tab">
+          <button type="button" class="btn btn-primary border-0 w-75" style="background-color: #2778D3;">
+            <i class="icon-xl fas fa-cloud"></i> Browse
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+      {% comment %} <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+        data-toggle="tooltip" title="Cancel and close">
+        <i class="la la-close"></i>
+      </button> {% endcomment %}
+      &nbsp;
+      <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;" data-toggle="tooltip"
+        title="Upload!">
+        <i class="la la-upload"></i>
+      </button>
+    </div>
+    </form>
+  </div>
 
+
+
+  {% else %}
+  {% if get_user_membership.data_file_obj.all_records_count > get_user_membership.membership.allowed_records_count  %}
+  <!-- Start When Member Exceed records -->
+  <div class="alert alert-custom alert-notice alert-light-danger fade show mb-5" role="alert">
+
+    <div class="alert-text">
+      <b>{{get_user_membership.data_file_obj.all_records_count}}</b>
+      of
+      <b>{{get_user_membership.membership.allowed_records_count}}</b>
+      record(s) have been used!!!
+    </div>
+    <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" id="deleteDataFileBtn"
+      title="Delete your data file!">
+      <i class="icon-xl la la-trash"></i>
+    </button>
+  </div>
+  <div class="card card-custom wave wave-animate wave-danger mb-6 ">
+    <div class="card-body">
+
+      <div class="d-flex align-items-center p-5">
+        <div class="mr-6">
+
+          <span class="svg-icon svg-icon-danger svg-icon-4x">
+            <!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Code\Warning-1-circle.svg--><svg
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+              viewBox="0 0 24 24" version="1.1">
+              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <rect x="0" y="0" width="24" height="24" />
+                <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
+                <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
+                <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
+              </g>
+            </svg>
+            <!--end::Svg Icon--></span>
+        </div>
+        <div class="d-flex flex-column">
+          <a href="#" data-toggle="modal" data-target="#extraRecordsModel"
+            class="text-dark font-weight-bold font-size-h4 mb-3 btn">
+            How to solve this <i class="icon-lg la la-hand-pointer-o"></i>
+          </a>
+          <div class="text-dark-75">You are about to rich your records limit!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End When Member Exceed records -->
+  {% else %}
+  <!-- Start Data Table -->
+  <div class="alert alert-custom alert-notice alert-light-success fade show mb-5" role="alert">
+    <div class="alert-icon">
+      <span class="label label-xl label-success mr-2">{{get_user_membership.data_file_obj.all_records_count}}</span>
+    </div>
+    <div class="alert-text">
+      <b>{{get_user_membership.data_file_obj.all_records_count}}</b>
+      of
+      <b>{{get_user_membership.membership.allowed_records_count}}</b>
+      record(s) have been used
+    </div>
+
+  </div>
+  <div class="">
+    <div class="card card-custom ">
+      <div class="card-header flex-wrap border-0 pt-6 pb-0">
+        <div class="card-title">
+          <h3 class="card-label">Your Data File Records
+            <span class="d-block text-muted pt-2 font-size-sm">Sorting &amp; edit your data</span></h3>
+        </div>
+        <div class="card-toolbar">
+          <!--begin::Dropdown-->
+          <div class="dropdown dropdown-inline mr-2">
+            <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="svg-icon svg-icon-md">
+                <!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                  height="24px" viewBox="0 0 24 24" version="1.1">
+                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect x="0" y="0" width="24" height="24" />
+                    <path
+                      d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z"
+                      fill="#000000" opacity="0.3" />
+                    <path
+                      d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z"
+                      fill="#000000" />
+                  </g>
+                </svg>
+                <!--end::Svg Icon-->
+              </span>Export</button>
+            <!--begin::Dropdown Menu-->
+            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+              <!--begin::Navigation-->
+              <ul class="navi flex-column navi-hover py-2">
+                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choose an
+                  option:</li>
+                <li class="navi-item">
+                  <a href="#" class="navi-link">
+                    <span class="navi-icon">
+                      <i class="la la-print"></i>
+                    </span>
+                    <span class="navi-text">Print</span>
+                  </a>
+                </li>
+                <li class="navi-item">
+                  <a href="#" class="navi-link">
+                    <span class="navi-icon">
+                      <i class="la la-copy"></i>
+                    </span>
+                    <span class="navi-text">Copy</span>
+                  </a>
+                </li>
+                <li class="navi-item">
+                  <a href="#" class="navi-link">
+                    <span class="navi-icon">
+                      <i class="la la-file-excel-o"></i>
+                    </span>
+                    <span class="navi-text">Excel</span>
+                  </a>
+                </li>
+                <li class="navi-item">
+                  <a href="#" class="navi-link">
+                    <span class="navi-icon">
+                      <i class="la la-file-text-o"></i>
+                    </span>
+                    <span class="navi-text">CSV</span>
+                  </a>
+                </li>
+                <li class="navi-item">
+                  <a href="#" class="navi-link">
+                    <span class="navi-icon">
+                      <i class="la la-file-pdf-o"></i>
+                    </span>
+                    <span class="navi-text">PDF</span>
+                  </a>
+                </li>
+              </ul>
+              <!--end::Navigation-->
+            </div>
+            <!--end::Dropdown Menu-->
+          </div>
+
+          <!--end::Dropdown-->
+          <!--begin::Button-->
+          <!-- <span data-toggle="tooltip" title="Download Your Data">
+            <button type="button" class="btn btn-primary font-weight-bolder" data-toggle="modal"
+              data-target="#donerFilesModal">
+              <i class="icon-xl la la-file-download"></i>
+
+            </button>
+          </span> -->
+          <span data-toggle="tooltip" title="Reselect the columns">
+            <button id='reselectColumnsBtn' type="button" class="btn btn-outline-primary font-weight-bolder">
+              <i class="icon-xl la la-check-square-o"></i>
+
+            </button>
+          </span>
+          <button type="button" class="btn btn-success btn-shadow font-weight-bold mx-2 px-6 " data-toggle="tooltip"
+            title="Save to your data file" id="saveDataFileBtn">
+            Save <i class="icon-lg la la-save"></i>
+          </button>
+          <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" id="deleteDataFileBtn"
+            title="Delete your data file!">
+            <i class="icon-xl la la-trash"></i>
+          </button>
+          <!--end::Button-->
+
+        </div>
+
+      </div>
+      <div class="card-body ">
+
+
+        <!--begin: Datatable-->
+        <section id="donorDataTable">
+          <form method="POST">
+            {% csrf_token %}
             <!--begin::Search Form-->
-            <form action="">
-                <div class="mb-7">
-                    <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8">
-                            <div class="row align-items-center">
-                                <div class="col-md-4 my-2 my-md-0">
-                                    <div class="input-icon">
-                                        <input type="text" class="form-control" placeholder="Search..."
-                                            id="kt_datatable_search_query" />
-                                        <span>
-                                            <i class="flaticon2-search-1 text-muted"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 my-2 my-md-0">
-                                    <div class="d-flex align-items-center">
-                                        <label class="mr-3 mb-0 d-none d-md-block">Status:</label>
-                                        <select class="form-control" id="kt_datatable_search_status">
-                                            <option value="">All</option>
-                                            <option value="1">Pending</option>
-                                            <option value="2">Delivered</option>
-                                            <option value="3">Canceled</option>
-                                            <option value="4">Success</option>
-                                            <option value="5">Info</option>
-                                            <option value="6">Danger</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 my-2 my-md-0">
-                                    <div class="d-flex align-items-center">
-                                        <label class="mr-3 mb-0 d-none d-md-block">Type:</label>
-                                        <select class="form-control" id="kt_datatable_search_type">
-                                            <option value="">All</option>
-                                            <option value="1">Online</option>
-                                            <option value="2">Retail</option>
-                                            <option value="3">Direct</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
-                            <a href="#" class="btn btn-light-primary px-6 font-weight-bold">Search</a>
-                        </div>
+            <div class="mb-7">
+              <div class="row align-items-center">
+                <div class="col-lg col-xl">
+                  <div class="row align-items-center">
+                    <div class="col-md-4 my-2 my-md-0">
+                      <div class="input-icon">
+                        <input type="text" class="form-control " placeholder="Search..." id="dataTableSearchQuery" />
+                        <span>
+                          <i class="flaticon2-search-1 text-muted"></i>
+                        </span>
+                      </div>
                     </div>
+                    <button id="searchDataTableBtn" type="button"
+                      class="btn btn-light-primary px-6 font-weight-bold">Search</button>
+                      <div class="col-2 text-right">
+                         <select class='form-control' name="" id="recordsCount">
+                           <option value="50">50</option>
+                           <option value="50">100</option>
+                           <option value="50">150</option>
+                           <option value="50">200</option>
+                         </select>
+                      </div>
+                  </div>
                 </div>
+               
+
+
+              </div>
+
+            </div>
+            <!--end: Search Form-->
+          </form>
+          <!--begin: Datatable-->
+
+          <div id="save-row-loader" class="position-relative text-center mx-auto " style="z-index: 1; display: none;">
+            <div class=" w-25  position-absolute" style="left: 38%;  ">
+              <div class="card card-custom gutter-b border " style="background-color: #EEF0F8;">
+
+                <div class="card-body ">
+                  <h4>Please wait...</h4>
+                  <div class="spinner spinner-track spinner-dark spinner-lg mt-7" style="left: 45%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <section id="dataListTable" class="table-responsive" style="transition: all 0.5s ease-out;">
+            <div class="container position-relative" id="loadingDataSpinner">
+              <div class="row justify-content-center">
+                <div class="col-1 text-center">
+                  <div class="position-absolute" style="top: 75px;">
+                    <div class="spinner spinner-primary spinner-lg"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <form method="POST" id="dataFileTableForm">
+              {% csrf_token %}
+              <div style="overflow:auto; height:700px;" id="dataTableWrapper">
+                <table id="data_handler_table" class="table datatable-table">
+                  <caption>Member Data File</caption>
+                
+                  <thead class="datatable-head">
+                    <tr></tr>
+                  </thead>
+                
+                  <tbody class="datatable-body">
+                    <tr></tr>
+                  </tbody>
+                
+                  <tfoot>
+                    <tr></tr>
+                  </tfoot>
+                
+                </table>
+              </div>
             </form>
-            <!--end::Search Form-->
+          </section>
+          <!--end: Datatable-->
+        </section>
 
-            <!--begin: Datatable-->
-            <section id="donorDataTable">
-                <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
-            </section>
-            <!--end: Datatable-->
-        </div>
+      </div>
     </div>
-    <!-- End Data Table -->
-    {% endif %}
+  </div>
+  <!-- End Data Table -->
+  {% endif %}
 
-    {% endif %}
+  {% endif %}
 
 </section>
 <!-- end when user not upload file yet -->
@@ -360,19 +509,39 @@ Data Handler
 {% endblock content%}
 
 {% block customjs %}
+<script src="{% static 'assets/js/custom/data_handler_stripe.js' %}"></script>
 <script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}"></script>
 <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
 <!--end::Page Vendors-->
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/features/miscellaneous/treeview.js' %}"></script>
+<script src="{% static 'assets/js/custom/data_handler_tree.js' %}"></script>
 <!--begin::Page Scripts(used by this page)-->
 
-<script src="{% static 'assets/js/pages/crud/ktdatatable/base/data-ajax.js' %}"></script>
-
+<!--end::Page Vendors-->
+<!--begin::Page Scripts(used by this page)-->
+<script src="{% static 'assets/js/custom/data_handler_fetch_rows.js' %}"></script>
 
 
 <!-- Custom Script of data handler list page -->
 <script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
+
+
+<script>
+  window.onbeforeunload = function (e) {
+    e = e || window.event;
+
+    // For IE and Firefox prior to version 4
+    if (e) {
+      e.returnValue = 'Sure?';
+    }
+
+    // For Safari
+    return 'Sure?';
+  };
+</script>
+<!-- Custom script of dualbox -->
+<script src="{% static 'assets/js/custom/dualbox.js' %}"></script>
+
 
 
 {% endblock customjs %}

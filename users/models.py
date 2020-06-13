@@ -4,8 +4,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-
-
 from .managers import CustomUserManager
 
 
@@ -40,9 +38,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     num_of_volunteer = models.IntegerField(null=True, blank=True)
     num_of_board_members = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=MEMBER_STATUS, default="unverified")
-    avatar = models.CharField(max_length=255, null=True, blank=True)
     # membership = models.OneToOneField(to="membership.Membership", null=True, on_delete=models.CASCADE, blank=True)
     member_register_token = models.CharField(max_length=150, null=True, blank=True)
+    stripe_card_token = models.CharField(max_length=200, null=True, blank=True)
+    stripe_customer_id = models.CharField(max_length=200, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -51,6 +50,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        db_table = "members"
 
 
 
@@ -61,7 +63,3 @@ class UnverifiedMember(models.Model):
 
      class Meta:
         db_table = "unverified_member"
-        
-
-
-

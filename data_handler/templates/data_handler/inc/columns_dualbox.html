@@ -1,33 +1,107 @@
-
 <!-- Modal-->
 <div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" tabindex="-1" role="dialog"
-     aria-labelledby="columnsDualBoxModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    aria-labelledby="columnsDualBoxModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Pick columns</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" style="display: none;" id='closeColumnsDualBoxBtn' class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                
-                <div class="container">
-                    <div class="row h-100">
-                        <div class="col-12 my-auto">
-                            <div id="dualBoxBlock" style="margin-left: 120px;">
-                                <form class="kt-form" method="POST">
-                                    {% csrf_token %}
-                                    <select id="data_file_available_columns" class="dual-listbox" multiple></select>
-                                </form>
+            <div class="modal-body pb-0">
+
+                <!--begin::Row-->
+
+
+                <div class="card card-custom gutter-b mx-auto" style="height: 100%;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="card-label">
+                                Pick columns with its data type
+                                <small><strong></strong></small>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="card-body h-100">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col border-right">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <div class="font-weight-bolder" id='avaliableColumnsTotal'>
+                                            <h5>Columns total &nbsp;<b></b></h5>
+                                        </div>
+                                        <ul class="list-group" id="availableColumnsList"
+                                            style="overflow-y: scroll; height: 400px;">
+
+                                        </ul>
+
+                                </div>
+
+                                <div class="col-1">
+                                    <button type="button" id="addColumnBtn" class="btn btn-light my-2">></button>
+                                    <button type="button" id="removeColumnBtn" class="btn btn-light my-2">
+                                        <</button> 
+                                        &nbsp;&nbsp;&nbsp;
+                                        <button type="button" id="addAllColumnsBtn"
+                                            class="btn btn-light my-2 ">>>
+                                    </button>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <button type="button" id="removeAllColumnsBtn" class="btn btn-light my-2 ">
+                                        <<</button> 
+                                    
+                                    </div>
+                                     <div class="col border-left">
+                                            <!--begin::Table-->
+                                             <div class="font-weight-bolder" id='pickedColumnsTotal'>
+                                                 <h5>Columns picked &nbsp;<b></b></h5>
+                                             </div>
+                                            <ul class="list-group" id="pickedColumnsList"
+                                                style="overflow-y: scroll; height: 400px;">
+                                            </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="card-footer pb-0">
+                        <div class="text-right">
+                            <button type="button" id="resetColumnBoxBtn"
+                                class="btn btn-outline-danger font-weight-bold">Reset
+                            </button>
+                            <button type="button" id='validateColumnsBtn'
+                                class="btn btn-light-primary font-weight-bold">Validate
+                            </button>
+                        </div>
+                        <p class="text-left">
+                            <div class="alert alert-custom alert-notice alert-light-warning fade show mb-5"
+                                role="alert">
+                                <div class="alert-icon">
+                                    <i class="flaticon-warning"></i>
+                                </div>
+                                <div class="alert-text">
+                                    <ul>
+                                        <li><strong>Your file must contain Dooner ID</strong></li>
+                                        <li><strong>Minimum columns selected are 3</strong></li>
+                                        <li><strong>You have to select the data type of selected columns</strong></li>
+                                    </ul>
+                                </div>
+                               
+                            </div>
+                        </p>
+                           
+                        
+                    </div>
                 </div>
+
+                <!--End::Row-->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary font-weight-bold" id="processPickedColumnsBtn">Process</button>
+                <button type="button" class="btn btn-light-danger font-weight-bold" id="cancelReuploadBtn">Cancel &
+                    Re-upload</button>
+                <button type="button" class="btn btn-primary font-weight-bold disabled" disabled
+                    id="processPickedColumnsBtn">Process</button>
+                </form>
             </div>
         </div>
     </div>

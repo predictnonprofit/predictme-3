@@ -1,4 +1,5 @@
-
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 
 class CheckMemberStatus:
@@ -6,7 +7,6 @@ class CheckMemberStatus:
         self.get_response = get_response
         # One-time configuration and initialization.
 
-    
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
@@ -16,7 +16,16 @@ class CheckMemberStatus:
         # Code to be executed for each request/response after
         # the view is called.
 
-        print(type(request))
+        # print(request.user.is_authenticated)
+
+        # print(request.path)
+        if request.user.is_authenticated:
+            print(request.user.status)
+            if request.user.status == "pending":
+                return HttpResponseRedirect(reverse("users_pending"))
+            elif request.user.status == "unverified":
+                return HttpResponseRedirect(reverse("users_pending"))
+
         return response
 
     # def process_request(self, request):

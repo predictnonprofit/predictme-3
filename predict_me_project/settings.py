@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.dropbox',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
+    "predictme_context_processors",
 
 ]
 
@@ -94,6 +95,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "maintenance_mode.context_processors.maintenance_mode",
+                "predictme_context_processors.context_processors.return_all_context",
             ],
         },
     },
@@ -170,8 +172,8 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 # set stripe keys
 if DEBUG:
     # for test data
-    STRIPE_PUBLISHABLE_KEY = ''
-    STRIPE_SECRET_KEY = ''
+        # STRIPE_PUBLISHABLE_KEY = ''
+        # STRIPE_SECRET_KEY = ''
     MAILER_EMAIL_BACKEND = EMAIL_BACKEND
     EMAIL_HOST = os.getenv("EMAIL_HOST")
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
@@ -198,7 +200,7 @@ MAINTENANCE_MODE_IGNORE_URLS = ("dashboard-url")
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 
-SITE_ID = 2
+SITE_ID = 4
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {

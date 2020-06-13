@@ -4,20 +4,49 @@ from django.template.loader import get_template
 from django.views import View
 from xhtml2pdf import pisa
 from weasyprint import HTML, CSS
+from django.shortcuts import (reverse, redirect)
+from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 
 
 
 
-class InvoiceDetailsView(TemplateView):
+class InvoiceDetailsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "invoice_app/detail.html"
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
 
 
-class InvliceListView(TemplateView):
+class InvliceListView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "invoice_app/list.html"
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
 
 
-class InvCreateView(TemplateView):
+class InvCreateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "invoice_app/create.html"
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
 
 
 

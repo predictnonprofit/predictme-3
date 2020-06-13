@@ -7,125 +7,112 @@ Check out
 {% endblock title %}
 
 {% block customcss %}
-<link rel="stylesheet" href="{% static 'assets/css/stripe-checkout.css' %}" type="text/css"/>
+<link rel="stylesheet" href="{% static 'assets/css/stripe-checkout.css' %}" type="text/css" />
 
 {% endblock customcss %}
 
 {% block content %}
+<br />
+<section class="container" style="min-height: 79vh;">
+  <!-- Alert message -->
+  {% include "predict_me/inc/messages.html" %}
+  <!-- ./Alert message -->
+  <!-- Stripe Form Checkout Form -->
+  <div class="my-5">
 
-<section class="kt-container" style="min-height: 79vh;">
+    <script src="https://js.stripe.com/v3/"></script>
+    <form action="{% url 'checkout' %}" method="post" id="payment-form">
+      {% csrf_token %}
+      <fieldset>
+        <legend>Payment Information</legend>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <label>Full Name</label>
+            <div class="input-group">
+              <div class="input-group-prepend"><span class="input-group-text"><i class="la la-user"></i></span></div>
+              <input type="text" readonly value="{{ user_membership.member.full_name }}" name="full_name" class="form-control" placeholder="Full Name">
+            </div>
+            <!--                        <span class="form-text text-muted">Please enter your username</span>-->
+          </div>
+          <div class="col-lg-6 ">
+            <label>Email Address</label>
+            <div class="input-group">
+              <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+              <input type="email" readonly class="form-control" name="email" placeholder="Email" value="{{ user_membership.member.email }}" aria-describedby="basic-addon1">
+            </div>
+            <!--                        <span class="form-text text-muted">Some help content goes here</span>-->
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col">
+            <label for="card-element">
+              Credit or debit card
+            </label>
+            <div>
+              <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
+              </div>
+              <!-- Used to display form errors. -->
+              <div id="card-errors" role="alert"></div>
+            </div>
+          </div>
+        </div>
 
-    <!-- Alert message -->
-        {% if messages %}
-         <div class="alert alert-outline-success fade show mt-5" role="alert">
-                <div class="alert-icon"><i class="flaticon2-check-mark"></i></div>
-                <div class="alert-text">
-                    {{ messages.message }}
 
-                </div>
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <label>Subscription Range</label>
+            <div class="radio-inline">
+              <label class="radio">
+                <input type="radio" value="monthly" name="sub_range"> Monthly
+                <span></span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="sub_range" checked value="yearly"> Yearly
+                <span></span>
+              </label>
 
             </div>
-        {% endif %}
-
-        <!-- ./Alert message -->
-    <!-- Stripe Form Checkout Form -->
-    <div class="my-5">
-
-        <script src="https://js.stripe.com/v3/"></script>
-        <form action="{% url 'checkout' %}" method="post" id="payment-form">
-            {% csrf_token %}
-            <fieldset>
-                <legend>Payment Information</legend>
-                <div class="form-group row">
-                    <div class="col-lg-6">
-                        <label>Full Name</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend"><span class="input-group-text"><i
-                                    class="la la-user"></i></span></div>
-                            <input type="text" readonly value="{{ member.full_name }}" name="full_name" class="form-control"
-                                   placeholder="Full Name">
-                        </div>
-                        <!--                        <span class="form-text text-muted">Please enter your username</span>-->
-                    </div>
-                    <div class="col-lg-6 ">
-                        <label>Email Address</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend"><span class="input-group-text">@</span></div>
-                            <input type="email" readonly class="form-control" name="email" placeholder="Email"
-                                   value="{{ member.email }}" aria-describedby="basic-addon1">
-                        </div>
-                        <!--                        <span class="form-text text-muted">Some help content goes here</span>-->
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col">
-                        <label for="card-element">
-                            Credit or debit card
-                        </label>
-                        <div>
-                            <div id="card-element">
-                                <!-- A Stripe Element will be inserted here. -->
-                            </div>
-                            <!-- Used to display form errors. -->
-                            <div id="card-errors" role="alert"></div>
-                        </div>
-                    </div>
-                </div>
+            <span class="form-text text-muted mt-2">You can change it later</span>
 
 
-                <div class="form-group row">
-                    <div class="col-lg-6">
-                        <label>Subscription Range</label>
-                        <div class="kt-radio-inline">
-                            <label class="kt-radio">
-                                <input type="radio" value="monthly" name="sub_range"> Monthly
-                                <span></span>
-                            </label>
-                            <label class="kt-radio">
-                                <input type="radio" name="sub_range" checked value="yearly"> Yearly
-                                <span></span>
-                            </label>
+          </div>
+          <div class="col-lg-6">
+            <!--                        <label>Inline Checkboxes Checked State</label>-->
+            <span class="form-text text-muted">
+              <p class="text-justify">
+                By checking the checkbox below, you agree to our <b><a target="_blank" href="{% url 'terms' %}">Terms of Use</a></b> and our
+                <b><a href="#" id="paymentTermsLink" data-toggle="modal" data-target="#paymentModal">Payment Terms</a></b>,
+                You may cancel at any time. <b><a href="/" target="_blank">Predict ME</a></b> will automatically continue your
+                membership and charge the membership fee <b id="sPrice">Currently ${{user_membership.membership.yearly_fee}}</b> to your payment method on a
+                <b id="sRange">Month</b> basis until you cancel.
+              </p>
+            </span>
+            <div class="kt-checkbox-inline">
+              <label class="checkbox checkbox-primary">
+                <input type="checkbox" value="agree" name="agree_payment" id="agree_payment"> I Agree
+                <span></span>
+              </label>
 
-                        </div>
-                        <!--                        <span class="form-text text-muted">Some help text goes here</span>-->
-                    </div>
-                    <div class="col-lg-6">
-                        <!--                        <label>Inline Checkboxes Checked State</label>-->
-                        <span class="form-text text-muted">
-                             <p class="text-justify">
-                                 By checking the checkbox below, you agree to our <b><a target="_blank"
-                                                                                     href="{% url 'terms' %}">Terms of Use</a></b> and our
-                                 <b><a href="#" id="paymentTermsLink" data-toggle="modal" data-target="#paymentModal">Payment Terms</a></b>,
-                                 You may cancel at any time. <b><a href="/" target="_blank">Predict ME</a></b> will automatically continue your
-                            membership and charge the membership fee <b id="sPrice">Currently $7.99</b> to your payment method on a
-                            <b id="sRange">Month</b> basis until you cancel.
-                             </p>
-                        </span>
-                        <div class="kt-checkbox-inline">
-                            <label class="kt-checkbox">
-                                <input type="checkbox" value="agree" name="agree_payment" id="agree_payment"> I Agree
-                                <span></span>
-                            </label>
-                        </div>
+            </div>
 
 
-                    </div>
-                </div>
+          </div>
+        </div>
 
 
-                <div class="row form-group">
-                    <div class="col text-right">
-                        <button type="submit" id="paymentBtn" disabled class="btn btn-success"><i
-                                class="fa fa-dollar-sign"></i> Subscript
-                        </button>
-                    </div>
-                </div>
-            </fieldset>
+        <div class="row form-group">
+          <div class="col text-right">
+            <button type="submit" id="paymentBtn" disabled class="btn btn-success"><i class="fa fa-dollar-sign"></i> Subscript
+            </button>
+          </div>
+        </div>
+      </fieldset>
 
 
-        </form>
-    </div>
-    <!-- ./Stripe Form Checkout Form -->
+    </form>
+  </div>
+  <!-- ./Stripe Form Checkout Form -->
 
 </section>
 
