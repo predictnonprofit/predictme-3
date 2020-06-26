@@ -82,8 +82,10 @@ $(document).ready(function () {
         let paymentBtn = $('#paymentBtn');
         if (this.checked) {
             paymentBtn.removeAttr("disabled");
+            paymentBtn.removeClass("disabled not-allowed-cursor");
         } else {
             paymentBtn.attr("disabled", "disabled");
+            paymentBtn.addClass("disabled not-allowed-cursor");
         }
     });
 

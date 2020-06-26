@@ -40,7 +40,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="{# static 'assets/css/mycolors.css' #}">
     <style>
-        
+
     </style>
 </head>
 <!--end::Head-->
@@ -108,7 +108,7 @@
                                         <div id="kt_header_menu" class="header-menu header-menu-left header-menu-mobile header-menu-layout-default">
                                             <!--begin::Header Nav-->
                                             <ul class="menu-nav">
-                                                <li class="menu-item menu-item-here menu-item-submenu menu-item-rel menu-item-here" aria-haspopup="true">
+                                                <li class="menu-item menu-item-submenu menu-item-rel" aria-haspopup="true">
                                                     <a href="{% url 'dashboard-home' %}" class="menu-link">
                                                         <span class="menu-text">Dashboard</span>
                                                         <i class="menu-arrow"></i>
@@ -192,11 +192,27 @@
                                                     <div class="menu-submenu menu-submenu-classic menu-submenu-left">
                                                         <ul class="menu-subnav">
                                                             <li class="menu-item" aria-haspopup="true">
-                                                                <a href="{% url 'data-list'%}" class="menu-link">
+                                                                <a href="{% url 'data-handler-manage-list'%}" class="menu-link">
                                                                     <i class="menu-bullet menu-bullet-dot">
                                                                         <span></span>
                                                                     </i>
-                                                                    <span class="menu-text">Manage</span>
+                                                                    <span class="menu-text">List</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="menu-item" aria-haspopup="true">
+                                                                <a href="{% url 'data-handler-manage-details'%}" class="menu-link">
+                                                                    <i class="menu-bullet menu-bullet-dot">
+                                                                        <span></span>
+                                                                    </i>
+                                                                    <span class="menu-text">Details</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="menu-item disabled" aria-haspopup="true">
+                                                                <a href="{% url 'data-list'%}" class="menu-link disabled">
+                                                                    <i class="menu-bullet menu-bullet-dot">
+                                                                        <span></span>
+                                                                    </i>
+                                                                    <span class="menu-text">Admin Data</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -250,7 +266,7 @@
                                                     <div class="menu-submenu menu-submenu-classic menu-submenu-left">
                                                         <ul class="menu-subnav">
                                                             <li class="menu-item" aria-haspopup="true">
-                                                                <a href="{% url 'invoice-create'%}" class="menu-link">
+                                                                <a href="{% url 'reports-list-view'%}" class="menu-link">
                                                                     <i class="menu-bullet menu-bullet-dot">
                                                                         <span></span>
                                                                     </i>
@@ -418,32 +434,7 @@
                                                     </div>
                                                 </a>
                                                 <!--end::Item-->
-                                                <!--begin::Item-->
-                                                <a href="custom/apps/user/profile-2.html" class="navi-item px-8">
-                                                    <div class="navi-link">
-                                                        <div class="navi-icon mr-2">
-                                                            <i class="flaticon2-rocket-1 text-danger"></i>
-                                                        </div>
-                                                        <div class="navi-text">
-                                                            <div class="font-weight-bold">My Activities</div>
-                                                            <div class="text-muted">Logs and notifications</div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <!--end::Item-->
-                                                <!--begin::Item-->
-                                                <a href="custom/apps/userprofile-1/overview.html" class="navi-item px-8">
-                                                    <div class="navi-link">
-                                                        <div class="navi-icon mr-2">
-                                                            <i class="flaticon2-hourglass text-primary"></i>
-                                                        </div>
-                                                        <div class="navi-text">
-                                                            <div class="font-weight-bold">My Tasks</div>
-                                                            <div class="text-muted">latest tasks and projects</div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <!--end::Item-->
+
                                                 <!--begin::Footer-->
                                                 <div class="navi-separator mt-3"></div>
                                                 <div class="navi-footer px-8 py-5">
@@ -859,6 +850,7 @@
             <!--end::Scrolltop-->
 
             <script src="https://js.stripe.com/v3/"></script>
+            <!-- <script src="{% static 'assets/js/stripe/stripe_v3.js' %}"></script> -->
             <script>var HOST_URL = "https://keenthemes.com/metronic/tools/preview";</script>
             <!--begin::Global Config(global config for global JS scripts)-->
             <script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#6993FF", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#E1E9FF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };</script>
@@ -867,6 +859,7 @@
             <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
             <script src="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.js' %}"></script>
             <script src="{% static 'assets/js/scripts.bundle.js' %}"></script>
+            <script src="{% static 'assets/js/lodash.js' %}"></script>
             <!--end::Global Theme Bundle-->
             <!--begin::Page Vendors(used by this page)-->
             <script src="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.js' %}"></script>
@@ -883,6 +876,12 @@
                     autosize(document.querySelectorAll('textarea'));
                     $('[data-toggle="tooltip"]').tooltip();
                     $('.datepicker').datepicker();
+                    // codes works on all bootstrap modal windows in application
+                    //reset the bootstrap modal when it gets closed and open it fresh again
+                    $('.modal').on('hidden.bs.modal', function(e)
+                    { 
+                        $(this).removeData();
+                    }) ;
 
                 });
             </script>

@@ -81,6 +81,7 @@ def register_view(request):
         INPUTS_DATA['number_board_members'] = request.POST.get("number_board_members")
         INPUTS_DATA['accepted_privacy_terms'] = request.POST.get("accepted_privacy_terms")
 
+
         # first, validate the inputs
         if not input_required(INPUTS_DATA['first_name']):
             INPUTS_ERRORS['first_name'].append("First Name Required!")
@@ -186,6 +187,7 @@ def register_view(request):
                 'number_board_members'] else ""
             new_member.num_of_volunteer = INPUTS_DATA['number_volunteer'].strip() if INPUTS_DATA['number_volunteer'] else ""
             new_member.status = "unverified"
+            new_member.ip_address = get_member_ip_address(request)
             new_member.save()
             # print("New member has been saved!")
             member_activate_uid = urlsafe_base64_encode(force_bytes(new_member.pk))

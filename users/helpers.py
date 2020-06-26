@@ -1,8 +1,9 @@
 import re
+from ipware import get_client_ip
 
 REGEX_PATTERS = {
     "NAME": re.compile(r"^(?=.{1,40}$)[a-zA-Z]+(?:[-'\s][a-zA-Z]+)*$", re.IGNORECASE),  # full name
-    "PHONE": re.compile(r"([+]?\d{1,2}[.\s]?)?(\d{3}[.-]?){2}\d{4}"),  # phone with country code
+    "PHONE": re.compile(r"(((\+)\b[1-9]{1,2}[-.]?)|(([^1-9]{2})[1-9]{1,2}[-.]?))?\d{3}[-.]?\d{3}[-.]?\d{4}(\s(#|x|ext|extension|e)?[-.:](\d{0,5}))?"),  # phone with country code
     "EMAIL": re.compile(r"^([0-9a-zA-Z].*?@([0-9a-zA-Z].*\.\w{2,4}))$", re.IGNORECASE),  # email address
     "ALPHNUM": re.compile(r"^[A-Za-z0-9\s]+[A-Za-z0-9\s]+$(\.0-9+)?", re.IGNORECASE),  # Alphanumeric with Spaces
     "ZIP": re.compile(r"[0-9]{5}(-[0-9]{4})?", re.IGNORECASE),  # zip code pattern
@@ -148,9 +149,22 @@ def validate_password(password: str):
     all_chars = []
     for ch in password:
         all_chars.append(ch)
-    
+
     if len(all_chars) < 6:
         error_and_bool = [False, "Password is short, Minimum lenght 7 characters!"]
         return error_and_bool
 
-    
+
+def get_member_ip_address(request):
+    client_ip, is_routable = get_client_ip(request)
+    if client_ip is None:
+        # Unable to get the client's IP address
+        return "Unable to get the client's IP address"
+    else:
+        # We got the client's IP address
+        if is_routable:
+            # The client's IP address is publicly routable on the Internet
+            return client_ip
+        else:
+            # The client's IP address is private
+            return f"{client_ip} - private address"

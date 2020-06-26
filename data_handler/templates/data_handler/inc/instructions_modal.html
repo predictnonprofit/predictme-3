@@ -148,16 +148,45 @@
 
                 </section>
             </div>
-            <div class="modal-footer">
-                <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal" id="closeUploadInstBtn"
-                    data-toggle="tooltip" title="Not accept and close">
-                    <i class="la la-close"></i>
-                </button>
-                &nbsp;
-                <button type="button" class="btn btn-primary" style="width: 100px;" data-toggle="tooltip" data-dismiss="modal" id="acceptUploadInstBtn"
-                    title="Accept and upload!">
-                    <i class="la la-check"></i>
-                </button>
+            <div class="modal-footer d-block">
+                <div class="d-flex mb-0">
+                    <div class="w-100">
+                        <div class="form-group row ">
+                            <!-- <label class="col-3 col-form-label">Inline Checkboxes</label> -->
+                            <div class="col-9 col-form-label p-0">
+                                <div class="checkbox-inline">
+                                    <label class="checkbox">
+                                        <input type="checkbox" data-action="agree" class="instruction-check-btn">I Agree
+                                        <span></span></label>
+                                    <label class="checkbox">
+                                        <input type="checkbox" data-action="download" class="instruction-check-btn">I download the template
+                                        <span></span></label>
+                                        <label>
+                                            <a style="bottom: 6px;" href="{% url 'data-handler-temp-download' %}" id="downloadTemplateLink" class="btn btn-outline-success btn-icon position-relative">
+                                                <span data-toggle="tooltip" title="Download upload instructions template">
+                                                  <i class="icon-lg la la-file-download"></i>
+                                                </span>
+                                              </a>
+                                            <span></span>
+                                        </label>
+                                        
+                                </div>
+                                <span class="form-text text-muted mt-0">* You must to accept and download template file</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-auto w-100 text-right">
+                        <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
+                            id="closeUploadInstBtn" data-toggle="tooltip" title="Not accept and close">
+                            <i class="la la-close"></i>
+                        </button>
+                        &nbsp;
+                        <button type="button" class="btn btn-primary disabled notAllowedCur" disabled style="width: 100px;" data-toggle="tooltip"
+                            data-dismiss="modal" id="acceptUploadInstBtn" title="Accept and upload!">
+                            <i class="la la-check"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

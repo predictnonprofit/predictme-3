@@ -80,8 +80,9 @@ var KTDatatablesExtensionButtons = function() {
 				data: {
 					// parameters for custom backend script demo
 					columnsDef: [
-						'OrderID', 'Country', 'ShipCity',
-						'ShipAddress', 'CompanyAgent', 'CompanyName', 'Status', 'Type',],
+						'OrderID', 'Country',
+						'ShipCity', 'ShipAddress', 'CompanyAgent', 'CompanyName',
+						'Status', 'Type'],
 				},
 			},
 			columns: [

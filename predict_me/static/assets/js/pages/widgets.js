@@ -3270,8 +3270,8 @@ var KTWidgets = function() {
     }
 
     var _initMixedWidget18 = function() {
+        document.getElementById("kt_mixed_widget_18_chart").innerText = "";
         var element = document.getElementById("kt_mixed_widget_18_chart");
-        document.getElementById('kt_mixed_widget_18_chart').innerHTML = '';  // this to fix duplicate bug when render
         var height = parseInt(KTUtil.css(element, 'height'));
 
         if (!element) {
@@ -3851,8 +3851,6 @@ var KTWidgets = function() {
 
     var _initTilesWidget17 = function() {
         var element = document.getElementById("kt_tiles_widget_17_chart");
-        document.getElementById('kt_tiles_widget_17_chart').innerHTML = '';
-        var height = parseInt(KTUtil.css(element, 'height'))
 
         if (!element) {
             return;

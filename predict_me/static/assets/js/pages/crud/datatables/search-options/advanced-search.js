@@ -7,7 +7,7 @@ var KTDatatablesSearchOptionsAdvancedSearch = function() {
 
 	var initTable1 = function() {
 		// begin first table
-		var table = $('#invoices-list-datatable').DataTable({
+		var table = $('#kt_datatable').DataTable({
 			responsive: true,
 			// Pagination settings
 			dom: `<'row'<'col-sm-12'tr>>
@@ -27,7 +27,6 @@ var KTDatatablesSearchOptionsAdvancedSearch = function() {
 			serverSide: true,
 			ajax: {
 				url: HOST_URL + '/api//datatables/demos/server.php',
-				dataSrc: '',
 				type: 'POST',
 				data: {
 					// parameters for custom backend script demo
@@ -50,8 +49,6 @@ var KTDatatablesSearchOptionsAdvancedSearch = function() {
 
 			initComplete: function() {
 				this.api().columns().every(function() {
-					
-					
 					var column = this;
 
 					switch (column.title()) {

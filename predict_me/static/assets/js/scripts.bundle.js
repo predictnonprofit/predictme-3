@@ -312,24 +312,6 @@ var KTApp = function() {
             return KTApp.unblock('body');
         },
 
-        progress: function(target, options) {
-            var color = (options && options.color) ? options.color : 'light';
-            var alignment = (options && options.alignment) ? options.alignment : 'right';
-            var size = (options && options.size) ? ' spinner-' + options.size : '';
-            var classes = 'spinner ' + 'spinner-' + skin + ' spinner-' + alignment + size;
-
-            KTApp.unprogress(target);
-            KTUtil.attr(target, 'disabled', true);
-
-            $(target).addClass(classes);
-            $(target).data('progress-classes', classes);
-        },
-
-        unprogress: function(target) {
-            $(target).removeClass($(target).data('progress-classes'));
-            KTUtil.removeAttr(target, 'disabled');
-        },
-
         getSettings: function() {
             return settings;
         }
@@ -1092,8 +1074,6 @@ var KTHeader = function(elementId, options) {
          */
         build: function() {
             var eventTriggerState = true;
-            var viewportHeight = KTUtil.getViewPort().height;
-            var documentHeight = KTUtil.getDocumentHeight();
             var lastScrollTop = 0;
 
             window.addEventListener('scroll', function() {
@@ -1967,7 +1947,7 @@ var KTMenu = function(elementId, options) {
             // Change the alignment of submenu is offscreen.
             var submenu = KTUtil.find(item, '.menu-submenu');
 
-            if (submenu.hasAttribute('data-hor-direction') === false) {
+            if (submenu && submenu.hasAttribute('data-hor-direction') === false) {
                 if (KTUtil.hasClass(submenu, 'menu-submenu-left')) {
                     submenu.setAttribute('data-hor-direction', 'menu-submenu-left');
                 } else if (KTUtil.hasClass(submenu, 'menu-submenu-right')) {
@@ -2338,7 +2318,7 @@ var KTOffcanvas = function(elementId, options) {
 
     // Default options
     var defaultOptions = {
-        customClass: ''
+        attrCustom: ''
     };
 
     ////////////////////////////
@@ -2369,7 +2349,7 @@ var KTOffcanvas = function(elementId, options) {
             the.options = KTUtil.deepExtend({}, defaultOptions, options);
 
             the.classBase = the.options.baseClass;
-            the.classCustom = the.options.customClass;
+            the.attrCustom = the.options.attrCustom;
             the.classShown = the.classBase + '-on';
             the.classOverlay = the.classBase + '-overlay';
             the.target;
@@ -2449,11 +2429,12 @@ var KTOffcanvas = function(elementId, options) {
             Plugin.toggleClass('show');
 
             // Offcanvas panel
-            KTUtil.addClass(body, the.classShown);
+            KTUtil.attr(body, 'data-offcanvas-' + the.classBase, 'on');
             KTUtil.addClass(element, the.classShown);
 
-            if (the.classCustom.length > 0) {
-                KTUtil.addClass(body, the.classCustom);
+            if (the.attrCustom.length > 0) {
+                KTUtil.attr(body, 'data-offcanvas-' + the.classCustom, 'on');
+                //KTUtil.addClass(body, the.classCustom);
             }
 
             the.state = 'shown';
@@ -2463,7 +2444,7 @@ var KTOffcanvas = function(elementId, options) {
                 KTUtil.addClass(the.overlay, the.classOverlay);
 
                 KTUtil.addEvent(the.overlay, 'click', function(e) {
-                    e.stopPropagation();
+                    //e.stopPropagation();
                     e.preventDefault();
                     Plugin.hide(the.target);
                 });
@@ -2481,12 +2462,11 @@ var KTOffcanvas = function(elementId, options) {
 
             Plugin.toggleClass('hide');
 
-            KTUtil.removeClass(body, the.classShown);
-            KTUtil.addClass(body, the.classPush);
+            KTUtil.removeAttr(body, 'data-offcanvas-' + the.classBase);
             KTUtil.removeClass(element, the.classShown);
 
-            if (the.classCustom.length > 0) {
-                KTUtil.removeClass(body, the.classCustom);
+            if (the.attrCustom.length > 0) {
+                KTUtil.removeAttr(body, 'data-offcanvas-' + the.attrCustom);
             }
 
             the.state = 'hidden';
@@ -2797,7 +2777,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 
 "use strict";
 
-// Component Definition 
+// Component Definition
 var KTToggle = function(elementId, options) {
     // Main object
     var the = this;
@@ -2812,6 +2792,7 @@ var KTToggle = function(elementId, options) {
 
     // Default options
     var defaultOptions = {
+        targetToggleMode: 'class' // class|attribute
     };
 
     ////////////////////////////
@@ -2846,16 +2827,20 @@ var KTToggle = function(elementId, options) {
             the.element = element;
             the.events = [];
 
-            // options
-            the.options = options;
+            // Merge default and user defined options
+            the.options = KTUtil.deepExtend({}, defaultOptions, options);
 
             //alert(the.options.target.tagName);
-            the.target = KTUtil.getById(the.options.target);
+            the.target = KTUtil.getById(options.target);
 
             the.targetState = the.options.targetState;
             the.toggleState = the.options.toggleState;
 
-            the.state = KTUtil.hasClasses(the.target, the.targetState) ? 'on' : 'off';
+            if (the.options.targetToggleMode == 'class') {
+                the.state = KTUtil.hasClasses(the.target, the.targetState) ? 'on' : 'off';
+            } else {
+                the.state = KTUtil.hasAttr(the.target, 'data-' + the.targetState) ? KTUtil.attr(the.target, 'data-' + the.targetState) : 'off';
+            }
         },
 
         /**
@@ -2890,7 +2875,11 @@ var KTToggle = function(elementId, options) {
         toggleOn: function() {
             Plugin.eventTrigger('beforeOn');
 
-            KTUtil.addClass(the.target, the.targetState);
+            if (the.options.targetToggleMode == 'class') {
+                KTUtil.addClass(the.target, the.targetState);
+            } else {
+                KTUtil.attr(the.target, 'data-' + the.targetState, 'on');
+            }
 
             if (the.toggleState) {
                 KTUtil.addClass(element, the.toggleState);
@@ -2911,7 +2900,11 @@ var KTToggle = function(elementId, options) {
         toggleOff: function() {
             Plugin.eventTrigger('beforeOff');
 
-            KTUtil.removeClass(the.target, the.targetState);
+            if (the.options.targetToggleMode == 'class') {
+                KTUtil.removeClass(the.target, the.targetState);
+            } else {
+                KTUtil.removeAttr(the.target, 'data-' + the.targetState);
+            }
 
             if (the.toggleState) {
                 KTUtil.removeClass(element, the.toggleState);
@@ -3252,7 +3245,14 @@ var KTUtil = function() {
          * @returns {boolean}
          */
         isMobileDevice: function() {
-            return (this.getViewPort().width < this.getBreakpoint('lg') ? true : false);
+            var test = (this.getViewPort().width < this.getBreakpoint('lg') ? true : false);
+
+            if (test === false) {
+                // For use within normal web clients
+                test = navigator.userAgent.match(/iPad/i) != null;
+            }
+
+            return test;
         },
 
         /**
@@ -4489,7 +4489,11 @@ var KTUtil = function() {
                 if (options.height instanceof Function) {
                     height = options.height.call();
                 } else {
-                    height = options.height;
+                    if (options.mobileHeight) {
+                        height = parseInt(options.mobileHeight);
+                    } else {
+                        height = parseInt(options.height);
+                    }
                 }
 
                 if (height === false) {
@@ -4501,7 +4505,7 @@ var KTUtil = function() {
                 height = parseInt(height);
 
                 // Destroy scroll on table and mobile modes
-                if ((options.mobileNativeScroll || options.disableForMobile) && KTUtil.isBreakpointDown('lg')) {
+                if ((options.mobileNativeScroll || options.disableForMobile) && KTUtil.isMobileDevice() === true) {
                     ps = KTUtil.data(element).get('ps');
                     if (ps) {
                         if (options.resetHeightOnDestroy) {
@@ -4939,6 +4943,8 @@ var KTWizard = function(elementId, options) {
          * Handles wizard click wizard
          */
         goTo: function(number, eventHandle) {
+            console.log('go to:' + number);
+
             // Skip if this step is already shown
             if (number === the.currentStep || number > the.totalSteps || number < 0) {
                 return;

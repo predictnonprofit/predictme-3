@@ -18,7 +18,12 @@ var KTWizard2 = function () {
 
 		// Validation before going to next page
 		_wizard.on('beforeNext', function (wizard) {
-			_validations[wizard.getStep() - 1].validate().then(function (status) {
+			// Don't go to the next step yet
+			_wizard.stop();
+
+			// Validate form
+			var validator = _validations[wizard.getStep() - 1]; // get validator for currnt step
+			validator.validate().then(function (status) {
 				if (status == 'Valid') {
 					_wizard.goNext();
 					KTUtil.scrollTop();
@@ -36,8 +41,6 @@ var KTWizard2 = function () {
 					});
 				}
 			});
-
-			_wizard.stop();  // Don't go to the next step
 		});
 
 		// Change event

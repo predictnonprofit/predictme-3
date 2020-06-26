@@ -6,14 +6,13 @@ from django.utils import timezone
 
 from .managers import CustomUserManager
 
-
-
 MEMBER_STATUS = (
     ("pending", "Pending"),
     ('active', "Active"),
     ("cancelled", "Cancelled"),
     ("unverified", "Un-Verified")
 )
+
 
 class Member(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True, db_index=True)
@@ -42,6 +41,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     member_register_token = models.CharField(max_length=150, null=True, blank=True)
     stripe_card_token = models.CharField(max_length=200, null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=200, null=True, blank=True)
+    ip_address = models.CharField(max_length=200, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -55,11 +55,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
         db_table = "members"
 
 
-
-
 class UnverifiedMember(models.Model):
-     member = models.OneToOneField(Member, on_delete=models.CASCADE)
-     join_date = models.DateTimeField(auto_now_add=True)
+    member = models.OneToOneField(Member, on_delete=models.CASCADE)
+    join_date = models.DateTimeField(auto_now_add=True)
 
-     class Meta:
+    class Meta:
         db_table = "unverified_member"

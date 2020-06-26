@@ -49,10 +49,13 @@ Manage Your Data
     right: 0;
     bottom: 0;
     z-index: 2;
-   
+
     -moz-opacity: .80;
     filter: alpha(opacity=80);
     opacity: .80;
+  }
+  .notAllowedCur{
+    cursor: not-allowed !important;
   }
 </style>
 
@@ -96,19 +99,7 @@ Data Handler
 
   {% if get_user_membership.data_file_obj.file_upload_procedure == "None" %}
 
-  <div class="alert alert-custom alert-white shadow-lg fade show mb-5" role="alert">
 
-    <div class="alert-text">
-      <label class="checkbox checkbox-primary">
-        <input id="agreeDataHandlerCheckBox" type="checkbox">Agree Data Handler upload
-        <span></span>
-      </label>
-      <a href="#" data-target='#instructionsModal' class="b-u" data-toggle="modal">
-        Terms and Conditions
-      </a>
-    </div>
-
-  </div>
   <div class="card card-custom ">
 
     <div class="card-header card-header-tabs-line">
@@ -116,20 +107,17 @@ Data Handler
         <h3 class="card-label">Upload Your data file</h3>
         <div class="btn-toolbar" role="toolbar" aria-label="...">
           <div class="btn-group mr-2 mt-3" role="group" aria-label="...">
-            <button data-target='#instructionsModal' data-toggle="modal" type="button" class="btn btn-outline-secondary btn-icon w-80px">
+            <button data-target='#instructionsModal' data-toggle="modal" type="button" class="btn btn-outline-dark btn-icon w-50px">
               <span data-toggle="tooltip" title='Read upload instructions'>
                 <i class="icon-xl la fab la-readme"></i>
               </span>
             </button>
-            <a href="{% url 'data-handler-temp-download' %}" class="btn btn-outline-secondary btn-icon w-80px">
-              <span data-toggle="tooltip" title="Download upload instructions template">
-                <i class="icon-xl la la-file-download"></i>
-              </span>
-            </a>
+
 
           </div>
 
         </div>
+
       </div>
       <div class="card-toolbar">
         <form class="kt-form " enctype="multipart/form-data" method="POST" id="uploadDataFileForm">
@@ -320,24 +308,10 @@ Data Handler
             <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
               <!--begin::Navigation-->
               <ul class="navi flex-column navi-hover py-2">
-                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choose an
-                  option:</li>
-                <li class="navi-item">
-                  <a href="#" class="navi-link">
-                    <span class="navi-icon">
-                      <i class="la la-print"></i>
-                    </span>
-                    <span class="navi-text">Print</span>
-                  </a>
+                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">
+                  Download
                 </li>
-                <li class="navi-item">
-                  <a href="#" class="navi-link">
-                    <span class="navi-icon">
-                      <i class="la la-copy"></i>
-                    </span>
-                    <span class="navi-text">Copy</span>
-                  </a>
-                </li>
+
                 <li class="navi-item">
                   <a href="#" class="navi-link">
                     <span class="navi-icon">
@@ -354,14 +328,7 @@ Data Handler
                     <span class="navi-text">CSV</span>
                   </a>
                 </li>
-                <li class="navi-item">
-                  <a href="#" class="navi-link">
-                    <span class="navi-icon">
-                      <i class="la la-file-pdf-o"></i>
-                    </span>
-                    <span class="navi-text">PDF</span>
-                  </a>
-                </li>
+
               </ul>
               <!--end::Navigation-->
             </div>
@@ -401,44 +368,63 @@ Data Handler
 
         <!--begin: Datatable-->
         <section id="donorDataTable">
-          <form method="POST">
+          <form method="POST" onsubmit="return false;" >
             {% csrf_token %}
             <!--begin::Search Form-->
-            <div class="mb-7">
-              <div class="row align-items-center">
-                <div class="col-lg col-xl">
-                  <div class="row align-items-center">
-                    <div class="col-md-4 my-2 my-md-0">
-                      <div class="input-icon">
-                        <input type="text" class="form-control " placeholder="Search..." id="dataTableSearchQuery" />
-                        <span>
-                          <i class="flaticon2-search-1 text-muted"></i>
-                        </span>
-                      </div>
-                    </div>
-                    <button id="searchDataTableBtn" type="button"
-                      class="btn btn-light-primary px-6 font-weight-bold">Search</button>
-                      <div class="col-2 text-right">
-                         <select class='form-control' name="" id="recordsCount">
-                           <option value="50">50</option>
-                           <option value="50">100</option>
-                           <option value="50">150</option>
-                           <option value="50">200</option>
-                         </select>
-                      </div>
-                  </div>
-                </div>
-               
+            <div class="form-group row mt-3">
 
+              <div class="col-md">
+                <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                         <div class="input-icon">
+                           <input type="text" id="searchQuery" class="form-control" placeholder="Search...">
+                           <span>
+                             <i class="flaticon2-search-1 icon-md"></i>
+                           </span>
+                         </div>
+                       </div>
 
               </div>
 
-            </div>
+              <div class="col-sm-2">
+                <button type="button" id="searchDataTableBtn" class="btn btn-primary my-1">Search</button>
+              </div>
+              <div class="col-sm2">
+                <div class="position-relative">
+                         <button type="button" data-toggle="tooltip" title="Undo last change" class="btn btn-outline-warning disabled" style="cursor: not-allowed;" disabled id="undoBtn">
+                           <i class="la la-undo-alt"></i>
+                       </button>
+                       </div>
+              </div>
+              <div class="col-sm2">
+                <div class="position-relative mx-5">
+                         <button type="button" class="btn btn-secondary disabled" style="cursor: not-allowed;" disabled id="resetSortTableBtn">
+                           <i class="la la-undo-alt"></i> Reset Sorting
+                       </button>
+                       </div>
+              </div>
+
+            
+
+              <div class="col-lg-3">
+               <div class="btn-group" role="group" aria-label="Data Table Navigation">
+                           <button type="button" data-action="previous" class="btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Previous 50 records">
+                             <i class="icon-lg la la-angle-left"></i>
+                           </button>
+
+                           <button data-action="next" type="button" class="btn btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Next 50 records">
+                             <i class="la la-angle-right"></i>
+                           </button>
+                         </div>
+              </div>
+
+
+             </div>
             <!--end: Search Form-->
           </form>
+          <br />
           <!--begin: Datatable-->
 
-          <div id="save-row-loader" class="position-relative text-center mx-auto " style="z-index: 1; display: none;">
+          <div id="save-row-loader" class="position-relative text-center mx-auto" style="z-index: 1; display: none;">
             <div class=" w-25  position-absolute" style="left: 38%;  ">
               <div class="card card-custom gutter-b border " style="background-color: #EEF0F8;">
 
@@ -450,36 +436,58 @@ Data Handler
             </div>
           </div>
 
-          <section id="dataListTable" class="table-responsive" style="transition: all 0.5s ease-out;">
+          <section id="dataListTable" class="table-responsive " style="transition: all 0.5s ease-out;">
             <div class="container position-relative" id="loadingDataSpinner">
               <div class="row justify-content-center">
                 <div class="col-1 text-center">
-                  <div class="position-absolute" style="top: 75px;">
+                  <div class="position-absolute" style="top: 120px;">
                     <div class="spinner spinner-primary spinner-lg"></div>
                   </div>
 
                 </div>
               </div>
             </div>
-            <form method="POST" id="dataFileTableForm">
+            <form method="POST" id="dataFileTableForm" onsubmit="return false;">
               {% csrf_token %}
-              <div style="overflow:auto; height:700px;" id="dataTableWrapper">
-                <table id="data_handler_table" class="table datatable-table">
+              <div style="overflow:auto; height:700px;" id="dataTableWrapper" class="position-relative">
+                <table id="data_handler_table" class="table">
                   <caption>Member Data File</caption>
-                
-                  <thead class="datatable-head">
+
+                  <thead class='thead-light mb-2'>
                     <tr></tr>
                   </thead>
-                
-                  <tbody class="datatable-body">
+
+                  <tbody id="data_handler_body">
                     <tr></tr>
                   </tbody>
-                
+
                   <tfoot>
-                    <tr></tr>
+                    <tr>
+
+                    </tr>
                   </tfoot>
-                
+
                 </table>
+              </div>
+              <div class="card card-custom gutter-b m-auto">
+
+                <div class="card-body">
+                  <div class="container">
+                      <div class="row">
+                        <div class="col-lg col-md col-sm text-center">
+                         <div class="btn-group" role="group" aria-label="Data Table Navigation">
+                                     <button type="button" data-action="previous" class="btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Previous 50 records">
+                                       <i class="icon-lg la la-angle-left"></i>
+                                     </button>
+
+                                     <button data-action="next" type="button" class="btn btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Next 50 records">
+                                       <i class="la la-angle-right"></i>
+                                     </button>
+                                   </div>
+                        </div>
+                        </div>
+                  </div>
+                </div>
               </div>
             </form>
           </section>

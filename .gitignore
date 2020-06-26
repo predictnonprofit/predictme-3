@@ -16,6 +16,7 @@ db.sqlite3-journal
 .vscode
 .idea
 *.json
+db_data
 
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/

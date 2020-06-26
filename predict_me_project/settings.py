@@ -33,6 +33,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Application definition
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middlewares_app.middleware.simple_middleware',
+    "maintenance_mode.middleware.MaintenanceModeMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,40 +56,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "middlewares_app.apps.MiddlewaresAppConfig",
     'widget_tweaks',
+    # "data_handler.apps.DataHandlerConfig",
     "django_extensions",
     "django_countries",
     "users.apps.UsersConfig",
     "predict_me",
     "dashboard",
     "dash_users",
-    "data_handler",
     "invoice_app",
     "messages_app",
+    "data_handler_admin",
+    "reports_app",
     "members_app",
     "site_settings",
     "membership",
     "activity_app",
+    "predictme_context_processors",
+    "data_handler",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.dropbox',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
-    "predictme_context_processors",
 
-]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middlewares_app.middleware.CheckMemberStatus',
-    "maintenance_mode.middleware.MaintenanceModeMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'predict_me_project.urls'
@@ -154,6 +157,8 @@ STATIC_URL = '/static/'
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
@@ -172,8 +177,8 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 # set stripe keys
 if DEBUG:
     # for test data
-        # STRIPE_PUBLISHABLE_KEY = ''
-        # STRIPE_SECRET_KEY = ''
+    # STRIPE_PUBLISHABLE_KEY = ''
+    # STRIPE_SECRET_KEY = ''
     MAILER_EMAIL_BACKEND = EMAIL_BACKEND
     EMAIL_HOST = os.getenv("EMAIL_HOST")
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
@@ -200,7 +205,7 @@ MAINTENANCE_MODE_IGNORE_URLS = ("dashboard-url")
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 
-SITE_ID = 4
+# SITE_ID = 4
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {

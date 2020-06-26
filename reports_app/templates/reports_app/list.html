@@ -1,0 +1,202 @@
+{% extends 'dashboard/inc/master.html' %}
+
+{% load static %}
+
+{% block title %}
+Reports
+{% endblock title %}
+
+{% block customcss %}
+<style>
+    @media only screen and (max-width: 600px) {
+        .select2-container {
+            width: 270px !important;
+        }
+    }
+
+</style>
+{% endblock customcss %}
+
+{% block pagename %}
+List of reports
+{% endblock pagename %}
+
+
+{% block content %}
+<!--begin::Row-->
+<!-- Start top filter select -->
+<div class="flex-row-fluid ml-lg-8">
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+            <span class="card-icon">
+                <i class="icon-lg la la-chart-bar text-dark"></i>
+            </span>
+                <h3 class="card-label">
+                    Choose the report type
+                </h3>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <form method="POST" class="form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <select class="form-control m-0 " id="filterTypeSelect">
+                                    <optgroup label="Sales/Revenue">
+                                        <option>Profit share by subscription plan</option>
+                                        <option>Report on revenue change</option>
+                                        <option>Relish</option>
+                                    </optgroup>
+                                    <optgroup label="Members">
+                                        <option>Report on all users</option>
+                                        <option>Data Limit/Records usage</option>
+                                        <option>Additional Fee Per Extra Data/Record usage</option>
+                                    </optgroup>
+                                </select>
+                                <div class="input-group-append">
+                                    <button data-toggle="tooltip" title="Filter" class="btn btn-secondary"
+                                            type="button">
+                                        <i class="icon-md la la-filter"></i>
+
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End top filter select -->
+
+
+<!-- Start filter output area -->
+<section class="flex-row-fluid ml-lg-8 mt-5">
+    <div class="row">
+
+        <div class="col-lg">
+            <!--begin::Card-->
+            <div class="card card-custom card-stretch">
+                <div class="card-header">
+                    <div class="card-title">
+                     <span class="card-icon">
+                <i class="icon-lg la la-chart-bar text-dark"></i>
+            </span>
+                        <h3 class="card-label"> Members Report</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    ...
+                </div>
+            </div>
+            <!--end::Card-->
+        </div>
+        <div class="col-lg-4">
+            <!--begin::Card-->
+            <div class="card card-custom card-stretch">
+                <div class="card-header">
+                    <div class="card-title">
+                     <span class="card-icon">
+                <i class="icon-lg la la-chart-bar text-dark"></i>
+            </span>
+                        <h3 class="card-label">Filter</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Start Date</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datePickerInputs" id="startDate"
+                                               placeholder="Start date">
+                                        <div class="input-group-append">
+																<span class="input-group-text">
+																	<i class="la la-calendar icon-lg"></i>
+																</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>End Date</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datePickerInputs" id="endDate"
+                                               placeholder="End date">
+                                        <div class="input-group-append">
+																<span class="input-group-text">
+																	<i class="la la-calendar icon-lg"></i>
+																</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Member</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="memberInput" placeholder="Member">
+                                        <div class="input-group-append">
+																<span class="input-group-text">
+																	<i class="la la-user icon-lg"></i>
+																</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <button type="reset" class="btn btn-light-danger font-weight-bold">Reset</button>
+                    <button type="button" class="btn btn-outline-secondary font-weight-bold">
+                        <i class="icon-md la la-filter text-dark"></i>
+                        Filter
+                    </button>
+                </div>
+                </form>
+            </div>
+            <!--end::Card-->
+        </div>
+    </div>
+</section>
+<!-- End filter output area -->
+
+
+<!--End::Row-->
+{% endblock content%}
+
+{% block customjs %}
+<!--begin::Page Scripts(used by this page)-->
+<script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
+<script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
+<!--end::Page Scripts-->
+
+<script>
+    // nested
+    $('#filterTypeSelect').select2({
+        placeholder: "Select a filter type"
+    });
+    $('.datePickerInputs').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        // datesDisabled: ['06/06/2020', '06/21/2020'],
+    });
+</script>
+
+{% endblock customjs %}

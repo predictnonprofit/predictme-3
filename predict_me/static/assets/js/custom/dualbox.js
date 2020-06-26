@@ -1,14 +1,21 @@
 const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
+const dataTypesOptions = ["", "Unique Identifier (ID)", "Textual Field", "Numeric Field", "Donation Field"];
 const leftClickedColumnClass = 'columnItem';
 const rightClickedColumnClass = 'pickedItem';
 var clickedLeftColumnItem = "";
 var clickedRightColumnItem = "";
+let checkMark = "&#10004;";
+let timesMark = "&#10060;";
+var selectedOptionsArray = [];
+let selectedValidateColumns = {};
 var clickedRemoveSelectedColumn = "";
 var allClickedSelectColumns = Array();
 var resetAvailableColumnsList = Array();
 var resetPickedColumnsList = Array();
+var rightSelectedColumnItemCounter = 0;
 
 function setColumnsTotal() {
+    // this function will set the total of items in the left and right columns title
     let avaTotal = $("#availableColumnsList li").length;
     let pickTotal = $("#pickedColumnsList li").length;
     //console.log(avaTotal, '---', pickTotal);
@@ -18,18 +25,14 @@ function setColumnsTotal() {
 
 function dataTypeOptions(dataType) {
     let optionsMarkup = "";
-    for (let dType of dataTypeArray) {
-        if (dType == dataType) {
-            optionsMarkup += `<option value='${dType}' selected>${dType}</option>\n`;
-        } else {
-            optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
-        }
+    for (let dType of dataTypesOptions) {
+        optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
     }
     return optionsMarkup;
 }
 
 function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
-    //console.log(colIdx, colName, colDataType, optionsList);
+    // console.log(colIdx, colName, colDataType, optionsList);
     //pickedColumnsList
     const liMarkup = `
             <li data-idx="${colIdx}"
@@ -51,7 +54,7 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
 
 function enableLeftColumnItem(colIdx) {
     const leftItem = fetchColumnByDataIdx(true, colIdx);
-    leftItem.removeClass("disabled");
+    leftItem.removeClass("disabled bg-gray-400");
 }
 
 function fetchColumnByDataIdx(isLeftCol, colIdx) {
@@ -69,10 +72,13 @@ function fetchColumnByDataIdx(isLeftCol, colIdx) {
 function extractLeftColData(colItem) {
     //let colItem = fetchColumnByDataIdx(colIdx);
     const selectedColumnName = colItem.clone().children().remove().end().text().trim();
+    const selectedColumnNameWithoutIdxNumber = selectedColumnName.split(". ")[1];  // whitout number before the column name
     const selectedColumnDataType = colItem.children().text().trim().toLowerCase();
     const selectedColumnIdx = colItem.data('idx');
-    //console.log(selectedColumnIdx, selectedColumnName, selectedColumnDataType);
-    return [selectedColumnIdx, selectedColumnName, selectedColumnDataType];
+    // console.log(selectedColumnIdx, selectedColumnName, selectedColumnDataType);
+    // console.log(selectedColumnIdx, selectedColumnNameWithoutIdxNumber, selectedColumnDataType);
+    return [selectedColumnIdx, selectedColumnNameWithoutIdxNumber, selectedColumnDataType];
+    // return [selectedColumnIdx, selectedColumnName, selectedColumnDataType];
 }
 
 function extractRightColData(colItem) {
@@ -87,7 +93,6 @@ function extractRightColData(colItem) {
     //console.log(colIdx, name, tt);
     return [colIdx, name, tt];
 }
-
 
 
 function saveClickedColumn(isLeftCol, colIdx) {
@@ -124,10 +129,10 @@ function selectAvaliableColumns() {
         try {
 
             const [idx, colName, colDataType] = extractLeftColData(clickedLeftColumnItem);
-            //console.log(idx, colName, colDataType);
+            // console.log(idx, colName, colDataType);
             const optionsMarkup = dataTypeOptions(colDataType);
             createNewItemRightColumn(idx, colName, colDataType, optionsMarkup);
-            clickedLeftColumnItem.removeClass('active').addClass("disabled");
+            clickedLeftColumnItem.removeClass('active').addClass("disabled bg-gray-400");
 
         } catch (error) {
             //throw error;
@@ -164,7 +169,6 @@ function selectPickedRightColumns() {
     });
 
 
-
 }
 
 function addItemRightColumn() {
@@ -176,7 +180,7 @@ function addItemRightColumn() {
             //console.log(idx, colName, colDataType);
             const optionsMarkup = dataTypeOptions(colDataType);
             createNewItemRightColumn(idx, colName, colDataType, optionsMarkup);
-            clickedLeftColumnItem.removeClass('active').addClass("disabled");
+            clickedLeftColumnItem.removeClass('active').addClass("disabled bg-gray-400");
 
         } catch (error) {
             //throw error;
@@ -185,6 +189,7 @@ function addItemRightColumn() {
             }
         } finally {
             clickedLeftColumnItem = ""; // to avoid duplicat items
+            $("#validateColumnsBtn").removeClass("btn-light-primary");
         }
     } else {
         swAlert("error", "Please select column from left!", 'error');
@@ -205,6 +210,7 @@ function addItemLeftColumn() {
 }
 
 function addAllRightColumnItems() {
+    // this when member clicked on the left column to add new item to right column 
     $("#pickedColumnsList").empty(); // to avoid duplicate items in the list
     let availableColumnsList = $("#availableColumnsList li");
     availableColumnsList.each(function (cIdx, column) {
@@ -215,12 +221,13 @@ function addAllRightColumnItems() {
         const [idx, colName, colDataType] = extractLeftColData(clickedLeftColumnItem);
         const optionsMarkup = dataTypeOptions(colDataType);
         createNewItemRightColumn(idx, colName, colDataType, optionsMarkup);
-        clickedLeftColumnItem.removeClass('active').addClass("disabled");
+        clickedLeftColumnItem.removeClass('active').addClass("disabled bg-gray-400");
         clickedLeftColumnItem = "";
     });
 }
 
 function addAllLeftColumnItems() {
+    // this when member clicked on the right column to get back old item to left column 
     const pickedColumnsList = $("#pickedColumnsList li");
     pickedColumnsList.each(function (cIdx, column) {
         //console.log(idx, '-> ', li);
@@ -232,8 +239,10 @@ function addAllLeftColumnItems() {
         //console.log(idx, colName, colDataType);
         //console.log(clickedRightColumnItem.html());
         enableLeftColumnItem(idx);
+
         clickedRightColumnItem.remove();
         clickedRightColumnItem = "";
+        selectedOptionsArray = [];
 
     });
 }
@@ -241,18 +250,30 @@ function addAllLeftColumnItems() {
 
 function validatePickedColumns(evt) {
     evt.preventDefault();
+
     let isAllOK = true; // if this true means all columns data type have been selected
-    let selectedValidateColumns = {};
+
     let validatePickedColumnsList = $("#pickedColumnsList").children('li');
+
+
     //console.log(validatePickedColumnsList);
     if (validatePickedColumnsList.length >= 3) {
+        // $("#validateColumnsBtn").removeClass("btn-light-primary").addClass("btn-primary");
+        $("#isSelect3Col").html(checkMark);
+
+        $("#isValidateData").html(checkMark).removeClass("text-danger").addClass("text-success");
+        for (let tmpPic of validatePickedColumnsList) {
+            const val = $(tmpPic).children().find("select option:selected").text().trim().toLowerCase();
+            selectedOptionsArray.push(val);
+
+        }
+
         //console.log(validatePickedColumnsList);
         for (let col of validatePickedColumnsList) {
             const selectedDtypeOption = $(col).children().find("select option:selected").text().trim().toLowerCase();
+            // console.log(selectedDtypeOption);
             const tmpCol = $(col);
-            //                console.log(tmpCol.html());
             const [idx, colName, colDataType] = extractRightColData(tmpCol);
-            //                console.log(tmpCol.html());
             //console.log(idx, colName, colDataType);
             if (selectedDtypeOption === "") {
                 //console.log('not selected', typeof selectedColumnDataType);
@@ -264,34 +285,46 @@ function validatePickedColumns(evt) {
                 selectedValidateColumns[colName] = selectedDtypeOption;
             }
 
-
         }
-        if (isAllOK === true) {
-            console.log(selectedValidateColumns);
-            let validateResponseObj = validateColumnsAjaxRequest(selectedValidateColumns);
-            $.when(validateResponseObj).done(function (data, textStatus, jqXHR) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(jqXHR);
-                swAlert("Success", "All data looks ok, you can press process button", 'success');
-                $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled");
-                for (let key in selectedValidateColumns) {
-                    selectedPickedColumns.push(key);
-                }
-            });
-
-        } else {
-            swAlert("Error", "Please select data type for the picked column(s)!", 'error');
+        if (selectedOptionsArray.includes("Unique Identifier (ID)".toLowerCase()) == false) {
+            isAllOK = false;
+            swAlert("Attention", "You have to select Unique Identifier (ID)!", "error");
         }
-
-
     } else {
+        // $("#isSelect3Col").html(timesMark);
+        $("#isValidateData").html(timesMark).removeClass("text-success").addClass("text-danger");
         swAlert("Error", "Please select at least 3 columns with the data type!", 'error');
+    }
+
+    // if all columns options selected validate the columns types
+    if (isAllOK === true) {
+
+        if (selectedOptionsArray.includes("Donation Field".toLowerCase()) == false) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to select donation field?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, select it',
+                cancelButtonText: "No, process without it",
+                allowOutsideClick: false,
+                reverseButtons: true,
+            }).then((result) => {
+                if (!result.value) {  // means the member does not select donation field
+                    sendRequestValidate();
+                }
+            })
+        }else{
+            sendRequestValidate();
+        }
     }
 }
 
 
 function validateColumnsAjaxRequest(columnsObj) {
+    // this function when memeber want to validate the data type in dual dialog box
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
         cache: false,
@@ -351,9 +384,27 @@ function resetAllColumnsToDefault() {
     availableColumnsList.each(function (cIdx, column) {
         //console.log(idx, '-> ', li);
         const colIt = $(column);
-        colIt.removeClass("disabled");
+        colIt.removeClass("disabled bg-gray-400");
         clickedLeftColumnItem = "";
         clickedRightColumnItem = "";
+        selectedOptionsArray = [];
+    });
+}
+
+function sendRequestValidate() {
+    let validateResponseObj = validateColumnsAjaxRequest(selectedValidateColumns);
+    $.when(validateResponseObj).done(function (data, textStatus, jqXHR) {
+        console.log(data);
+        console.log(textStatus);
+        console.log(jqXHR);
+
+        swAlert("Success", "All data looks ok, you can press process button", 'success');
+        $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled");
+        for (let key in selectedValidateColumns) {
+            // let colKey = key.split(". ")[1].trim(); // to split the column name from the index number
+            // selectedPickedColumns.push(colKey);
+            selectedPickedColumns.push(key);
+        }
     });
 }
 
@@ -374,7 +425,33 @@ jQuery(document).ready(function () {
     validateColumnsBtn.on("click", validatePickedColumns);
     let totalInterval = setInterval(function () {
         setColumnsTotal();
-    }, 300);
+        if (selectedOptionsArray.length > 0) {
+            if (selectedOptionsArray.includes("Unique Identifier (ID)".toLowerCase()) == true) {
+                $("#selectUniqueID").html(checkMark).removeClass('text-danger').addClass("text-success"); // check mark the member select unique id
+            } else {
+                $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
+            }
+            if (selectedOptionsArray.includes("Donation Field".toLowerCase()) == true) {
+                $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
+            } else {
+                $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger")
+            }
+        }
+
+        let validatePickedColumnsList = $("#pickedColumnsList").children('li');
+        if (validatePickedColumnsList.length >= 3) {
+            $("#isSelect3Col").html(checkMark).removeClass("text-danger").addClass("text-success");
+
+            $("#validateColumnsBtn").removeAttr("disabled");
+            $("#validateColumnsBtn").removeClass("btn-light-primary disabled").addClass("btn-primary");
+
+        } else {
+            $("#isSelect3Col").html(timesMark).removeClass("text-success").addClass("text-danger");
+            $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+            $("#validateColumnsBtn").attr("disabled", "disabled");
+        }
+
+    }, 200);
 
     function disableF5(e) {
         if ((e.which || e.keyCode) == 116) e.preventDefault();
@@ -384,7 +461,10 @@ jQuery(document).ready(function () {
     let resetColumnBoxBtn = $("#resetColumnBoxBtn");
     resetColumnBoxBtn.on("click", resetAllColumnsToDefault);
 
-
+    //let dataTableHeaders = $('#data_handler_table thead tr th');
+    // $('.dataTableHeader').on('click', function(){
+    //   alert("kdifr.d");
+    // });
 
 
 });

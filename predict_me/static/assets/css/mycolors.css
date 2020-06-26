@@ -11,6 +11,12 @@ button:disabled {
     text-decoration: underline;
 }
 
+.not-allowed-cursor{
+    cursor: not-allowed !important;
+}
+
+
+
 /* Spinner style */
 #donerFilesSpinner {
     position: relative;

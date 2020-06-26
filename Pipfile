@@ -42,6 +42,13 @@ django-extensions = "*"
 python-dateutil = "*"
 google-auth = "*"
 rsa = "*"
+jedi = "*"
+email-validator = "*"
+datetime-extractor = "*"
+google-api-core = "*"
+requests = "*"
+openpyxl = "*"
+pandas-schema = "*"
 
 [requires]
 python_version = "3.8"

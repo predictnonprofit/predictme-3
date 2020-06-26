@@ -7,7 +7,7 @@ var KTDatatableRemoteAjaxDemo = function() {
     // basic demo
     var demo = function() {
 
-        var datatable = $('#invoices-list-datatable').KTDatatable({
+        var datatable = $('#kt_datatable').KTDatatable({
             // datasource definition
             data: {
                 type: 'remote',

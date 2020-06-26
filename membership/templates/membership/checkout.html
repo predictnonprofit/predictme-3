@@ -14,10 +14,11 @@ Check out
 {% block content %}
 <br />
 <section class="container" style="min-height: 79vh;">
-  <!-- Alert message -->
-  {% include "predict_me/inc/messages.html" %}
-  <!-- ./Alert message -->
-  <!-- Stripe Form Checkout Form -->
+
+
+  <div class="card card-custom gutter-b">
+ <div class="card-body">
+    <!-- Stripe Form Checkout Form -->
   <div class="my-5">
 
     <script src="https://js.stripe.com/v3/"></script>
@@ -103,7 +104,7 @@ Check out
 
         <div class="row form-group">
           <div class="col text-right">
-            <button type="submit" id="paymentBtn" disabled class="btn btn-success"><i class="fa fa-dollar-sign"></i> Subscript
+            <button type="submit" id="paymentBtn" disabled class="btn btn-success not-allowed-cursor"><i class="fa fa-dollar-sign"></i> Subscript
             </button>
           </div>
         </div>
@@ -113,6 +114,8 @@ Check out
     </form>
   </div>
   <!-- ./Stripe Form Checkout Form -->
+ </div>
+</div>
 
 </section>
 

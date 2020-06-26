@@ -10,11 +10,21 @@ var KTDatatablesDataSourceAjaxServer = function() {
 			searchDelay: 500,
 			processing: true,
 			serverSide: true,
-			ajax: HOST_URL + '/api/datatables/demos/server.php',
+			ajax: {
+				url: HOST_URL + '/api/datatables/demos/server.php',
+				type: 'POST',
+				data: {
+					// parameters for custom backend script demo
+					columnsDef: [
+						'OrderID', 'Country',
+						'ShipAddress', 'CompanyName', 'ShipDate',
+						'Status', 'Type', 'Actions'],
+				},
+			},
 			columns: [
 				{data: 'OrderID'},
 				{data: 'Country'},
-				{data: 'ShipCity'},
+				{data: 'ShipAddress'},
 				{data: 'CompanyName'},
 				{data: 'ShipDate'},
 				{data: 'Status'},

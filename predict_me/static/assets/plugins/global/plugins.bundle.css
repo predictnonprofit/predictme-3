@@ -11810,9 +11810,6 @@ button.toast-close-button {
   -webkit-box-shadow: 0 0 3px #c4e6f5;
   box-shadow: 0 0 3px #c4e6f5; }
 
-.swal2-input::-webkit-input-placeholder, .swal2-file::-webkit-input-placeholder, .swal2-textarea::-webkit-input-placeholder {
-  color: #cccccc; }
-
 .swal2-input::-moz-placeholder, .swal2-file::-moz-placeholder, .swal2-textarea::-moz-placeholder {
   color: #cccccc; }
 
@@ -11820,6 +11817,9 @@ button.toast-close-button {
   color: #cccccc; }
 
 .swal2-input::-ms-input-placeholder, .swal2-file::-ms-input-placeholder, .swal2-textarea::-ms-input-placeholder {
+  color: #cccccc; }
+
+.swal2-input::-webkit-input-placeholder, .swal2-file::-webkit-input-placeholder, .swal2-textarea::-webkit-input-placeholder {
   color: #cccccc; }
 
 .swal2-input::placeholder,
@@ -21267,7 +21267,7 @@ readers do not read off random characters that represent icons */
   content: "\e0a7"; }
 
 /*!
- * Font Awesome Free 5.13.0 by @fontawesome - https://fontawesome.com
+ * Font Awesome Free 5.13.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 .fa, .fab, .fad, .fal, .far, .fas {
@@ -21689,6 +21689,12 @@ readers do not read off random characters that represent icons */
 
 .fa-bacon:before {
   content: "\f7e5"; }
+
+.fa-bacteria:before {
+  content: "\f959"; }
+
+.fa-bacterium:before {
+  content: "\f95a"; }
 
 .fa-bahai:before {
   content: "\f666"; }
@@ -22467,6 +22473,9 @@ readers do not read off random characters that represent icons */
 .fa-deaf:before {
   content: "\f2a4"; }
 
+.fa-deezer:before {
+  content: "\f977"; }
+
 .fa-delicious:before {
   content: "\f1a5"; }
 
@@ -22649,6 +22658,9 @@ readers do not read off random characters that represent icons */
 
 .fa-edge:before {
   content: "\f282"; }
+
+.fa-edge-legacy:before {
+  content: "\f978"; }
 
 .fa-edit:before {
   content: "\f044"; }
@@ -23141,6 +23153,9 @@ readers do not read off random characters that represent icons */
 
 .fa-google-drive:before {
   content: "\f3aa"; }
+
+.fa-google-pay:before {
+  content: "\f979"; }
 
 .fa-google-play:before {
   content: "\f3ab"; }
@@ -24564,6 +24579,9 @@ readers do not read off random characters that represent icons */
 .fa-rupee-sign:before {
   content: "\f156"; }
 
+.fa-rust:before {
+  content: "\f97a"; }
+
 .fa-sad-cry:before {
   content: "\f5b3"; }
 
@@ -24719,6 +24737,9 @@ readers do not read off random characters that represent icons */
 
 .fa-simplybuilt:before {
   content: "\f215"; }
+
+.fa-sink:before {
+  content: "\f96d"; }
 
 .fa-sistrix:before {
   content: "\f3ee"; }
@@ -25206,6 +25227,9 @@ readers do not read off random characters that represent icons */
 .fa-ticket-alt:before {
   content: "\f3ff"; }
 
+.fa-tiktok:before {
+  content: "\f97b"; }
+
 .fa-times:before {
   content: "\f00d"; }
 
@@ -25392,6 +25416,9 @@ readers do not read off random characters that represent icons */
 .fa-unlock-alt:before {
   content: "\f13e"; }
 
+.fa-unsplash:before {
+  content: "\f97c"; }
+
 .fa-untappd:before {
   content: "\f405"; }
 
@@ -25481,6 +25508,9 @@ readers do not read off random characters that represent icons */
 
 .fa-users-cog:before {
   content: "\f509"; }
+
+.fa-users-slash:before {
+  content: "\f973"; }
 
 .fa-usps:before {
   content: "\f7e1"; }

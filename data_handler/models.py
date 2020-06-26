@@ -36,9 +36,13 @@ class DataFile(models.Model):
         return sorted(self.selected_columns.split("|"))
 
 
-class MembersAcceptsTermsCounter:
+class MemberDownloadCounter(models.Model):
     member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True,
-                               related_name='member_accepted')
+                               related_name='download_counter')
     is_accept_terms = models.BooleanField(null=True, blank=True, default=False)
-    is_download_template = models.BooleanField(null=True, blank=True, default=False)
-    accept_download_times = models.IntegerField(null=True, blank=True, default=0)
+    is_accept_download_template = models.BooleanField(null=True, blank=True, default=False)  # this when the member check he download
+    is_download_template = models.BooleanField(null=True, blank=True, default=False)  # this if the member download the template or not
+    download_counter = models.IntegerField(null=True, blank=True, default=0)
+
+    class Meta:
+        db_table = 'members_download_counter'

@@ -1,7 +1,7 @@
 <!-- Modal-->
 <div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" tabindex="-1" role="dialog"
     aria-labelledby="columnsDualBoxModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Pick columns</h5>
@@ -15,14 +15,7 @@
 
 
                 <div class="card card-custom gutter-b mx-auto" style="height: 100%;">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <h3 class="card-label">
-                                Pick columns with its data type
-                                <small><strong></strong></small>
-                            </h3>
-                        </div>
-                    </div>
+
                     <div class="card-body h-100">
                         <div class="container">
                             <div class="row">
@@ -70,20 +63,22 @@
                                 class="btn btn-outline-danger font-weight-bold">Reset
                             </button>
                             <button type="button" id='validateColumnsBtn'
-                                class="btn btn-light-primary font-weight-bold">Validate
+                                class="btn btn-light-primary font-weight-bold disabled" disabled>Validate
                             </button>
                         </div>
                         <p class="text-left">
-                            <div class="alert alert-custom alert-notice alert-light-warning fade show mb-5"
+                            <div class="alert alert-custom alert-secondary fade show mb-5"
                                 role="alert">
                                 <div class="alert-icon">
                                     <i class="flaticon-warning"></i>
                                 </div>
                                 <div class="alert-text">
-                                    <ul>
-                                        <li><strong>Your file must contain Dooner ID</strong></li>
-                                        <li><strong>Minimum columns selected are 3</strong></li>
-                                        <li><strong>You have to select the data type of selected columns</strong></li>
+                                    <ul id="dataFileUploadCheckList" class="pt-0">
+                                        <li class="font-weight-bolder">Select Unique ID <span id="selectUniqueID" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder">Minimum columns selected are 3	<span id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder">Select the data type of selected columns <span id="isValidateData" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder">Select Donation Field<span id="donationField" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder">Select 3 options of text data type <span id="is3TextSelected" class="ml-2 text-danger">&#10060;</span></li>
                                     </ul>
                                 </div>
                                

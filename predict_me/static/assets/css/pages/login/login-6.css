@@ -65,25 +65,40 @@
         .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-desc {
           color: #B5B5C3;
           font-size: 0.925rem; }
-      .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"], .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] {
+      .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon {
+        -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+        transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+        transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
+        background-color: #C9F7F5; }
+        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon .wizard-check {
+          color: #1BC5BD;
+          display: inline-block; }
+        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon .wizard-number {
+          display: none; }
+      .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-title {
+        color: #B5B5C3; }
+      .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-desc {
+        color: #D6D6E0; }
+      .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] {
         -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
         transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
         transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease; }
-        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon, .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon {
+        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon {
           -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
           transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
           transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
           transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
           background-color: #C9F7F5; }
-          .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon .wizard-check, .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon .wizard-check {
+          .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon .wizard-check {
             color: #1BC5BD;
-            display: inline-block; }
-          .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-icon .wizard-number, .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon .wizard-number {
             display: none; }
-        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-title, .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-title {
-          color: #B5B5C3; }
-        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-desc, .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-desc {
+          .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon .wizard-number {
+            color: #1BC5BD; }
+        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-title {
+          color: #212121; }
+        .login.login-6 .login-content .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-desc {
           color: #B5B5C3; }
 
 @media (min-width: 992px) {
@@ -92,13 +107,16 @@
     max-width: 450px; }
   .login.login-6 .login-content .login-container {
     width: 100%;
-    max-width: 885px; }
+    max-width: 700px; }
   .login.login-6 .login-aside.login-aside-w {
     width: 100%;
     max-width: 750px; }
   .login.login-6 .login-aside .login-img {
-    min-height: 565px !important;
-    background-size: 540px; } }
+    min-height: 590px !important;
+    background-size: 560px; }
+  .login.login-6 .login-aside .signup-img {
+    min-height: 700px !important;
+    background-size: 700px; } }
 
 @media (min-width: 992px) and (max-width: 1399.98px) {
   .login.login-6 .login-aside {
@@ -109,7 +127,10 @@
       max-width: 500px; }
     .login.login-6 .login-aside .login-img {
       min-height: 420px !important;
-      background-size: 400px; } }
+      background-size: 400px; }
+    .login.login-6 .login-aside .signup-img {
+      min-height: 500px !important;
+      background-size: 500px; } }
 
 @media (max-width: 991.98px) {
   .login.login-6 .login-content .login-wrapper {
@@ -127,7 +148,10 @@
     max-width: 100%; }
     .login.login-6 .login-aside .login-img {
       min-height: 500px !important;
-      background-size: 450px; } }
+      background-size: 450px; }
+    .login.login-6 .login-aside .signup-img {
+      min-height: 400px !important;
+      background-size: 380px; } }
 
 @media (max-width: 575.98px) {
   .login.login-6 .login-content {
@@ -147,4 +171,7 @@
     font-size: 35px !important; }
   .login.login-6 .login-aside .login-img {
     min-height: 350px !important;
+    background-size: 300px; }
+  .login.login-6 .login-aside .signup-img {
+    min-height: 320px !important;
     background-size: 300px; } }
