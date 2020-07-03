@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 bpython = "*"
+termcolor = "*"
 
 [packages]
 pathtools = "*"
@@ -49,6 +50,7 @@ google-api-core = "*"
 requests = "*"
 openpyxl = "*"
 pandas-schema = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.8"

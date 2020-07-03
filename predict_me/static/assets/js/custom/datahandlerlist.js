@@ -1,6 +1,7 @@
-var undoValue = "";  // the undo value
-var undoElement = null;  // the undo input element
-var isDownloaded = false;  // if true mean the member download the data template
+let undoValue = "";  // the undo value
+let undoValue2 = '';  // the undo value which will save when save button clicked
+let undoElement = null;  // the undo input element
+let isDownloaded = false;  // if true mean the member download the data template
 $(function () {
 
     // this to delay the donner files but show the spinner first
@@ -57,15 +58,7 @@ $(function () {
         } else {
             validateObj[checkedDataVal] = false;
         }
-        // check if the two options checked enable the check button in the modal
-        if (validateObj['agree'] === true && validateObj['download'] === true) {
-            $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
-        } else {
-            dataUploadBtn.attr("disabled", "disabled");
-            $("#semitransparent").removeClass("d-none");
-            $("#donerFile").attr("disabled", "disabled");
-            $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
-        }
+
     });
 
     // this for disable the upload button when user not accept the terms from the modal dialog
@@ -75,6 +68,15 @@ $(function () {
     var acceptDownloadObj = {};
     downloadTemplateLink.on('click', function (evt) {
         isDownloaded = true;
+        // check if the two options checked enable the check button in the modal
+        if (validateObj['agree'] === true && validateObj['download'] === true && isDownloaded == true) {
+            $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+        } else {
+            dataUploadBtn.attr("disabled", "disabled");
+            $("#semitransparent").removeClass("d-none");
+            $("#donerFile").attr("disabled", "disabled");
+            $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
+        }
 
     })
     // accept upload instruction terms button
@@ -301,7 +303,9 @@ $(function () {
     // process button, which will send ajax request with the selected columns
     const processPickedColumnsBtn = $("#processPickedColumnsBtn");
     processPickedColumnsBtn.click(function (e) {
+        selectedPickedColumns = _.uniq(selectedPickedColumns);  // to avoid duplicate columns name
         // console.log(selectedPickedColumns);
+        // throw new Error("Something went badly wrong!");
         let selectedColumnsRequest = sendPickedColumns();
         $.when(selectedColumnsRequest).done(function (data, textStatus, jqXHR) {
             console.log(jqXHR.statusCode);
@@ -332,21 +336,31 @@ newStripeCardBtn.click(function (e) {
 });
 
 $(document).ready(function () {
-    stripeElementsFormDataHandler();
+    setTheCookie();
+    // stripeElementsFormDataHandler();
     let fetchedColumns = fetchDataFileColumns();
 
     $.when(fetchedColumns).done(function (data, textStatus, jqXHR) {
         // console.log(textStatus);
         // console.log(jqXHR);
-        // console.log(data);
+        // console.log(Object.keys(data));
+
         // check if the data not equal "", this mean no columns
+
         if (data !== "") {
-            var sortedColumns = Array();
+
+            let sortedColumns = Array();
             let columnsLabels = data;
-            for (let cl of data) {
-                sortedColumns.push(cl);
+            for (let cl in data) {
+               //unique identifier (id)
+                if(data[cl] == "unique identifier (id)"){
+                    sortedColumns.push({"isUnique": true, "headerName": cl});
+                }else{
+                    sortedColumns.push({"isUnique": false, "headerName": cl});
+                }
+
             }
-            sortedColumns = sortedColumns.sort();
+            // sortedColumns = sortedColumns.sort();
             //initialise columns for the data table
             setColumnNamesHeader(sortedColumns);
             //initialise (fetch) rows, fetch the rows to datatable
@@ -356,10 +370,10 @@ $(document).ready(function () {
                 /* console.log(rowData);
                 console.log(rowTextStatus);
                 console.log(rowJqXHR); */
-                ;
+
                 // first hide the spinner loding div
                 $("#loadingDataSpinner").hide();
-                var rowsObject = rowData;
+                let rowsObject = rowData;
                 // console.log(rowsObject);
                 drawDataTableRows(rowsObject, false);
 
@@ -368,23 +382,46 @@ $(document).ready(function () {
         }
 
     });
+
+    // save button when member click on save button after click on undo button
     let saveDataFileBtn = $("#saveDataFileBtn");
     saveDataFileBtn.click(function (e) {
+        // this when save button clicked after undo
         $("#dataListTable").css("opacity", "0.3");
         $(".data-table-col").attr("disabled", "disabled");
         $("#save-row-loader").fadeIn();
-        let saveDataRespone = updateMemberDataFile();
+        // console.log(undoElement.data());
+        let clonedNewRowsUpdates = allNewRowsUpdates;
+        // console.log(clonedNewRowsUpdates);
+        for(let row in clonedNewRowsUpdates){
+            clonedNewRowsUpdates[row]['colValue'] = undoElement.data("undo-val");
+            console.log(undoElement.data());
+            console.log(allNewRowsUpdates[row]);
+            console.log(clonedNewRowsUpdates[row]);
+        }
+        // console.log(undoValue);
+        // console.log(undoElement.data());
+        // throw new Error("Tess");
+        let saveDataRespone = updateMemberDataFile(clonedNewRowsUpdates);
         $.when(saveDataRespone).done(function (data, textStatus, jqXHR) {
             // console.log(textStatus);
             // console.log(jqXHR);
-            // console.log(data);
+            console.log(data);
 
-            if (textStatus === "success") {
-                swAlert("Success", "Your data updated successfully!", "success");
+            if (textStatus === "success" && jqXHR.status == 200) {
+                showToastrNotification('Saved successfully');
+                $("#save-row-loader").fadeOut();
+                $("#dataListTable").css("opacity", "1");
+                $(".data-table-col").removeAttr("disabled");
+                saveDataFileBtn.addClass("disabled");
+                saveDataFileBtn.attr("disabled", "disabled");
+                saveDataFileBtn.attr("style", "cursor: not-allowed");
+
+
                 // window.location.reload();
 
             } else {
-                swAlert("Error", "Error when save the data!", "error");
+                showToastrNotification('Error while saving the data!', "danger");
             }
 
         });
@@ -508,13 +545,19 @@ $(document).ready(function () {
     // the undo button
     const undoBtn = $("#undoBtn");
     undoBtn.on("click", function (evt) {
+        undoElement.focus();
+        // console.log(undoValue);
+        // console.log(undoValue2);
         undoElement.val(undoValue);
+
+        $("#saveDataFileBtn").removeClass("disabled");
+        $("#saveDataFileBtn").removeAttr("disabled style");
         // undoValue = "";
         $("#undoBtn").addClass("disabled");
         $("#undoBtn").attr("disabled", "disabled");
         $("#undoBtn").attr("style", "cursor: not-allowed;");
-        undoElement.focus();
-        undoElement = null;
+
+        // undoElement = null;
     });
     // save the old value to make undo
     saveUndo();

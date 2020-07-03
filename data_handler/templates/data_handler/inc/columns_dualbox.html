@@ -33,16 +33,17 @@
                                 </div>
 
                                 <div class="col-1">
-                                    <button type="button" id="addColumnBtn" class="btn btn-light my-2">></button>
+                                    <div class="btn-group-vertical py-5" role="group" aria-label="Vertical DualBox group">
+                                        <button type="button" id="addColumnBtn" class="btn btn-light my-2">></button>
                                     <button type="button" id="removeColumnBtn" class="btn btn-light my-2">
-                                        <</button> 
-                                        &nbsp;&nbsp;&nbsp;
+                                        <</button>
                                         <button type="button" id="addAllColumnsBtn"
-                                            class="btn btn-light my-2 ">>>
+                                            class="btn btn-light  my-2">>>
                                     </button>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <button type="button" id="removeAllColumnsBtn" class="btn btn-light my-2 ">
-                                        <<</button> 
+                                    <button type="button" id="removeAllColumnsBtn" class="btn btn-light my-2">
+                                        <<</button>
+                                    </div>
+
                                     
                                     </div>
                                      <div class="col border-left">
@@ -63,7 +64,7 @@
                                 class="btn btn-outline-danger font-weight-bold">Reset
                             </button>
                             <button type="button" id='validateColumnsBtn'
-                                class="btn btn-light-primary font-weight-bold disabled" disabled>Validate
+                                class="btn btn-light-primary font-weight-bold disabled" style="cursor: not-allowed;" disabled>Validate
                             </button>
                         </div>
                         <p class="text-left">
@@ -75,10 +76,10 @@
                                 <div class="alert-text">
                                     <ul id="dataFileUploadCheckList" class="pt-0">
                                         <li class="font-weight-bolder">Select Unique ID <span id="selectUniqueID" class="ml-2 text-danger">&#10060;</span></li>
-                                        <li class="font-weight-bolder">Minimum columns selected are 3	<span id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder">Minimum select 3 textual columns <span id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
                                         <li class="font-weight-bolder">Select the data type of selected columns <span id="isValidateData" class="ml-2 text-danger">&#10060;</span></li>
-                                        <li class="font-weight-bolder">Select Donation Field<span id="donationField" class="ml-2 text-danger">&#10060;</span></li>
-                                        <li class="font-weight-bolder">Select 3 options of text data type <span id="is3TextSelected" class="ml-2 text-danger">&#10060;</span></li>
+                                        <li class="font-weight-bolder d-none" id="donationFieldLi">Select Donation Field<span id="donationField" class="ml-2 text-danger">&#10060;</span></li>
+
                                     </ul>
                                 </div>
                                
@@ -94,7 +95,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-light-danger font-weight-bold" id="cancelReuploadBtn">Cancel &
                     Re-upload</button>
-                <button type="button" class="btn btn-primary font-weight-bold disabled" disabled
+                <button type="button" style="cursor: not-allowed;" class="btn btn-primary font-weight-bold disabled" disabled
                     id="processPickedColumnsBtn">Process</button>
                 </form>
             </div>

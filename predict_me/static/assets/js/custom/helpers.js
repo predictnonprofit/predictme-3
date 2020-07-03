@@ -25,6 +25,89 @@ function swAlert(alertTitle, alertMsg, alertType) {
     swal.fire(`${alertTitle}`, `${alertMsg}`, `${alertType}`);
 }
 
+function swConfrim(title, msg) {
+
+    bootbox.confirm("This is the default confirm!", function (result) {
+        console.log('This was logged in the callback: ' + result);
+    });
+
+    // return ;
+
+}
+
+// sweetalert2 confirm custom dialogbox only show when the memeber change the data type of the column
+function swConfrimDtype(elem, msg, tmpSpan) {
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+
+    swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: msg,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        backdrop: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        showLoaderOnConfirm: true,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+
+            tmpSpan.show();
+            resultsValue = true;
+
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            tmpSpan.hide();
+            elem.val("");
+
+        }
+    });
+
+
+}
+
+// count duplicated items in array
+function coutItems(arrayVar, value) {
+    let count = 0;
+    arrayVar.forEach((v) => (v === value && count++));
+    return count;
+}
+
+// count duplicated values in json object
+function countJsonItems(jsonObj, value) {
+    let count = 0;
+    for (let i in jsonObj) {
+        if (jsonObj[i] === value) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// check if value exists in json object
+function checkValueExists(json, value) {
+    for (let key in json) {
+        if (typeof (json[key]) == "object") {
+            return checkForValue(json[key], value);
+        } else if (json[key] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // here the columns dual box
 // Class definition
 var pickedColumns = []; // this will hold all columns that user selected
@@ -97,8 +180,6 @@ var KTDualListbox = function () {
         },
     };
 }();
-
-
 
 
 // this ajax function which will upload the donor data file
@@ -219,11 +300,11 @@ function uploadDonorDataFile(uploadForm) {
 function sendPickedColumns(params) {
     // let selectedColumns = JSON.stringify(pickedColumns);
     // let selectedColumns = JSON.parse(pickedColumns);
-
+    // console.log(typeof JSON.stringify(selectedValidateColumns));
     let selectedColumns = {
-        "columns": selectedPickedColumns
+        "columns": selectedPickedColumns,
+        "columns_with_datatype": JSON.stringify(selectedValidateColumns)
     };
-    
     // console.log(selectedPickedColumns);
     const webSiteMemberUrl = window.location;
 
@@ -279,7 +360,6 @@ function sendPickedColumns(params) {
 
     });
 }
-
 
 
 // this function will fetch the columns of the saved file
@@ -342,11 +422,18 @@ function fetchDataFileColumns(fetchedColumns) {
 function setColumnNamesHeader(columnsList) {
     // console.log(columnsList);
 
-    var tableHeaderElement = $("#data_handler_table > thead > tr:last");
+    let tableHeaderElement = $("#data_handler_table > thead > tr:last");
     for (let col of columnsList) {
-        var row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col}' onclick='sortHeader(this);' class='dataTableHeader text-center'>${col} <i class="icon-lg d-none text-danger la la-info-circle"></i></th>
+        let row = "";
+        if (col['isUnique'] == true) {
+            row = `
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i class="icon-lg d-none text-danger la la-info-circle"></i></th>
         `;
+        } else {
+            row = `
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i class="icon-lg d-none text-danger la la-info-circle"></i></th>
+        `;
+        }
         tableHeaderElement.append(row);
     }
 }
@@ -355,7 +442,7 @@ function setColumnNamesHeader(columnsList) {
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
     console.log(currentRowData.length, "records");
-    
+
     // check if this data not validate
     if (isValidate === false) {
         let tableBodyElement = $("#data_handler_table > tbody tr:last");
@@ -363,6 +450,7 @@ function drawDataTableRows(rowsData, isValidate) {
 
         for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
             let currentDataObj = currentRowData[colIdx];
+            // console.log(currentDataObj);
             let allCells = "";
             let tableRow = "<tr class='datatable-row'> ";
             // console.log(Object.entries(currentDataObj));
@@ -467,9 +555,7 @@ function drawDataTableRows(rowsData, isValidate) {
     }
 
 
-
 }
-
 
 
 // this when the user enter the amount of rows which will purchased
@@ -497,7 +583,7 @@ function updateMemberDataFile(updatedRowsObj) {
         // dataType: "json",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-            
+
         },
         /*  success: function (data) {
              for(let c of data){
@@ -638,16 +724,16 @@ function uploadProgressModal(isOk, data) {
             } else {
                 clearInterval(progressInterval);
                 let i = 0;
-                
+
                 for (let [name, dType] of Object.entries(data['columns'])) {
                     i++;
 
                     let tmpMarkupLi = `
-                    <li data-idx='${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action">
+                    <li data-idx='${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action noselect">
                                 ${i}. ${name.trim()}
-                                <span>
-                                <span class="label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                <span class="position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}">
+                                <span class="noselect">
+                                <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                <span class="noselect position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}">
                                     <i class="icon-lg la la-info-circle text-dark"></i>
                                 </span>
                                 
@@ -669,7 +755,6 @@ function uploadProgressModal(isOk, data) {
             }
 
 
-
         } else {
             // here in this elese block, when records count more than the allowed 
             if (progVal <= parseInt(allowdedRowsCount.text())) {
@@ -689,10 +774,10 @@ function uploadProgressModal(isOk, data) {
             // console.log("Here get to else block if isOk is false");
 
 
-
         }
 
     }
+
     /* nextProgressBtnModal.click(function (ev){
         clearInterval(progressInterval);
         rowCountProgressDialog.modal('hide');
@@ -760,21 +845,21 @@ function fetchDataFileAllColumns() {
 
 
 // this function will return Numerice or String for the data type
-function getDataType(dt){
+function getDataType(dt) {
     // const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
-    if(dt == "int64" || dt == "float64"){
+    if (dt == "int64" || dt == "float64") {
         return "Numeric";
-    }else if(dt == "object" || dt == "category"){
+    } else if (dt == "object" || dt == "category") {
         return "Textual";
-    }else{
+    } else {
         return "Alphanumeric";
     }
 }
 
 // when user click on reselect columns btn
 function reselectColumnsFunc() {
-    var optionsList = '';
-    var dataFileColumnsSelect = $("#availableColumnsList");
+    let optionsList = '';
+    let dataFileColumnsSelect = $("#availableColumnsList");
     const columnsDualBoxModal = $("#columnsDualBoxModal");
     $("#closeColumnsDualBoxBtn").show();
 
@@ -830,20 +915,21 @@ function resetSorting() {
     });
 
 }
+
 // this function well return the array without duplicate
 function removeDuplicates(originalArray, prop) {
-    
-    var newArray = [];
-    var lookupObject  = {};
 
-    for(var i in originalArray) {
-       lookupObject[originalArray[i][prop]] = originalArray[i];
+    let newArray = [];
+    let lookupObject = {};
+
+    for (let i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
     }
 
-    for(i in lookupObject) {
+    for (let i in lookupObject) {
         newArray.push(lookupObject[i]);
     }
-     return newArray;
+    return newArray;
 }
 
 
@@ -855,82 +941,77 @@ var doneTypingInterval = 2000;  //time in ms, 2 second for example
 // this function will run on change the input of the data file
 function saveNewUpdatedData() {
 
-    $('.data-table-col').each(function(key, value) {
-        
-        var elem = $(this);
+    $('.data-table-col').each(function (key, value) {
+
+        let elem = $(this);
         // allNewRowsUpdates["ROW_"+elem.data('row-id')] = Array();
-        
         // console.log(allNewRowsUpdates);
         // throw new Error("Something went badly wrong!");
         // Save current value of element
         elem.data('oldVal', elem.val());
         //focusin
-       
+
 
         // Look for changes in the value
         // elem.bind("propertychange change click keyup input paste", function(event){  // with click event
-        elem.bind("propertychange change keyup input paste", function(event){
-            
-             // If value has changed...
+        elem.bind("propertychange keyup input paste", function (event) {
+
+            // If value has changed...
             if (elem.data('oldVal') != elem.val()) {
-                
+
                 // Updated stored value
                 elem.data('oldVal', elem.val());
+                // console.log(elem.data())
                 clearTimeout(typingTimer);
-                typingTimer = setTimeout(function (){runSaveFunc(elem);}, doneTypingInterval);
+                typingTimer = setTimeout(function () {
+                    runSaveFunc(elem);
+                }, doneTypingInterval);
 
-                
+
             }
-           
+
         });
 
-        elem.bind("keypress", function (){
+        elem.bind("keypress", function () {
             // console.log('keydown run')
-            
+
             clearTimeout(typingTimer);
         })
-      });
+    });
 
-      
-      
+
 }
 
 // this function to save the old data to undo action
-function saveUndo(){
-    /* $('.data-table-col').on("focus", function (evt){
-        undoValue = $(this).data('oldVal');
-        undoElement = $(this);
-    }); */
+function saveUndo() {
 
-    $(document).on('focusin', '.data-table-col', function(){
+    $(document).on('focusin', '.data-table-col', function () {
         // console.log("Saving value " + $(this).val());
         // undoValue = $(this).val();
-        undoValue = $(this).data('val');
+        undoValue = undoValue2 = $(this).data('undo-val');
         undoElement = $(this);
-        $(this).data('val', $(this).val());
-    }).on('change','.data-table-col', function(){
-        var prev = $(this).data('val');
-        var current = $(this).val();
+        $(this).data('undo-val', $(this).val());
+    }).on('change', '.data-table-col', function () {
+        let prev = $(this).data('undo-val');
+        let current = $(this).val();
         // console.log("Prev value " + prev);
         // console.log("New value " + current);
     });
     // 
-   
+
 }
 
 // this function will fire when timer run
-function runSaveFunc(elem){
+function runSaveFunc(elem) {
     $("#undoBtn").removeClass("disabled");
     $("#undoBtn").removeAttr("disabled style");
-    let rowNumTmp = "ROW_"+elem.data('row-id');
+    let rowNumTmp = "ROW_" + elem.data('row-id');
     allNewRowsUpdates[rowNumTmp] = Array();
     let currentRowIdx = elem.data('row-id');
     let currentColumnName = elem.attr("name");
     let currentTableCellVal = elem.val().trim();
-   
-    // console.log(allNewRowsUpdates[tmpRowIdx].length);
     // check if the column exists or not
-    // console.log(allNewRowsUpdates[tmpRowIdx]);
+
     let tmpData = {
         "colName": currentColumnName,
         "colValue": currentTableCellVal
@@ -943,57 +1024,67 @@ function runSaveFunc(elem){
     // allNewRowsUpdates[rowNumTmp].push(nonDuplicateValues);
     // console.log(allNewRowsUpdates[rowNumTmp]);
     saveTheUpdates(allNewRowsUpdates, elem);
-    //   console.log(allNewRowsUpdates);
 
-  
 
-//   console.log(allNewRowsUpdates);
 }
+
 // this function will run every 1s in set time out when member update his data
-function saveTheUpdates(allUpdatedRows, elem){
+function saveTheUpdates(allUpdatedRows, elem) {
     let currInput = $(elem);
-    
+
     // console.log(currInput);
     $("#dataListTable").css("opacity", "0.3");
     $(".data-table-col").attr("disabled", "disabled");
     $("#save-row-loader").fadeIn();
     let saveDataRespone = updateMemberDataFile(allUpdatedRows);
     $.when(saveDataRespone).done(function (data, textStatus, jqXHR) {
-      // console.log(textStatus);
-      // console.log(jqXHR);
-      // console.log(data);
+        // console.log(textStatus);
+        // console.log(jqXHR);
+        // console.log(data);
 
-      if (textStatus === "success") {
-        
-        // window.location.reload();
-        console.log(data);
-        if(data['is_error'] == true){
-            currInput.addClass("is-invalid bg-light-danger");
-        }else{
-            currInput.removeClass("is-invalid bg-light-danger").delay(1000).addClass("bg-light-success").delay(1000).removeClass("bg-light-success");
+        if (textStatus === "success") {
+
+            // window.location.reload();
+            console.log(data);
+            if (data['is_error'] == true || data['msg'].includes("could not")) {
+                currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
+                showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
+            } else {
+                // currInput.removeClass("is-invalid bg-light-danger").delay(1000).addClass("bg-light-success").delay(1000).removeClass("bg-light-success");
+                currInput.removeClass("is-invalid bg-light-danger", {duration: 1000}).addClass("bg-success-o-40", {duration: 1000});
+                setTimeout(function () {
+                    currInput.removeClass("bg-success-o-40", {duration: 1500});
+                }, 1500);
+                showToastrNotification(data['msg']);
+            }
+            $("#dataListTable").css("opacity", "1");
+            $(".data-table-col").removeAttr("disabled");
+            $("#save-row-loader").fadeOut();
+
+            // currInput.focus();
+
+        } else {
+            swAlert("Error", "Error when save the data!", "error");
+            showToastrNotification("Error when save the data!", "danger");
         }
-        $("#dataListTable").css("opacity", "1");
-        $(".data-table-col").removeAttr("disabled");
-        $("#save-row-loader").fadeOut();
-        showToastrNotification(data['msg']);
-        currInput.focus();
-
-      } else {
-        swAlert("Error", "Error when save the data!", "error");
-        showToastrNotification("Error when save the data!", "danger");
-    }
 
     });
 }
 
 
 // function to display Toastr Notifications
-function showToastrNotification(msg, msgType="success"){
+function showToastrNotification(msg, msgType = "success") {
+    let icon = "";
+    if (msgType == "danger") {
+        icon = "icon la la-times";
+    } else {
+        icon = "icon la la-check";
+    }
     $.notify({
         // options
         message: msg,
-        icon: 'icon la la-check',
-    },{
+        icon: icon,
+    }, {
         // settings
         type: msgType,
         animate: {
@@ -1003,5 +1094,31 @@ function showToastrNotification(msg, msgType="success"){
         z_index: 1031,
         timer: 1000,
     });
-   
+
+}
+
+// function well set cookie if the member does not upload any data file yet, this cookie if it set, it will prevent the user from reload the page and disable f5 key
+function setTheCookie() {
+    let setTheCookieResponse = checkIfMemberUploadDataFile()
+    $.when(setTheCookieResponse).done(function (data, textStatus, jqXHR) {
+        // console.log(textStatus);
+        // console.log(jqXHR.status);
+        // console.log(data);
+
+        if (data != "None" && jqXHR.status == 200) {
+            window.onbeforeunload = function (e) {
+                e = e || window.event;
+
+                // For IE and Firefox prior to version 4
+                if (e) {
+                    e.returnValue = 'Sure?';
+                }
+
+                // For Safari
+                return 'Sure?';
+            };
+        }else{
+            window.onbeforeunload = null;
+        }
+    });
 }

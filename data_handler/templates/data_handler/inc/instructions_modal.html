@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="instructionsModal" tabindex="-1" data-backdrop="static" role="dialog"
-    aria-labelledby="instructionsModalLabel" aria-hidden="true">
+     aria-labelledby="instructionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -35,29 +35,29 @@
                             (information)
                         </p>
                         <p>
-                            <ol>
-                                <li class="font-weight-bold">Donor Unique Identifier (ID)</li>
-                                <li class="font-weight-bold">At least three (3) types of data points (text columns) from
-                                    the list below.
-                                    <ol type="a">
-                                        <li> NOTE: In order for the model to run, please supply a <span
-                                                class="b-u">minimum of three (3) text columns</span> on your donor file.
-                                            <ol type="i">
-                                                <li>
-                                                    Donation history is <span class="b-u">NOT</span> a part of this
-                                                    requirement.
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="font-weight-bold">
-                                            Recommended: Country, State, City and Zip Code level data to see Donor
-                                            Predicted via Geo Location (map) feature.
-                                        </li>
+                        <ol>
+                            <li class="font-weight-bold">Donor Unique Identifier (ID)</li>
+                            <li class="font-weight-bold">At least three (3) types of data points (text columns) from
+                                the list below.
+                                <ol type="a">
+                                    <li> NOTE: In order for the model to run, please supply a <span
+                                            class="b-u">minimum of three (3) text columns</span> on your donor file.
+                                        <ol type="i">
+                                            <li>
+                                                Donation history is <span class="b-u">NOT</span> a part of this
+                                                requirement.
+                                            </li>
+                                        </ol>
+                                    </li>
+                                    <li class="font-weight-bold">
+                                        Recommended: Country, State, City and Zip Code level data to see Donor
+                                        Predicted via Geo Location (map) feature.
+                                    </li>
 
-                                    </ol>
-                                </li>
+                                </ol>
+                            </li>
 
-                            </ol>
+                        </ol>
                         </p>
 
                     </div>
@@ -145,44 +145,45 @@
                     </div>
 
 
-
                 </section>
             </div>
             <div class="modal-footer d-block">
                 <div class="d-flex mb-0">
                     <div class="w-100">
-                        <div class="form-group row ">
-                            <!-- <label class="col-3 col-form-label">Inline Checkboxes</label> -->
-                            <div class="col-9 col-form-label p-0">
-                                <div class="checkbox-inline">
-                                    <label class="checkbox">
-                                        <input type="checkbox" data-action="agree" class="instruction-check-btn">I Agree
-                                        <span></span></label>
-                                    <label class="checkbox">
-                                        <input type="checkbox" data-action="download" class="instruction-check-btn">I download the template
-                                        <span></span></label>
-                                        <label>
-                                            <a style="bottom: 6px;" href="{% url 'data-handler-temp-download' %}" id="downloadTemplateLink" class="btn btn-outline-success btn-icon position-relative">
-                                                <span data-toggle="tooltip" title="Download upload instructions template">
-                                                  <i class="icon-lg la la-file-download"></i>
-                                                </span>
-                                              </a>
-                                            <span></span>
-                                        </label>
-                                        
-                                </div>
-                                <span class="form-text text-muted mt-0">* You must to accept and download template file</span>
+                        <div class="form-group">
+
+                            <div class="checkbox-inline">
+                                <label class="checkbox checkbox-square">
+                                    <input type="checkbox" data-action="agree" class="instruction-check-btn">
+                                    <span></span>I Agree
+                                </label>
+                                <label class="checkbox checkbox-square">
+                                    <input type="checkbox" data-action="download" class="instruction-check-btn">
+                                    <span></span>I download the template
+                                </label>
+                                <label>
+                                    <a style="top: 5px;" href="{% url 'data-handler-temp-download' %}"
+                                       id="downloadTemplateLink"
+                                       class="btn btn-outline-success btn-icon position-relative">
+                        <span data-toggle="tooltip" title="Download data file template">
+                          <i class="icon-lg la la-file-download"></i>
+                        </span>
+                                    </a>
+                                    <span></span>
+                                </label>
                             </div>
+                            <span class="form-text text-muted">* You must to accept and download template file</span>
                         </div>
                     </div>
                     <div class="ml-auto w-100 text-right">
                         <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
-                            id="closeUploadInstBtn" data-toggle="tooltip" title="Not accept and close">
+                                id="closeUploadInstBtn" data-toggle="tooltip" title="Not accept and close">
                             <i class="la la-close"></i>
                         </button>
                         &nbsp;
-                        <button type="button" class="btn btn-primary disabled notAllowedCur" disabled style="width: 100px;" data-toggle="tooltip"
-                            data-dismiss="modal" id="acceptUploadInstBtn" title="Accept and upload!">
+                        <button type="button" class="btn btn-primary disabled notAllowedCur" disabled
+                                style="width: 100px;" data-toggle="tooltip"
+                                data-dismiss="modal" id="acceptUploadInstBtn" title="Accept and upload!">
                             <i class="la la-check"></i>
                         </button>
                     </div>

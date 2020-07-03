@@ -4,8 +4,6 @@
 var KTWidgets = function() {
     // Private properties
 
-    // Private functions
-
     // General Controls
     var _initDaterangepicker = function() {
         if ($('#kt_dashboard_daterangepicker').length == 0) {
@@ -4305,6 +4303,119 @@ var KTWidgets = function() {
         chart.render();
     }
 
+    // Forms
+    var _initFormsWidget1 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_1_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget2 = function() {
+        var formEl = KTUtil.getById("kt_forms_widget_2_form");
+        var editorId = 'kt_forms_widget_2_editor';
+
+        // init editor
+        var options = {
+            modules: {
+                toolbar: {
+                    container: "#kt_forms_widget_2_editor_toolbar"
+                }
+            },
+            placeholder: 'Type message...',
+            theme: 'snow'
+        };
+
+        if (!formEl) {
+            return;
+        }
+
+        // Init editor
+        var editorObj = new Quill('#' + editorId, options);
+    }
+
+    var _initFormsWidget3 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_3_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget4 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_4_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget5 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_5_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget6 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_6_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget7 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_7_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget8 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_8_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget9 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_9_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget10 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_10_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget11 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_11_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    var _initFormsWidget12 = function() {
+        var inputEl = KTUtil.getById("kt_forms_widget_12_input");
+
+        if (inputEl) {
+            autosize(inputEl);
+        }
+    }
+
+    // Advance Tables
     var _initAdvancedTableGroupSelection = function(element) {
         var table = KTUtil.getById(element);
 
@@ -4314,6 +4425,40 @@ var KTWidgets = function() {
             for (var i = 0, len = checkboxes.length; i < len; i++) {
                 checkboxes[i].checked = this.checked;
             }
+        });
+    }
+
+    // Education Show More Demo
+    var _initEducationShowMoreBtn = function() {
+        var el = KTUtil.getById('kt_app_education_more_feeds_btn');
+
+        KTUtil.addEvent(el, 'click', function(e) {
+            var elements = document.getElementsByClassName('education-more-feeds');
+
+            if (!elements || elements.length <= 0) {
+                return;
+            }
+
+            KTUtil.btnWait(el, 'spinner spinner-right spinner-white pr-15', 'Please wait...', true);
+
+            setTimeout(function() {
+                KTUtil.btnRelease(el);
+                KTUtil.addClass(el, 'd-none');
+
+                var item;
+
+                for (var i = 0, len = elements.length; i < len; i++) {
+                    item = elements[0];
+                    KTUtil.removeClass(elements[i], 'd-none');
+
+                    var textarea = KTUtil.find(item, 'textarea');
+                    if (textarea) {
+                        autosize(textarea);
+                    }
+                }
+
+                KTUtil.scrollTo(item);
+            }, 1000);
         });
     }
 
@@ -4370,6 +4515,22 @@ var KTWidgets = function() {
             _initAdvancedTableGroupSelection('kt_advance_table_widget_2');
             _initAdvancedTableGroupSelection('kt_advance_table_widget_3');
             _initAdvancedTableGroupSelection('kt_advance_table_widget_4');
+
+            // Forms widgets
+            _initFormsWidget1();
+            _initFormsWidget2();
+            _initFormsWidget3();
+            _initFormsWidget4();
+            _initFormsWidget5();
+            _initFormsWidget6();
+            _initFormsWidget7();
+            _initFormsWidget8();
+            _initFormsWidget9();
+            _initFormsWidget10();
+            _initFormsWidget11();
+
+            // Education App
+            _initEducationShowMoreBtn();
         }
     }
 }();

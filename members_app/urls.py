@@ -9,4 +9,7 @@ urlpatterns = [
     path("change-password", ProfileChangePassword.as_view(), name="profile-change-password"),
     path("email", ProfileEmail.as_view(), name="profile-email"),
     path("data", DataListView.as_view(), name="data-list"),
+    path("download", download_instructions_template, name='data-handler-temp-download'),
+    path("download-excel", download_data_file_xlsx, name='data-handler-excel-download'),
+    path("download-csv", download_data_file_csv, name='data-handler-csv-download'),
 ]

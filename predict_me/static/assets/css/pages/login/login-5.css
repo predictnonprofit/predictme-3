@@ -52,7 +52,7 @@
             font-size: 1.4rem; }
           .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step .wizard-icon .wizard-number {
             font-weight: 600;
-            color: #464E5F;
+            color: #3F4254;
             font-size: 1.35rem; }
         .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step .wizard-label {
           display: -webkit-box;
@@ -66,7 +66,7 @@
           -ms-flex-pack: center;
           justify-content: center; }
           .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-title {
-            color: #212121;
+            color: #181C32;
             font-weight: 500;
             font-size: 1.4rem; }
           .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-desc {
@@ -87,7 +87,7 @@
         .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-title {
           color: #B5B5C3; }
         .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="done"] .wizard-label .wizard-desc {
-          color: #D6D6E0; }
+          color: #D1D3E0; }
         .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] {
           -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
           transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
@@ -105,7 +105,7 @@
             .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-icon .wizard-number {
               color: #1BC5BD; }
           .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-title {
-            color: #212121; }
+            color: #181C32; }
           .login.login-5 .login-aside .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"] .wizard-label .wizard-desc {
             color: #B5B5C3; }
   .login.login-5 .login-aside .aside-img-wizard {

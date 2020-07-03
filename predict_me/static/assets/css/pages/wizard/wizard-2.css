@@ -60,13 +60,13 @@
           -ms-flex-pack: center;
           justify-content: center; }
           .wizard.wizard-2 .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-title {
-            color: #212121;
+            color: #181C32;
             font-weight: 500;
             font-size: 1.1rem; }
           .wizard.wizard-2 .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-desc {
-            color: #80808F; }
+            color: #7E8299; }
         .wizard.wizard-2 .wizard-nav .wizard-steps .wizard-step .wizard-arrow {
-          color: #80808F;
+          color: #7E8299;
           font-size: 1.25rem; }
           .wizard.wizard-2 .wizard-nav .wizard-steps .wizard-step .wizard-arrow.last {
             display: none; }
@@ -117,7 +117,7 @@
     display: block; }
     .wizard.wizard-2 .wizard-nav {
       width: 100%;
-      border-bottom: 1px solid #ECF0F3; }
+      border-bottom: 1px solid #EBEDF3; }
       .wizard.wizard-2 .wizard-nav .wizard-steps .wizard-step[data-wizard-state="current"]:after {
         content: none; }
     .wizard.wizard-2 .wizard-body {

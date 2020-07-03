@@ -247,3 +247,44 @@ function saveMemberAccepts(acceptData) {
 
     });
 }
+
+
+// function will send request for the server to check if member upload data file, this will use in setTheCookie function
+function checkIfMemberUploadDataFile() {
+    return $.ajax({
+        url: webSiteUrl + "/dashboard/data/api/check-upload-member",
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        method: "POST",
+        error: function (error) {
+            //called when there is an error
+            swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
+        },
+        statusCode: {
+            404: function () {
+                swAlert("Error", "Page not Found!!", "error");
+            },
+            400: function () {
+                swAlert("Error", "Bad Request!!!", "error");
+            },
+            401: function () {
+                swAlert("Error", "Unauthorized!!", "error");
+            },
+            403: function () {
+                swAlert("Error", "Forbidden!!", "error");
+            },
+            500: function () {
+                swAlert("Error", "Internal Server Error!!", "error");
+            },
+            502: function () {
+                swAlert("Error", "Bad Gateway!!", "error");
+            },
+            503: function () {
+                swAlert("Error", "Service Unavailable!!", "error");
+            },
+
+        }
+
+    });
+}

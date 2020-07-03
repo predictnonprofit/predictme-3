@@ -48,7 +48,7 @@
       .wizard.wizard-3 .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-bar {
         height: 4px;
         width: 100%;
-        background-color: #ECF0F3;
+        background-color: #EBEDF3;
         position: relative; }
         .wizard.wizard-3 .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-bar:after {
           content: " ";

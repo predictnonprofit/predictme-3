@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.db import transaction
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import (FileUploadParser, MultiPartParser, FormParser)
 from rest_framework.response import Response
@@ -11,15 +12,14 @@ from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from django.conf import settings
 from .helpers import *
-import os, json
-from membership.models import UserMembership
+import os, json, sys, traceback
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.core import serializers
+from .validators import CheckInDataError
+
+DONOR_LBL = "Donation Field"
+UNIQUE_ID_LBL = "Unique Identifier (ID)"
 
 
 def data_handler_test_dual(request):
@@ -41,14 +41,8 @@ def data_handler_init(request):
         return Response(request.POST)
 
 
-def download_instructions_template(request):
-    file_path = os.path.join(settings.MEDIA_ROOT, "files", 'Donor File Template.xlsx')
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(),
-                                    content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
+
+
 
 
 class DataHandlerFileUpload(APIView):
@@ -65,9 +59,7 @@ class DataHandlerFileUpload(APIView):
 
     def post(self, request, filename, format=None):
         from data_handler.models import DataFile
-        from membership.models import UserMembership
         data_file = DataFile.objects.get(member=request.user)
-        u_membership = UserMembership.objects.get(member=request.user)
         dfile = request.FILES['donor_file']
 
         path = default_storage.save(f"data/{dfile.name}", ContentFile(dfile.read()))
@@ -80,41 +72,26 @@ class DataHandlerFileUpload(APIView):
         donor_id_names = {"id", "donor_id", "did", "donor_unique_identifier", "donor", 'donorid', "unique Code",
                           "unique_code", "donor id"}
         # check if the file columns have donor id column
-        is_column_exists = False  # if true means the donor id column exists in the file
-        for col in columns:
-            # print(col.lower() in donor_id_names)
-            if col.lower() in donor_id_names:
-                is_column_exists = True
-                break
-            else:
-                is_column_exists = False
+
         ## save the file path after upload it into the db
-        if is_column_exists is True:
-            # if is_column_exists is False:
-            if data_file.data_file_path is not None:
-                data_file.data_file_path = tmp_file
-                data_file.file_upload_procedure = "local_file"
-                data_file.all_records_count = row_count
-                data_file.save()
-            if row_count > data_file.allowed_records_count:
-                # return Response("Columns count bigger than the allowed")
-                resp = {"is_allowed": False, "row_count": row_count}
-                return Response(resp, status=200)
-            else:
-                resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
-                # print(columns)
-                return Response(resp, status=200)
+        if data_file.data_file_path is not None:
+            data_file.data_file_path = tmp_file
+            data_file.file_upload_procedure = "local_file"
+            data_file.all_records_count = row_count
+            data_file.save()
+        if row_count > data_file.allowed_records_count:
+            # return Response("Columns count bigger than the allowed")
+            resp = {"is_allowed": False, "row_count": row_count}
+            return Response(resp, status=200)
         else:
-            resp = {"is_allowed": False, "columns": columns, "row_count": 0,
-                    "msg": "The Donor ID column no exists, please read the upload instructions very carefully"}
+            resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
             # print(columns)
-            delete_data_file(tmp_file)
             return Response(resp, status=200)
 
 
 class SaveColumnsView(APIView):
     """
-    this view to save the selected views to db
+    this view to save the selected columns with the data types and the unique id of the columns
 
     * Requires token authentication.
     * Only admin users are able to access this view.
@@ -128,20 +105,61 @@ class SaveColumnsView(APIView):
     def post(self, request, format=None):
         from data_handler.models import DataFile
         member_data_file = DataFile.objects.get(member=request.user)
-        columns_names = request.POST.getlist("columns[]")  # to save columns as text in db
-        print(columns_names)
-        if len(columns_names):
-            columns_names = "|".join(columns_names)
-            member_data_file.selected_columns = columns_names
-            member_data_file.save()
-            return Response("Extracted columns done, please wait to display the data..", status=200)
-        else:
-            return Response("No Columns Selected", status=401)
+        save_point = transaction.savepoint()
+        all_columns_with_dtypes = []  # save all columns with data types which will save to db
+        try:
+
+            columns_name = request.POST.getlist(
+                "columns[]")  # to save columns as text in db, [] -> this because the key send "columns[]"
+            columns_name_dtypes = request.POST.get("columns_with_datatype")  # to save columns with the data types
+            columns_name_dtypes_json = json.loads(columns_name_dtypes)
+
+            if len(columns_name):
+                columns_name = reorder_columns(columns_name_dtypes_json, True)
+                # columns_names = "|".join(columns_name)
+                # save the columns name only
+                member_data_file.selected_columns = "|".join(columns_name)
+                # double check if the unique id not in the columns that send from the client side
+                if UNIQUE_ID_LBL.lower() not in columns_name_dtypes_json.values():
+                    raise CheckInDataError("Unique ID Column not exists!!")
+
+                # loop through columns name and the dtypes
+                for col_name, col_dtype in columns_name_dtypes_json.items():
+                    if col_dtype == UNIQUE_ID_LBL.lower():
+                        member_data_file.unique_id_column = col_name
+
+                    if col_dtype == DONOR_LBL.lower():
+                        member_data_file.is_donor_id_selected = True
+
+                    # save the column with data type in string
+                    col_with_dtype = f"{col_name}:{col_dtype}"
+                    all_columns_with_dtypes.append(col_with_dtype)
+
+                reordered_columns = reorder_columns(all_columns_with_dtypes)
+                # cprint(all_columns_with_dtypes, "green")
+                member_data_file.selected_columns_dtypes = "|".join(reordered_columns)
+                member_data_file.save()
+                transaction.savepoint_commit(save_point)
+                return Response("Extracted columns done, please wait to display the data..", status=200)
+            else:
+                return Response("No Columns Selected", status=401)
+
+        except Exception as ex:
+            transaction.savepoint_rollback(save_point)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            cprint(str(ex), "red")
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(traceback.format_exc())
+            return Response(str(ex), status=401)
+
+        finally:
+            all_columns_with_dtypes = []  # to avoid any duplicate values or similar issues
 
 
 class GetColumnsView(APIView):
     """
-    API View to extract only columns namee, to parse them to Datatable.js, then
+    API View to extract only columns name, to parse them to Datatable.js, then
     datatable.js request to another apiview to get the rows
 
     * Requires token authentication.
@@ -156,9 +174,11 @@ class GetColumnsView(APIView):
     def post(self, request, format=None):
         from data_handler.models import DataFile
         member_data_file = DataFile.objects.get(member=request.user)
-        data = request.POST
+
         try:
-            columns_list = member_data_file.get_selected_columns_as_list
+
+            columns_list = member_data_file.get_selected_columns_with_dtypes
+
             # check if the member picked columns
 
             if len(columns_list) > 1:
@@ -169,15 +189,19 @@ class GetColumnsView(APIView):
                 member_data_file.file_upload_procedure = "None"
                 member_data_file.all_records_count = 0
                 member_data_file.selected_columns = ""
+                member_data_file.selected_columns_dtypes = ""
+                member_data_file.donor_id_column = ""
+                member_data_file.is_donor_id_selected = False
+                member_data_file.unique_id_column = ""
                 return Response('', status=200)
 
-        except AttributeError:
+        except (AttributeError, TypeError):
             return Response("No Data file uploaded Yet!", status=200)
 
 
 class GetAllColumnsView(APIView):
     """
-    API View to extract only columns namee, to parse them to Datatable.js, then
+    API View to extract only columns name, to parse them to Datatable.js, then
     datatable.js request to another apiview to get the rows
 
     * Requires token authentication.
@@ -192,12 +216,12 @@ class GetAllColumnsView(APIView):
     def post(self, request, format=None):
         from data_handler.models import DataFile
         member_data_file = DataFile.objects.get(member=request.user)
-        data = request.POST
+
         try:
             data_file_path = member_data_file.data_file_path
             all_columns = extract_columns_names(data_file_path)
-            columns_list = member_data_file.get_selected_columns_as_list
-            # print(all_columns)
+
+            columns_list = member_data_file.get_selected_columns_with_dtypes
 
             return Response(all_columns, status=200)
         except AttributeError:
@@ -219,17 +243,21 @@ class GetRowsView(APIView):
     # parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
         try:
             # print(request.user)
             records_count = request.POST.get("recordsCount")
-            from data_handler.models import DataFile
-            member_data_file = DataFile.objects.get(member=request.user)
             file_path = member_data_file.data_file_path
             file_columns = member_data_file.get_selected_columns_as_list
+            columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
+            unique_column = member_data_file.unique_id_column
+
             # check if there is no columns picked from the user, delete and reupload the data file
             if len(file_columns) > 1:
                 row_count = member_data_file.allowed_records_count
-                data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count)
+                data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count, columns_with_dtypes,
+                                                          unique_column)
                 return Response({"data": data_file_rows}, status=200, content_type='application/json')
             else:
                 delete_data_file(file_path)
@@ -237,8 +265,14 @@ class GetRowsView(APIView):
                 member_data_file.file_upload_procedure = "None"
                 member_data_file.all_records_count = 0
                 member_data_file.selected_columns = ""
+                member_data_file.selected_columns_dtypes = ""
+                member_data_file.donor_id_column = ""
+                member_data_file.is_donor_id_selected = False
+                member_data_file.unique_id_column = ""
+                return Response("No Data file uploaded Yet!", status=200)
 
-        except AttributeError:
+        except Exception as ex:
+            cprint(str(ex), "red")
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -264,10 +298,12 @@ class GetRowsBySearchQueryView(APIView):
             member_data_file = DataFile.objects.get(member=request.user)
             file_path = member_data_file.data_file_path
             file_columns = member_data_file.get_selected_columns_as_list
+            columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
             # check if there is no columns picked from the user, delete and reupload the data file
             if len(file_columns) > 1:
                 row_count = member_data_file.allowed_records_count
-                data_file_rows = get_rows_data_by_search_query(file_path, file_columns, search_query)
+                data_file_rows = get_rows_data_by_search_query(file_path, file_columns, search_query,
+                                                               columns_with_dtypes)
                 return Response({"data": data_file_rows}, status=200, content_type='application/json')
             else:
                 delete_data_file(file_path)
@@ -275,6 +311,10 @@ class GetRowsBySearchQueryView(APIView):
                 member_data_file.file_upload_procedure = "None"
                 member_data_file.all_records_count = 0
                 member_data_file.selected_columns = ""
+                member_data_file.selected_columns_dtypes = ""
+                member_data_file.donor_id_column = ""
+                member_data_file.is_donor_id_selected = False
+                member_data_file.unique_id_column = ""
 
         except AttributeError:
             return Response("No Data file uploaded Yet!", status=200)
@@ -315,8 +355,13 @@ class NotValidateRowsView(APIView):
                 member_data_file.file_upload_procedure = "None"
                 member_data_file.all_records_count = 0
                 member_data_file.selected_columns = ""
+                member_data_file.selected_columns_dtypes = ""
+                member_data_file.donor_id_column = ""
+                member_data_file.is_donor_id_selected = False
+                member_data_file.unique_id_column = ""
 
-        except AttributeError:
+
+        except Exception as ex:
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -340,9 +385,9 @@ class SaveNewRowsUpdateView(APIView):
             # print(request.user)
             from data_handler.models import DataFile
             member_data_file = DataFile.objects.get(member=request.user)
+
             file_path = member_data_file.data_file_path
-            # print(file_path)
-            import json
+            columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
             updated_rows = request.POST.get("rows")
             # print(updated_rows)
             json_data = json.loads(updated_rows)
@@ -352,17 +397,20 @@ class SaveNewRowsUpdateView(APIView):
                 if len(value) > 0:  # check and get the updated rows only
                     only_used_rows_data[key] = value
                     for single in value:
-                        validate = validate_obj.detect_and_validate(single['colValue'])
+                        tmp_dtype = columns_with_dtypes[single['colName']]
+                        # print(type(single['colValue']))
+                        validate = validate_obj.detect_and_validate(single['colValue'], dtype=tmp_dtype)
+                        # print(validate)
 
             column_names = member_data_file.get_selected_columns_as_list
             updated_data = update_rows_data(file_path, only_used_rows_data, column_names)
             # print(only_used_rows_data)
             response = ""
             if validate['is_error'] is False:
-                response = Response({"is_error": False, "msg": "Data Saved"}, status=200,
+                response = Response({"is_error": False, "msg": updated_data}, status=200,
                                     content_type='application/json')
             else:
-                response = Response({"is_error": True, "msg": "Data Saved, but the data not valid"}, status=200,
+                response = Response({"is_error": True, "msg": updated_data}, status=200,
                                     content_type='application/json')
             return response
 
@@ -395,6 +443,10 @@ class DeleteDataFileView(APIView):
             member_data_file.file_upload_procedure = "None"
             member_data_file.all_records_count = 0
             member_data_file.selected_columns = ""
+            member_data_file.selected_columns_dtypes = ""
+            member_data_file.donor_id_column = ""
+            member_data_file.is_donor_id_selected = False
+            member_data_file.unique_id_column = ""
             member_data_file.save()
 
             return Response("File Delete Successfully", status=200)
@@ -426,10 +478,11 @@ class ValidateColumnsView(APIView):
         member_data_file = DataFile.objects.get(member=request.user)
         data_file = member_data_file.data_file_path
         columns_list = member_data_file.get_selected_columns_as_list
-        columns = request.POST.get("columns")
-        #             print(type(columns))  # as a string
+        columns = request.POST.get("columns")  # as a dict
         columns_json = json.loads(columns)  # as a dict
+        print(columns_json)
         validate_columns_result = validate_data_type_in_dualbox(columns_json, data_file, columns_list)
+        print(validate_columns_result)
         if len(columns_json) > 3:
             return Response({"msg": "THe message is here"}, status=200, content_type='application/json')
 
@@ -460,18 +513,20 @@ class FilterRowsView(APIView):
             # print(request.user)
             from data_handler.models import DataFile
             member_data_file = DataFile.objects.get(member=request.user)
+            columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
             column_name = request.POST.get("column_name")
             clicked_row_count = request.POST.get("records_number")
             # clicked_row_count = 50
             all_validate_columns = get_not_validate_rows2(member_data_file.data_file_path, column_name,
                                                           member_data_file.get_selected_columns_as_list,
-                                                          clicked_row_count)
+                                                          columns_with_dtypes, clicked_row_count)
             # return Response("Please wait while validate the date type...", status=200)
+            print(all_validate_columns[0])
             return Response({"data": all_validate_columns}, status=200, content_type='application/json')
 
 
         except Exception as ex:
-            print(ex)
+            cprint(str(ex), 'red')
             return Response(str(ex), status=200)
 
 
@@ -487,7 +542,7 @@ class AcceptsDownload(APIView):
 
     def post(self, request, format=None):
         try:
-            #{'is_accept_terms': True, 'is_accept_download_template': True, 'is_download_template': False}
+            # {'is_accept_terms': True, 'is_accept_download_template': True, 'is_download_template': False}
             download_data = json.loads(request.POST.get("accept_data"))
             from data_handler.models import MemberDownloadCounter
             member_down_counter = MemberDownloadCounter.objects.get(member=request.user)
@@ -510,3 +565,20 @@ class AcceptsDownload(APIView):
         except Exception as ex:
             print(ex)
             return Response(str(ex), status=200)
+
+
+class CheckMemberUpload(APIView):
+    """
+        ### Developement only ###
+        API View to Check if member upload data file or not, to set the cookie
+
+        * Requires token authentication.
+        * Only admin users are able to access this view.
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
+
+        return Response(member_data_file.file_upload_procedure, status=200)

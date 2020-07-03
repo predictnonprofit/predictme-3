@@ -22,6 +22,10 @@ class DataFile(models.Model):
     upload_date = models.DateTimeField(auto_now=True)
     join_date = models.DateTimeField(auto_now_add=True)
     selected_columns = models.TextField(null=True, blank=True)
+    selected_columns_dtypes = models.TextField(null=True, blank=True)
+    donor_id_column = models.CharField(max_length=150, null=False, blank=True)
+    is_donor_id_selected = models.BooleanField(null=True, blank=True, default=False)
+    unique_id_column = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         # verbose_name = "member_data_file"
@@ -33,15 +37,35 @@ class DataFile(models.Model):
     @property
     def get_selected_columns_as_list(self):
         # return self.selected_columns.split("|")
-        return sorted(self.selected_columns.split("|"))
+        # return sorted(self.selected_columns.split("|"))
+        return self.selected_columns.split("|")
+
+    @property
+    def get_selected_columns_with_dtypes(self):
+        columns_with_dtypes = {}
+
+        try:
+            all_text = self.selected_columns_dtypes.split("|")
+            for txt in all_text:
+                col_name, col_dtype = txt.split(":")
+                columns_with_dtypes[col_name] = col_dtype
+
+        except ValueError:
+            pass
+        finally:
+            return columns_with_dtypes
+
+
 
 
 class MemberDownloadCounter(models.Model):
     member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True,
                                related_name='download_counter')
     is_accept_terms = models.BooleanField(null=True, blank=True, default=False)
-    is_accept_download_template = models.BooleanField(null=True, blank=True, default=False)  # this when the member check he download
-    is_download_template = models.BooleanField(null=True, blank=True, default=False)  # this if the member download the template or not
+    is_accept_download_template = models.BooleanField(null=True, blank=True,
+                                                      default=False)  # this when the member check he download
+    is_download_template = models.BooleanField(null=True, blank=True,
+                                               default=False)  # this if the member download the template or not
     download_counter = models.IntegerField(null=True, blank=True, default=0)
 
     class Meta:

@@ -30,12 +30,12 @@
           -webkit-transition: fill 0.3s ease;
           transition: fill 0.3s ease; }
       .wizard.wizard-1 .wizard-nav .wizard-steps .wizard-step .wizard-label .wizard-title {
-        color: #80808F;
+        color: #7E8299;
         font-size: 1.1rem;
         font-weight: 500;
         margin-top: 0.75rem; }
     .wizard.wizard-1 .wizard-nav .wizard-steps .wizard-step .wizard-arrow {
-      color: #80808F;
+      color: #7E8299;
       font-size: 1.25rem; }
       .wizard.wizard-1 .wizard-nav .wizard-steps .wizard-step .wizard-arrow.last {
         display: none; }

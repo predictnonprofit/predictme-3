@@ -20,9 +20,7 @@ Manage Your Data
     width: 90vw;
     position: relative;
     margin-left: -50vw;
-
     left: 57%;
-
   }
 
   #data_handler_table thead {
@@ -49,13 +47,18 @@ Manage Your Data
     right: 0;
     bottom: 0;
     z-index: 2;
-
     -moz-opacity: .80;
     filter: alpha(opacity=80);
     opacity: .80;
   }
   .notAllowedCur{
     cursor: not-allowed !important;
+  }
+
+  .list-group-item.active{
+    background-color: rgba(105, 147, 255, 0.2) !important;
+    border-color: rgba(105, 147, 255, 0.2) !important;
+    color: #0a0a0a !important;
   }
 </style>
 
@@ -313,7 +316,7 @@ Data Handler
                 </li>
 
                 <li class="navi-item">
-                  <a href="#" class="navi-link">
+                  <a href="{% url 'data-handler-excel-download' %}" class="navi-link">
                     <span class="navi-icon">
                       <i class="la la-file-excel-o"></i>
                     </span>
@@ -321,7 +324,7 @@ Data Handler
                   </a>
                 </li>
                 <li class="navi-item">
-                  <a href="#" class="navi-link">
+                  <a href="{% url 'data-handler-csv-download' %}" class="navi-link">
                     <span class="navi-icon">
                       <i class="la la-file-text-o"></i>
                     </span>
@@ -350,9 +353,9 @@ Data Handler
 
             </button>
           </span>
-          <button type="button" class="btn btn-success btn-shadow font-weight-bold mx-2 px-6 " data-toggle="tooltip"
+          <button type="button" class="btn btn-success btn-shadow font-weight-bold mx-2 px-6 disabled" disabled style="cursor: not-allowed" data-toggle="tooltip"
             title="Save to your data file" id="saveDataFileBtn">
-            Save <i class="icon-lg la la-save"></i>
+            <i class="icon-lg la la-save"></i>
           </button>
           <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" id="deleteDataFileBtn"
             title="Delete your data file!">
@@ -529,26 +532,13 @@ Data Handler
 <!--begin::Page Scripts(used by this page)-->
 <script src="{% static 'assets/js/custom/data_handler_fetch_rows.js' %}"></script>
 
+<!-- Custom script of dualbox -->
+<script src="{% static 'assets/js/custom/dualbox.js' %}"></script>
 
 <!-- Custom Script of data handler list page -->
 <script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
 
 
-<script>
-  window.onbeforeunload = function (e) {
-    e = e || window.event;
-
-    // For IE and Firefox prior to version 4
-    if (e) {
-      e.returnValue = 'Sure?';
-    }
-
-    // For Safari
-    return 'Sure?';
-  };
-</script>
-<!-- Custom script of dualbox -->
-<script src="{% static 'assets/js/custom/dualbox.js' %}"></script>
 
 
 
