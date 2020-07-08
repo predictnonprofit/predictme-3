@@ -26,6 +26,8 @@ class DataFile(models.Model):
     donor_id_column = models.CharField(max_length=150, null=False, blank=True)
     is_donor_id_selected = models.BooleanField(null=True, blank=True, default=False)
     unique_id_column = models.CharField(max_length=200, null=True, blank=True)
+    all_columns_with_dtypes = models.TextField(null=True, blank=True)
+    is_process_complete = models.BooleanField(null=True, blank=True, default=False)
 
     class Meta:
         # verbose_name = "member_data_file"
@@ -48,6 +50,21 @@ class DataFile(models.Model):
             all_text = self.selected_columns_dtypes.split("|")
             for txt in all_text:
                 col_name, col_dtype = txt.split(":")
+                columns_with_dtypes[col_name] = col_dtype
+
+        except ValueError:
+            pass
+        finally:
+            return columns_with_dtypes
+
+    @property
+    def get_all_columns_with_dtypes(self):
+        columns_with_dtypes = {}
+
+        try:
+            all_cols = self.selected_columns_dtypes.split("|")
+            for col in all_cols:
+                col_name, col_dtype = col.split(":")
                 columns_with_dtypes[col_name] = col_dtype
 
         except ValueError:

@@ -45,6 +45,8 @@ MIDDLEWARE = [
     'middlewares_app.middleware.simple_middleware',
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -224,3 +226,10 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_AUTHENTICATION_METHOD = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
+
+
+#### Sessions config
+SESSION_EXPIRE_SECONDS = 5120  # 5 Mins
+# SESSION_EXPIRE_SECONDS = 20  # 20 Sec
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+# SESSION_TIMEOUT_REDIRECT = 'login'

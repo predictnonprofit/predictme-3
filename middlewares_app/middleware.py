@@ -1,6 +1,10 @@
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from datetime import datetime, timedelta
+from django.conf import settings
+from django.contrib import auth
+
 
 def simple_middleware(get_response):
     # One-time configuration and initialization.
@@ -17,3 +21,6 @@ def simple_middleware(get_response):
         return response
 
     return middleware
+
+
+

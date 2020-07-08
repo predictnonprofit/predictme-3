@@ -7,10 +7,20 @@ from .validators import *
 from itertools import islice
 import copy
 from termcolor import colored, cprint
-import math
-
 
 validate_obj = DataValidator()
+
+
+def get_selected_columns_as_list(member_data_file):
+    """
+    this function will take DataFile object, to return selected columns as list
+    Args:
+        member_data_file:
+
+    Returns:
+        list
+    """
+    return member_data_file.get_selected_columns_as_list
 
 
 def save_data_file_rounded(file_path):
@@ -33,15 +43,28 @@ def save_data_file_rounded(file_path):
     elif data_file.suffix == ".csv":
         df.to_csv(data_file.as_posix(), header=True, index=False)
 
-    print("save done")
+    cprint("save done", 'green')
 
 
-def extract_columns_names(file_name):
-    # all_columns = []  # hold all columns in the file
+def download_data_file_converter(member_data_file):
+    selected_columns = member_data_file.get_selected_columns_as_list
+    data_file_path = Path(member_data_file.data_file_path)
+    df = get_df_from_data_file(data_file_path)
+    try:
+        if data_file_path.suffix == ".xlsx":
+
+            df.to_excel(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
+        elif data_file_path.suffix == ".csv":
+            df.to_csv(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
+    except Exception as ex:
+        cprint(str(ex))
+
+
+
+def extract_all_columns_with_dtypes(file_name):
     all_columns = {}  # hold all columns in the file
-    media_path = settings.MEDIA_ROOT
+
     df = get_df_from_data_file(file_name)
-    full_file_path = Path(file_name)
 
     # iterating the columns
     for col in df.columns:
@@ -57,7 +80,6 @@ def extract_columns_names(file_name):
 def extract_all_column_names(file_name):
     all_columns = []  # hold all columns in the file
 
-    media_path = settings.MEDIA_ROOT
     df = get_df_from_data_file(file_name)
     full_file_path = Path(file_name)
 
@@ -86,7 +108,8 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
     all_rows = []
     df = get_df_from_data_file(file_path)
     records_count = int(records_count)
-
+    previous_50_count = int(records_count - 50)
+    # print(records_count, previous_50_count)
     for c in columns:
         # this to check if the data type is float so round the values
         if df[c].dtype == "float64":
@@ -96,11 +119,12 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
             # df.style.format({c: "{:.0f}"})
 
     current_record_data = {}
-    previous_50_count = records_count - 50
+
     for index, row in islice(df.iterrows(), previous_50_count, records_count):
         # index is the index in the data frame
         # row is the series object
         # breakpoint()
+        # print(records_count, previous_50_count)
         for col in columns:
             # print(index, "----> ", col, "--->", row[col], end='\n')
             tmp_cell_val = row[col]
@@ -116,25 +140,29 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
         current_record_data = {}
 
     # print(all_rows[0])
-    return all_rows
+
+    # check if the length of all_rows < 0 means no records to show
+    if len(all_rows) <= 0:
+        return 0
+    else:
+        return all_rows
 
 
 def get_rows_data_by_search_query(file_path, columns, search_query, columns_with_dtypes):
-    # columns = sorted(columns)
     all_rows = []
-    data_file = Path(file_path)
     search_query = str(search_query)
     df = get_df_from_data_file(file_path)
-
 
     current_record_data = {}
     for index, row in df.iterrows():
         # index is the index in the data frame
         # row is the series object
-        # breakpoint()
+
         for col in columns:
             # print(index, "----> ", col, "--->", row[col], end='\n')
-            if row.str.contains(search_query).any() is True:
+
+            if row.str.contains(search_query, case=False).any() is True:
+                # print(row.str.contains(search_query, case=False).any())
                 tmp_dtype = columns_with_dtypes[col]
                 tmp_cell_val = row[col]
                 current_record_data["ID"] = index
@@ -146,7 +174,10 @@ def get_rows_data_by_search_query(file_path, columns, search_query, columns_with
         current_record_data = {}
 
     # print(all_rows[0])
-    return all_rows
+    if len(all_rows) <= 0:
+        return 0
+    else:
+        return all_rows
 
 
 def get_not_validate_rows(file_path, all_columns, column_name):
@@ -209,11 +240,11 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
 
     df_error = df.copy().reindex(errors_idx_lst)
     df_correct = df.loc[~df.index.isin(errors_idx_lst)]
-    print("Correct Rows", len(df_correct))
-    print("Not Correct Rows", len(df_error))
+    cprint(f"Valid Rows {len(df_correct)}", 'green')
+    cprint(f"Not Valid Rows {len(df_error)}", "red")
     # df_error = df_error.append(df_correct, ignore_index=True)
     df_error = df_error.append(df_correct)
-    print("All Rows", len(df_error))
+    cprint(f"All Rows {len(df_error)}", 'yellow')
     # print(df_error.head())
 
     current_record_data = {}
@@ -237,7 +268,10 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
 
     # del results, df_copy_error_data, df_copy_correct_data, frames
     # print(len(all_rows))
-    return all_rows
+    if len(all_rows) <= 0:
+        return 0
+    else:
+        return all_rows
 
 
 def validate_series(data_value: pd.Series):
@@ -254,29 +288,38 @@ def validate_series(data_value: pd.Series):
                 # print(curr_row)
 
 
-def update_rows_data(file_path, data_json, column_names):
+def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
     # pd.describe_option("display.float_format")
-    pd.set_option("display.float_format", "{:.2f}".format)
+    # pd.set_option("display.float_format", "{:.2f}".format)
     data_file = Path(file_path)
     all_rows = []
     rows_and_values = {}
     df = get_df_from_data_file(file_path)
     for key, value in data_json.items():
+        # ROW_0 [{'colName': 'Cand_Name', 'colValue': '858f'}]
+
         rows_and_values[key.split('_')[1]] = value
 
     # df2 = copy.deepcopy(df[column_names])
     df2 = copy.deepcopy(df)
     for key, value in rows_and_values.items():
         # {"0": [{"colName", "colValue"}, {"colName", "colValue"}]
-
+        # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
+        print(key, value)
         for val in value:
             # print(df[val['colName']].dtype)
+            # print(columns_with_dtypes[val['colName']])
             try:
+                # print(df2[column_names].at[int(key), val['colName']])
+                # print(df2[column_names].at[int(key), val['colName']])
+                # df2[column_names].at[int(key), val['colName']] = val['colValue']
+                # print(df2.loc[int(key), val['colName']])
                 df2.at[int(key), val['colName']] = val['colValue']
+                # print(df2.loc[int(key), val['colName']])
             except ValueError as verr:
                 cprint(str(verr), "red")
                 var = check_int(val['colValue'])
-                print(var)
+                print(verr)
                 return str(verr)
             except Exception as ex:
                 cprint(str(ex), "red")
@@ -287,7 +330,7 @@ def update_rows_data(file_path, data_json, column_names):
     if data_file.suffix == ".xlsx":
         df2.to_excel(data_file.as_posix(), header=True, index=False)
     elif data_file.suffix == ".csv":
-        df2.to_csv(data_file.as_posix())
+        df2.to_csv(data_file.as_posix(), header=True, index=False)
 
     return "Data saved successfully"
 
@@ -311,7 +354,6 @@ def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
 
 
 def get_df_from_data_file(file_path):
-
     data_file = Path(file_path)
     df = None
     # pd.options.display.float_format = '${:,.2f}'.format
@@ -346,10 +388,10 @@ def replace_nan_value(value):
 
 def delete_data_file(path):
     """ Deletes file from filesystem. """
-    if os.path.exists(path):
+    try:
         os.remove(path)
-    else:
-        print("The file does not exist")
+    except FileNotFoundError:
+        pass
 
 
 def reorder_columns(the_reset_of_column, is_dict=False):
@@ -409,3 +451,37 @@ def check_int(num):
         return True
     except ValueError:
         return False
+
+
+def delete_all_member_data_file_info(member_data_file):
+    """
+    this function will take DataFile object, to reset all member data file
+    Args:
+        member_data_file:
+
+    Returns:
+
+    """
+    member_data_file.data_file_path = "None"
+    member_data_file.file_upload_procedure = "None"
+    member_data_file.all_records_count = 0
+    member_data_file.selected_columns = ""
+    member_data_file.selected_columns_dtypes = ""
+    member_data_file.donor_id_column = ""
+    member_data_file.is_donor_id_selected = False
+    member_data_file.unique_id_column = ""
+    member_data_file.all_columns_with_dtypes = ""
+    member_data_file.save()
+
+
+def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list, file_path: Path, file_ext: str):
+    parent_dir = Path() / file_path.parent
+    df_selected_columns = df[selected_columns]
+    if file_ext == "xlsx":
+        full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.xlsx"
+        df_selected_columns.to_excel(full_file_path, header=True, index=False)
+        return full_file_path
+    elif file_ext == "csv":
+        full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.csv"
+        df_selected_columns.to_csv(full_file_path, header=True, index=False)
+        return full_file_path

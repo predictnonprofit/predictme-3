@@ -29,6 +29,7 @@ class DataValidator:
         """
         # [unique identifier (id), textual field, numeric field, donation field]
         the_value = val
+
         if "unique identifier" in dtype:
             san = self.sanitize_numeric_data(the_value, 'unique_id')
         elif "textual field" in dtype:
@@ -38,14 +39,11 @@ class DataValidator:
         elif "donation field" in dtype:
             san = self.sanitize_numeric_data(the_value, 'donation')
 
-        if san.status is True:
+        if san.status:
             # check if the value contain any error or not valid data
-            the_validate_dict_values = self.return_the_error_msg(True, san.value, "data not valid",
-                                                                 data_type="Unknown")
+            the_validate_dict_values = self.return_the_error_msg(True, san.value, "data not valid", data_type=f"{dtype}")
         else:
-            the_validate_dict_values = self.return_the_error_msg(False, san.value, "Not valid number!",
-                                                                 data_type="Valid Data")
-
+            the_validate_dict_values = self.return_the_error_msg(False, san.value, "valid data", data_type=f"{dtype}")
         return the_validate_dict_values
 
     def sanitize_numeric_data(self, data_value, dtype=None):
@@ -61,24 +59,31 @@ class DataValidator:
         all_ascii_letters = list(string.ascii_letters)
         # check what is the dtype and implement the required conditions
         if dtype == "donation":
-            if data_value == "" or data_value is None or data_value.lower() == "nan":
 
-                # check if the number is empty
-                results = DataStatus(status=True, value=sanitized)
+            if data_value.isdigit():
+
+                results = DataStatus(status=False, value=data_value)
             else:
-                # here if the number not empty
-                for bad_str, asciistr in zip(cycle(bad_strings), all_ascii_letters):
-                    # if bad_str in sanitized and bad_str != ".":  # check if string contains punctuations
-                    if bad_str in sanitized:  # check if string contains punctuations
-                        sanitized = sanitized.replace(bad_str, '')
-                        results = DataStatus(status=True, value=sanitized)
-                    else:
+                if data_value == "" or data_value is None or data_value.lower() == "nan":
+
+                    # check if the number is empty
+                    results = DataStatus(status=True, value=sanitized)
+                else:
+                    # here if the number not empty
+                    for bad_str, asciistr in zip(cycle(bad_strings), all_ascii_letters):
+                        # if bad_str in sanitized and bad_str != ".":  # check if string contains punctuations
+                        if bad_str in sanitized:  # check if string contains punctuations
+                            sanitized = sanitized.replace(bad_str, '')
+                            results = DataStatus(status=True, value=sanitized)
+
+                        if asciistr in sanitized:  # check if string contains letters
+                            sanitized = sanitized.replace(asciistr, '')
+                    if len(sanitized) > 0:
                         results = DataStatus(status=False, value=sanitized)
+                    else:
+                        results = DataStatus(status=True, value=sanitized)
 
-                    if asciistr in sanitized:  # check if string contains letters
-                        sanitized = sanitized.replace(asciistr, '')
 
-                    results = DataStatus(status=False, value=sanitized)
 
 
         elif dtype == "numeric":

@@ -99,9 +99,9 @@ function countJsonItems(jsonObj, value) {
 // check if value exists in json object
 function checkValueExists(json, value) {
     for (let key in json) {
-        if (typeof (json[key]) == "object") {
+        if (typeof (json[key]) === "object") {
             return checkForValue(json[key], value);
-        } else if (json[key] == value) {
+        } else if (json[key] === value) {
             return true;
         }
     }
@@ -111,75 +111,8 @@ function checkValueExists(json, value) {
 // here the columns dual box
 // Class definition
 var pickedColumns = []; // this will hold all columns that user selected
-// Class definition
-var KTDualListbox = function () {
-    // Private functions
-    var initDualListbox = function () {
-        // Dual Listbox
-        var listBoxes = $(".dual-listbox");
 
-        listBoxes.each(function () {
-            var $this = $(this);
-            // get titles
 
-            var availableTitle = ($this.attr("data-available-title") != null) ? $this.attr("data-available-title") : "Available Columns";
-            var selectedTitle = ($this.attr("data-selected-title") != null) ? $this.attr("data-selected-title") : "Selected Columns";
-
-            // get button labels
-            var addLabel = ($this.attr("data-add") != null) ? $this.attr("data-add") : "Add";
-            var removeLabel = ($this.attr("data-remove") != null) ? $this.attr("data-remove") : "Remove";
-            var addAllLabel = ($this.attr("data-add-all") != null) ? $this.attr("data-add-all") : "Add All";
-            var removeAllLabel = ($this.attr("data-remove-all") != null) ? $this.attr("data-remove-all") : "Remove All";
-
-            // get options
-            var options = [];
-            $this.children("option").each(function () {
-                var value = $(this).val();
-                var label = $(this).text();
-                options.push({
-                    text: label,
-                    value: value
-                });
-            });
-
-            // get search option
-            var search = ($this.attr("data-search") != null) ? $this.attr("data-search") : "";
-
-            // init dual listbox
-            var dualListBox = new DualListbox($this.get(0), {
-                addEvent: function (value) {
-                    pickedColumns.push(value);
-                    // console.log(value);
-                },
-                removeEvent: function (value) {
-                    let arrayIdx = pickedColumns.indexOf(value);
-                    if (arrayIdx > -1) {
-                        pickedColumns.splice(arrayIdx, 1);
-                    }
-                    // console.log(value);
-                },
-                availableTitle: availableTitle,
-                selectedTitle: selectedTitle,
-                addButtonText: addLabel,
-                removeButtonText: removeLabel,
-                addAllButtonText: addAllLabel,
-                removeAllButtonText: removeAllLabel,
-                // options: options,  // commented to avoid duplicated options
-            });
-
-            if (search == "false") {
-                dualListBox.search.classList.add("dual-listbox__search--hidden");
-            }
-        });
-    };
-
-    return {
-        // public functions
-        init: function () {
-            initDualListbox();
-        },
-    };
-}();
 
 
 // this ajax function which will upload the donor data file
@@ -305,7 +238,8 @@ function sendPickedColumns(params) {
         "columns": selectedPickedColumns,
         "columns_with_datatype": JSON.stringify(selectedValidateColumns)
     };
-    // console.log(selectedPickedColumns);
+    // console.log(selectedColumns);
+    // throw new Error("Wait");
     const webSiteMemberUrl = window.location;
 
     // ajax request to data handler init
@@ -421,17 +355,17 @@ function fetchDataFileColumns(fetchedColumns) {
 
 function setColumnNamesHeader(columnsList) {
     // console.log(columnsList);
-
     let tableHeaderElement = $("#data_handler_table > thead > tr:last");
     for (let col of columnsList) {
+
         let row = "";
-        if (col['isUnique'] == true) {
+        if (col['isUnique'] === true) {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i class="icon-lg d-none text-danger la la-info-circle"></i></th>
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-info-circle"></i></th>
         `;
         } else {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i class="icon-lg d-none text-danger la la-info-circle"></i></th>
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-info-circle"></i></th>
         `;
         }
         tableHeaderElement.append(row);
@@ -441,119 +375,194 @@ function setColumnNamesHeader(columnsList) {
 // this function return markup oject of every table cell will append to every row in the datatable
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
-    console.log(currentRowData.length, "records");
+    // console.log(rowsData);
+    // console.log(currentRowData.length, "records");
+    // first check if there is no records left to display
+    if(typeof currentRowData.length === undefined){
+        // here when no rows, 0
+        console.error("No records to display!!");
+        $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        $("#no-data-watermark").show();
+    }else{
+        // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
+        if(clickedRecordsCount === 50){
+            $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        }else{
+            $(".data-table-nav-btns[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        }
 
-    // check if this data not validate
-    if (isValidate === false) {
-        let tableBodyElement = $("#data_handler_table > tbody tr:last");
-        // console.log(rowsData.data);
+        // check if the no data watermark exists remove it before display if there is new data
+        if($("#no-data-watermark").is(":visible") === true){
+            $("#no-data-watermark").hide();
+        }
 
-        for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
-            let currentDataObj = currentRowData[colIdx];
-            // console.log(currentDataObj);
-            let allCells = "";
-            let tableRow = "<tr class='datatable-row'> ";
-            // console.log(Object.entries(currentDataObj));
-            // loop through key and value in the json object of the row
-            for (let [key, value] of Object.entries(currentDataObj)) {
-                //console.log(key, value);
+        // check if this data not validate
+        if (isValidate === false) {
+            let tableBodyElement = $("#data_handler_table > tbody tr:last");
+            // console.log(rowsData.data);
 
-                if (key !== "ID") {
-                    if (value.is_error == false) {
-                        var cellMarkup = `
+            for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
+                let currentDataObj = currentRowData[colIdx];
+                // console.log(currentDataObj);
+                let allCells = "";
+                let tableRow = "<tr class='datatable-row'> ";
+                // console.log(Object.entries(currentDataObj));
+                // loop through key and value in the json object of the row
+                for (let [key, value] of Object.entries(currentDataObj)) {
+                    // console.log(key, value);
 
-                <td class='text-center'>
-                    <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
-                </td>
+                    if (key !== "ID") {
+                        if (value.is_error === false) {
+                            // check if the data type is numeric or donation will restric the member from enter numeric data
+                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                                var cellMarkup = `
+    
+                    <td class='text-center'>
+                        <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }else{
+                                var cellMarkup = `
+    
+                    <td class='text-center'>
+                        <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }
+                        } else if (value.is_error === true) {
+                            const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
+                            // the below to mark the column header it has error
+                            tableColHeader.attr("data-is-error", '1');
+                            tableColHeader.css('cursor', "pointer");
+                            tableColHeader.addClass('protip');
+                            // tableColHeader.attr('data-toggle', 'tooltip');
+                            // tableColHeader.attr('title', 'Error data not match the required data type!');
+                            tableColHeader.attr('data-pt-title', 'Error data not match the required data type!');
+                            tableColHeader.attr('data-pt-gravity', 'top');
+                            tableColHeader.attr('data-pt-classes', 'bg-danger text-white');
+                            const colText = tableColHeader.text().trim();
+                            // check if the current table td value has error, highlighted the column name header
+                            if (key.trim() === colText) {
+                                //console.log("error", colText);
+                                tableColHeader.find("i").removeClass("d-none");
+                                // tableColHeader.addClass("bg-light-danger")
+                                tableColHeader.addClass("text-danger");
+                            }
 
-            `;
-                    } else if (value.is_error == true) {
-                        const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
-                        // the below to mark the column header it has error
-                        tableColHeader.attr("data-is-error", '1');
-                        tableColHeader.css('cursor', "pointer");
-                        const colText = tableColHeader.text().trim();
-                        // check if the current table td value has error, highlighted the column name header
-                        if (key.trim() === colText) {
-                            //console.log("error", colText);
-                            tableColHeader.find("i").removeClass("d-none");
-                            // tableColHeader.addClass("bg-light-danger")
-                            tableColHeader.addClass("text-danger");
+                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                                var cellMarkup = `
+    
+                    <td class='text-center'>
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }else{
+                                var cellMarkup = `
+    
+                    <td class='text-center'>
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }
+
                         }
-                        var cellMarkup = `
-
-                <td class='text-center'>
-                    <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
-                </td>
-
-            `;
+                        allCells += cellMarkup;
                     }
-                    allCells += cellMarkup;
                 }
+                tableRow += allCells + "</tr>";
+                tableBodyElement.after(tableRow);
             }
-            tableRow += allCells + "</tr>";
-            tableBodyElement.after(tableRow);
-        }
-        // to run the function of save the new updates of data table cells
-        saveNewUpdatedData();
-    } else {
-        // console.log(currentRowData);
-        // this else if the data are not valid
-        $("#loadingDataSpinner").fadeOut();
-        let tableBody = document.getElementById("data_handler_body");
-        tableBody.innerHTML = "";
-        //$("#data_handler_table tbody tr").fadeIn();
-        for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
-            let currentDataObj = currentRowData[colIdx];
-            let allCells = "";
-            let tableRow = "<tr> ";
-            // console.log(currentDataObj);
-            for (let [key, value] of Object.entries(currentDataObj)) {
+            $("#dataListTable").css("opacity", "1");
 
-                if (key !== "ID") {
-                    // console.log(currentDataObj["ID"], "|", key, "|", value.value);
-                    //console.log(key, '---', value);
+            // to run the function of save the new updates of data table cells
+            saveNewUpdatedData();
+        } else {
+            // console.log(currentRowData);
+            // this else if the data are not valid
 
+            let tableBody = document.getElementById("data_handler_body");
+            tableBody.innerHTML = "";
+            //$("#data_handler_table tbody tr").fadeIn();
+            for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
+                let currentDataObj = currentRowData[colIdx];
+                let allCells = "";
+                let tableRow = "<tr> ";
+                // console.log(currentDataObj);
+                for (let [key, value] of Object.entries(currentDataObj)) {
 
-                    if (value.is_error == false) {
-                        var cellMarkup = `
-
-                        <td>
-                            <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
-                        </td>
-        
-                    `;
+                    if (key !== "ID") {
+                        // console.log(currentDataObj["ID"], "|", key, "|", value.value);
+                        //console.log(key, '---', value);
 
 
-                    } else if (value.is_error == true) {
-                        var cellMarkup = `
+                        if (value.is_error === false) {
+                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                                var cellMarkup = `
+    
+                            <td>
+                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                            </td>
+            
+                        `;
+                            }else{
+                                var cellMarkup = `
+    
+                            <td>
+                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                            </td>
+            
+                        `;
+                            }
 
-                <td>
-                    <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
-                </td>
 
-            `;
 
+                        } else if (value.is_error === true) {
+
+                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                                var cellMarkup = `
+    
+                    <td>
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }else{
+                                var cellMarkup = `
+    
+                    <td>
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            }
+
+                        }
+                        allCells += cellMarkup;
                     }
-                    allCells += cellMarkup;
-                }
 
-                // console.log(allCells);
-                // throw new Error("Something went badly wrong!");
+                    // console.log(allCells);
+                    // throw new Error("Something went badly wrong!");
+
+                }
+                tableRow += allCells + "</tr>";
+                tableBody.innerHTML += tableRow;
+
 
             }
-            tableRow += allCells + "</tr>";
-            tableBody.innerHTML += tableRow;
+
+            // to run the function of save the new updates of data table cells
+            saveNewUpdatedData();
 
 
         }
-
-        // to run the function of save the new updates of data table cells
-        saveNewUpdatedData();
-
-
     }
 
+    $("#dataListTable").css("opacity", "1");
+    $("#loadingDataSpinner").fadeOut('fast');
 
 }
 
@@ -733,8 +742,8 @@ function uploadProgressModal(isOk, data) {
                                 ${i}. ${name.trim()}
                                 <span class="noselect">
                                 <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                <span class="noselect position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}">
-                                    <i class="icon-lg la la-info-circle text-dark"></i>
+                                <span class="noselect position-relative tooltip-test" title="${tooltipInfo[dType]}" data-toggle="tooltip">
+                                    <i class="icon-md la la-info-circle text-dark"></i>
                                 </span>
                                 
                            </span>
@@ -756,7 +765,7 @@ function uploadProgressModal(isOk, data) {
 
 
         } else {
-            // here in this elese block, when records count more than the allowed 
+            // here in this elese block, when records count more than the allowed
             if (progVal <= parseInt(allowdedRowsCount.text())) {
                 progVal++;
                 // console.log(progVal);
@@ -806,7 +815,7 @@ function fetchDataFileAllColumns() {
              for(let c of data){
                  columnsList.push(c);
              }
-            
+
          }, */
         error: function (error) {
             //called when there is an error
@@ -847,45 +856,165 @@ function fetchDataFileAllColumns() {
 // this function will return Numerice or String for the data type
 function getDataType(dt) {
     // const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
-    if (dt == "int64" || dt == "float64") {
+    if (dt === "int64" || dt === "float64") {
         return "Numeric";
-    } else if (dt == "object" || dt == "category") {
+    } else if (dt === "object" || dt === "category") {
         return "Textual";
     } else {
         return "Alphanumeric";
     }
 }
 
+// this function will set the options list of the select to every column (item) in the right side
+function dataTypeOptions(dataType, setSelected, uniqueColumn, colName) {
+    // console.log(dataType);
+    /*console.log(dataTypesOptions);
+    console.log(dataTypesOptions.shift());*/
+    // console.log(uniqueColumn);
+    let optionsMarkup = "";
+    // this to set the selected option selected
+    if(typeof setSelected !== undefined && setSelected === true && typeof uniqueColumn !== undefined && typeof colName !== undefined){
+        const index = dataTypesOptions.indexOf("");
+
+        // if (index !== -1) dataTypesOptions.splice(index, 1);
+        for (let dType of dataTypesOptions) {
+            const splitName = dType.split(' ')[0];
+            // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
+            if (isUniqueIDSelected === true && colName === uniqueColumn) {
+                // console.log(dType);
+                console.log(colName, "_", uniqueColumn, "_", dType);
+                optionsMarkup += `<option disabled="disabled" selected="selected" value='${dType}'>${dType}</option>\n`;
+            } else {
+                // check to set selected if the column match the data type
+                // console.log(dType, dataType);
+                // console.log(dType.toLowerCase() === dataType.toLowerCase());
+                if(dType.toLowerCase() === dataType.toLowerCase()){
+                    optionsMarkup += `<option value='${dType}' selected="selected">${dType}</option>\n`;
+                }else{
+                    optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
+                }
+
+            }
+
+    }
+        // return optionsMarkup;
+    }else{
+        for (let dType of dataTypesOptions) {
+
+        // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
+            if (isUniqueIDSelected === true && dType === "Unique Identifier (ID)") {
+                optionsMarkup += `<option disabled="disabled" value='${dType}'>${dType}</option>\n`;
+            } else {
+                optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
+            }
+
+    }
+        // return optionsMarkup;
+    }
+    return optionsMarkup;
+
+}
+
 // when user click on reselect columns btn
 function reselectColumnsFunc() {
     let optionsList = '';
+    let rightOptionsList = '';
     let dataFileColumnsSelect = $("#availableColumnsList");
+    let rightPickedColumnsList = $("#pickedColumnsList");
     const columnsDualBoxModal = $("#columnsDualBoxModal");
     $("#closeColumnsDualBoxBtn").show();
 
     const allColumnsResponse = fetchDataFileAllColumns();
+
+
     $.when(allColumnsResponse).done(function (data, textStatus, jqXHR) {
+        /*console.log(textStatus);
+        console.log(jqXHR);
+        console.log(data);*/
+
+        const tmpSelectedColsArr = Object.keys(data['selected_columns']);
+
+
         let i = 0;
-        for (let [name, dType] of Object.entries(data)) {
+        for (let [name, dType] of Object.entries(data['all_columns'])) {
             i++;
-            let tmpMarkupLi = `
-                    <li data-idx = '${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+
+            let tmpMarkupLi = "";
+            // console.log(getDataType(dType), dType);
+            // check if the column name in the picked columns, so will disable it
+            if(tmpSelectedColsArr.includes(name) === true){
+                tmpMarkupLi = `
+                    <li data-idx = '${i}' class="disabled bg-gray-200 columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
                                     <span class="label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                    <span class="position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}">
-                                        <i class="icon-lg la la-info-circle text-dark"></i>
+                                    <span class="position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}" data-toggle="tooltip">
+                                        <i class="icon-md la la-info-circle text-dark"></i>
                                     </span>
                                     
                                </span>
                             </li>
                         \n
                     `;
+            }else{
+                tmpMarkupLi = `
+                    <li data-idx = '${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+                               ${i}. ${name.trim()}
+                               <span>
+                                    <span class="label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                    <span class="position-relative tooltip-test" style='top: 4px;' data-toggle="tooltip" title="${tooltipInfo[dType]}">
+                                        <i class="icon-md la la-info-circle text-dark"></i>
+                                    </span>
+                                    
+                               </span>
+                            </li>
+                        \n
+                    `;
+            }
+
             tmpMarkupLi.replace(/ /g, "");
             optionsList += tmpMarkupLi;
+
+            // here set the columns options for the right side, which mean the previously selected columns
+
+            let tmpRightColOpMarkup = "";
+            if(tmpSelectedColsArr.includes(name) === true){
+                // this to set isUniqueIDSelected = true
+                if(data['unique_column'] === name) isUniqueIDSelected = true;
+                tmpRightColOpMarkup = `
+                    <li data-idx="${i}"
+                        class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
+                        ${name}
+                        <span class="nav-label mx-10">
+                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype">
+                                    ${dataTypeOptions(getDataType(dType), true, data['unique_column'], name)}
+                            </select>
+                        </span>
+                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title="Warning. Not convenient data type!">
+                              <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
+                        </span>
+                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">
+                              <i class="icon-lg la la-minus-circle text-danger font-weight-bolder"></i>
+                        </span>
+                        
+                    </li>
+                    \n
+                `;
+                // console.log(dataTypeOptions(dType));
+                // $("#pickedColumnsList .column-option-dtype").change();
+                let tmpC = $(tmpRightColOpMarkup);
+                tmpC = tmpC.find("select.column-option-dtype");
+                // tmpC.change();
+                // tmpC = tmpC.children("select.column-option-dtype").val("EERR");
+                // tmpC.val(tmpC.data("value"));
+                // console.log(tmpC.text());
+                rightOptionsList += tmpRightColOpMarkup;
+            }
+
         }
 
         dataFileColumnsSelect.html(optionsList);
+        rightPickedColumnsList.html(rightOptionsList);
         columnsDualBoxModal.modal("handleUpdate");
         columnsDualBoxModal.modal("show");
 
@@ -955,7 +1084,7 @@ function saveNewUpdatedData() {
         // Look for changes in the value
         // elem.bind("propertychange change click keyup input paste", function(event){  // with click event
         elem.bind("propertychange keyup input paste", function (event) {
-
+            // console.log("propertychange event fire");
             // If value has changed...
             if (elem.data('oldVal') != elem.val()) {
 
@@ -988,12 +1117,14 @@ function saveUndo() {
     $(document).on('focusin', '.data-table-col', function () {
         // console.log("Saving value " + $(this).val());
         // undoValue = $(this).val();
+        // console.log($(this).data());
         undoValue = undoValue2 = $(this).data('undo-val');
         undoElement = $(this);
         $(this).data('undo-val', $(this).val());
     }).on('change', '.data-table-col', function () {
         let prev = $(this).data('undo-val');
         let current = $(this).val();
+        // console.log("this is change event");
         // console.log("Prev value " + prev);
         // console.log("New value " + current);
     });
@@ -1043,12 +1174,16 @@ function saveTheUpdates(allUpdatedRows, elem) {
         // console.log(data);
 
         if (textStatus === "success") {
-
+            // console.log(undoElement);
+            // console.log(undoValue2);
             // window.location.reload();
+            undoValue = "";
+            undoValue2 = "";
             console.log(data);
-            if (data['is_error'] == true || data['msg'].includes("could not")) {
+            if (data['is_error'] === true || data['msg'].includes("could not")) {
                 currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
                 showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
+
             } else {
                 // currInput.removeClass("is-invalid bg-light-danger").delay(1000).addClass("bg-light-success").delay(1000).removeClass("bg-light-success");
                 currInput.removeClass("is-invalid bg-light-danger", {duration: 1000}).addClass("bg-success-o-40", {duration: 1000});
@@ -1056,16 +1191,23 @@ function saveTheUpdates(allUpdatedRows, elem) {
                     currInput.removeClass("bg-success-o-40", {duration: 1500});
                 }, 1500);
                 showToastrNotification(data['msg']);
+
             }
             $("#dataListTable").css("opacity", "1");
             $(".data-table-col").removeAttr("disabled");
             $("#save-row-loader").fadeOut();
-
+            $("#saveDataFileBtn").addClass("disabled");
+            $("#saveDataFileBtn").attr("disabled", "disabled");
+            $("#saveDataFileBtn").attr("style", "cursor: not-allowed;");
             // currInput.focus();
+
+
+            // $(".data-table-input").on("change");
 
         } else {
             swAlert("Error", "Error when save the data!", "error");
             showToastrNotification("Error when save the data!", "danger");
+
         }
 
     });
@@ -1121,4 +1263,14 @@ function setTheCookie() {
             window.onbeforeunload = null;
         }
     });
+}
+
+// Restricts input for the given textbox to the given inputFilter function.
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    let charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
 }

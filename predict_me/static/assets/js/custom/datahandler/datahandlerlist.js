@@ -69,7 +69,7 @@ $(function () {
     downloadTemplateLink.on('click', function (evt) {
         isDownloaded = true;
         // check if the two options checked enable the check button in the modal
-        if (validateObj['agree'] === true && validateObj['download'] === true && isDownloaded == true) {
+        if ((validateObj['agree'] === true && validateObj['download'] === true) && (isDownloaded === true)) {
             $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
         } else {
             dataUploadBtn.attr("disabled", "disabled");
@@ -258,9 +258,9 @@ $(function () {
             // console.log(data);
             // console.log(textStatus);
             // console.log(jqXHR);
-            if (textStatus == "success") {
+            if (textStatus === "success") {
                 // var optionsList = [];
-                if (typeof data == "object") {
+                if (typeof data === "object") {
                     //console.log(data);
                     if (data['is_allowed'] === true) {
                         // this mean the records total more than the allowed in subscription plan
@@ -276,7 +276,7 @@ $(function () {
 
 
                     } else if (data['is_allowed'] === false) {
-                        if (data['row_count'] == 0) {
+                        if (data['row_count'] === 0) {
                             // this mean no row count, which means the donor id column not exists
                             swAlert("attention!!".toUpperCase(), `${data['msg']}`, 'error');
 
@@ -341,44 +341,50 @@ $(document).ready(function () {
     let fetchedColumns = fetchDataFileColumns();
 
     $.when(fetchedColumns).done(function (data, textStatus, jqXHR) {
-        // console.log(textStatus);
-        // console.log(jqXHR);
         // console.log(Object.keys(data));
+        /*console.log(data);
+        console.log(textStatus);
+        console.log(jqXHR);
+        console.log(jqXHR.status);*/
 
         // check if the data not equal "", this mean no columns
 
-        if (data !== "") {
+        if(textStatus === 'success' && jqXHR.status === 200){
+                if (data !== "") {
+                    let sortedColumns = Array();
+                    let columnsLabels = data;
+                    for (let cl in data) {
+                       //unique identifier (id)
+                        if(data[cl] === "unique identifier (id)"){
+                            sortedColumns.push({"isUnique": true, "headerName": cl});
+                        }else{
+                            sortedColumns.push({"isUnique": false, "headerName": cl});
+                        }
 
-            let sortedColumns = Array();
-            let columnsLabels = data;
-            for (let cl in data) {
-               //unique identifier (id)
-                if(data[cl] == "unique identifier (id)"){
-                    sortedColumns.push({"isUnique": true, "headerName": cl});
-                }else{
-                    sortedColumns.push({"isUnique": false, "headerName": cl});
-                }
+                    }
+                    // sortedColumns = sortedColumns.sort();
+                    //initialise columns for the data table
+                    setColumnNamesHeader(sortedColumns);
+                    //initialise (fetch) rows, fetch the rows to datatable
+                    let dataFileRows = fetchDataFileRows();
+                    $.when(dataFileRows).done(function (rowData, rowTextStatus, rowJqXHR) {
 
+                        //  console.log(rowData);
+                        // console.log(rowTextStatus);
+                        // console.log(rowJqXHR);
+
+                        // check if there is any returned data
+                        if(rowTextStatus === 'success' && rowJqXHR.status === 200){
+                            // first hide the spinner loding div
+                            $("#loadingDataSpinner").hide();
+                            let rowsObject = rowData;
+                            // console.log(rowsObject);
+                            drawDataTableRows(rowsObject, false);
+                        }
+
+
+                    });
             }
-            // sortedColumns = sortedColumns.sort();
-            //initialise columns for the data table
-            setColumnNamesHeader(sortedColumns);
-            //initialise (fetch) rows, fetch the rows to datatable
-            var dataFileRows = fetchDataFileRows();
-            $.when(dataFileRows).done(function (rowData, rowTextStatus, rowJqXHR) {
-
-                /* console.log(rowData);
-                console.log(rowTextStatus);
-                console.log(rowJqXHR); */
-
-                // first hide the spinner loding div
-                $("#loadingDataSpinner").hide();
-                let rowsObject = rowData;
-                // console.log(rowsObject);
-                drawDataTableRows(rowsObject, false);
-
-
-            });
         }
 
     });
@@ -395,12 +401,11 @@ $(document).ready(function () {
         // console.log(clonedNewRowsUpdates);
         for(let row in clonedNewRowsUpdates){
             clonedNewRowsUpdates[row]['colValue'] = undoElement.data("undo-val");
-            console.log(undoElement.data());
-            console.log(allNewRowsUpdates[row]);
-            console.log(clonedNewRowsUpdates[row]);
+            // console.log(undoElement.data());
+            // console.log(allNewRowsUpdates[row]);
+            // console.log(clonedNewRowsUpdates[row]);
         }
-        // console.log(undoValue);
-        // console.log(undoElement.data());
+
         // throw new Error("Tess");
         let saveDataRespone = updateMemberDataFile(clonedNewRowsUpdates);
         $.when(saveDataRespone).done(function (data, textStatus, jqXHR) {
@@ -413,7 +418,7 @@ $(document).ready(function () {
                 $("#save-row-loader").fadeOut();
                 $("#dataListTable").css("opacity", "1");
                 $(".data-table-col").removeAttr("disabled");
-                saveDataFileBtn.addClass("disabled");
+                saveDataFileBtn.addClass("disabled").tooltip('hide');
                 saveDataFileBtn.attr("disabled", "disabled");
                 saveDataFileBtn.attr("style", "cursor: not-allowed");
 
@@ -493,6 +498,9 @@ $(document).ready(function () {
         isClickedFilterCol = false;
         clickedRecordsCount = 50;
         clickedFilteredColName = "";
+        $("#no-data-watermark").hide();
+        $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        $(".data-table-nav-btns[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
     });
 
 
@@ -500,10 +508,11 @@ $(document).ready(function () {
 
     const dataTableNavBtns = $(".data-table-nav-btns");
     dataTableNavBtns.on("click", function (evt) {
+        // $("#loadingDataSpinner").fadeIn("fast");
         $("#data_handler_table > tbody tr").empty();
-        $("#loadingDataSpinner").fadeIn();
         $("#resetSortTableBtn").removeClass("disabled");
         $("#resetSortTableBtn").removeAttr("disabled style");
+
         const selectedRecCount = $(this).val();
         const theAction = $(this).data('action');
         if (theAction === 'next') {
@@ -511,23 +520,32 @@ $(document).ready(function () {
         } else if (theAction === "previous") {
             if (clickedRecordsCount !== 50) {
                 clickedRecordsCount = clickedRecordsCount - 50;
+
+
+                // check if the next indicator ">" is disabled because the member was in the last page, enable it
+                if(($(".data-table-nav-btns[data-action='next']").is(":disabled") === true) && ($("#no-data-watermark").is(":visible") === true) ){
+                    $(".data-table-nav-btns").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                    $("#no-data-watermark").hide();
+                }
             }
 
         }
         if (clickedFilteredColName !== "") {
             let notValidateRowsResponse = fetchNotValidateRows(clickedFilteredColName);
             $.when(notValidateRowsResponse).done(function (data, textStatus, jqXHR) {
-                if (textStatus == "success") {
+                if (textStatus == "success" && jqXHR.status == 200) {
+                    $("#loadingDataSpinner").fadeOut();
                     drawDataTableRows(data, false);
                 } else {
                     swAlert("Error", data, 'error');
                 }
             });
         } else {
+            $("#loadingDataSpinner").fadeOut('fast');
             fetchRecordsByCount(clickedRecordsCount);
         }
 
-        $("#loadingDataSpinner").fadeOut();
+
     });
 
 
@@ -538,6 +556,7 @@ $(document).ready(function () {
         if (searchQuery !== "") {
             fetchRecordsBySearchQuery(searchQuery);
             $("#loadingDataSpinner").fadeOut();
+            $('.data-table-nav-btns').attr("disabled", 'disabled').toggleClass('disabled');
         }
     });
 
@@ -545,23 +564,27 @@ $(document).ready(function () {
     // the undo button
     const undoBtn = $("#undoBtn");
     undoBtn.on("click", function (evt) {
+        // $(".data-table-input").off("change");
         undoElement.focus();
         // console.log(undoValue);
         // console.log(undoValue2);
-        undoElement.val(undoValue);
+        // trigger when member clicked on undo to save the old value instead of the new value
+        undoElement.val(undoValue).trigger('propertychange');
 
         $("#saveDataFileBtn").removeClass("disabled");
         $("#saveDataFileBtn").removeAttr("disabled style");
         // undoValue = "";
-        $("#undoBtn").addClass("disabled");
+        $("#undoBtn").addClass("disabled").tooltip('hide');
         $("#undoBtn").attr("disabled", "disabled");
         $("#undoBtn").attr("style", "cursor: not-allowed;");
-
+        // $(".data-table-input").on("change");
         // undoElement = null;
     });
     // save the old value to make undo
     saveUndo();
-
+    /*$(".data-table-input").inputFilter(function(value) {
+        return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+      });*/
 
 });  // end of $(document).ready() event
 

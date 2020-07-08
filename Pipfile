@@ -51,6 +51,9 @@ requests = "*"
 openpyxl = "*"
 pandas-schema = "*"
 jinja2 = "*"
+reportlab = "*"
+cachetools = "*"
+django-session-timeout = "*"
 
 [requires]
 python_version = "3.8"

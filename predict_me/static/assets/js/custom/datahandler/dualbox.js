@@ -21,22 +21,11 @@ function setColumnsTotal() {
     $("#pickedColumnsTotal h5 > b").text(pickTotal);
 }
 
-function dataTypeOptions(dataType) {
-    let optionsMarkup = "";
-    for (let dType of dataTypesOptions) {
-        // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
-        if (isUniqueIDSelected === true && dType === "Unique Identifier (ID)") {
-            optionsMarkup += `<option disabled="disabled" value='${dType}'>${dType}</option>\n`;
-        } else {
-            optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
-        }
 
-    }
-    return optionsMarkup;
-}
 
 function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
     // console.log(colIdx, colName, colDataType, optionsList);
+    // console.log(colIdx, colName, colDataType);
     //pickedColumnsList
     // console.log(colDataType);
     const liMarkup = `
@@ -300,7 +289,7 @@ function validatePickedColumns(evt) {
     // if all columns options selected validate the columns types
     if (isAllOK === true) {
 
-        if (selectedOptionsArray.includes("Donation Field".toLowerCase()) == false) {
+        if (selectedOptionsArray.includes("Donation Field".toLowerCase()) === false) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Do you want to select donation field?",
@@ -406,7 +395,7 @@ function sendRequestValidate() {
         console.log(textStatus);
         console.log(jqXHR);
 
-        if (textStatus == "success") {
+        if (textStatus === "success") {
             swAlert("Success", "All data looks ok, you can press process button", 'success');
             $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled style");
             for (let key in selectedValidateColumns) {
@@ -425,10 +414,10 @@ function columnOptionsChangeSaved(ele) {
     const element = $(ele);
     const elementLiParent = $(element.parent().parent());
     const dataIX = elementLiParent.data("idx");
-    // console.log(element.data(), selectOpVal.text());
-    // check if the value not empty to add
-    if (element.val() != "") {
+    // console.log(element.data(), element.text());
 
+    // check if the value not empty to add
+    if (element.val() !== "") {
 
         try {
             const tmpValue = element.val().trim().toLowerCase();
@@ -447,13 +436,14 @@ function columnOptionsChangeSaved(ele) {
         } finally {
             // optionsSelected.push(tmpValue);
         }
-
+        // console.log(optionsSelected, Object.keys(optionsSelected).length);
         const selectOpVal = element.find("option:selected");
+        // console.log(selectOpVal, element.data("value").toLowerCase());
         // get the span of tooltip
         const tmpSpan = $(element.parent().parent().find("span")[1]);
         const tmpIDSpan = $(element.parent().parent().find("span")[2]);
         // check the data type if convert from number to text and otherwise
-        if ((element.data("value") == "textual" && selectOpVal.text() == "Numeric Field") || (element.data("value") == "textual" && selectOpVal.text() == "Donation Field")) {
+        if ((element.data("value").toLowerCase() === "textual" && selectOpVal.text().toLowerCase() === "Numeric Field".toLowerCase()) || (element.data("value").toLowerCase() === "textual" && selectOpVal.text().toLowerCase() === "Donation Field".toLowerCase())) {
             // let showConfirm = confirm(`Warning. You are converting a default '${element.data("value").toUpperCase()}' data type to a '${selectOpVal.text().replace(" Field", "")}' data type!`);
             let confirmMsg = `Warning. You are converting a default '${element.data("value").toUpperCase()}' data type to a '${selectOpVal.text().replace(" Field", "")}' data type!`;
             // check if member click no set the select option to null, else select the option
@@ -464,52 +454,61 @@ function columnOptionsChangeSaved(ele) {
             tmpSpan.hide();
         }
         // check if the member select the id so disabled on the others select
-        if (element.val() === "Unique Identifier (ID)") {
-            $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
-            isUniqueIDSelected = true;
-            tmpIDSpan.show();
-            element.attr("disabled", "disabled");
-            element.addClass("disabled");
-            // when member click on the reset unique button
-            tmpIDSpan.on("click", function (e) {
-                let clickedResetID = $(this);
-                let clickedResetIDParent = $(this).parent().find("select");
-                $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
-                // let ix = optionsSelected.indexOf("Unique Identifier (ID)".toLowerCase());
-                // optionsSelected.splice(ix, 1);  // delete the id from the array
+        // console.log(element.data())
+        if ((element.val().toLowerCase() === "Unique Identifier (ID)".toLowerCase())) {
+            if(element.data("value") !== "textual"){
+                $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
+                isUniqueIDSelected = true;
+                tmpIDSpan.show();
+                element.attr("disabled", "disabled");
+                element.addClass("disabled");
+                // when member click on the reset unique button
+                tmpIDSpan.on("click", function (e) {
+                    let clickedResetID = $(this);
+                    let clickedResetIDParent = $(this).parent().find("select");
+                    $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
+                    // let ix = optionsSelected.indexOf("Unique Identifier (ID)".toLowerCase());
+                    // optionsSelected.splice(ix, 1);  // delete the id from the array
+                    delete optionsSelected[dataIX];  // delete the id from the json object
+                    clickedResetID.hide();
+                    isUniqueIDSelected = false;
+                    clickedResetIDParent.val("");
+                    $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
+                    clickedResetIDParent.removeAttr("disabled");
+                    clickedResetIDParent.removeClass("disabled");
+                    // disable the validate & process buttons
+                    $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+                    $("#validateColumnsBtn").attr("disabled", "disabled");
+                    $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
+                    $("#processPickedColumnsBtn").addClass("disabled");
+                    $("#processPickedColumnsBtn").attr("disabled", "disabled");
+                    $("#processPickedColumnsBtn").attr("style", "cursor: not-allowed;");
+
+                });
+
+            }else{
+                swAlert("Error", "Unique ID must be numeric data type!", 'error');
                 delete optionsSelected[dataIX];  // delete the id from the json object
-                clickedResetID.hide();
-                isUniqueIDSelected = false;
-                clickedResetIDParent.val("");
-                $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
-                clickedResetIDParent.removeAttr("disabled");
-                clickedResetIDParent.removeClass("disabled");
-                // disable the validate & process buttons
-                $("#validateColumnsBtn").addClass("btn-light-primary disabled");
-                $("#validateColumnsBtn").attr("disabled", "disabled");
-                $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
-                $("#processPickedColumnsBtn").addClass("disabled");
-                $("#processPickedColumnsBtn").attr("disabled", "disabled");
-                $("#processPickedColumnsBtn").attr("style", "cursor: not-allowed;");
-            })
+                element.val("");
+            }
         }
 
 
         // check if the member select unique id option, check mark criteria of it
-        if (checkValueExists(optionsSelected, "Unique Identifier (ID)".toLowerCase()) == true) {
+        if (checkValueExists(optionsSelected, "Unique Identifier (ID)".toLowerCase()) === true) {
             $("#selectUniqueID").html(checkMark).removeClass('text-danger').addClass("text-success");
         } else {
             $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
         }
 
         // check if donation field selected
-        if (checkValueExists(optionsSelected, "Donation Field".toLowerCase()) == true) {
+        if (checkValueExists(optionsSelected, "Donation Field".toLowerCase()) === true) {
             $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
         } else {
             $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
         }
 
-        if (element.val() == "Donation Field") {
+        if (element.val() === "Donation Field") {
             $("#donationFieldLi").removeClass("d-none");
             $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
         } else {
@@ -586,6 +585,7 @@ jQuery(document).ready(function () {
     let columnsDataTypeOptions = $(".column-option-dtype");
     $("#pickedColumnsList").on("change", ".column-option-dtype", function (evt) {
         columnOptionsChangeSaved(this);
+        console.log("change event fired!!");
     });
 
     let totalInterval = setInterval(function () {

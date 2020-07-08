@@ -6,7 +6,7 @@ from .views import *
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard-home"),
     path("users/", include("dash_users.urls"), name="users-urls"),
-    # path("profile/", include("members_app.urls"), name="profile-urls"),
+    # path("dashboard/profile/", include("members_app.urls"), name="profile-urls"),
     path("data/", include("data_handler.urls"), name="data-urls"),
     path("data-manage/", include("data_handler_admin.urls"), name="data-manage-urls"),
     path("invoice/", include("invoice_app.urls"), name="invoice-urls"),

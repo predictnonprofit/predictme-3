@@ -17,6 +17,12 @@ button:disabled {
   pointer-events: all !important;
 }
 
+#data_handler_table td.fit,
+#data_handler_table th.fit {
+    white-space: nowrap !important;
+    width: 1% !important;
+}
+
 .b-u,
 .u-b {
     font-weight: bold;
@@ -350,13 +356,13 @@ section#payExtraRecordsSection form#payExtraFeesForm input.form-control {
 /* End the transparent layer background for profile */
 
 /* Start Data handler list page */
-.inst-content-block p {
-    font-size: 17px;
-}
+/*.inst-content-block p {*/
+/*    font-size: 17px;*/
+/*}*/
 
-.inst-content-block li {
-    font-size: 16px;
-}
+/*.inst-content-block li {*/
+/*    font-size: 16px;*/
+/*}*/
 
 .vakata-context {
     z-index: 10052 !important;
@@ -378,3 +384,18 @@ section#payExtraRecordsSection form#payExtraFeesForm input.form-control {
     background: rgba(253, 57, 122, 0.137);
     /* background: #f66151; */
 }
+
+/* Start datatable watermark */
+#no-data-watermark {
+    position: absolute;
+    opacity: 0.6;
+    font-size: 4.5em;
+    width: 100%;
+    top: 40%;
+    text-align: center;
+    z-index: 500;
+    transform: rotate(-25deg);
+
+
+}
+/* End datatable watermark */

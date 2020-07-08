@@ -60,6 +60,10 @@ Manage Your Data
     border-color: rgba(105, 147, 255, 0.2) !important;
     color: #0a0a0a !important;
   }
+
+  #availableColumnsList li.disabled:HOVER, .columnItem.disabled:HOVER{
+    cursor: not-allowed !important;
+  }
 </style>
 
 {% endblock customcss %}
@@ -410,7 +414,7 @@ Data Handler
 
               <div class="col-lg-3">
                <div class="btn-group" role="group" aria-label="Data Table Navigation">
-                           <button type="button" data-action="previous" class="btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Previous 50 records">
+                           <button type="button" data-action="previous" disabled class="btn btn-secondary data-table-nav-btns" data-toggle="tooltip" title="Previous 50 records">
                              <i class="icon-lg la la-angle-left"></i>
                            </button>
 
@@ -454,9 +458,15 @@ Data Handler
               {% csrf_token %}
               <div style="overflow:auto; height:700px;" id="dataTableWrapper" class="position-relative">
                 <table id="data_handler_table" class="table">
+
                   <caption>Member Data File</caption>
 
                   <thead class='thead-light mb-2'>
+                  <div id="no-data-watermark" style="display: none;">
+                    <p class="text-danger">
+                      NO RECORDS TO DISPLAY!!
+                    </p>
+                  </div>
                     <tr></tr>
                   </thead>
 
@@ -520,23 +530,23 @@ Data Handler
 {% endblock content%}
 
 {% block customjs %}
-<script src="{% static 'assets/js/custom/data_handler_stripe.js' %}"></script>
+<script src="{% static 'assets/js/custom/datahandler/data_handler_stripe.js' %}"></script>
 <script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}"></script>
 <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
 <!--end::Page Vendors-->
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/data_handler_tree.js' %}"></script>
+<script src="{% static 'assets/js/custom/datahandler/data_handler_tree.js' %}"></script>
 <!--begin::Page Scripts(used by this page)-->
-
+<script src="{% static 'assets/js/custom/datahandler/helpers.js' %}" type="text/javascript"></script>
 <!--end::Page Vendors-->
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/data_handler_fetch_rows.js' %}"></script>
+<script src="{% static 'assets/js/custom/datahandler/data_handler_fetch_rows.js' %}"></script>
 
 <!-- Custom script of dualbox -->
-<script src="{% static 'assets/js/custom/dualbox.js' %}"></script>
+<script src="{% static 'assets/js/custom/datahandler/dualbox.js' %}"></script>
 
 <!-- Custom Script of data handler list page -->
-<script src="{% static 'assets/js/custom/datahandlerlist.js' %}"></script>
+<script src="{% static 'assets/js/custom/datahandler/datahandlerlist.js' %}"></script>
 
 
 

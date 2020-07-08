@@ -1,6 +1,5 @@
 "use strict";
-//webSiteUrl + "/dashboard/data/api/rows"
-//'X-CSRFToken': getCookie('csrftoken')
+
 
 
 // this function will fetch the rows of the saved file
@@ -127,7 +126,7 @@ function sortHeader(colObj){
 function fetchRecordsByCount(recordsCount){
     const recCount = parseInt(recordsCount);
     $("#data_handler_table > tbody tr").empty();
-    $("#loadingDataSpinner").fadeIn();
+    $("#loadingDataSpinner").fadeIn('fast');
     // let tableBody = document.getElementById("data_handler_body");
     // tableBody.innerHTML = "";
     let resetFetchRecoredsResponse = fetchDataFileRows(recCount);

@@ -12,21 +12,34 @@ from django.contrib.auth import get_user_model
 from .helpers import *
 from collections import defaultdict
 from .models import Member
-from pprint import pprint
-from decimal import Decimal
+from django.http import HttpResponseRedirect
+from django.core.cache import cache
 
 
 
 def login_view(request):
+    # redirect_to = request.GET.get('next', '')
+    if request.method == 'GET':
+        cache.set('next', request.GET.get('next', None))
+
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
         member = authenticate(request, email=email, password=password)
         if member is not None:
             login(request, member)
+
             if member.email == "admin@admin.com" or member.email == "admin2@email.com":
+                next_url = cache.get('next')
+                if next_url:
+                    cache.delete('next')
+                    return HttpResponseRedirect(next_url)
                 return redirect(reverse("dashboard-home"))
             else:
+                next_url = cache.get('next')
+                if next_url:
+                    cache.delete('next')
+                    return HttpResponseRedirect(next_url)
                 return redirect(reverse("profile-overview"))
 
             # if member.is_active is True and member.status == "active":
