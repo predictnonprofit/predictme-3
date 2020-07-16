@@ -7,7 +7,6 @@ verify_ssl = true
 flake8 = "*"
 bpython = "*"
 termcolor = "*"
-prettyprinter = "*"
 pysnooper = "*"
 faker = "*"
 
@@ -57,6 +56,7 @@ jinja2 = "*"
 reportlab = "*"
 cachetools = "*"
 django-session-timeout = "*"
+prettyprinter = "*"
 
 [requires]
 python_version = "3.8"
