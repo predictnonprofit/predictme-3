@@ -8,7 +8,7 @@ from itertools import islice
 import copy
 from termcolor import cprint
 import traceback, gc
-import pysnooper
+#import pysnooper
 
 validate_obj = DataValidator()
 
