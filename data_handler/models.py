@@ -40,7 +40,10 @@ class DataFile(models.Model):
     def get_selected_columns_as_list(self):
         # return self.selected_columns.split("|")
         # return sorted(self.selected_columns.split("|"))
-        return self.selected_columns.split("|")
+        try:
+            return self.selected_columns.split("|")
+        except AttributeError as aex:
+            pass
 
     @property
     def get_selected_columns_with_dtypes(self):

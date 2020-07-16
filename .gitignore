@@ -283,6 +283,8 @@ fabric.properties
 *.pages
 *.rtf
 notes.txt
+bugs.txt
+changes.txt
 *.wpd
 *.wps
 

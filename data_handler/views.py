@@ -175,11 +175,10 @@ class GetColumnsView(APIView):
     def post(self, request, format=None):
         from data_handler.models import DataFile
         member_data_file = DataFile.objects.get(member=request.user)
-
+        print(request.POST)
         try:
 
             columns_list = member_data_file.get_selected_columns_with_dtypes
-            print(member_data_file.data_file_path)
             # check if the member picked columns
             if len(columns_list) > 1:
                 return Response(columns_list, status=200)
@@ -249,12 +248,13 @@ class GetRowsView(APIView):
             # print("file_columns", file_columns, len(file_columns))
             # print('columns_with_dtypes', columns_with_dtypes)
             # print('unique_column', unique_column)
-            # check if there is no columns picked from the user, delete and reupload the data file
+            # check if there is no columns picked from the user, delete and re-upload the data file
             if len(file_columns) > 1:
                 row_count = member_data_file.allowed_records_count
                 data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count, columns_with_dtypes,
                                                           unique_column)
                 return Response({"data": data_file_rows}, status=200, content_type='application/json')
+                # return Response('{"data": ''}', content_type='application/json')
             else:
                 delete_data_file(file_path)
                 delete_all_member_data_file_info(member_data_file)
@@ -562,5 +562,37 @@ class CheckMemberUpload(APIView):
     def post(self, request, format=None):
         from data_handler.models import DataFile
         member_data_file = DataFile.objects.get(member=request.user)
-
         return Response(member_data_file.file_upload_procedure, status=200)
+
+
+class CheckMemberProcessStatus(APIView):
+    """
+        ### Developement only ###
+        API View to Check if member complete his data handler steps, check if the member run the modal or not
+
+        * Requires token authentication.
+        * Only admin users are able to access this view.
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
+        process_status = member_data_file.is_process_complete
+        choice = request.POST.get("choice", "")
+        print(process_status)
+        try:
+            if process_status is False:
+                if choice != "" or choice is not None:
+                    if choice == 'Restore':
+                        pass
+                    elif choice == 'Fresh':
+                        delete_data_file(member_data_file.data_file_path)
+                        delete_all_member_data_file_info(member_data_file)
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            cprint(str(ex), 'red')
+
+        # print(process_status)
+        return Response(process_status, status=200)

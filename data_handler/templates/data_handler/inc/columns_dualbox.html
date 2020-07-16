@@ -1,5 +1,5 @@
 <!-- Modal-->
-<div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" tabindex="-1" role="dialog"
+<div class="modal fade" id="columnsDualBoxModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
     aria-labelledby="columnsDualBoxModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -92,10 +92,14 @@
 
                 <!--End::Row-->
             </div>
+
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-danger font-weight-bold" id="cancelReuploadBtn">Cancel &
+                <button type="button" class="btn btn-light-danger font-weight-bold mr-auto" id="cancelReuploadBtn">Delete the file &
                     Re-upload</button>
-                <button type="button" style="cursor: not-allowed;" class="btn btn-primary font-weight-bold disabled" disabled
+
+                <button id="closeReselectColsModal" type="button" class="btn btn-outline-danger d-none" data-dismiss="modal">Cancel</button>
+                <button type="button" style="cursor: not-allowed;" class="btn btn-primary  font-weight-bold disabled" disabled
                     id="processPickedColumnsBtn">Process</button>
                 </form>
             </div>

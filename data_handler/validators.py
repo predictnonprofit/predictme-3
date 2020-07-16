@@ -41,9 +41,12 @@ class DataValidator:
 
         if san.status:
             # check if the value contain any error or not valid data
-            the_validate_dict_values = self.return_the_error_msg(True, san.value, "data not valid", data_type=f"{dtype}")
+            the_validate_dict_values = self.return_the_error_msg(True, san.value, "data not valid",
+                                                                 data_type=f"{dtype}")
         else:
             the_validate_dict_values = self.return_the_error_msg(False, san.value, "valid data", data_type=f"{dtype}")
+        # print(the_validate_dict_values)
+        # print(dtype)
         return the_validate_dict_values
 
     def sanitize_numeric_data(self, data_value, dtype=None):
@@ -61,13 +64,12 @@ class DataValidator:
         if dtype == "donation":
 
             if data_value.isdigit():
-
                 results = DataStatus(status=False, value=data_value)
             else:
                 if data_value == "" or data_value is None or data_value.lower() == "nan":
 
                     # check if the number is empty
-                    results = DataStatus(status=True, value=sanitized)
+                    results = DataStatus(status=True, value=data_value)
                 else:
                     # here if the number not empty
                     for bad_str, asciistr in zip(cycle(bad_strings), all_ascii_letters):
@@ -82,9 +84,6 @@ class DataValidator:
                         results = DataStatus(status=False, value=sanitized)
                     else:
                         results = DataStatus(status=True, value=sanitized)
-
-
-
 
         elif dtype == "numeric":
             if data_value == "" or data_value is None or data_value.lower() == "nan":
@@ -104,6 +103,7 @@ class DataValidator:
 
         elif dtype == "textual":
             results = DataStatus(status=False, value=data_value)
+            # print(f"data value =--> {data_value}  <=====> sanitized --> {sanitized}")
 
         elif dtype == "unique_id":
             results = DataStatus(status=False, value=data_value)
@@ -120,7 +120,7 @@ class DataValidator:
     def return_the_error_msg(self, is_error: bool, val: str, msg="", data_type=""):
         val = val.strip() or val
         if msg and data_type:
-            return {"is_error": is_error, "value": val, "msg": msg, "data_type": data_type}
+            return {"is_error": is_error, "value": val, "msg": msg, "data_type": data_type, "original_dtype": "Textual"}
         else:
             return {"is_error": is_error, "value": val}
 

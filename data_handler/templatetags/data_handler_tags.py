@@ -2,11 +2,6 @@ from django import template
 register = template.Library()
 
 
-# try:
-#
-# except NoneType:
-#     pass
-
 @register.filter
 def sub_records(all_recs, allowed_recs):
     if all_recs and allowed_recs:

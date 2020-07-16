@@ -64,6 +64,10 @@ Manage Your Data
   #availableColumnsList li.disabled:HOVER, .columnItem.disabled:HOVER{
     cursor: not-allowed !important;
   }
+
+  .protip, .protip-open{
+    z-index: 9999 !important;
+  }
 </style>
 
 {% endblock customcss %}
@@ -344,13 +348,9 @@ Data Handler
 
           <!--end::Dropdown-->
           <!--begin::Button-->
-          <!-- <span data-toggle="tooltip" title="Download Your Data">
-            <button type="button" class="btn btn-primary font-weight-bolder" data-toggle="modal"
-              data-target="#donerFilesModal">
-              <i class="icon-xl la la-file-download"></i>
-
+           <button style="border-radius: 0;" type="button" id="run-modal-btn" class="btn btn-outline-primary mx-2 font-weight-bolder notAllowedCur" data-toggle="tooltip" title="Run the Model">
+              <i class="icon-xl fas fa-cogs"></i>
             </button>
-          </span> -->
           <span data-toggle="tooltip" title="Reselect the columns">
             <button id='reselectColumnsBtn' type="button" class="btn btn-outline-primary font-weight-bolder">
               <i class="icon-xl la la-check-square-o"></i>
@@ -547,7 +547,6 @@ Data Handler
 
 <!-- Custom Script of data handler list page -->
 <script src="{% static 'assets/js/custom/datahandler/datahandlerlist.js' %}"></script>
-
 
 
 

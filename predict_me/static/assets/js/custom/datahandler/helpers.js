@@ -63,20 +63,29 @@ function swConfrimDtype(elem, msg, tmpSpan) {
         if (result.value) {
 
             tmpSpan.show();
-            resultsValue = true;
+            // resultsValue = true;
 
         } else if (
             /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel
         ) {
-            tmpSpan.hide();
             elem.val("");
+            tmpSpan.hide();
 
         }
     });
 
 
 }
+
+// this will get the function name
+function getFunctionName(fun) {
+    let funName = fun.toString();
+    funName = funName.substr('function '.length);
+    funName = funName.substr(0, funName.indexOf('('));
+    return funName;
+}
+
 
 // count duplicated items in array
 function coutItems(arrayVar, value) {
@@ -107,12 +116,6 @@ function checkValueExists(json, value) {
     }
     return false;
 }
-
-// here the columns dual box
-// Class definition
-var pickedColumns = []; // this will hold all columns that user selected
-
-
 
 
 // this ajax function which will upload the donor data file
@@ -378,21 +381,21 @@ function drawDataTableRows(rowsData, isValidate) {
     // console.log(rowsData);
     // console.log(currentRowData.length, "records");
     // first check if there is no records left to display
-    if(typeof currentRowData.length === undefined){
+    if (typeof currentRowData.length === undefined) {
         // here when no rows, 0
         console.error("No records to display!!");
         $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $("#no-data-watermark").show();
-    }else{
+    } else {
         // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
-        if(clickedRecordsCount === 50){
+        if (clickedRecordsCount === 50) {
             $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-        }else{
+        } else {
             $(".data-table-nav-btns[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
         }
 
         // check if the no data watermark exists remove it before display if there is new data
-        if($("#no-data-watermark").is(":visible") === true){
+        if ($("#no-data-watermark").is(":visible") === true) {
             $("#no-data-watermark").hide();
         }
 
@@ -403,6 +406,9 @@ function drawDataTableRows(rowsData, isValidate) {
 
             for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
                 let currentDataObj = currentRowData[colIdx];
+                if (currentDataObj["ID"] === 4) {
+                    // console.log(currentDataObj);
+                }
                 // console.log(currentDataObj);
                 let allCells = "";
                 let tableRow = "<tr class='datatable-row'> ";
@@ -414,7 +420,7 @@ function drawDataTableRows(rowsData, isValidate) {
                     if (key !== "ID") {
                         if (value.is_error === false) {
                             // check if the data type is numeric or donation will restric the member from enter numeric data
-                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                            if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
                                 var cellMarkup = `
     
                     <td class='text-center'>
@@ -422,7 +428,7 @@ function drawDataTableRows(rowsData, isValidate) {
                     </td>
     
                 `;
-                            }else{
+                            } else {
                                 var cellMarkup = `
     
                     <td class='text-center'>
@@ -432,6 +438,7 @@ function drawDataTableRows(rowsData, isValidate) {
                 `;
                             }
                         } else if (value.is_error === true) {
+
                             const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
                             // the below to mark the column header it has error
                             tableColHeader.attr("data-is-error", '1');
@@ -439,9 +446,11 @@ function drawDataTableRows(rowsData, isValidate) {
                             tableColHeader.addClass('protip');
                             // tableColHeader.attr('data-toggle', 'tooltip');
                             // tableColHeader.attr('title', 'Error data not match the required data type!');
-                            tableColHeader.attr('data-pt-title', 'Error data not match the required data type!');
+                            tableColHeader.attr('data-pt-title', `Default data format: ${value['original_dtype'].toUpperCase()} <br /> Current data format: ${value['data_type'].split(" ")[0].toUpperCase()}`);
                             tableColHeader.attr('data-pt-gravity', 'top');
                             tableColHeader.attr('data-pt-classes', 'bg-danger text-white');
+                            tableColHeader.attr('data-pt-animate', 'animate__animated animate__tada');
+                            tableColHeader.attr('data-pt-delay-in', '500');
                             const colText = tableColHeader.text().trim();
                             // check if the current table td value has error, highlighted the column name header
                             if (key.trim() === colText) {
@@ -451,7 +460,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 tableColHeader.addClass("text-danger");
                             }
 
-                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                            if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
                                 var cellMarkup = `
     
                     <td class='text-center'>
@@ -459,7 +468,7 @@ function drawDataTableRows(rowsData, isValidate) {
                     </td>
     
                 `;
-                            }else{
+                            } else {
                                 var cellMarkup = `
     
                     <td class='text-center'>
@@ -500,7 +509,7 @@ function drawDataTableRows(rowsData, isValidate) {
 
 
                         if (value.is_error === false) {
-                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                            if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
                                 var cellMarkup = `
     
                             <td>
@@ -508,7 +517,7 @@ function drawDataTableRows(rowsData, isValidate) {
                             </td>
             
                         `;
-                            }else{
+                            } else {
                                 var cellMarkup = `
     
                             <td>
@@ -519,10 +528,9 @@ function drawDataTableRows(rowsData, isValidate) {
                             }
 
 
-
                         } else if (value.is_error === true) {
 
-                            if(value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)"){
+                            if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
                                 var cellMarkup = `
     
                     <td>
@@ -530,7 +538,7 @@ function drawDataTableRows(rowsData, isValidate) {
                     </td>
     
                 `;
-                            }else{
+                            } else {
                                 var cellMarkup = `
     
                     <td>
@@ -703,7 +711,7 @@ function uploadProgressModal(isOk, data) {
     var recordsCounterProgressBar = $("#recordsCounterProgressBar");
     let currentRowCounter = $("#currentRowCounter > b");
     let progressWarnText = $("#progressWarnText");
-    var nextProgressBtnModal = $("#nextProgressBtnModal");
+    let nextProgressBtnModal = $("#nextProgressBtnModal");
     let allowdedRowsCount = $("#progressRecords > b:first");
     rowCountProgressDialog.modal('handleUpdate');
     rowCountProgressDialog.modal('show');
@@ -787,24 +795,28 @@ function uploadProgressModal(isOk, data) {
 
     }
 
-    /* nextProgressBtnModal.click(function (ev){
+    nextProgressBtnModal.on('click', function (ev) {
         clearInterval(progressInterval);
         rowCountProgressDialog.modal('hide');
-       $("#extraRecordsModel").modal("handleUpdate");
-       $("#extraRecordsModel").modal("show");
-    }); */
+        $("#extraRecordsModel").modal("handleUpdate");
+        $("#extraRecordsModel").modal("show");
+    });
 }
 
 
 // this function will fetch all columns in the data file to make the member reselect the columns
-function fetchDataFileAllColumns() {
-
+function fetchDataFileAllColumns(withDtypes) {
+    let data = '';
+    if (typeof withDtypes !== undefined) {
+        data = {"with_dtype": true}
+    }
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
         cache: false,
         // processData: false,
         // contentType: false,
         timeout: 300000, // 5 minutes
+        data: data,
         url: webSiteUrl + "/dashboard/data/api/get-all-columns",
         // dataType: "json",
         //data: fetchedColumns,
@@ -867,56 +879,48 @@ function getDataType(dt) {
 
 // this function will set the options list of the select to every column (item) in the right side
 function dataTypeOptions(dataType, setSelected, uniqueColumn, colName) {
-    // console.log(dataType);
-    /*console.log(dataTypesOptions);
-    console.log(dataTypesOptions.shift());*/
-    // console.log(uniqueColumn);
     let optionsMarkup = "";
     // this to set the selected option selected
-    if(typeof setSelected !== undefined && setSelected === true && typeof uniqueColumn !== undefined && typeof colName !== undefined){
-        const index = dataTypesOptions.indexOf("");
-
-        // if (index !== -1) dataTypesOptions.splice(index, 1);
+    if ((typeof setSelected !== 'undefined' || setSelected === true) && (typeof uniqueColumn !== 'undefined') && (typeof colName !== 'undefined')) {
+        // console.log(dataType, setSelected, uniqueColumn, colName);
         for (let dType of dataTypesOptions) {
-            const splitName = dType.split(' ')[0];
+
             // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
-            if (isUniqueIDSelected === true && colName === uniqueColumn) {
-                // console.log(dType);
-                console.log(colName, "_", uniqueColumn, "_", dType);
-                optionsMarkup += `<option disabled="disabled" selected="selected" value='${dType}'>${dType}</option>\n`;
+            if ((colName === uniqueColumn) && (dType.includes('Unique Identifier') === true)) {
+                isUniqueIDSelected = true;
+                optionsMarkup += `<option selected="selected" data-unique-id-col="1" value='${dType}'>${dType}</option>\n`;
+
+
             } else {
-                // check to set selected if the column match the data type
-                // console.log(dType, dataType);
-                // console.log(dType.toLowerCase() === dataType.toLowerCase());
-                if(dType.toLowerCase() === dataType.toLowerCase()){
+                // check to set selected if the column match the data type, so in this case make the option selected with the dtype
+                if (dataType.toLowerCase() === dType.toLowerCase()) {
+                    // console.log(colName, '--> ', dataType.toLowerCase(), '==>  ', dType);
                     optionsMarkup += `<option value='${dType}' selected="selected">${dType}</option>\n`;
-                }else{
+                } else {
                     optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
                 }
 
             }
 
-    }
+        }
         // return optionsMarkup;
-    }else{
+    } else {
         for (let dType of dataTypesOptions) {
 
-        // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
-            if (isUniqueIDSelected === true && dType === "Unique Identifier (ID)") {
-                optionsMarkup += `<option disabled="disabled" value='${dType}'>${dType}</option>\n`;
-            } else {
-                optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
-            }
+            // check if isUniqueIDSelected is true make it selected by default, to avoid unique id enabled in the new items come from left side after selecte it
+            optionsMarkup += `<option value='${dType}'>${dType}</option>\n`;
 
-    }
+        }
         // return optionsMarkup;
     }
+
     return optionsMarkup;
 
 }
 
 // when user click on reselect columns btn
 function reselectColumnsFunc() {
+    $("#closeReselectColsModal").toggleClass("d-none");
     let optionsList = '';
     let rightOptionsList = '';
     let dataFileColumnsSelect = $("#availableColumnsList");
@@ -924,7 +928,7 @@ function reselectColumnsFunc() {
     const columnsDualBoxModal = $("#columnsDualBoxModal");
     $("#closeColumnsDualBoxBtn").show();
 
-    const allColumnsResponse = fetchDataFileAllColumns();
+    const allColumnsResponse = fetchDataFileAllColumns(true);
 
 
     $.when(allColumnsResponse).done(function (data, textStatus, jqXHR) {
@@ -932,17 +936,17 @@ function reselectColumnsFunc() {
         console.log(jqXHR);
         console.log(data);*/
 
-        const tmpSelectedColsArr = Object.keys(data['selected_columns']);
 
-
+        const tmpSelectedColsArr = Object.keys(data['selected_columns']);  // member selected columns
         let i = 0;
         for (let [name, dType] of Object.entries(data['all_columns'])) {
             i++;
-
+            // console.log([name, dType]);
             let tmpMarkupLi = "";
+
             // console.log(getDataType(dType), dType);
             // check if the column name in the picked columns, so will disable it
-            if(tmpSelectedColsArr.includes(name) === true){
+            if (tmpSelectedColsArr.includes(name) === true) {
                 tmpMarkupLi = `
                     <li data-idx = '${i}' class="disabled bg-gray-200 columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
@@ -956,7 +960,7 @@ function reselectColumnsFunc() {
                             </li>
                         \n
                     `;
-            }else{
+            } else {
                 tmpMarkupLi = `
                     <li data-idx = '${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
@@ -976,21 +980,21 @@ function reselectColumnsFunc() {
             optionsList += tmpMarkupLi;
 
             // here set the columns options for the right side, which mean the previously selected columns
-
             let tmpRightColOpMarkup = "";
-            if(tmpSelectedColsArr.includes(name) === true){
+            if (tmpSelectedColsArr.includes(name) === true) {
                 // this to set isUniqueIDSelected = true
-                if(data['unique_column'] === name) isUniqueIDSelected = true;
+                // console.log(getDataType(dType), true, data['unique_column'], name);  // Numeric true Donor_Id Donor_Id
+                // console.log(data['selected_columns'][name]);
                 tmpRightColOpMarkup = `
                     <li data-idx="${i}"
                         class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                         ${name}
                         <span class="nav-label mx-10">
                             <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype">
-                                    ${dataTypeOptions(getDataType(dType), true, data['unique_column'], name)}
+                                    ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>
-                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title="Warning. Not convenient data type!">
+                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title='Default data format Textual\nCurrent data format ${data['selected_columns'][name].split(" ")[0].toUpperCase()}'>
                               <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
                         </span>
                         <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">
@@ -1000,14 +1004,7 @@ function reselectColumnsFunc() {
                     </li>
                     \n
                 `;
-                // console.log(dataTypeOptions(dType));
-                // $("#pickedColumnsList .column-option-dtype").change();
-                let tmpC = $(tmpRightColOpMarkup);
-                tmpC = tmpC.find("select.column-option-dtype");
-                // tmpC.change();
-                // tmpC = tmpC.children("select.column-option-dtype").val("EERR");
-                // tmpC.val(tmpC.data("value"));
-                // console.log(tmpC.text());
+
                 rightOptionsList += tmpRightColOpMarkup;
             }
 
@@ -1015,10 +1012,26 @@ function reselectColumnsFunc() {
 
         dataFileColumnsSelect.html(optionsList);
         rightPickedColumnsList.html(rightOptionsList);
+        fixSelectedColumnsItems(rightPickedColumnsList);
         columnsDualBoxModal.modal("handleUpdate");
         columnsDualBoxModal.modal("show");
 
     });
+
+}
+
+// this function will take the current item from right side to set the options of unique id column
+function fixSelectedColumnsItems(allRightColsParent) {
+    const allRightJQElement = $(allRightColsParent);
+    allRightJQElement.children('li').each(function (index, element) {
+        const liElem = $(element);
+        const liSelectMenu = liElem.find('select.column-option-dtype');
+        let opSelectUniqueIDCol = $(liSelectMenu.children('option[data-unique-id-col="1"]'));
+        // liSelectMenu.attr('disabled', 'disabled');
+        // console.log(liSelectMenu.val());
+        liSelectMenu.trigger('change', 'reselect');
+    })
+
 
 }
 
@@ -1079,14 +1092,15 @@ function saveNewUpdatedData() {
         // Save current value of element
         elem.data('oldVal', elem.val());
         //focusin
-
+        // console.log(elem.data(), elem.val());
+        // console.log(elem.val());
 
         // Look for changes in the value
         // elem.bind("propertychange change click keyup input paste", function(event){  // with click event
         elem.bind("propertychange keyup input paste", function (event) {
             // console.log("propertychange event fire");
             // If value has changed...
-            if (elem.data('oldVal') != elem.val()) {
+            if (elem.data('oldVal') !== elem.val()) {
 
                 // Updated stored value
                 elem.data('oldVal', elem.val());
@@ -1154,6 +1168,7 @@ function runSaveFunc(elem) {
     allNewRowsUpdates[rowNumTmp] = nonDuplicateValues;
     // allNewRowsUpdates[rowNumTmp].push(nonDuplicateValues);
     // console.log(allNewRowsUpdates[rowNumTmp]);
+    console.log(allNewRowsUpdates);
     saveTheUpdates(allNewRowsUpdates, elem);
 
 
@@ -1173,12 +1188,13 @@ function saveTheUpdates(allUpdatedRows, elem) {
         // console.log(jqXHR);
         // console.log(data);
 
-        if (textStatus === "success") {
+        if ((textStatus === "success") && (jqXHR.status === 200)) {
             // console.log(undoElement);
             // console.log(undoValue2);
             // window.location.reload();
             undoValue = "";
             undoValue2 = "";
+            // console.log(currInput.data());
             console.log(data);
             if (data['is_error'] === true || data['msg'].includes("could not")) {
                 currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
@@ -1190,9 +1206,11 @@ function saveTheUpdates(allUpdatedRows, elem) {
                 setTimeout(function () {
                     currInput.removeClass("bg-success-o-40", {duration: 1500});
                 }, 1500);
-                showToastrNotification(data['msg']);
+                showToastrNotification(data['msg'][1]);
 
             }
+            allNewRowsUpdates = {};
+            // console.log(currInput.data());
             $("#dataListTable").css("opacity", "1");
             $(".data-table-col").removeAttr("disabled");
             $("#save-row-loader").fadeOut();
@@ -1217,7 +1235,7 @@ function saveTheUpdates(allUpdatedRows, elem) {
 // function to display Toastr Notifications
 function showToastrNotification(msg, msgType = "success") {
     let icon = "";
-    if (msgType == "danger") {
+    if (msgType === "danger") {
         icon = "icon la la-times";
     } else {
         icon = "icon la la-check";
@@ -1247,7 +1265,8 @@ function setTheCookie() {
         // console.log(jqXHR.status);
         // console.log(data);
 
-        if (data != "None" && jqXHR.status == 200) {
+        if (data !== "None" && jqXHR.status === 200) {
+            $(document).on("keydown", disableF5);
             window.onbeforeunload = function (e) {
                 e = e || window.event;
 
@@ -1259,11 +1278,12 @@ function setTheCookie() {
                 // For Safari
                 return 'Sure?';
             };
-        }else{
+        } else {
             window.onbeforeunload = null;
         }
     });
 }
+
 
 // Restricts input for the given textbox to the given inputFilter function.
 function isNumber(evt) {
@@ -1273,4 +1293,104 @@ function isNumber(evt) {
         return false;
     }
     return true;
+}
+
+// this function will run after all page load and all ajax requests have complete, to check if the user has previous seesions or not
+function checkMemberSessionStatus() {
+    const checkMemberProcessStatusResponse = checkIfMemberProcessStatus();
+    $.when(checkMemberProcessStatusResponse).done(function (data, textStatus, jqXHR) {
+        // console.log(textStatus);
+        // console.log(jqXHR);
+        // console.log(data);
+        if ((textStatus === 'success') && (jqXHR.status === 200) && (data === false)) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Attention!',
+                text: "There is previously session, do you want to restore it?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, restore it!',
+                cancelButtonText: 'No, start fresh!',
+                // reverseButtons: true,
+                backdrop: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showLoaderOnConfirm: true,
+            }).then((result) => {
+                if (result.value) {
+                    const newResponse = checkIfMemberProcessStatus("Restore");
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    const newResponse = checkIfMemberProcessStatus("Fresh");
+                }
+            })
+        }
+    });
+}
+
+// disable F5 Key
+function disableF5(e) {
+    if ((e.which || e.keyCode) === 116) e.preventDefault();
+}
+
+// run modal function
+function confirmRunModal() {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+
+    swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "Do you want to run the modal!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, run it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            let timerInterval
+            Swal.fire({
+                title: 'Please wait!',
+                html: 'Running the modal...<br /> please be patient.',
+                timer: 2000,
+                timerProgressBar: true,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                        const content = Swal.getContent()
+
+                    }, 100)
+                },
+                onClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer');
+                    window.location.href = webSiteUrl.concat("/profile/dashboard");
+                }
+            })
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+
+        }
+    })
 }

@@ -124,8 +124,8 @@ $(function () {
     const payExtraRecordsSection = $("#payExtraRecordsSection");
     const upgradeSubscriptionSection = $("#upgradeSubscriptionSection");
     const closeUpgradeModalBtn = $("#closeUpgradeModalBtn");
-    var purchaseUpgradeExtraBtn = $(".purchaseUpgradeExtraBtn");
-    var currentShownSection = "";
+    let purchaseUpgradeExtraBtn = $(".purchaseUpgradeExtraBtn");
+    let currentShownSection = "";
     // the next btn
     const nextBtn = $('#nextBtn');
     // the back bth
@@ -177,6 +177,7 @@ $(function () {
                         'success'
                     )*/
                     $("#extraRecordsModel").modal("hide");
+                    window.location.reload();
                 }
             });
         } else {
@@ -188,7 +189,7 @@ $(function () {
     });
 
     // this for the back button when user click back in pay or upgrade subscription dialog
-    backBtn.click(function (e) {
+    backBtn.on('click', function (e) {
         $(".purchaseUpgradeExtraBtn").fadeOut();
         // alert($('body').hasClass('modal-open'));
         currentShownSection.fadeOut(300, function () {
@@ -200,7 +201,7 @@ $(function () {
     });
 
     // when member want to close the dialog
-    closeUpgradeModalBtn.click(function () {
+    closeUpgradeModalBtn.on('click', function () {
         Swal.fire({
             title: 'Are you sure?',
             text: "You want to abort this operation?",
@@ -226,7 +227,7 @@ $(function () {
 
     // upgrade plan button
     // this to get the selected plan to upgrade
-    /* purchaseUpgradeExtraBtn.click(function (e) {
+     purchaseUpgradeExtraBtn.on('click', function (e) {
       let actionLabel = $(this).data("action");
       const upgradePlanBtn = $('input[name=upgrade_plane]:checked').val();
       if (actionLabel === "upgrade") {
@@ -234,8 +235,9 @@ $(function () {
           swal.fire("Error", "You have to select plan!", "error");
         } else {
           swal.fire("Good", `You select ${upgradePlanBtn}`, "success");
-          $(this).attr("disabled", "disabled");
-          $(this).html("<div class='kt-spinner kt-spinner--lg kt-spinner--dark' style='width: 2rem; height: 1.3rem; left: 32px;'></div>");
+            $(this).text("Upgrading...");
+            $(this).addClass('spinner spinner-darker-success spinner-left');
+            $(this).attr("disabled", "disabled");
 
         }
 
@@ -243,7 +245,7 @@ $(function () {
         swal.fire("👍", `Purchased done`, "success");
       }
 
-    }); */
+    });
 
 
     // upload data file functionality
@@ -266,7 +268,7 @@ $(function () {
                         // this mean the records total more than the allowed in subscription plan
                         uploadProgressModal(true, data);
 
-                        nextProgressBtnModal.click(function (event) {
+                        nextProgressBtnModal.on('click', function (event) {
 
                             rowCountProgressDialog.modal('hide');
                             $("#extraRecordsModel").modal("handleUpdate");
@@ -586,6 +588,23 @@ $(document).ready(function () {
         return /^\d*$/.test(value);    // Allow digits only, using a RegExp
       });*/
 
+
+    // here when member click on run modal btn to run the modal
+    $("#run-modal-btn").on("click", function (evt) {
+        confirmRunModal();
+    });
+
+
+
 });  // end of $(document).ready() event
+
+// handler to be called when all Ajax requests have completed.
+/*$(function(){
+    setTimeout(checkMemberSessionStatus,10000);
+});*/
+$(document).ajaxError(function() {
+  console.error('Triggered ajaxError handler.');
+});
+
 
 

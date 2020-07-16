@@ -1,10 +1,13 @@
 "use strict";
-
+var isAjaxRequestDone = {  // this object will be in the success(), method of ajax requests, to set true mean all done, false not done
+    isDone: "",
+    functionName: "",
+};
 
 
 // this function will fetch the rows of the saved file
 function fetchDataFileRows(recordsCount){
-    if(typeof recordsCount === "undefined"){
+    if(typeof recordsCount === 'undefined'){
         recordsCount = 50;
     }
     return $.ajax({
@@ -19,6 +22,16 @@ function fetchDataFileRows(recordsCount){
         error: function (error) {
             //called when there is an error
             swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
+        },
+        complete: function (jqXHR, textStatus){
+          /*  console.log(textStatus);
+            console.log(jqXHR.status);
+            console.log(jqXHR);*/
+            // check if the request complete successfully
+           /* if(textStatus === 'success' && jqXHR.status === 200){
+
+            }*/
+
         },
         statusCode: {
             404: function () {
@@ -256,6 +269,51 @@ function checkIfMemberUploadDataFile() {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
+        error: function (error) {
+            //called when there is an error
+            swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
+        },
+        statusCode: {
+            404: function () {
+                swAlert("Error", "Page not Found!!", "error");
+            },
+            400: function () {
+                swAlert("Error", "Bad Request!!!", "error");
+            },
+            401: function () {
+                swAlert("Error", "Unauthorized!!", "error");
+            },
+            403: function () {
+                swAlert("Error", "Forbidden!!", "error");
+            },
+            500: function () {
+                swAlert("Error", "Internal Server Error!!", "error");
+            },
+            502: function () {
+                swAlert("Error", "Bad Gateway!!", "error");
+            },
+            503: function () {
+                swAlert("Error", "Service Unavailable!!", "error");
+            },
+
+        }
+
+    });
+}
+
+
+// function will check if the member set his process steps to done
+function checkIfMemberProcessStatus(choice) {
+    let data = "";
+    if(typeof choice !== "undefined") data = {"choice": choice}
+    return $.ajax({
+        url: webSiteUrl + "/dashboard/data/api/check-process-status",
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        method: "POST",
+        data: data,
+        global: false,
         error: function (error) {
             //called when there is an error
             swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");

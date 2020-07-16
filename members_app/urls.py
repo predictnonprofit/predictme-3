@@ -4,6 +4,7 @@ from data_handler.views import DataListView
 
 urlpatterns = [
     path("", ProfileOverview.as_view(), name="profile-overview"),
+    path("dashboard", ProfileDashboard.as_view(), name="profile-dashboard"),
     path("personal", ProfilePersonal.as_view(), name="profile-personal"),
     path("information", ProfileInformation.as_view(), name="profile-info"),
     path("change-password", ProfileChangePassword.as_view(), name="profile-change-password"),

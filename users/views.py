@@ -30,14 +30,10 @@ def login_view(request):
             login(request, member)
 
             if member.email == "admin@admin.com" or member.email == "admin2@email.com":
-                next_url = cache.get('next')
-                if next_url:
-                    cache.delete('next')
-                    return HttpResponseRedirect(next_url)
                 return redirect(reverse("dashboard-home"))
             else:
                 next_url = cache.get('next')
-                if next_url:
+                if next_url and 'profile/data' in next_url:
                     cache.delete('next')
                     return HttpResponseRedirect(next_url)
                 return redirect(reverse("profile-overview"))

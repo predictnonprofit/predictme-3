@@ -36,7 +36,7 @@ def download_data_file_xlsx(request):
         if file_path.suffix == ".csv":
             new_xlsx_path = file_path.parent / f"{os.path.splitext(file_path.name)[0]}.xlsx"
             # read_csv_file = pd.read_csv(file_path.as_posix())  # file with all columns
-            read_csv_file = pd.read_csv(file_path.as_posix(), usecols=selected_columns)  # file with selected columns
+            read_csv_file = pd.read_csv(file_path.as_posix(), usecols=selected_columns, skipinitialspace=True)  # file with selected columns
             # read_csv_file[selected_columns].to_excel(new_xlsx_path, header=True, index=False)  # file with selected columns
             read_csv_file.to_excel(new_xlsx_path, header=True, index=False)
             # cprint('convert to xlsx', "yellow")
@@ -102,6 +102,14 @@ class ProfileOverview(LoginRequiredMixin, View):
     def get(self, request):
         member = Member.objects.get(email=request.user.email)
         return render(request, "members_app/profile/overview.html", context={"member": member})
+
+
+class ProfileDashboard(LoginRequiredMixin, View):
+    login_url = "login"
+
+    def get(self, request):
+        member = Member.objects.get(email=request.user.email)
+        return render(request, "members_app/profile/dashboard.html", context={"member": member})
 
 
 class ProfilePersonal(LoginRequiredMixin, View):

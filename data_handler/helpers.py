@@ -2,11 +2,13 @@ import pandas as pd
 from pathlib import Path
 from django.conf import settings
 import os
-from pprint import pprint
+from prettyprinter import pprint
 from .validators import *
 from itertools import islice
 import copy
-from termcolor import colored, cprint
+from termcolor import cprint
+import traceback, gc
+import pysnooper
 
 validate_obj = DataValidator()
 
@@ -26,22 +28,17 @@ def get_selected_columns_as_list(member_data_file):
 def save_data_file_rounded(file_path):
     data_file = Path(file_path)
     df = get_df_from_data_file(file_path)
+    new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
     for col in df.columns.tolist():
-        # df['col_name'].astype(float).round(2)
+        new_cleand_cols.append(col.strip())
         if df[col].dtype == "float64":
-            # df[col] = df[col].apply(lambda x: float(f"{x:.0f}"))
-            # df[col] = df[col].apply(lambda x: int(x))
-            # df[col].apply(lambda x: print("Before:----> ", x, " After:->", math.ceil(x)))
-            # df[col] = df[col].apply(round)
-            # df[col] = df[col].astype("int64")
-            # df[col] = df[col].round().astype("int64")
             df[col] = df[col].round().astype(int)
 
     delete_data_file(file_path)
     if data_file.suffix == ".xlsx":
-        df.to_excel(data_file.as_posix(), header=True, index=False)
+        df.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
     elif data_file.suffix == ".csv":
-        df.to_csv(data_file.as_posix(), header=True, index=False)
+        df.to_csv(data_file.as_posix(), header=new_cleand_cols, index=False)
 
     cprint("save done", 'green')
 
@@ -58,7 +55,6 @@ def download_data_file_converter(member_data_file):
             df.to_csv(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
     except Exception as ex:
         cprint(str(ex))
-
 
 
 def extract_all_columns_with_dtypes(file_name):
@@ -105,47 +101,45 @@ def get_row_count(file_path):
 
 
 def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, unique_column):
-    all_rows = []
-    df = get_df_from_data_file(file_path)
-    records_count = int(records_count)
-    previous_50_count = int(records_count - 50)
-    # print(records_count, previous_50_count)
-    for c in columns:
-        # this to check if the data type is float so round the values
-        if df[c].dtype == "float64":
-            df[c] = df[c].apply(np.ceil).astype(np.int64)
-            # df[c] = df[c].round().astype(np.int64)
-            # print(df[c].dtypes)
-            # df.style.format({c: "{:.0f}"})
+    try:
+        all_rows = []
 
-    current_record_data = {}
+        df = get_df_from_data_file(file_path)
+        records_count = int(records_count)
+        previous_50_count = int(records_count - 50)
+        # print(previous_50_count, records_count)
 
-    for index, row in islice(df.iterrows(), previous_50_count, records_count):
-        # index is the index in the data frame
-        # row is the series object
-        # breakpoint()
-        # print(records_count, previous_50_count)
-        for col in columns:
-            # print(index, "----> ", col, "--->", row[col], end='\n')
-            tmp_cell_val = row[col]
-            # print(col, "----", unique_column)
-            current_record_data["ID"] = index
-            tmp_cell_val = replace_nan_value(tmp_cell_val)
-            tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
-            # breakpoint()
-            current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=columns_with_types[col])
-            # print(col, current_record_data[col])
-            # breakpoint()
-        all_rows.insert(0, current_record_data)
         current_record_data = {}
-
-    # print(all_rows[0])
-
-    # check if the length of all_rows < 0 means no records to show
-    if len(all_rows) <= 0:
-        return 0
-    else:
-        return all_rows
+        for tupls in islice(df.itertuples(), previous_50_count, records_count):
+            # index is the index in the data frame
+            # row is the series object
+            row_as_dict = tupls._asdict()
+            for col_name, col_value in row_as_dict.items():
+                # print(col_name, "------>", col_value)
+                idx = row_as_dict['Index']
+                for col in columns:
+                    # print(index, "----> ", col, "--->", row[col], end='\n')
+                    tmp_cell_val = row_as_dict[col]
+                    current_record_data["ID"] = idx
+                    tmp_cell_val = replace_nan_value(tmp_cell_val)
+                    # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
+                    # print(columns_with_types[col])
+                    current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
+                                                                                dtype=columns_with_types[col])
+                    # print(idx, "--> ", current_record_data[col])
+            all_rows.insert(0, current_record_data)
+            # pprint(current_record_data)
+            # breakpoint()
+            current_record_data = {}
+        # pprint(all_rows[42])
+        # check if the length of all_rows < 0 means no records to show
+        if len(all_rows) <= 0:
+            return 0
+        else:
+            return all_rows
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
 
 
 def get_rows_data_by_search_query(file_path, columns, search_query, columns_with_dtypes):
@@ -291,48 +285,40 @@ def validate_series(data_value: pd.Series):
 def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
     # pd.describe_option("display.float_format")
     # pd.set_option("display.float_format", "{:.2f}".format)
-    data_file = Path(file_path)
-    all_rows = []
-    rows_and_values = {}
-    df = get_df_from_data_file(file_path)
-    for key, value in data_json.items():
-        # ROW_0 [{'colName': 'Cand_Name', 'colValue': '858f'}]
+    try:
+        data_file = Path(file_path)
+        all_rows = []
+        rows_and_values = {}
+        df = get_df_from_data_file(file_path)
+        for key, value in data_json.items():
+            # ROW_0 [{'colName': 'Cand_Name', 'colValue': '858f'}]
 
-        rows_and_values[key.split('_')[1]] = value
+            rows_and_values[key.split('_')[1]] = value
 
-    # df2 = copy.deepcopy(df[column_names])
-    df2 = copy.deepcopy(df)
-    for key, value in rows_and_values.items():
-        # {"0": [{"colName", "colValue"}, {"colName", "colValue"}]
-        # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
-        print(key, value)
-        for val in value:
-            # print(df[val['colName']].dtype)
-            # print(columns_with_dtypes[val['colName']])
-            try:
-                # print(df2[column_names].at[int(key), val['colName']])
-                # print(df2[column_names].at[int(key), val['colName']])
-                # df2[column_names].at[int(key), val['colName']] = val['colValue']
-                # print(df2.loc[int(key), val['colName']])
+        # df2 = copy.deepcopy(df[column_names])
+        # df2 = copy.deepcopy(df)
+        df2 = df.copy(deep=True)
+        current_value = ""
+        for key, value in rows_and_values.items():
+            # {"0": [{"colName", "colValue"}, {"colName", "colValue"}]
+            # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
+            # print(key, value)
+            for val in value:
                 df2.at[int(key), val['colName']] = val['colValue']
-                # print(df2.loc[int(key), val['colName']])
-            except ValueError as verr:
-                cprint(str(verr), "red")
-                var = check_int(val['colValue'])
-                print(verr)
-                return str(verr)
-            except Exception as ex:
-                cprint(str(ex), "red")
-                return str(ex)
 
-    # save all changes to the file
+        # save all changes to the file
 
-    if data_file.suffix == ".xlsx":
-        df2.to_excel(data_file.as_posix(), header=True, index=False)
-    elif data_file.suffix == ".csv":
-        df2.to_csv(data_file.as_posix(), header=True, index=False)
+        if data_file.suffix == ".xlsx":
+            df2.to_excel(data_file.as_posix(), header=True, index=False)
+        elif data_file.suffix == ".csv":
+            df2.to_csv(data_file.as_posix(), header=True, index=False)
 
-    return "Data saved successfully"
+        # return "Data saved successfully"
+        return current_value, "Data saved successfully"
+
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
 
 
 def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
@@ -356,18 +342,20 @@ def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
 def get_df_from_data_file(file_path):
     data_file = Path(file_path)
     df = None
-    # pd.options.display.float_format = '${:,.2f}'.format
-    # pd.options.display.float_format = '{:,.0f}'.format
-    # df.style.set_precision(0)
-    # with pd.option_context('precision', 2):
     if data_file.exists():
         if data_file.suffix == ".xlsx":
             df = pd.read_excel(data_file.as_posix())
         elif data_file.suffix == ".csv":
-            df = pd.read_csv(data_file.as_posix())
+            df = pd.read_csv(data_file.as_posix(), skipinitialspace=True)
 
-    # df = df.fillna("")
-    df = df.fillna(method='pad')
+    # df = df.fillna(0)
+    # df = df.fillna(method='pad')
+    float_cols = df.select_dtypes(include=['float64']).columns
+    str_cols = df.select_dtypes(include=['object']).columns
+    int_cols = df.select_dtypes(include=['int64']).columns
+    df.loc[:, float_cols] = df.loc[:, float_cols].fillna(0)
+    df.loc[:, int_cols] = df.loc[:, int_cols].fillna(0)
+    df.loc[:, str_cols] = df.loc[:, str_cols].fillna('NULL')
     return df
 
 
@@ -435,7 +423,7 @@ def validate_column_date_type(columns):
         if data_file.suffix == ".xlsx":
             df = pd.read_excel(data_file.as_posix())
         elif data_file.suffix == ".csv":
-            df = pd.read_csv(data_file.as_posix())
+            df = pd.read_csv(data_file.as_posix(), skipinitialspace=True)
 
 
 def handle_uploaded_file(f, fname):
@@ -471,6 +459,7 @@ def delete_all_member_data_file_info(member_data_file):
     member_data_file.is_donor_id_selected = False
     member_data_file.unique_id_column = ""
     member_data_file.all_columns_with_dtypes = ""
+    member_data_file.is_process_complete = False
     member_data_file.save()
 
 

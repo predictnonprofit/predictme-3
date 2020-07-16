@@ -22,7 +22,6 @@ function setColumnsTotal() {
 }
 
 
-
 function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
     // console.log(colIdx, colName, colDataType, optionsList);
     // console.log(colIdx, colName, colDataType);
@@ -37,7 +36,7 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
                             ${optionsList}
                     </select>
                 </span>
-                <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title="Warning. Not convenient data type!">
+                <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title="Default data format Textual\nCurrent data format Numeric" data-pt-delay-in="500">
                       <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
                 </span>
                 <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">
@@ -160,20 +159,20 @@ function selectPickedRightColumns() {
 
     });
 
-    $("ul#pickedColumnsList").on("dblclick", 'li', function (ev) {
-        ev.preventDefault();
-        const [idx, colName, colDataType] = extractRightColData(clickedRightColumnItem);
-        enableLeftColumnItem(idx);
-        clickedRightColumnItem.remove();
-        clickedRightColumnItem = "";
-    });
+     $("ul#pickedColumnsList").on("dblclick", 'li', function (ev) {
+         ev.preventDefault();
+         const [idx, colName, colDataType] = extractRightColData(clickedRightColumnItem);
+         enableLeftColumnItem(idx);
+         clickedRightColumnItem.remove();
+         clickedRightColumnItem = "";
+     });
 
 
 }
 
 function addItemRightColumn() {
     // add item to from left column to right column
-    if (clickedLeftColumnItem != "") {
+    if (clickedLeftColumnItem !== "") {
         try {
 
             const [idx, colName, colDataType] = extractLeftColData(clickedLeftColumnItem);
@@ -198,11 +197,14 @@ function addItemRightColumn() {
 
 function addItemLeftColumn() {
     // add item to from right column to left column
-    if (clickedRightColumnItem != "") {
-
+    if (clickedRightColumnItem !== "") {
         const [idx, colName, colDataType] = extractRightColData(clickedRightColumnItem);
         enableLeftColumnItem(idx);
         clickedRightColumnItem.remove();
+        // to set the notes in the bottom of modal
+        let tmpRemovedItem = $(clickedRightColumnItem.find('select'));
+
+
         clickedRightColumnItem = "";
     } else {
         swAlert("error", "Please select column from right!", 'error');
@@ -410,44 +412,58 @@ function sendRequestValidate() {
 }
 
 
-function columnOptionsChangeSaved(ele) {
+function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
     const elementLiParent = $(element.parent().parent());
     const dataIX = elementLiParent.data("idx");
     // console.log(element.data(), element.text());
-
+    // console.log(element.val());
     // check if the value not empty to add
     if (element.val() !== "") {
 
         try {
-            const tmpValue = element.val().trim().toLowerCase();
+            // const tmpValue = element.val().trim().toLowerCase();
             // optionsSelected.push(tmpValue);
-            optionsSelected[dataIX] = element.val().trim().toLowerCase();
+            if (element.val() !== "" || element.val() !== '0') optionsSelected[dataIX] = element.val().trim().toLowerCase();
+
 
         } catch (e) {
             if (e instanceof TypeError) {
                 // statements to handle TypeError exceptions
-                console.log(e);
-                console.log(tmpValue);
+                console.error(e);
+                // console.error(tmpValue);
             } else {
                 // statements to handle any unspecified exceptions
-                console.log(e)
+                console.error(e)
             }
         } finally {
             // optionsSelected.push(tmpValue);
         }
         // console.log(optionsSelected, Object.keys(optionsSelected).length);
         const selectOpVal = element.find("option:selected");
-        // console.log(selectOpVal, element.data("value").toLowerCase());
         // get the span of tooltip
         const tmpSpan = $(element.parent().parent().find("span")[1]);
         const tmpIDSpan = $(element.parent().parent().find("span")[2]);
+
         // check the data type if convert from number to text and otherwise
-        if ((element.data("value").toLowerCase() === "textual" && selectOpVal.text().toLowerCase() === "Numeric Field".toLowerCase()) || (element.data("value").toLowerCase() === "textual" && selectOpVal.text().toLowerCase() === "Donation Field".toLowerCase())) {
+        if ((element.data("value").toLowerCase().includes("textual".toLowerCase()) === true && selectOpVal.text().toLowerCase().includes('numeric') === true) || (element.data("value").toLowerCase().includes('textual') === true && selectOpVal.text().toLowerCase().includes("Donation Field".toLowerCase()) === true)) {
             // let showConfirm = confirm(`Warning. You are converting a default '${element.data("value").toUpperCase()}' data type to a '${selectOpVal.text().replace(" Field", "")}' data type!`);
             let confirmMsg = `Warning. You are converting a default '${element.data("value").toUpperCase()}' data type to a '${selectOpVal.text().replace(" Field", "")}' data type!`;
+
+            // check if this call from reselect columns function to ignore show the dialog of change data type warning
             // check if member click no set the select option to null, else select the option
-            swConfrimDtype(element, confirmMsg, tmpSpan);
+            // console.log(elementLiParent.text());
+            if ((typeof option === undefined) || (typeof option === 'undefined')) {
+                swConfrimDtype(element, confirmMsg, tmpSpan);
+            } else if (option === 'reselect') {
+                tmpSpan.show();
+                element.addClass('border border-danger');
+                // check if the donation field selected to make it visible with check mark
+                if (element.val().toLowerCase().includes('donation') === true) {
+                    $("#donationFieldLi").removeClass("d-none");
+                    $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
+                }
+            }
 
 
         } else {
@@ -456,7 +472,7 @@ function columnOptionsChangeSaved(ele) {
         // check if the member select the id so disabled on the others select
         // console.log(element.data())
         if ((element.val().toLowerCase() === "Unique Identifier (ID)".toLowerCase())) {
-            if(element.data("value") !== "textual"){
+            if (element.data("value") !== "textual") {
                 $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
                 isUniqueIDSelected = true;
                 tmpIDSpan.show();
@@ -486,7 +502,7 @@ function columnOptionsChangeSaved(ele) {
 
                 });
 
-            }else{
+            } else {
                 swAlert("Error", "Unique ID must be numeric data type!", 'error');
                 delete optionsSelected[dataIX];  // delete the id from the json object
                 element.val("");
@@ -495,49 +511,8 @@ function columnOptionsChangeSaved(ele) {
 
 
         // check if the member select unique id option, check mark criteria of it
-        if (checkValueExists(optionsSelected, "Unique Identifier (ID)".toLowerCase()) === true) {
-            $("#selectUniqueID").html(checkMark).removeClass('text-danger').addClass("text-success");
-        } else {
-            $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
-        }
+        setCriterias();
 
-        // check if donation field selected
-        if (checkValueExists(optionsSelected, "Donation Field".toLowerCase()) === true) {
-            $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
-        } else {
-            $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
-        }
-
-        if (element.val() === "Donation Field") {
-            $("#donationFieldLi").removeClass("d-none");
-            $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
-        } else {
-            if ($("#donationFieldLi").is(":hidden")) {
-                $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
-                $("#donationFieldLi").addClass("d-none");
-            }
-
-        }
-        // check if the textual data type selected 3 times
-        /*if(coutItems(optionsSelected, "Textual Field".toLowerCase()) >= 3){
-
-        }else{
-
-        }*/
-        // check if the length more than 3 options mean select 3 columns, check its criteria
-        // console.log("Textual Field--> ", countJsonItems(optionsSelected, "Textual Field".toLowerCase()) >= 3, countJsonItems(optionsSelected, "Textual Field".toLowerCase()));
-        // console.log("Total selected---->  ", Object.keys(optionsSelected).length > 2, Object.keys(optionsSelected).length);
-        if ((Object.keys(optionsSelected).length > 2) && (countJsonItems(optionsSelected, "Textual Field".toLowerCase()) >= 3)) {
-            $("#isSelect3Col").html(checkMark).removeClass("text-danger").addClass("text-success");
-            // $("#isValidateData").html(checkMark).removeClass("text-danger").addClass("text-success");
-            $("#validateColumnsBtn").removeAttr("disabled style");
-            $("#validateColumnsBtn").removeClass("btn-light-primary disabled").addClass("btn-primary");
-        } else {
-            $("#isSelect3Col").html(timesMark).removeClass('text-success').addClass("text-danger");
-            $("#validateColumnsBtn").addClass("btn-light-primary disabled");
-            $("#validateColumnsBtn").attr("disabled", "disabled");
-            $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
-        }
         $(".column-option-dtype").each(function (idx, val) {
             let currTmpEle = $(val);
 
@@ -555,9 +530,8 @@ function columnOptionsChangeSaved(ele) {
 
 
 }
-
+// reset all criteria after reset button clicked
 function resetAllCriteria() {
-    // reset all criteria after reset button clicked
     $("#isValidateData").html(timesMark).removeClass('text-success').addClass("text-danger");
     $("#isSelect3Col").html(timesMark).removeClass('text-success').addClass("text-danger");
     $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
@@ -566,6 +540,123 @@ function resetAllCriteria() {
     $("#validateColumnsBtn").addClass("btn-light-primary disabled");
     $("#validateColumnsBtn").attr("disabled", "disabled");
     $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
+}
+
+
+let targetNodes = $("#pickedColumnsList");
+let MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+let myObserver = new MutationObserver(mutationHandler);
+let obsConfig = {childList: true, characterData: true, attributes: true, subtree: true};
+//--- Add a target node to the observer. Can only add one node at a time.
+targetNodes.each(function () {
+    myObserver.observe(this, obsConfig);
+});
+
+function mutationHandler(mutationRecords) {
+
+    // console.info("mutationHandler:");
+    mutationRecords.forEach(function (mutation) {
+        // this condition if one the childes is delete or remove from the dom
+        if (typeof mutation.removedNodes === 'object') {
+
+            try {
+                const textContent = mutation.removedNodes[0].textContent.trim() ? (typeof mutation.removedNodes !== undefined) : "";
+                if (textContent !== "") {
+                    let pickedRightCol = $(mutation.removedNodes);
+                    const pickedRightSelect = pickedRightCol.find('select');
+                    const rightSelectParentLi = pickedRightSelect.parents('li');
+                    // console.log(rightSelectParentLi.data());
+                    // console.log(pickedRightSelect.val());
+                    // check if the removed item is the unique id
+                    if (pickedRightSelect.is(":disabled") === true) {
+                        //unique identifier (id)
+                        // console.log(optionsSelected);
+                        for (key in optionsSelected) {
+                            if (optionsSelected.hasOwnProperty(key) && optionsSelected[key] === 'unique identifier (id)') {
+                                delete optionsSelected[key];
+                                $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
+                                isUniqueIDSelected = false;
+                            }
+                        }
+                    } else {
+                        const idx = rightSelectParentLi.data('idx');
+                        // console.log(idx, optionsSelected[idx])
+                        delete optionsSelected[idx];
+
+                    }
+                    setCriterias();
+
+
+                }
+
+            } catch (e) {
+                if (e instanceof TypeError) {
+
+                }
+                if (!(e instanceof TypeError)) {
+                    console.error(e);
+                }
+            }
+
+
+            // console.log(pickedRightSelect.val());
+        }
+
+        if (typeof mutation.addedNodes === 'object') {
+            // console.log(isUniqueIDSelected);
+            let pickedRightCol = $(mutation.addedNodes);
+            const pickedRightSelect = pickedRightCol.find('select');
+            if(pickedRightSelect.length > 0){
+                if(isUniqueIDSelected === true){
+                    $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
+                }else{
+                    $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
+                }
+            }
+        }
+
+
+
+    });
+}
+
+// this function will set the criterias if the user delete, ...etc
+function setCriterias() {
+    // check if the member select unique id option, check mark criteria of it
+    if (checkValueExists(optionsSelected, "Unique Identifier (ID)".toLowerCase()) === true) {
+        $("#selectUniqueID").html(checkMark).removeClass('text-danger').addClass("text-success");
+        isUniqueIDSelected = true;
+    } else {
+        $("#selectUniqueID").html(timesMark).removeClass('text-success').addClass("text-danger");
+        isUniqueIDSelected = false;
+    }
+    // console.log(checkValueExists(optionsSelected, "Donation Field".toLowerCase()));
+    // check if donation field selected
+    if (checkValueExists(optionsSelected, "Donation Field".toLowerCase()) === true) {
+        $("#donationFieldLi").removeClass("d-none");
+        $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
+    } else {
+        if ($("#donationFieldLi").is(":hidden") === true) {
+            $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
+
+        } else {
+            $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
+            $("#donationFieldLi").addClass("d-none");
+        }
+
+    }
+    // check if the length more than 3 options mean select 3 columns, check its criteria
+    if ((Object.keys(optionsSelected).length > 2) && (countJsonItems(optionsSelected, "Textual Field".toLowerCase()) >= 3)) {
+        $("#isSelect3Col").html(checkMark).removeClass("text-danger").addClass("text-success");
+        // $("#isValidateData").html(checkMark).removeClass("text-danger").addClass("text-success");
+        $("#validateColumnsBtn").removeAttr("disabled style");
+        $("#validateColumnsBtn").removeClass("btn-light-primary disabled").addClass("btn-primary");
+    } else {
+        $("#isSelect3Col").html(timesMark).removeClass('text-success').addClass("text-danger");
+        $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+        $("#validateColumnsBtn").attr("disabled", "disabled");
+        $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
+    }
 }
 
 jQuery(document).ready(function () {
@@ -583,19 +674,18 @@ jQuery(document).ready(function () {
     let validateColumnsBtn = $("#validateColumnsBtn");
     validateColumnsBtn.on("click", validatePickedColumns);
     let columnsDataTypeOptions = $(".column-option-dtype");
-    $("#pickedColumnsList").on("change", ".column-option-dtype", function (evt) {
-        columnOptionsChangeSaved(this);
-        console.log("change event fired!!");
+    $("#pickedColumnsList").on("change", ".column-option-dtype", function (evt, option) {
+        columnOptionsChangeSaved(this, option);
+        // console.log("change event fired!!");
     });
+
 
     let totalInterval = setInterval(function () {
         setColumnsTotal();
     }, 200);
 
-    function disableF5(e) {
-        if ((e.which || e.keyCode) == 116) e.preventDefault();
-    };
-    $(document).on("keydown", disableF5);
+
+
     //removePickedColumn();
     let resetColumnBoxBtn = $("#resetColumnBoxBtn");
     resetColumnBoxBtn.on("click", resetAllColumnsToDefault);
@@ -607,3 +697,5 @@ jQuery(document).ready(function () {
 
 
 });
+
+
