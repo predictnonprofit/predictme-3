@@ -379,9 +379,9 @@ function setColumnNamesHeader(columnsList) {
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
     // console.log(rowsData);
-    // console.log(currentRowData.length, "records");
+    console.log(currentRowData.length, "records");
     // first check if there is no records left to display
-    if (typeof currentRowData.length === undefined) {
+    if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
         $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');

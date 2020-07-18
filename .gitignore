@@ -285,6 +285,7 @@ fabric.properties
 notes.txt
 bugs.txt
 changes.txt
+custom_requirements.txt
 *.wpd
 *.wps
 
