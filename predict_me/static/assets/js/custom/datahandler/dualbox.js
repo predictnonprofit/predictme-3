@@ -32,11 +32,11 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
                 class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                 ${colName}
                 <span class="nav-label mx-10">
-                    <select data-value='${colDataType}' class="form-control form-control-sm h-40px column-option-dtype">
+                    <select data-value='${colDataType}' class="form-control form-control-sm h-40px column-option-dtype" title="Default data format Textual\nCurrent data format Numeric" data-pt-delay-in="500">
                             ${optionsList}
                     </select>
                 </span>
-                <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title="Default data format Textual\nCurrent data format Numeric" data-pt-delay-in="500">
+                <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;'>
                       <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
                 </span>
                 <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">
@@ -458,6 +458,7 @@ function columnOptionsChangeSaved(ele, option) {
             } else if (option === 'reselect') {
                 tmpSpan.show();
                 element.addClass('border border-danger');
+                element.attr('title', 'Default data format Textual\nCurrent data format Numeric');
                 // check if the donation field selected to make it visible with check mark
                 if (element.val().toLowerCase().includes('donation') === true) {
                     $("#donationFieldLi").removeClass("d-none");

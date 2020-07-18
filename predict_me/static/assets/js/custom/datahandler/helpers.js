@@ -379,7 +379,7 @@ function setColumnNamesHeader(columnsList) {
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
     // console.log(rowsData);
-    console.log(currentRowData.length, "records");
+    // console.log(currentRowData.length, "records");
     // first check if there is no records left to display
     if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
@@ -989,12 +989,12 @@ function reselectColumnsFunc() {
                     <li data-idx="${i}"
                         class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                         ${name}
-                        <span class="nav-label mx-10">
+                        <span class="nav-label mx-10" >
                             <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype">
                                     ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>
-                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title='Default data format Textual\nCurrent data format ${data['selected_columns'][name].split(" ")[0].toUpperCase()}'>
+                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title='Default data format Textual\nCurrent data format ${data['selected_columns'][name].split(" ")[0].toUpperCase()}' data-toggle="tooltip">
                               <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
                         </span>
                         <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">
