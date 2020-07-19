@@ -134,7 +134,7 @@ Data Handler
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Run Predictive Modal</a>
+                       tabindex="-1">4. Execute Model</a>
                 </li>
                 {% elif get_user_membership.data_file_obj.current_session_name == "pick_columns" %}
                 <li class="nav-item">
@@ -151,7 +151,7 @@ Data Handler
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Run Predictive Modal</a>
+                       tabindex="-1">4. Execute Model</a>
                 </li>
                 {% elif get_user_membership.data_file_obj.current_session_name == "data_process" %}
                 <li class="nav-item">
@@ -168,7 +168,7 @@ Data Handler
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Run Predictive Modal</a>
+                       tabindex="-1">4. Execute Model</a>
                 </li>
             {% endif %}
             </ul>
@@ -341,7 +341,7 @@ Data Handler
                     <section id="tab-data-table-section">
                         <div class="card card-custom">
                             <div class="card-header ribbon ribbon-clip ribbon-right px-3">
-                                <div class="ribbon-target" style="top: 12px;">
+                                <div class="ribbon-target" data-toggle="tooltip" title="options" style="top: 12px;">
                                     <span class="ribbon-inner"></span>
                                     <div class="dropdown dropleft dropdown-inline" id="data-table-options-dropdown">
                                         <button type="button" class="btn btn-outline-primary btn-icon"

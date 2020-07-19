@@ -464,7 +464,7 @@ $(document).ready(function () {
     let cancelReuploadBtn = $("#cancelReuploadBtn");
     cancelReuploadBtn.on('click', function (evt) {
 
-        let ask = confirm("Do you want to cancel current uploaded file and reupload new file!!");
+        let ask = confirm("Do you want to cancel current uploaded file and re-upload new file!!");
         if (ask === true) {
             const deleteDataFileResponse = deleteDataFile();
             $.when(deleteDataFileResponse).done(function (data, textStatus, jqXHR) {

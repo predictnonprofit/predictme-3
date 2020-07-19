@@ -147,6 +147,10 @@ function uploadDonorDataFile(uploadForm) {
                     text: "Uploading you data file, Please wait...",
                     showConfirmButton: false,
                     allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    // stopKeydownPropagation: false,
+                    // keydownListenerCapture: true,
                     // timer: 3000,
                     onBeforeOpen: () => {
                         Swal.showLoading()
