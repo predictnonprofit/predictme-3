@@ -373,6 +373,9 @@ Dual box
                     console.log(data);
                     console.log(textStatus);
                     console.log(jqXHR);
+                    if((textStatus === 'success') && (jqXHR.status === 200)){
+                        setSessionLastName("pick_columns");
+                    }
                 });
 
             } else {

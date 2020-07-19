@@ -397,8 +397,9 @@ function sendRequestValidate() {
         console.log(textStatus);
         console.log(jqXHR);
 
-        if (textStatus === "success") {
+        if ((textStatus === 'success') && (jqXHR.status === 200)) {
             swAlert("Success", "All data looks ok, you can press process button", 'success');
+            setSessionLastName("pick_columns");
             $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled style");
             for (let key in selectedValidateColumns) {
                 // let colKey = key.split(". ")[1].trim(); // to split the column name from the index number

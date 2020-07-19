@@ -399,3 +399,23 @@ section#payExtraRecordsSection form#payExtraFeesForm input.form-control {
 
 }
 /* End datatable watermark */
+
+/* Start Data handler Wrapper */
+#data-handler-wrapper{
+
+}
+
+#data-handler-wrapper #wrapper-ul li{
+    margin: auto;
+    width: 250px;
+}
+
+#data-handler-wrapper #wrapper-ul li a{
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+.data-table-action-item:hover{
+    background-color: rgba(105, 147, 255, 0.12) !important;
+}
+
+/* End Data handler Wrapper */

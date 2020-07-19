@@ -20,6 +20,8 @@ urlpatterns = [
         path("accepts-download", AcceptsDownload.as_view(), name="data-handler-accepts-download"),
         path("check-upload-member", CheckMemberUpload.as_view(), name="data-handler-check-upload-member"),
         path("check-process-status", CheckMemberProcessStatus.as_view(), name="data-handler-check-process-status"),
+        path("fetch-last-session-name", FetchLastSessionNameView.as_view(), name="data-handler-fetch-last-session-name"),
+        path("set-last-session-name", SetLastSessionName.as_view(), name="data-handler-set-last-session-name"),
     ])),
 
 

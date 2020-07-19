@@ -11,6 +11,13 @@ UPLOAD_PROCEDURES = (
     ("none", "None")
 )
 
+DATA_HANDLER_SESSION_NAMES = (
+    ("upload", "Upload"),
+    ("pick_columns", "Pick Columns"),
+    ("data_process", "Data Processing"),
+    ("run_modal", "Run Predictive Modal")
+)
+
 
 class DataFile(models.Model):
     member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True,
@@ -28,6 +35,8 @@ class DataFile(models.Model):
     unique_id_column = models.CharField(max_length=200, null=True, blank=True)
     all_columns_with_dtypes = models.TextField(null=True, blank=True)
     is_process_complete = models.BooleanField(null=True, blank=True, default=False)
+    data_handler_session_label = models.CharField(max_length=70, null=True, blank=True)
+    current_session_name = models.CharField(max_length=70, null=True, blank=True, choices=DATA_HANDLER_SESSION_NAMES)
 
     class Meta:
         # verbose_name = "member_data_file"

@@ -73,7 +73,6 @@ class DataHandlerFileUpload(APIView):
         row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
         columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
 
-
         ## save the file path after upload it into the db
         if data_file.data_file_path is not None:
             data_file.data_file_path = tmp_file
@@ -216,7 +215,9 @@ class GetAllColumnsView(APIView):
             selected_columns = member_data_file.get_selected_columns_with_dtypes
             unique_column = member_data_file.unique_id_column
             # print(unique_column)
-            return Response({"all_columns": all_columns, "selected_columns": selected_columns, "unique_column": unique_column}, status=200, content_type='application/json')
+            return Response(
+                {"all_columns": all_columns, "selected_columns": selected_columns, "unique_column": unique_column},
+                status=200, content_type='application/json')
         except AttributeError:
             return Response("No Data file uploaded Yet!", status=200)
 
@@ -428,6 +429,8 @@ class DeleteDataFileView(APIView):
             member_data_file.is_donor_id_selected = False
             member_data_file.unique_id_column = ""
             member_data_file.all_columns_with_dtypes = ""
+            member_data_file.data_handler_session_label = ""
+            member_data_file.current_session_name = ""
             member_data_file.save()
 
             return Response("File Delete Successfully", status=200)
@@ -596,3 +599,56 @@ class CheckMemberProcessStatus(APIView):
 
         # print(process_status)
         return Response(process_status, status=200)
+
+
+class FetchLastSessionNameView(APIView):
+    """
+        ### Developement only ###
+        API View to get the last session name of the member
+
+        * Requires token authentication.
+        * Only admin users are able to access this view.
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
+        session_name = member_data_file.is_process_complete
+
+        try:
+            print(session_name)
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            cprint(str(ex), 'red')
+
+        # print(process_status)
+        return Response(session_name, status=200)
+
+
+class SetLastSessionName(APIView):
+    """
+        ### Developement only ###
+        API View to set the last session name of the member, last step
+
+        * Requires token authentication.
+        * Only admin users are able to access this view.
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
+        session_name = request.POST.get("session_name")
+
+        try:
+            member_data_file.current_session_name = session_name
+            member_data_file.save()
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            cprint(str(ex), 'red')
+
+        # print(process_status)
+        return Response(session_name, status=200)

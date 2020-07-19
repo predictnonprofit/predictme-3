@@ -142,7 +142,7 @@ function uploadDonorDataFile(uploadForm) {
             beforeSend: function (xhr, settings) {
                 let timerInterval;
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                var swalUploadProgressDialog = swal.fire({
+                let swalUploadProgressDialog = swal.fire({
                     title: "Uploading...",
                     text: "Uploading you data file, Please wait...",
                     showConfirmButton: false,
@@ -215,14 +215,11 @@ function uploadDonorDataFile(uploadForm) {
                 return xhr;
             }
         }).done(function (e) {
-            // console.log("done");
-            // console.log(e);
-            // swalUploadProgressDialog.close();
             Swal.close();
-
+            setSessionLastName("upload");
 
         }).fail(function (e) {
-            console.log("failed");
+            console.error("upload failed");
             console.log(e);
         });
 
@@ -1393,4 +1390,35 @@ function confirmRunModal() {
 
         }
     })
+}
+
+
+// this function will handle the data handler wrapper tabs
+function dataHandlerWrapperTabs() {
+    //tabindex="-1", aria-disabled="true"
+
+    let fetchLastSessionNameResponse = fetchLastSessionName();
+    $.when(fetchLastSessionNameResponse).done(function (data, textStatus, jqXHR) {
+        //  console.log(textStatus);
+        // console.log(jqXHR);
+        // console.log(data);
+        if ((textStatus === 'success') && (jqXHR.status === 200)) {
+            $("#data-handler-wrapper-spinner").fadeOut();
+            $("#wrapper-ul").fadeIn();
+            $("#wrapper-content").fadeIn();
+            // This event fires on tab show, but before the new tab has been shown
+            $('#wrapper-ul').on('show.bs.tab', function (event) {
+                // do something...
+                const ulElement = $(this);
+                // ulElement.find('a[data-section-name="data_process"]').addClass('disabled');
+                const previousActiveTab = $(event.relatedTarget);
+                const previousSectionName = previousActiveTab.data('section-name');
+                const activeTab = $(event.target);
+                const activeSectionName = activeTab.data('section-name');
+
+            });
+        }
+    })
+
+
 }

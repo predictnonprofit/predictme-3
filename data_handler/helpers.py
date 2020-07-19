@@ -460,6 +460,8 @@ def delete_all_member_data_file_info(member_data_file):
     member_data_file.unique_id_column = ""
     member_data_file.all_columns_with_dtypes = ""
     member_data_file.is_process_complete = False
+    member_data_file.data_handler_session_label = ""
+    member_data_file.current_session_name = ""
     member_data_file.save()
 
 

@@ -390,10 +390,7 @@ Dual box
             for (let col of validatePickedColumnsList) {
                 const selectedDtypeOption = $(col).children().find("select option:selected").text().trim().toLowerCase();
                 const tmpCol = $(col);
-//                console.log(tmpCol.html());
                 const [idx, colName, colDataType] = extractRightColData(tmpCol);
-//                console.log(tmpCol.html());
-                //console.log(idx, colName, colDataType);
                 if (selectedDtypeOption === "") {
                     //console.log('not selected', typeof selectedColumnDataType);
                     // if the member did not selecte the data type of columns
@@ -414,6 +411,9 @@ Dual box
                     console.log(data);
                     console.log(textStatus);
                     console.log(jqXHR);
+                    if((textStatus === 'success') && (jqXHR.status === 200)){
+                        setSessionLastName("pick_columns");
+                    }
                 });
 
             } else {

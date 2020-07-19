@@ -316,9 +316,9 @@ $(function () {
             // console.log(data);
             // console.log(textStatus);
             // console.log(jqXHR);
-            if (textStatus === "success") { // change the condition
+            if ((textStatus === "success") && (jqXHR.status === 200)) { // change the condition
+                setSessionLastName("data_process");
                 window.location.reload();
-                //DataHandlerTableObject.init();
             } else {
                 swAlert("Error", data, "error");
             }
@@ -394,6 +394,7 @@ $(document).ready(function () {
     // save button when member click on save button after click on undo button
     let saveDataFileBtn = $("#saveDataFileBtn");
     saveDataFileBtn.click(function (e) {
+        e.preventDefault();
         // this when save button clicked after undo
         $("#dataListTable").css("opacity", "0.3");
         $(".data-table-col").attr("disabled", "disabled");
@@ -437,6 +438,7 @@ $(document).ready(function () {
     // when I want to delete the data file
     let deleteDataFileBtn = $("#deleteDataFileBtn");
     deleteDataFileBtn.click(function (e) {
+        e.preventDefault();
         let conBox = confirm("Do you want to delete the data file!!");
         if (conBox === true) {
             let deleteDataFileResponse = deleteDataFile();
@@ -485,7 +487,8 @@ $(document).ready(function () {
 
 
     const reselectColumnsBtn = $("#reselectColumnsBtn");
-    reselectColumnsBtn.on("click", function () {
+    reselectColumnsBtn.on("click", function (e) {
+        e.preventDefault();
         reselectColumnsFunc();
     });
 
@@ -593,6 +596,9 @@ $(document).ready(function () {
     $("#run-modal-btn").on("click", function (evt) {
         confirmRunModal();
     });
+
+    // data handler wrapper function
+    dataHandlerWrapperTabs();
 
 
 
