@@ -652,3 +652,39 @@ class SetLastSessionName(APIView):
 
         # print(process_status)
         return Response(session_name, status=200)
+
+
+class SetSessionLabel(APIView):
+    """
+        ### Developement only ###
+        API View to set the uploaded session label
+
+        * Requires token authentication.
+        * Only admin users are able to access this view.
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        from data_handler.models import DataFile
+        member_data_file = DataFile.objects.get(member=request.user)
+        print(request.POST)
+        session_label = request.POST.get("session_label")
+        session_task = request.POST.get("session_task", '')
+        session_get = request.POST.get('get_session_label', False)
+        session_get = bool(session_get)
+        try:
+            # this when member want to check the value of current session in the db
+            if session_get is True:
+                # check if the session is null return False, True if the session in db
+                if member_data_file.data_handler_session_label == "" or member_data_file.data_handler_session_label is None:
+                    return Response(False, status=200)
+                else:
+                    return Response(True, status=200)
+            elif session_task != '' and session_task == 'set':
+                member_data_file.data_handler_session_label = session_label
+                member_data_file.save()
+                return Response('Session label saved successfully!', status=200)
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            cprint(str(ex), 'red')

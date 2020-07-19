@@ -22,6 +22,7 @@ urlpatterns = [
         path("check-process-status", CheckMemberProcessStatus.as_view(), name="data-handler-check-process-status"),
         path("fetch-last-session-name", FetchLastSessionNameView.as_view(), name="data-handler-fetch-last-session-name"),
         path("set-last-session-name", SetLastSessionName.as_view(), name="data-handler-set-last-session-name"),
+        path("set-session-label", SetSessionLabel.as_view(), name="data-handler-set-session-label"),
     ])),
 
 
