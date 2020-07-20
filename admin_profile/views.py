@@ -4,51 +4,35 @@ from users.models import Member
 from django.shortcuts import render, redirect, reverse
 
 
-class ProfileOverview(LoginRequiredMixin, View):
+class AdminProfileOverview(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
         member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/overview.html", context={"member": member})
+        return render(request, "admin_profile/overview.html", context={"member": member})
 
 
-class ProfilePersonal(LoginRequiredMixin, View):
+class AdminProfilePersonal(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
         member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/personal.html", context={"member": member})
+        return render(request, "admin_profile/personal.html", context={"member": member})
 
 
-class ProfileInformation(LoginRequiredMixin, View):
+class AdminProfileInformation(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
         member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/information.html", context={"member": member})
+        return render(request, "admin_profile/information.html", context={"member": member})
 
 
-class ProfileChangePassword(LoginRequiredMixin, View):
+class AdminProfileChangePassword(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
         member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/change-password.html", context={"member": member})
+        return render(request, "admin_profile/change-password.html", context={"member": member})
 
 
-class ProfileEmail(LoginRequiredMixin, View):
-    # template_name = "members_app/profile/email.html"
-    login_url = "login"
-
-    def get(self, request):
-        member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/email.html", context={"member": member})
-
-
-class SubscriptionManageView(LoginRequiredMixin, View):
-    # template_name = "members_app/profile/subscription.html"
-    login_url = "login"
-
-    def get(self, request):
-        member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/subscription.html", context={"member": member})
