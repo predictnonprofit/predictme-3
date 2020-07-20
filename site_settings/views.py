@@ -7,6 +7,7 @@ from .models import CompanySettings
 # from django.views.generic.edit import (UpdateView)
 from .forms import CompanySettingsForm
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 
 
@@ -34,6 +35,7 @@ class CompanySettingsView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessag
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         # print(form.cleaned_data)
+        print(form.cleaned_data.get("status"))
         if form.is_valid():
             company_settings = CompanySettings.objects.get(slug="company")
             company_settings.name = form.cleaned_data.get("name")

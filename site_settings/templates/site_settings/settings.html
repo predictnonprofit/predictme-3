@@ -28,10 +28,12 @@ Company Settings
             <small class="">Website details</small></h3>
         </div>
         <div class="card-toolbar">
+            <form class="form" id="kt_form" method="POST">
+            {% csrf_token %}
             <button type="button" onclick="history.back();" class="btn btn-light-primary font-weight-bolder mr-2">
             <i class="ki ki-long-arrow-back icon-sm"></i>Back</button>
             <div class="btn-group">
-                <button type="button" class="btn btn-primary font-weight-bolder">
+                <button type="submit" class="btn btn-primary font-weight-bolder">
                 <i class="ki ki-check icon-sm"></i>Save</button>
                 
                
@@ -40,8 +42,7 @@ Company Settings
     </div>
     <div class="card-body">
         <!--begin::Form-->
-        <form class="form" id="kt_form">
-            {% csrf_token %}
+
             <div class="row">
                 <div class="col-xl-2"></div>
                 <div class="col-xl-8">
@@ -197,17 +198,23 @@ Company Settings
                             <div class="col-9">
 
                                 <div class="kt-checkbox-single">
-                                    {% if object.status == 1 %}
-                                        <label class="kt-checkbox">
-                                            {% render_field form.status type="checkbox" checked="checked" name="status" id="status" data-switch="true" data-on-text="Open" data-handle-width="50" data-off-text="Close" data-on-color="success" data-off-color="danger" %}
 
+                                    {% if object.status == True %}
+                                    <span class="switch switch-outline">
+                                        <label>
+                                            {% render_field form.status type="checkbox" checked="checked" name="status" id="status" valus="1"  %}
 
+                                            <span></span>
                                         </label>
+                                        </span>
                                     {% else %}
-                                        <label class="kt-checkbox">
-                                            {% render_field form.status type="checkbox" name="status" id="status" data-switch="true" data-on-text="Open" data-handle-width="50" data-off-text="Close" data-on-color="success" data-off-color="danger" %}
+                                       <span class="switch switch-outline">
+                                        <label>
+                                            {% render_field form.status type="checkbox" checked="checked" name="status" id="status" value="0"  %}
 
+                                            <span></span>
                                         </label>
+                                        </span>
                                     {% endif %}
 
                                 </div>
@@ -244,13 +251,9 @@ Company Settings
 {% endblock content%}
 
 {% block customjs %}
-<script>
-    $(document).ready(function () {
-        $("[name='status']").bootstrapSwitch();
-    });
-</script>
+
 <script src="{% static 'assets/js/pages/crud/file-upload/image-input.js' %}"></script>
 
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-switch.js' %}"></script>
+
 {% endblock customjs %}

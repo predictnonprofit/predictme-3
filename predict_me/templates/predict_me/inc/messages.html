@@ -4,7 +4,7 @@
         <div class="col-12">
             {% for message in messages %}
             
-                <div class="alert alert-custom alert-outline-2x alert-outline-{{message.tags}} fade show mb-5" role="alert">
+                <div class="alert alert-custom alert-outline-2x alert-light-{{message.tags}} fade show mb-5" role="alert">
                     {% if message.tags == "success" %}
                         <div class="alert-icon"><i class="icon-2x text-success-50 flaticon2-check-mark"></i></div>
                         {% elif message.tags == "info" %}
