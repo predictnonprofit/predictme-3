@@ -14,5 +14,6 @@ urlpatterns = [
     path("settings/", include("site_settings.urls"), name="settings-urls"),
     path("activities/", include("activity_app.urls"), name="activity-urls"),
     path("reports/", include("reports_app.urls"), name="reports-urls"),
+    path("admin/profile/", include("admin_profile.urls"), name="admin-profile-urls"),
 
 ]
