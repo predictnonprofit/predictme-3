@@ -270,7 +270,10 @@
                         <div class="d-flex flex-row">
                             <!--begin::Aside-->
                             <aside>
-                                {% include 'members_app/inc/profile_left_side.html' %}
+                                {% if "/profile/data" not in request.path %}
+                                    {% include 'members_app/inc/profile_left_side.html' %}
+                                {% endif %}
+
                             </aside>
                             <!--end::Aside-->
                             <!--begin::Content-->
