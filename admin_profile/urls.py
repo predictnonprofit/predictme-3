@@ -2,9 +2,8 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path("", ProfileOverview.as_view(), name="profile-overview"),
-    path("personal", ProfilePersonal.as_view(), name="profile-personal"),
-    path("information", ProfileInformation.as_view(), name="profile-info"),
-    path("change-password", ProfileChangePassword.as_view(), name="profile-change-password"),
-    path("email", ProfileEmail.as_view(), name="profile-email"),
+    path("", AdminProfileOverview.as_view(), name="admin-profile-overview"),
+    path("personal", AdminProfilePersonal.as_view(), name="admin-profile-personal"),
+    path("information", AdminProfileInformation.as_view(), name="admin-profile-info"),
+    path("change-password", AdminProfileChangePassword.as_view(), name="admin-profile-change-password"),
 ]
