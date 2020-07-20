@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     # "data_handler.apps.DataHandlerConfig",
     "django_extensions",
     "django_countries",
+    "admin_profile",
     "users.apps.UsersConfig",
     "predict_me",
     "dashboard",
