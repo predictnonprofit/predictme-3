@@ -15,11 +15,11 @@ Member info
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
 <!--begin::Row-->
 
 
-<section id="user-top">
+<section id="user-top" class="container">
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
@@ -527,11 +527,11 @@ Member info
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/widgets.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/widgets.js' %}"></script>
 
 <!--end::Page Scripts-->
 

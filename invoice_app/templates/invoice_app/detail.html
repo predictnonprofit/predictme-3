@@ -15,10 +15,11 @@ Details
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
  <!--begin::Row-->
     
- <div class="card card-custom overflow-hidden">
+    <div class="container">
+         <div class="card card-custom overflow-hidden">
     <div class="card-body p-0">
         <!-- begin: Invoice-->
         <!-- begin: Invoice header-->
@@ -67,7 +68,7 @@ Details
                                 <th class="pl-0 font-weight-bold text-muted text-uppercase">PLAN DESCRIPTION</th>
                                 <th class="text-right font-weight-bold text-muted text-uppercase">RATE</th>
                                 <th class="text-right font-weight-bold text-muted text-uppercase">Total</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -80,10 +81,10 @@ Details
                             <tr class="font-weight-boldest border-bottom-0">
                                 <td class="border-top-0 pl-0 py-4">Data Limit: 200</td>
                                 <td class="border-top-0 text-right py-4">$0.25</td>
-                     
+
                                 <td class="text-danger border-top-0 pr-0 py-4 text-right">$50</td>
                             </tr>
-                           
+
                         </tbody>
                     </table>
                 </div>
@@ -97,14 +98,14 @@ Details
                     <table class="table">
                         <thead>
                             <tr>
-                     
+
                                 <th class="font-weight-bold text-muted text-uppercase" width="50%">DUE DATE</th>
                                 <th class="font-weight-bold text-muted text-uppercase text-right" width="50%">TOTAL AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="font-weight-bolder">
-           
+
                                 <td>Jan 07, 2018</td>
                                 <td class="text-danger font-size-h3 font-weight-boldest text-right">20,600.00</td>
                             </tr>
@@ -127,10 +128,11 @@ Details
         <!-- end: Invoice-->
     </div>
 </div>
+    </div>
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 

@@ -16,11 +16,12 @@ Company Settings
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
 
 
- <!--begin::Row-->
- <div class="card card-custom card-sticky" id="kt_page_sticky_card">
+ <!--begin::Site settings form-->
+    <div class="container">
+         <div class="card card-custom card-sticky" id="kt_page_sticky_card">
     <div class="card-header" style="">
         <div class="card-title">
             <h3 class="card-label">Update the Website Info
@@ -35,8 +36,8 @@ Company Settings
             <div class="btn-group">
                 <button type="submit" class="btn btn-primary font-weight-bolder">
                 <i class="ki ki-check icon-sm"></i>Save</button>
-                
-               
+
+
             </div>
         </div>
     </div>
@@ -153,8 +154,8 @@ Company Settings
                                 </div>
                             </div>
                         </div>
-                        
-                      
+
+
                     </div>
                     <div class="separator separator-dashed my-10"></div>
                     <div class="my-52">
@@ -186,7 +187,7 @@ Company Settings
                                 displayed.</span>
                             </div>
                         </div>
-                   
+
                     </div>
                     <div class="separator separator-dashed my-10"></div>
                     <div class="my-52">
@@ -235,7 +236,7 @@ Company Settings
                                 display when the website is close.</span>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="col-xl-2"></div>
@@ -244,11 +245,12 @@ Company Settings
         <!--end::Form-->
     </div>
 </div>
-<!--end::Advance Table Widget 7-->
+    </div>
+<!--end::Site settings form-->
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 

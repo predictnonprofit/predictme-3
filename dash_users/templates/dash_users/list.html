@@ -15,14 +15,15 @@ Members
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
 
 <!-- Start include View Member Modal -->
 {% include 'dash_users/segments/view_user_modal.html' %}
 <!-- End include View Member Modal -->
 
 <!--begin::Row-->
-<div class="card card-custom">
+<div class="container">
+    <div class="card card-custom">
     <div class="card-header">
         <div class="card-title">
             <span class="card-icon">
@@ -710,15 +711,16 @@ Members
     </div>
 
 </div>
+</div>
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
-<script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
-<script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
-<script src="{% static 'assets/js/pages/widgets.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/widgets.js' %}"></script>
 <script>
     $('#kt_datatable_search_members_country').select2({
         placeholder: "Select a Country"
@@ -730,7 +732,7 @@ Members
         placeholder: "Select a state"
     });
 </script>
-<script src="{% static 'assets/js/custom/dash_users/helpers.js' %}"></script>
-<script src="{% static 'assets/js/custom/dash_users/apis.js' %}"></script>
-<script src="{% static 'assets/js/custom/dash_users/members.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/dash_users/helpers.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/dash_users/apis.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/dash_users/members.js' %}"></script>
 {% endblock customjs %}

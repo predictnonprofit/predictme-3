@@ -15,11 +15,12 @@ List all invoices
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
 <!--begin::Row-->
 
 <!--begin::Card-->
-<div class="card card-custom">
+<div class="container">
+	<div class="card card-custom">
 	<div class="card-header">
 		<div class="card-title">
 			<span class="card-icon">
@@ -207,12 +208,13 @@ List all invoices
 		<!--end: Datatable-->
 	</div>
 </div>
+</div>
 <!--end::Card-->
 
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 
