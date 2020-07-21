@@ -52,7 +52,7 @@ var KTAppInbox = function() {
                 email: 'chris.muller@wix.com',
                 initials: '',
                 initialsState: '',
-                pic: './assets/media/users/100_11.jpg',
+                pic: './static/assets/media/users/100_11.jpg',
                 class: 'tagify__tag--primary'
             }, {
                 value: 'Nick Bold',
@@ -65,7 +65,7 @@ var KTAppInbox = function() {
                 email: 'alon@keenthemes.com',
                 initials: '',
                 initialsState: '',
-                pic: './assets/media/users/100_6.jpg'
+                pic: './static/assets/media/users/100_6.jpg'
             }, {
                 value: 'Sam Seanic',
                 email: 'sam.senic@loop.com',

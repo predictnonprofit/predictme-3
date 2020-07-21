@@ -42,3 +42,19 @@ function setFilterOptions() {
         filterTypeSelect.find("optgroup:first").before('<option selected disabled value="choose">Choose report section</option>');
     }
 }
+
+// this function will enable other organization type input if member select other from select menu
+function enableOtherOrgType(selectID, otherInputID) {
+    let selectIDJq = $(selectID);
+    let otherIDJq = $(otherInputID);
+    selectIDJq.on("change", function (evt) {
+        const selectedValue  = $(this).val();
+        if(selectedValue === "Other"){
+            // selectIDJq.toggleClass('disabled').attr("disabled", "disabled");
+            otherIDJq.toggleClass('disabled not-allowed-cursor').removeAttr('disabled');
+        }else{
+            otherIDJq.toggleClass('disabled not-allowed-cursor').attr("disabled", "disabled");
+        }
+    })
+
+}

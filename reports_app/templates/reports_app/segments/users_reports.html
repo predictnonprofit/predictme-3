@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="col-lg-3 mb-lg-0 mb-6">
                                     <label>Status:</label>
-                                    <select class="form-control datatable-input" id="">
+                                    <select class="form-control datatable-input" id="reports-users-status">
                                         <option value="">Select</option>
                                         <option value="Active">Active</option>
                                         <option value="Pending">Pending</option>
@@ -47,12 +47,12 @@
                                 </div>
                                 <div class="col-lg-3 mb-lg-0 mb-6">
                                     <label>Organization Type:</label>
-                                    <select id="kt_datatable_search_members_organization_type"
-                                            class="form-control datatable-input select2-hidden-accessible"
-                                            data-select2-id="kt_datatable_search_members_organization_type"
+                                    <select id="reports-users-org-type"
+                                            class="form-control datatable-input"
+                                            data-select2-id="reports-users-org-type"
                                             tabindex="-1"
                                             aria-hidden="true">
-                                        <option value="Club" data-select2-id="2">Higher Education</option>
+                                        <option value="Club">Higher Education</option>
                                         <option value="Church">Other Education</option>
                                         <option value="Health">Health related</option>
                                         <option value="Hospitals and Primary Care">Hospitals and Primary Care
@@ -63,26 +63,13 @@
                                         <option value="International">International</option>
                                         <option value="Religion">Religion related</option>
                                         <option value="Other">Other</option>
-                                    </select><span class="select2 select2-container select2-container--default"
-                                                   dir="ltr"
-                                                   data-select2-id="1" style="width: 289.125px;"><span
-                                        class="selection"><span class="select2-selection select2-selection--single"
-                                                                role="combobox" aria-haspopup="true"
-                                                                aria-expanded="false"
-                                                                tabindex="0" aria-disabled="false"
-                                                                aria-labelledby="select2-kt_datatable_search_members_organization_type-container"><span
-                                        class="select2-selection__rendered"
-                                        id="select2-kt_datatable_search_members_organization_type-container"
-                                        role="textbox"
-                                        aria-readonly="true" title="Higher Education">Higher Education</span><span
-                                        class="select2-selection__arrow" role="presentation"><b
-                                        role="presentation"></b></span></span></span><span class="dropdown-wrapper"
-                                                                                           aria-hidden="true"></span></span>
+                                    </select>
+
                                 </div>
                                 <div class="col-lg-3 mb-lg-0 mb-6">
                                     <label>Other Organization Type:</label>
-                                    <input type="text" class="form-control datatable-input" placeholder="Enter Manually"
-                                           disabled="" id="">
+                                    <input type="text" class="form-control datatable-input disabled not-allowed-cursor" placeholder="Enter Manually"
+                                           disabled="disabled" id="reports-other-org-type">
                                 </div>
                             </div>
                             <div class="row mb-8">
@@ -432,11 +419,11 @@
                                 <div class="col-lg-3 mb-lg-0 mb-6">
                                     <label>City:</label>
                                     <input type="text" class="form-control datatable-input" placeholder="Enter City"
-                                           id="">
+                                           id="reports-users-city">
                                 </div>
                                 <div class="col-lg-3 mb-lg-0 mb-6">
                                     <label>Address:</label>
-                                    <input type="text" class="form-control datatable-input" placeholder="Address" id="">
+                                    <input type="text" class="form-control datatable-input" placeholder="Address" id="reports-users-address">
                                 </div>
                             </div>
 

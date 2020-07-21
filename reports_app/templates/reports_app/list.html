@@ -25,117 +25,132 @@ List of reports
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
 <!--begin::Row-->
 <!-- Start top filter select -->
-<div class="flex-row-fluid ml-lg-8">
-    <div class="card card-custom">
-        <div class="card-header">
-            <div class="card-title">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="flex-row-fluid ml-lg-8">
+                <div class="card card-custom">
+                    <div class="card-header">
+                        <div class="card-title">
             <span class="card-icon">
                 <i class="icon-lg la la-chart-bar text-dark"></i>
             </span>
-                <h3 class="card-label">
-                    Choose the report type
-                </h3>
-            </div>
+                            <h3 class="card-label">
+                                Choose the report type
+                            </h3>
+                        </div>
 
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-10">
-                    <form method="POST" class="form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <div class="input-group">
-                                <select class="form-control m-0 " id="filterTypeSelect">
-                                    <option></option>
-                                    <optgroup label="Sales/Revenue">
-                                        <option>Profit share by subscription plan</option>
-                                        <option>Report on revenue change</option>
-                                        <option>Relish</option>
-                                    </optgroup>
-                                    <optgroup label="Members">
-                                        <option value="users">Report on all users</option>
-                                        <option value="data_usage">Data Limit/Records usage</option>
-                                        <option value="extra_record">Additional Fee Per Extra Data/Record usage</option>
-                                    </optgroup>
-                                </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-10">
+                                <form method="POST" class="form">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <select class="form-control m-0 " id="filterTypeSelect">
+                                                <option></option>
+                                                <optgroup label="Sales/Revenue">
+                                                    <option>Profit share by subscription plan</option>
+                                                    <option>Report on revenue change</option>
+                                                    <option>Relish</option>
+                                                </optgroup>
+                                                <optgroup label="Members">
+                                                    <option value="users">Report on all users</option>
+                                                    <option value="data_usage">Data Limit/Records usage</option>
+                                                    <option value="extra_record">Additional Fee Per Extra Data/Record
+                                                        usage
+                                                    </option>
+                                                </optgroup>
+                                            </select>
 
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <div class="input-group-append">
+                                    <button data-toggle="tooltip" id="reportsFilterBtn" title="Filter"
+                                            class="btn btn-secondary"
+                                            type="button">
+                                        <i class="icon-md la la-filter"></i>
+
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="col">
-                    <div class="input-group-append">
-                        <button data-toggle="tooltip" id="reportsFilterBtn" title="Filter" class="btn btn-secondary"
-                                type="button">
-                            <i class="icon-md la la-filter"></i>
-
-                        </button>
                     </div>
+
                 </div>
             </div>
         </div>
 
+
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <!--Start Reports content wrapper-->
+            <section id="reports-content-wrapper">
+                {% for key, value in request.GET.items %}
+                {% if key and key == 'reports' %}
+                {% if value == 'users' %}
+                <!-- Start users reports segments -->
+                {% include 'reports_app/segments/users_reports.html' %}
+                <!-- End users reports segments -->
+                {% endif %}
+
+                {% else %}
+                <section id="wrong-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
+                    <div class="card card-custom gutter-b">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3 class="card-label">
+
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="h1 text-danger text-center">
+                                Wrong Filter option!
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                {% endif %}
+
+                {% empty %}
+                <section id="no-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
+                    <div class="card card-custom gutter-b">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3 class="card-label">
+
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="h1 text-dark text-center">
+                                Select filter type
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                {% endfor %}
+
+            </section>
+            <!--End Reports content wrapper-->
+        </div>
     </div>
 </div>
 <!-- End top filter select -->
 
-<!--Start Reports content wrapper-->
-<section id="reports-content-wrapper">
-    {% for key, value in request.GET.items %}
-        {% if key and key == 'reports' %}
-            {% if value == 'users' %}
-                <!-- Start users reports segments -->
-                {% include 'reports_app/segments/users_reports.html' %}
-                 <!-- End users reports segments -->
-            {% endif %}
-
-        {% else %}
-            <section id="wrong-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
-            <div class="card card-custom gutter-b">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h3 class="card-label">
-
-                        </h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p class="h1 text-danger text-center">
-                        Wrong Filter option!
-                    </p>
-                </div>
-            </div>
-        </section>
-        {% endif %}
-
-    {% empty %}
-        <section id="no-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
-            <div class="card card-custom gutter-b">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h3 class="card-label">
-
-                        </h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p class="h1 text-dark text-center">
-                        Select filter type
-                    </p>
-                </div>
-            </div>
-        </section>
-    {% endfor %}
-
-</section>
-<!--End Reports content wrapper-->
-
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 <!--begin::Page Scripts(used by this page)-->
@@ -143,12 +158,12 @@ List of reports
 <script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
 <script>
     // nested
-     $('#reports-users-state-filter').select2({
-         placeholder: "Select state"
-     });
-     $('#reports-users-country-filter').select2({
-         placeholder: "Select country"
-     });
+    $('#reports-users-state-filter').select2({
+        placeholder: "Select state"
+    });
+    $('#reports-users-country-filter').select2({
+        placeholder: "Select country"
+    });
     $('.datePickerInputs').datepicker({
         autoclose: true,
         todayHighlight: true,
@@ -156,9 +171,9 @@ List of reports
     });
 </script>
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/reports_app/helpers.js' %}"></script>
-<script src="{% static 'assets/js/custom/reports_app/apis.js' %}"></script>
-<script src="{% static 'assets/js/custom/reports_app/reports.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/reports_app/helpers.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/reports_app/apis.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/apps/reports_app/reports.js' %}"></script>
 <!--end::Page Scripts-->
 
 

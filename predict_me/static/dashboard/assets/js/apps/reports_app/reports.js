@@ -9,7 +9,8 @@ $(document).ready(function () {
         setURLQuery(filterTypeSelect);
     });
 
-
+    // enable other org type input
+    enableOtherOrgType("#reports-users-org-type", '#reports-other-org-type');
 
 });
 
