@@ -51,7 +51,7 @@ function enableOtherOrgType(selectID, otherInputID) {
         const selectedValue  = $(this).val();
         if(selectedValue === "Other"){
             // selectIDJq.toggleClass('disabled').attr("disabled", "disabled");
-            otherIDJq.toggleClass('disabled not-allowed-cursor').removeAttr('disabled');
+            otherIDJq.toggleClass('disabled').removeAttr('disabled').removeClass("not-allowed-cursor");
         }else{
             otherIDJq.toggleClass('disabled not-allowed-cursor').attr("disabled", "disabled");
         }
