@@ -15,10 +15,11 @@ Messages
 {% endblock pagename %}
 
 
-{% block content %}
+{% block dashboard_content %}
  <!--begin::Row-->
     
- <div class="d-flex flex-column-fluid">
+ <div class="container">
+	 <div class="d-flex flex-column-fluid">
 	<!--begin::Container-->
 	<div class="container">
 		<!--begin::Inbox-->
@@ -1483,7 +1484,7 @@ Messages
 											<!--begin::Attachments-->
 											<div class="dropzone dropzone-multi px-8 py-4" id="kt_inbox_reply_attachments">
 												<div class="dropzone-items">
-													
+
 												</div>
 											<div class="dz-default dz-message"><button class="dz-button" type="button">Drop files here to upload</button></div></div>
 											<!--end::Attachments-->
@@ -1635,7 +1636,7 @@ Messages
 							<!--begin::Attachments-->
 							<div class="dropzone dropzone-multi px-8 py-4" id="kt_inbox_compose_attachments">
 								<div class="dropzone-items">
-									
+
 								</div>
 							<div class="dz-default dz-message"><button class="dz-button" type="button">Drop files here to upload</button></div></div>
 							<!--end::Attachments-->
@@ -1710,15 +1711,16 @@ Messages
 	</div>
 	<!--end::Container-->
 </div>
+ </div>
 
 
 <!--End::Row-->
-{% endblock content%}
+{% endblock dashboard_content%}
 
 {% block customjs %}
 
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/custom/inbox/inbox.js'  %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/custom/inbox/inbox.js'  %}"></script>
 <!--end::Page Scripts-->
 
 {% endblock customjs %}
