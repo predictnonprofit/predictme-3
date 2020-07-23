@@ -9,8 +9,17 @@ import copy
 from termcolor import cprint
 import traceback, gc
 
-
 validate_obj = DataValidator()
+
+
+def clean_currency(x: str):
+    """ If the value is a string, then remove currency symbol and delimiters
+    otherwise, the value is numeric and can be converted
+    """
+
+    if isinstance(x, str) or x.startswith("$"):
+        return (x.replace('$', '').replace(',', ''))
+    return (x)
 
 
 def get_selected_columns_as_list(member_data_file):
@@ -28,21 +37,27 @@ def get_selected_columns_as_list(member_data_file):
 def save_data_file_rounded(file_path):
     data_file = Path(file_path)
     df = get_df_from_data_file(file_path)
+    df_copy = df.copy()
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
-    for col in df.columns.tolist():
+    for col in df_copy.columns.tolist():
         new_cleand_cols.append(col.strip())
-        if df[col].dtype == "float64":
-            df[col] = df[col].round().astype(int)
+        if df_copy[col].dtype == "float64":
+            df_copy[col] = df_copy[col].round().astype(int)
+        if df_copy[col].dtype == "object":
+            df_copy[col] = df_copy[col].str.strip()
+            df_copy[col] = df_copy[col].apply(clean_currency)
+            # df_copy[col] = df_copy.loc[df_copy[col].str.startswith("$", na=False), col]
+            # df_copy[col] = df_copy[col].apply(clean_currency).astype('float')
+            print(df_copy[col])
     # print(df.columns)
     # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
-    # print(df.columns)
     # print(df.columns)
     delete_data_file(file_path)
 
     if data_file.suffix == ".xlsx":
-        df.to_excel(data_file.as_posix(), header=df.columns.tolist(), index=False)
+        df_copy.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
     elif data_file.suffix == ".csv":
-        df.to_csv(data_file.as_posix(), header=df.columns.tolist(), index=False, sep=',')
+        df_copy.to_csv(data_file.as_posix(), header=new_cleand_cols, index=False, sep=',')
 
     cprint("save done", 'green')
 
@@ -112,17 +127,16 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
         records_count = int(records_count)
         previous_50_count = int(records_count - 50)
         print(previous_50_count, records_count)
-        df2 = df.loc[previous_50_count:records_count, columns]
+        # df2 = df.loc[previous_50_count:records_count, columns]
         # print(df2)
         current_record_data = {}
-        for index, row in df2.iterrows():
-
+        for index, row in islice(df[columns].iterrows(), previous_50_count, records_count):
+            # print(index)
             # index is the index in the data frame
             # row is the series object
             idx = index
             for col in columns:
                 # print(row[col])
-                # cprint(row_as_dict['Home Address '], 'blue')
                 # print(idx, "----> ", col, "--->", row_as_dict, end='\n')
                 tmp_cell_val = row[col]
                 current_record_data["ID"] = idx
@@ -133,11 +147,10 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
                                                                             dtype=columns_with_types[col])
                 # print(idx, "--> ", current_record_data[col])
             all_rows.insert(0, current_record_data)
-            # pprint(current_record_data)
-        # breakpoint()
             current_record_data = {}
 
-        # pprint(all_rows[42])
+        # print(len(all_rows))
+        # pprint(all_rows[records_count])
         # check if the length of all_rows < 0 means no records to show
         if len(all_rows) <= 0:
             return 0
@@ -263,7 +276,6 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
             current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
         # all_rows.insert(0, current_record_data)
         all_rows.append(current_record_data)
-
         current_record_data = {}
 
     # del results, df_copy_error_data, df_copy_correct_data, frames

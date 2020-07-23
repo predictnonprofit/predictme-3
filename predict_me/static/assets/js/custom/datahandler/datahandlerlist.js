@@ -214,11 +214,7 @@ $(function () {
             confirmButtonText: 'Yes'
         }).then((result) => {
             if (result.value) {
-                /*Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )*/
+
                 $("#extraRecordsModel").modal("hide");
             }
         });
@@ -304,7 +300,7 @@ $(function () {
 
     // process button, which will send ajax request with the selected columns
     const processPickedColumnsBtn = $("#processPickedColumnsBtn");
-    processPickedColumnsBtn.click(function (e) {
+    processPickedColumnsBtn.on('click', function (e) {
         selectedPickedColumns = _.uniq(selectedPickedColumns);  // to avoid duplicate columns name
         // console.log(selectedPickedColumns);
         // throw new Error("Something went badly wrong!");

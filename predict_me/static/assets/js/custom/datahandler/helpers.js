@@ -63,7 +63,7 @@ function swConfrimDtype(elem, msg, tmpSpan) {
         if (result.value) {
 
             tmpSpan.show();
-            // resultsValue = true;
+            elem.attr("title", `Default data format Textual\nCurrent data format ${elem.val().split(" ")[0]}`);
 
         } else if (
             /* Read more about handling dismissals below */
@@ -751,9 +751,7 @@ function uploadProgressModal(isOk, data) {
                                 ${i}. ${name.trim()}
                                 <span class="noselect">
                                 <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                <span class="noselect position-relative tooltip-test" title="${tooltipInfo[dType]}" data-toggle="tooltip">
-                                    <i class="icon-md la la-info-circle text-dark"></i>
-                                </span>
+                               
                                 
                            </span>
                             </li>
@@ -871,7 +869,7 @@ function getDataType(dt) {
     // const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
     if (dt === "int64" || dt === "float64") {
         return "Numeric";
-    } else if (dt === "object" || dt === "category") {
+    } else if ((dt === "object") || (dt === "category") || (dt === "bool")) {
         return "Textual";
     } else {
         return "Alphanumeric";
@@ -949,27 +947,21 @@ function reselectColumnsFunc() {
             // check if the column name in the picked columns, so will disable it
             if (tmpSelectedColsArr.includes(name) === true) {
                 tmpMarkupLi = `
-                    <li data-idx = '${i}' class="disabled bg-gray-200 columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+                    <li data-idx = '${i}' class="disabled noselect bg-gray-200 columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
-                                    <span class="label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                    <span class="position-relative tooltip-test" style='top: 4px;' title="${tooltipInfo[dType]}" data-toggle="tooltip">
-                                        <i class="icon-md la la-info-circle text-dark"></i>
-                                    </span>
-                                    
+                                    <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                   
                                </span>
                             </li>
                         \n
                     `;
             } else {
                 tmpMarkupLi = `
-                    <li data-idx = '${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+                    <li data-idx = '${i}' class="noselect columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
-                                    <span class="label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
-                                    <span class="position-relative tooltip-test" style='top: 4px;' data-toggle="tooltip" title="${tooltipInfo[dType]}">
-                                        <i class="icon-md la la-info-circle text-dark"></i>
-                                    </span>
+                                    <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
                                     
                                </span>
                             </li>
@@ -991,7 +983,7 @@ function reselectColumnsFunc() {
                         class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                         ${name}
                         <span class="nav-label mx-10" >
-                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype">
+                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype" title="NO TOOLTIP HERE">
                                     ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>

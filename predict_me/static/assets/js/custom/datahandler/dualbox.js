@@ -32,7 +32,7 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
                 class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                 ${colName}
                 <span class="nav-label mx-10">
-                    <select data-value='${colDataType}' class="form-control form-control-sm h-40px column-option-dtype" title="Default data format Textual\nCurrent data format Numeric" data-pt-delay-in="500">
+                    <select data-value='${colDataType}' class="form-control form-control-sm h-40px column-option-dtype">
                             ${optionsList}
                     </select>
                 </span>
@@ -45,6 +45,8 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
                 
             </li>
         `;
+    // let tLi = $($.parseHTML(liMarkup)).filter('li');
+    // console.log(tLi.find('select'));
     $("#pickedColumnsList").append(liMarkup);
     //$("#pickedColumnsList").after(liMarkup);
 
@@ -159,13 +161,13 @@ function selectPickedRightColumns() {
 
     });
 
-     $("ul#pickedColumnsList").on("dblclick", 'li', function (ev) {
-         ev.preventDefault();
-         const [idx, colName, colDataType] = extractRightColData(clickedRightColumnItem);
-         enableLeftColumnItem(idx);
-         clickedRightColumnItem.remove();
-         clickedRightColumnItem = "";
-     });
+    $("ul#pickedColumnsList").on("dblclick", 'li', function (ev) {
+        ev.preventDefault();
+        const [idx, colName, colDataType] = extractRightColData(clickedRightColumnItem);
+        enableLeftColumnItem(idx);
+        clickedRightColumnItem.remove();
+        clickedRightColumnItem = "";
+    });
 
 
 }
@@ -203,7 +205,6 @@ function addItemLeftColumn() {
         clickedRightColumnItem.remove();
         // to set the notes in the bottom of modal
         let tmpRemovedItem = $(clickedRightColumnItem.find('select'));
-
 
         clickedRightColumnItem = "";
     } else {
@@ -398,14 +399,41 @@ function sendRequestValidate() {
         console.log(jqXHR);
 
         if ((textStatus === 'success') && (jqXHR.status === 200)) {
-            swAlert("Success", "All data looks ok, you can press process button", 'success');
-            setSessionLastName("pick_columns");
+            setSessionLastName("pick_columns"); // to save the current session name
             $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled style");
             for (let key in selectedValidateColumns) {
                 // let colKey = key.split(". ")[1].trim(); // to split the column name from the index number
                 // selectedPickedColumns.push(colKey);
                 selectedPickedColumns.push(key);
             }
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Success',
+                text: "Validation done, all data are valid you can process or click on back to edit the picked columns",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Process',
+                cancelButtonText: 'Back',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then((result) => {
+                if (result.value) {
+                    $("#processPickedColumnsBtn").trigger('click');
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                   Swal.close();
+                }
+            })
         }
 
 
@@ -474,7 +502,7 @@ function columnOptionsChangeSaved(ele, option) {
         // check if the member select the id so disabled on the others select
         // console.log(element.data())
         if ((element.val().toLowerCase() === "Unique Identifier (ID)".toLowerCase())) {
-            if (element.data("value") !== "textual") {
+            if (element.data("value") !== "") {
                 $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
                 isUniqueIDSelected = true;
                 tmpIDSpan.show();
@@ -505,7 +533,7 @@ function columnOptionsChangeSaved(ele, option) {
                 });
 
             } else {
-                swAlert("Error", "Unique ID must be numeric data type!", 'error');
+                swAlert("Error", "Unique ID must be not NULL!", 'error');
                 delete optionsSelected[dataIX];  // delete the id from the json object
                 element.val("");
             }
@@ -532,6 +560,7 @@ function columnOptionsChangeSaved(ele, option) {
 
 
 }
+
 // reset all criteria after reset button clicked
 function resetAllCriteria() {
     $("#isValidateData").html(timesMark).removeClass('text-success').addClass("text-danger");
@@ -608,15 +637,14 @@ function mutationHandler(mutationRecords) {
             // console.log(isUniqueIDSelected);
             let pickedRightCol = $(mutation.addedNodes);
             const pickedRightSelect = pickedRightCol.find('select');
-            if(pickedRightSelect.length > 0){
-                if(isUniqueIDSelected === true){
+            if (pickedRightSelect.length > 0) {
+                if (isUniqueIDSelected === true) {
                     $(".column-option-dtype  option:contains('Unique Identifier (ID)')").attr("disabled", "disabled");
-                }else{
+                } else {
                     $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
                 }
             }
         }
-
 
 
     });
@@ -685,7 +713,6 @@ jQuery(document).ready(function () {
     let totalInterval = setInterval(function () {
         setColumnsTotal();
     }, 200);
-
 
 
     //removePickedColumn();
