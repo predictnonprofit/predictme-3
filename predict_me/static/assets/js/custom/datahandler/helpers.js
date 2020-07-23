@@ -987,7 +987,7 @@ function reselectColumnsFunc() {
                                     ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>
-                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' title='Default data format Textual\nCurrent data format ${data['selected_columns'][name].split(" ")[0].toUpperCase()}' data-toggle="tooltip">
+                        <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;'>
                               <i class="icon-lg la la-info-circle text-warning font-weight-bolder"></i>
                         </span>
                         <span class="label position-absolute" style='background-color: unset; right: 12px; display: none;' id="resetIDColumnBtn" title="Reset ID column">

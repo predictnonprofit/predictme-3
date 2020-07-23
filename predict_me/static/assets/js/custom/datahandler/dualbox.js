@@ -487,7 +487,8 @@ function columnOptionsChangeSaved(ele, option) {
             } else if (option === 'reselect') {
                 tmpSpan.show();
                 element.addClass('border border-danger');
-                element.attr('title', 'Default data format Textual\nCurrent data format Numeric');
+                element.attr("data-toggle", 'tooltip');
+                element.attr('title', `Default data format Textual\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
                 // check if the donation field selected to make it visible with check mark
                 if (element.val().toLowerCase().includes('donation') === true) {
                     $("#donationFieldLi").removeClass("d-none");
