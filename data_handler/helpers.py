@@ -8,7 +8,7 @@ from itertools import islice
 import copy
 from termcolor import cprint
 import traceback, gc
-#import pysnooper
+
 
 validate_obj = DataValidator()
 
@@ -33,12 +33,16 @@ def save_data_file_rounded(file_path):
         new_cleand_cols.append(col.strip())
         if df[col].dtype == "float64":
             df[col] = df[col].round().astype(int)
-
+    # print(df.columns)
+    # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+    # print(df.columns)
+    # print(df.columns)
     delete_data_file(file_path)
+
     if data_file.suffix == ".xlsx":
-        df.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
+        df.to_excel(data_file.as_posix(), header=df.columns.tolist(), index=False)
     elif data_file.suffix == ".csv":
-        df.to_csv(data_file.as_posix(), header=new_cleand_cols, index=False)
+        df.to_csv(data_file.as_posix(), header=df.columns.tolist(), index=False, sep=',')
 
     cprint("save done", 'green')
 
@@ -103,34 +107,36 @@ def get_row_count(file_path):
 def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, unique_column):
     try:
         all_rows = []
-
+        # print(columns)
         df = get_df_from_data_file(file_path)
         records_count = int(records_count)
         previous_50_count = int(records_count - 50)
-        # print(previous_50_count, records_count)
-
+        print(previous_50_count, records_count)
+        df2 = df.loc[previous_50_count:records_count, columns]
+        # print(df2)
         current_record_data = {}
-        for tupls in islice(df.itertuples(), previous_50_count, records_count):
+        for index, row in df2.iterrows():
+
             # index is the index in the data frame
             # row is the series object
-            row_as_dict = tupls._asdict()
-            for col_name, col_value in row_as_dict.items():
-                # print(col_name, "------>", col_value)
-                idx = row_as_dict['Index']
-                for col in columns:
-                    # print(index, "----> ", col, "--->", row[col], end='\n')
-                    tmp_cell_val = row_as_dict[col]
-                    current_record_data["ID"] = idx
-                    tmp_cell_val = replace_nan_value(tmp_cell_val)
-                    # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
-                    # print(columns_with_types[col])
-                    current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
-                                                                                dtype=columns_with_types[col])
-                    # print(idx, "--> ", current_record_data[col])
+            idx = index
+            for col in columns:
+                # print(row[col])
+                # cprint(row_as_dict['Home Address '], 'blue')
+                # print(idx, "----> ", col, "--->", row_as_dict, end='\n')
+                tmp_cell_val = row[col]
+                current_record_data["ID"] = idx
+                tmp_cell_val = replace_nan_value(tmp_cell_val)
+                # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
+                # print(columns_with_types[col])
+                current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
+                                                                            dtype=columns_with_types[col])
+                # print(idx, "--> ", current_record_data[col])
             all_rows.insert(0, current_record_data)
             # pprint(current_record_data)
-            # breakpoint()
+        # breakpoint()
             current_record_data = {}
+
         # pprint(all_rows[42])
         # check if the length of all_rows < 0 means no records to show
         if len(all_rows) <= 0:
@@ -346,10 +352,11 @@ def get_df_from_data_file(file_path):
         if data_file.suffix == ".xlsx":
             df = pd.read_excel(data_file.as_posix())
         elif data_file.suffix == ".csv":
-            df = pd.read_csv(data_file.as_posix(), skipinitialspace=True)
+            df = pd.read_csv(data_file.as_posix(), sep=',')
 
     # df = df.fillna(0)
     # df = df.fillna(method='pad')
+    # this for fill the empty cells with its own empty values
     float_cols = df.select_dtypes(include=['float64']).columns
     str_cols = df.select_dtypes(include=['object']).columns
     int_cols = df.select_dtypes(include=['int64']).columns
