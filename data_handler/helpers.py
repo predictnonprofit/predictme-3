@@ -39,27 +39,31 @@ def save_data_file_rounded(file_path):
     df = get_df_from_data_file(file_path)
     df_copy = df.copy()
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
-    for col in df_copy.columns.tolist():
-        new_cleand_cols.append(col.strip())
-        if df_copy[col].dtype == "float64":
-            df_copy[col] = df_copy[col].round().astype(int)
-        if df_copy[col].dtype == "object":
-            df_copy[col] = df_copy[col].str.strip()
-            df_copy[col] = df_copy[col].apply(clean_currency)
-            # df_copy[col] = df_copy.loc[df_copy[col].str.startswith("$", na=False), col]
-            # df_copy[col] = df_copy[col].apply(clean_currency).astype('float')
-            print(df_copy[col])
-    # print(df.columns)
-    # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
-    # print(df.columns)
-    delete_data_file(file_path)
+    try:
+        for col in df_copy.columns.tolist():
+            new_cleand_cols.append(col.strip())
+            if df_copy[col].dtype == "float64":
+                df_copy[col] = df_copy[col].round().astype(int)
+            if df_copy[col].dtype == "object":
+                df_copy[col] = df_copy[col].str.strip()
+                df_copy[col] = df_copy[col].apply(clean_currency)
+                # df_copy[col] = df_copy.loc[df_copy[col].str.startswith("$", na=False), col]
+                # df_copy[col] = df_copy[col].apply(clean_currency).astype('float')
 
-    if data_file.suffix == ".xlsx":
-        df_copy.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
-    elif data_file.suffix == ".csv":
-        df_copy.to_csv(data_file.as_posix(), header=new_cleand_cols, index=False, sep=',')
+        # print(df.columns)
+        # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        # print(df.columns)
+        delete_data_file(file_path)
 
-    cprint("save done", 'green')
+        if data_file.suffix == ".xlsx":
+            df_copy.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
+        elif data_file.suffix == ".csv":
+            df_copy.to_csv(data_file.as_posix(), header=new_cleand_cols, index=False, sep=',')
+
+        cprint("save done", 'green')
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        delete_data_file(file_path)
 
 
 def download_data_file_converter(member_data_file):
