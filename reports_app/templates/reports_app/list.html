@@ -1,7 +1,7 @@
 {% extends 'dashboard/inc/master.html' %}
 
 {% load static %}
-
+{% load reports_tags %}
 
 {% block title %}
 Reports
@@ -15,6 +15,21 @@ Reports
         .select2-container {
             width: 270px !important;
         }
+    }
+        .tagify--outside{
+        border: 0;
+    }
+
+    .tagify--outside .tagify__input{
+      order: -1;
+      flex: 100%;
+      transition: .1s;
+    }
+
+    .tagify--outside .tagify__input:hover{ border-color:var(--tags-hover-border-color); }
+    .tagify--outside.tagify--focus .tagify__input{
+      transition:0s;
+      border-color: var(--tags-focus-border-color);
     }
 
 </style>
@@ -53,13 +68,14 @@ List of reports
                                         <div class="input-group">
                                             <select class="form-control m-0 " id="filterTypeSelect">
                                                 <option></option>
-                                                <optgroup label="Sales/Revenue">
-                                                    <option>Profit share by subscription plan</option>
-                                                    <option>Report on revenue change</option>
-                                                    <option>Relish</option>
-                                                </optgroup>
-                                                <optgroup label="Members">
+                                                <optgroup label="Users">
                                                     <option value="users">Report on all users</option>
+                                                </optgroup>
+                                                <optgroup label="Sales/Revenue">
+                                                    <option value="profit_share_by_sub">Profit share by subscription plan</option>
+                                                    <option value="revenues">Report on revenue change</option>
+                                                </optgroup>
+                                                <optgroup label="Data Usage">
                                                     <option value="data_usage">Data Limit/Records usage</option>
                                                     <option value="extra_record">Additional Fee Per Extra Data/Record
                                                         usage
@@ -79,8 +95,15 @@ List of reports
                                         <i class="icon-md la la-filter"></i>
 
                                     </button>
+                                    <button data-toggle="tooltip" id="resetReportsFilterBtn" title="Reset Filter"
+                                            class="btn btn-light-danger font-weight-bold ml-2"
+                                            type="button">
+                                       <i class="icon-md la la-minus-circle"></i>
+
+                                    </button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -95,35 +118,22 @@ List of reports
         <div class="col">
             <!--Start Reports content wrapper-->
             <section id="reports-content-wrapper">
-                {% for key, value in request.GET.items %}
-                {% if key and key == 'reports' %}
-                {% if value == 'users' %}
-                <!-- Start users reports segments -->
-                {% include 'reports_app/segments/users_reports.html' %}
-                <!-- End users reports segments -->
+                {% if request.path|slice_url_path == 'users' %}
+                    <!-- Start users reports segments -->
+                            {% include 'reports_app/inc/users_reports.html' %}
+                    <!-- End users reports segments -->
+                {% elif request.path|slice_url_path == 'data_usage' %}
+                    <!-- Start data usage reports segments -->
+                            {% include 'reports_app/inc/data_usage_reports.html' %}
+                    <!-- End data usage reports segments -->
+                    {% elif request.path|slice_url_path == 'extra_record' %}
+                        <!-- Start data usage reports segments -->
+                                {% include 'reports_app/inc/extra_records_reports.html' %}
+                        <!-- End data usage reports segments -->
                 {% endif %}
 
-                {% else %}
-                <section id="wrong-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
-                    <div class="card card-custom gutter-b">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <h3 class="card-label">
-
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p class="h1 text-danger text-center">
-                                Wrong Filter option!
-                            </p>
-                        </div>
-                    </div>
-                </section>
-                {% endif %}
-
-                {% empty %}
-                <section id="no-filter-option" class="flex-row-fluid ml-lg-8 mt-5">
+                <!-- Start Default no filter -->
+                <section id="no-filter-option" style="display: none" class="flex-row-fluid ml-lg-8 mt-5">
                     <div class="card card-custom gutter-b">
                         <div class="card-header">
                             <div class="card-title">
@@ -139,7 +149,7 @@ List of reports
                         </div>
                     </div>
                 </section>
-                {% endfor %}
+                <!-- End Default no filter -->
 
             </section>
             <!--End Reports content wrapper-->
@@ -154,14 +164,15 @@ List of reports
 
 {% block customjs %}
 <!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
-<script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/pages/crud/forms/widgets/tagify.js' %}"></script>
 <script>
     // nested
-    $('#reports-users-state-filter').select2({
+    $('#gen-filter-state').select2({
         placeholder: "Select state"
     });
-    $('#reports-users-country-filter').select2({
+    $('#gen-filter-users-country').select2({
         placeholder: "Select country"
     });
     $('.datePickerInputs').datepicker({

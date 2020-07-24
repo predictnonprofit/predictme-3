@@ -8,9 +8,12 @@ $(document).ready(function () {
         let filterTypeSelect = $("#filterTypeSelect");
         setURLQuery(filterTypeSelect);
     });
-
     // enable other org type input
-    enableOtherOrgType("#reports-users-org-type", '#reports-other-org-type');
+    enableOtherOrgType("#gen-filter-users-org-type", '#gen-filter-other-org-type');
+
+    // reset function btn
+    const resetReportsFilterBtn = $("#resetReportsFilterBtn");
+    resetReportsFilterBtn.on('click', resetFilters);
 
 });
 
