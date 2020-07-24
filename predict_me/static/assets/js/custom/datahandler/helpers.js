@@ -747,7 +747,7 @@ function uploadProgressModal(isOk, data) {
                     i++;
 
                     let tmpMarkupLi = `
-                    <li data-idx='${i}' class="columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action noselect">
+                    <li data-idx='${i}' class="columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action noselect">
                                 ${i}. ${name.trim()}
                                 <span class="noselect">
                                 <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
@@ -958,7 +958,7 @@ function reselectColumnsFunc() {
                     `;
             } else {
                 tmpMarkupLi = `
-                    <li data-idx = '${i}' class="noselect columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+                    <li data-idx = '${i}' class="noselect columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
                                     <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
