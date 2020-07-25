@@ -134,6 +134,7 @@ function selectAvaliableColumns() {
             const optionsMarkup = dataTypeOptions(colDataType);
             createNewItemRightColumn(idx, colName, colDataType, optionsMarkup);
             clickedLeftColumnItem.removeClass('active').addClass("disabled bg-gray-200");
+            // $(".column-option-dtype").trigger('change', "reselect");
 
         } catch (error) {
             //throw error;
@@ -142,6 +143,11 @@ function selectAvaliableColumns() {
             }
         } finally {
             clickedLeftColumnItem = ""; // to avoid duplicat items
+            $("#validateColumnsBtn").removeClass("btn-light-primary");
+            $("#isValidateData").html(timesMark).removeClass('text-success').addClass("text-danger");
+            $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+            $("#validateColumnsBtn").attr("disabled", "disabled");
+            $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
         }
 
     });
@@ -191,6 +197,10 @@ function addItemRightColumn() {
         } finally {
             clickedLeftColumnItem = ""; // to avoid duplicat items
             $("#validateColumnsBtn").removeClass("btn-light-primary");
+            $("#isValidateData").html(timesMark).removeClass('text-success').addClass("text-danger");
+            $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+            $("#validateColumnsBtn").attr("disabled", "disabled");
+            $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
         }
     } else {
         swAlert("error", "Please select column from left!", 'error');
@@ -226,7 +236,11 @@ function addAllRightColumnItems() {
         createNewItemRightColumn(idx, colName, colDataType, optionsMarkup);
         clickedLeftColumnItem.removeClass('active').addClass("disabled bg-gray-200");
         clickedLeftColumnItem = "";
+
     });
+    // this to reset and fix the criteria when add all columns btn clicked
+    $(".column-option-dtype").trigger('change', "reselect");
+    resetAllCriteria();
 }
 
 function addAllLeftColumnItems() {
@@ -246,6 +260,8 @@ function addAllLeftColumnItems() {
         clickedRightColumnItem.remove();
         clickedRightColumnItem = "";
         selectedOptionsArray = [];
+        resetAllColumnsToDefault();
+
 
     });
 }
@@ -426,12 +442,14 @@ function sendRequestValidate() {
                 allowEscapeKey: false,
             }).then((result) => {
                 if (result.value) {
+                    $("#validateColumnsBtn").attr("disabled", 'disabled').toggleClass('disabled');
+                    $("#processPickedColumnsBtn").attr("disabled", 'disabled').toggleClass('disabled');
                     $("#processPickedColumnsBtn").trigger('click');
                 } else if (
                     /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel
                 ) {
-                   Swal.close();
+                    Swal.close();
                 }
             })
         }
@@ -443,13 +461,14 @@ function sendRequestValidate() {
 
 function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
+    if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
+    element.removeAttr('title');  // to remove current tooltip if exists, avoid tooltip bug
     const elementLiParent = $(element.parent().parent());
     const dataIX = elementLiParent.data("idx");
     // console.log(element.data(), element.text());
     // console.log(element.val());
     // check if the value not empty to add
     if (element.val() !== "") {
-
         try {
             // const tmpValue = element.val().trim().toLowerCase();
             // optionsSelected.push(tmpValue);
@@ -557,6 +576,16 @@ function columnOptionsChangeSaved(ele, option) {
                 $("#isValidateData").html(checkMark).removeClass('text-danger').addClass("text-success");
             }
         });
+
+    } else {
+        // here if the member select blank or empty option
+        $("#isValidateData").html(timesMark).removeClass('text-success').addClass("text-danger");
+        $("#validateColumnsBtn").addClass("btn-light-primary disabled");
+        $("#validateColumnsBtn").attr("disabled", "disabled");
+        $("#validateColumnsBtn").attr("style", "cursor: not-allowed;");
+        element.addClass('border border-danger');
+
+
     }
 
 
@@ -635,6 +664,7 @@ function mutationHandler(mutationRecords) {
         }
 
         if (typeof mutation.addedNodes === 'object') {
+
             // console.log(isUniqueIDSelected);
             let pickedRightCol = $(mutation.addedNodes);
             const pickedRightSelect = pickedRightCol.find('select');
@@ -644,6 +674,9 @@ function mutationHandler(mutationRecords) {
                 } else {
                     $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
                 }
+
+                // here for set criteria to false because no data type selected for new column
+
             }
         }
 

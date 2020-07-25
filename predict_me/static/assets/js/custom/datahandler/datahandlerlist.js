@@ -485,6 +485,7 @@ $(document).ready(function () {
     const reselectColumnsBtn = $("#reselectColumnsBtn");
     reselectColumnsBtn.on("click", function (e) {
         e.preventDefault();
+        $('[data-toggle="tooltip"]').tooltip('dispose');
         reselectColumnsFunc();
     });
 
@@ -500,8 +501,10 @@ $(document).ready(function () {
         clickedRecordsCount = 50;
         clickedFilteredColName = "";
         $("#no-data-watermark").hide();
+        $(".data-table-nav-btns[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $(".data-table-nav-btns[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        $(".data-table-nav-btns[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
     });
 
 
@@ -518,6 +521,13 @@ $(document).ready(function () {
         const theAction = $(this).data('action');
         if (theAction === 'next') {
             clickedRecordsCount += 50;
+            let checkLastPageResponse = fetchDataFileRows(clickedRecordsCount + 50);
+            $.when(checkLastPageResponse).done(function (data, textStatus, jqXHR){
+                // console.log(data['data'].length);
+                if(data['data'].length  < 50){
+                   $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                }
+            });
         } else if (theAction === "previous") {
             if (clickedRecordsCount !== 50) {
                 clickedRecordsCount = clickedRecordsCount - 50;
@@ -596,6 +606,26 @@ $(document).ready(function () {
     // data handler wrapper function
     dataHandlerWrapperTabs();
 
+    // this to reset upload checkbox when closed
+    $('#instructionsModal').on('show.bs.modal', function() {
+        let instructionInputs = $(".instruction-check-btn");
+        // this to reset the check boxes in upload instruction model if closed and not click on check mark
+        for (const input of instructionInputs) {
+            const inputJQ = $(input);
+            inputJQ.prop("checked", false);
+        }
+      $(this).find('.modal-body').css({
+            'max-height': '100%'
+      });
+    });
+
+    // this to make pick column window responsive
+    $('#columnsDualBoxModal').on('show.bs.modal', function() {
+      $(this).find('.modal-body').css({
+            'max-height': '100%',
+            'max-width': '100%'
+      });
+    });
 
 
 });  // end of $(document).ready() event

@@ -18,51 +18,62 @@
 
                 <div class="card card-custom gutter-b mx-auto" style="height: 100%;">
 
-                    <div class="card-body h-100">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col border-right">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        <div class="d-inline-flex justify-content-between w-100">
-                                            <div class="p-1 mx-3">
-                                                <div class="font-weight-bolder" id='avaliableColumnsTotal'>
-                                                    <h5>Columns total &nbsp;<b></b></h5>
+                    <div class="card-body h-100 pb-0">
+                        <div class="container-fluid">
+                            <div class="row ">
+                                <div class="col-md-12 col-sm-12 col-lg-5">
+                                    <div class="d-inline-flex justify-content-between w-100">
+                                        <div class="p-1 mx-3">
+                                            <div class="font-weight-bolder" id='avaliableColumnsTotal'>
+                                                <h5>Columns total &nbsp;<b></b></h5>
 
-                                                </div>
-                                            </div>
-
-                                            <div class="p-1">
-                                                <h6 class="font-weight-bolder">Default Data Format</h6>
                                             </div>
                                         </div>
 
+                                        <div class="p-1">
+                                            <h6 class="font-weight-bolder">Default Data Format</h6>
+                                        </div>
+                                    </div>
 
-                                        <ul class="list-group" id="availableColumnsList"
-                                            style="overflow-y: scroll; height: 400px;">
 
-                                        </ul>
+                                    <ul class="list-group border-bottom" id="availableColumnsList"
+                                        style="overflow-y: scroll; height: 400px;">
+
+                                    </ul>
 
                                 </div>
 
-                                <div class="col-1">
-                                    <div class="btn-group-vertical py-5" role="group"
-                                         aria-label="Vertical DualBox group">
-                                        <button type="button" id="addColumnBtn" class="btn btn-light my-2">></button>
-                                        <button type="button" id="removeColumnBtn" class="btn btn-light my-2">
-                                            <
-                                        </button>
-                                        <button type="button" id="addAllColumnsBtn"
-                                                class="btn btn-light  my-2">>>
-                                        </button>
-                                        <button type="button" id="removeAllColumnsBtn" class="btn btn-light my-2">
+                                <div class="col-sm col-md col-lg">
+                                    <div id="pick-columns-btns" class="mt-lg-15 mt-sm-5 mt-md-15 text-center">
+
+                                        <button type="button" id="removeAllColumnsBtn" class="btn btn-light ">
                                             <<
                                         </button>
+                                        <button type="button" id="removeColumnBtn" class="btn btn-light ">
+                                            <
+                                        </button>
+
+                                        <button type="button" id="addColumnBtn" class="btn btn-light ">></button>
+                                        <button type="button" id="addAllColumnsBtn"
+                                                class="btn btn-light ">>>
+                                        </button>
+                                    </div>
+                                    <div id="validate-reset-btns-block" class="mb-10 mt-7">
+                                        <button type="button" id='validateColumnsBtn'
+                                                class="btn btn-light-primary btn-block font-weight-bold disabled"
+                                                style="cursor: not-allowed;"
+                                                disabled>Validate
+                                        </button>
+                                        <button type="button" id="resetColumnBoxBtn"
+                                                class="btn btn-outline-danger btn-block font-weight-bold">Reset
+                                        </button>
+
                                     </div>
 
 
                                 </div>
-                                <div class="col border-left">
+
+                                <div class="col-md-12 col-sm-12 col-lg-5">
                                     <div class="d-inline-flex justify-content-between w-100">
                                         <div class="p-1">
                                             <div class="font-weight-bolder" id='pickedColumnsTotal'>
@@ -76,49 +87,45 @@
                                     </div>
                                     <!--begin::Table-->
 
-                                    <ul class="list-group" id="pickedColumnsList"
+                                    <ul class="list-group border-bottom" id="pickedColumnsList"
                                         style="overflow-y: scroll; height: 400px;">
                                     </ul>
                                 </div>
+
                             </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="alert alert-custom alert-outline-2x alert-light-warning fade show mt-10"
+                                         role="alert">
+
+                                        <div class="alert-text">
+                                            <ul id="dataFileUploadCheckList" class="pt-0">
+                                                <li class="font-weight-bolder">Select Unique ID <span
+                                                        id="selectUniqueID"
+                                                        class="ml-2 text-danger">&#10060;</span>
+                                                </li>
+                                                <li class="font-weight-bolder">Minimum select 3 textual columns <span
+                                                        id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
+                                                <li class="font-weight-bolder">Select the data type of selected columns
+                                                    <span
+                                                            id="isValidateData" class="ml-2 text-danger">&#10060;</span>
+                                                </li>
+                                                <li class="font-weight-bolder d-none" id="donationFieldLi">Select
+                                                    Donation
+                                                    Field<span id="donationField"
+                                                               class="ml-2 text-danger">&#10060;</span></li>
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="card-footer pb-0">
-                        <div class="text-right">
-                            <button type="button" id="resetColumnBoxBtn"
-                                    class="btn btn-outline-danger font-weight-bold">Reset
-                            </button>
-                            <button type="button" id='validateColumnsBtn'
-                                    class="btn btn-light-primary font-weight-bold disabled" style="cursor: not-allowed;"
-                                    disabled>Validate
-                            </button>
-                        </div>
-                        <p class="text-left">
-                        <div class="alert alert-custom alert-secondary fade show mb-5"
-                             role="alert">
-                            <div class="alert-icon">
-                                <i class="flaticon-warning"></i>
-                            </div>
-                            <div class="alert-text">
-                                <ul id="dataFileUploadCheckList" class="pt-0">
-                                    <li class="font-weight-bolder">Select Unique ID <span id="selectUniqueID"
-                                                                                          class="ml-2 text-danger">&#10060;</span>
-                                    </li>
-                                    <li class="font-weight-bolder">Minimum select 3 textual columns <span
-                                            id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
-                                    <li class="font-weight-bolder">Select the data type of selected columns <span
-                                            id="isValidateData" class="ml-2 text-danger">&#10060;</span></li>
-                                    <li class="font-weight-bolder d-none" id="donationFieldLi">Select Donation
-                                        Field<span id="donationField" class="ml-2 text-danger">&#10060;</span></li>
 
-                                </ul>
-                            </div>
-
-                        </div>
-                        </p>
-
-
-                    </div>
                 </div>
 
                 <!--End::Row-->
@@ -138,7 +145,6 @@
                         disabled
                         id="processPickedColumnsBtn">Process
                 </button>
-                </form>
             </div>
         </div>
     </div>

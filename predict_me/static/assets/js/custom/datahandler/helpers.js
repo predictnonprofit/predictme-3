@@ -365,11 +365,11 @@ function setColumnNamesHeader(columnsList) {
         let row = "";
         if (col['isUnique'] === true) {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-info-circle"></i></th>
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         } else {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-info-circle"></i></th>
+            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         }
         tableHeaderElement.append(row);
@@ -919,7 +919,7 @@ function dataTypeOptions(dataType, setSelected, uniqueColumn, colName) {
 
 // when user click on reselect columns btn
 function reselectColumnsFunc() {
-    $("#closeReselectColsModal").toggleClass("d-none");
+    $("#closeReselectColsModal").removeClass("d-none");
     let optionsList = '';
     let rightOptionsList = '';
     let dataFileColumnsSelect = $("#availableColumnsList");
@@ -935,7 +935,6 @@ function reselectColumnsFunc() {
         console.log(jqXHR);
         console.log(data);*/
 
-
         const tmpSelectedColsArr = Object.keys(data['selected_columns']);  // member selected columns
         let i = 0;
         for (let [name, dType] of Object.entries(data['all_columns'])) {
@@ -947,7 +946,7 @@ function reselectColumnsFunc() {
             // check if the column name in the picked columns, so will disable it
             if (tmpSelectedColsArr.includes(name) === true) {
                 tmpMarkupLi = `
-                    <li data-idx = '${i}' class="disabled noselect bg-gray-200 columnItem font-weight-bolder list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
+                    <li data-idx = '${i}' class="disabled noselect bg-gray-200 columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
                                     <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
@@ -1041,7 +1040,7 @@ function resetSorting() {
     // tableBody.innerHTML = "";
     let resetFetchRecoredsResponse = fetchDataFileRows();
     $.when(resetFetchRecoredsResponse).done(function (data, textStatus, jqXHR) {
-        if (textStatus == "success") {
+        if (textStatus === "success") {
             $("#loadingDataSpinner").fadeOut(200);
             drawDataTableRows(data, false);
         } else {
@@ -1370,13 +1369,25 @@ function confirmRunModal() {
                     }, 100)
                 },
                 onClose: () => {
-                    clearInterval(timerInterval)
+                    clearInterval(timerInterval);
+
                 }
             }).then((result) => {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
                     console.log('I was closed by the timer');
-                    window.location.href = webSiteUrl.concat("/profile/dashboard");
+                    let sessionLabelCheckResponse = checkSessionLabelRequest();
+                    console.log(sessionLabelCheckResponse);
+                    $.when(sessionLabelCheckResponse).done(function (data, textStatus, jqXHR) {
+                        if ((jqXHR.status === 200) && (textStatus === 'success')) {
+                            console.log(data);
+                            if (data === false) {
+                                console.log('after timer');
+                                setSessionLabel();
+                            }
+
+                        }
+                    });
                 }
             })
         } else if (
@@ -1416,5 +1427,43 @@ function dataHandlerWrapperTabs() {
         }
     })
 
+
+}
+
+// this function will set the label of the data handler session
+async function setSessionLabel() {
+    let checkStatus = '';  // if the check label is false means no session in the db
+    // first check if the current session has label or not
+
+
+    if (!checkStatus) {
+        const {value: sessionLabel} = await Swal.fire({
+            title: 'Enter Label for current session',
+            input: 'text',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            // inputValue: inputValue,
+            showLoaderOnConfirm: true,
+            showCancelButton: false,
+            confirmButtonText: "Submit",
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write something!'
+                }
+            }
+        })
+
+        if (sessionLabel) {
+            let sessionLabelRespone = setSessionLabelRequest(sessionLabel, 'set');
+            $.when(sessionLabelRespone).done(function (data, textStatus, jqXHR) {
+                if ((jqXHR.status === 200) && (textStatus === 'success')) {
+                    document.title = sessionLabel;
+                    $("#data-handler-dashboard-label").text(sessionLabel);
+                    Swal.fire(data);
+                    window.location.href = webSiteUrl.concat("/profile/dashboard");
+                }
+            })
+        }
+    }
 
 }
