@@ -78,9 +78,17 @@ Manage Your Data
     #pick-columns-btns button{
         margin-left: -12px;
     }
-    @media only screen and (max-width: 600px) {
+    #top-data-table-toolbar{
+            margin-top: 15px;
+
+        }
+    @media only screen and (max-width: 768px) {
             #pick-columns-btns{
-                margin-top: 15px;
+                margin-top: 25px;
+        }
+        #top-data-table-toolbar{
+            margin-top: 60px;
+            text-align: center;
         }
     }
 
@@ -425,8 +433,9 @@ Data Handler
 
 
                                 </div>
-                                <h3 class="card-title w-auto d-flex mt-md-10">
-                                    <div class="flex-fill p-1">
+                                <div class="container">
+                                    <h3 class="card-title w-100 row" id="top-data-table-toolbar">
+                                    <div class="col-sm-12 col-md-12 col-lg-3">
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <input type="search" id="searchQuery" class="form-control"
@@ -440,7 +449,7 @@ Data Handler
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex-fill p-1">
+                                    <div class="col-sm-6 col-md-6 col-lg-3">
                                         <div class="form-group">
                                             <button type="button" data-toggle="tooltip" title="Undo last change"
                                                     class="btn btn-outline-warning disabled"
@@ -448,10 +457,6 @@ Data Handler
                                                     disabled id="undoBtn">
                                                 <i class="la la-undo-alt"></i>
                                             </button>
-                                        </div>
-                                    </div>
-                                    <div class="flex-fill p-1">
-                                        <div class="form-group">
                                             <button type="button" class="btn btn-secondary disabled"
                                                     style="cursor: not-allowed;" disabled
                                                     id="resetSortTableBtn">
@@ -459,7 +464,8 @@ Data Handler
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="flex-fill p-1">
+
+                                    <div class="col-sm-6 col-md-6 col-lg-4 text-lg-left">
                                         <div class="form-group">
                                             <div class="btn-group" role="group" aria-label="Data Table Navigation">
                                                 <button type="button" data-action="first" disabled
@@ -491,6 +497,7 @@ Data Handler
                                         </div>
                                     </div>
                                 </h3>
+                                </div>
                             </div>
                             <div class="card-body p-0">
                                 <!--begin: Datatable-->
@@ -558,24 +565,37 @@ Data Handler
                                                 <div class="card-body">
                                                     <div class="container">
                                                         <div class="row">
-                                                            <div class="col-lg col-md col-sm text-center">
-                                                                <div class="btn-group" role="group"
-                                                                     aria-label="Data Table Navigation">
-                                                                    <button type="button" data-action="previous"
-                                                                            class="btn btn-secondary data-table-nav-btns"
-                                                                            data-toggle="tooltip"
-                                                                            title="Previous 50 records">
-                                                                        <i class="icon-lg la la-angle-left"></i>
-                                                                    </button>
+                                                           <div class="col-sm col-md col-lg text-center">
+                                        <div class="form-group">
+                                            <div class="btn-group" role="group" aria-label="Data Table Navigation">
+                                                <button type="button" data-action="first" disabled
+                                                        class="btn btn-secondary data-table-nav-btns"
+                                                        data-toggle="tooltip"
+                                                        title="First Page">
+                                                    <i class="icon-lg la la-angle-double-left"></i>
+                                                </button>
+                                                <button type="button" data-action="previous" disabled
+                                                        class="btn btn-secondary data-table-nav-btns"
+                                                        data-toggle="tooltip"
+                                                        title="Previous 50 records">
+                                                    <i class="icon-lg la la-angle-left"></i>
+                                                </button>
 
-                                                                    <button data-action="next" type="button"
-                                                                            class="btn btn btn-secondary data-table-nav-btns"
-                                                                            data-toggle="tooltip"
-                                                                            title="Next 50 records">
-                                                                        <i class="la la-angle-right"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
+                                                <button data-action="next" type="button"
+                                                        class="btn btn btn-secondary data-table-nav-btns"
+                                                        data-toggle="tooltip"
+                                                        title="Next 50 records">
+                                                    <i class="la la-angle-right"></i>
+                                                </button>
+                                                <button type="button" data-action="last" disabled
+                                                        class="btn btn-secondary data-table-nav-btns"
+                                                        data-toggle="tooltip"
+                                                        title="Last Page">
+                                                    <i class="icon-lg la la-angle-double-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                                         </div>
                                                     </div>
                                                 </div>
