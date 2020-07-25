@@ -37,7 +37,7 @@ Manage Your Data
     ul.vakata-context,
     ul.jstree-contextmenu,
     ul.jstree-default-contextmenu {
-        z-index: 9999;
+        z-index: 1;
     }
 
     #semitransparent {
@@ -69,7 +69,7 @@ Manage Your Data
     }
 
     .protip, .protip-open {
-        z-index: 9999 !important;
+        z-index: auto !important;
     }
      #pick-columns-btns{
         margin-left: 8px;
@@ -93,7 +93,7 @@ Manage Your Data
 
 /* Just common table stuff. Really. */
 table  { border-collapse: collapse; width: 100%; }
-th, td { padding: 8px 16px; z-index: 9999 !important; }
+th, td { padding: 8px 16px; z-index: auto !important; }
 th     { background:#eee; }
 
 /* Borders (if you need them) */
@@ -382,7 +382,7 @@ Data Handler
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="ki ki-bold-more-hor text-white"></i>
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dataHandlerActions">
+                                        <div class="dropdown-menu" style="z-index: auto !important;" aria-labelledby="dataHandlerActions">
                                             <div class="dropdown-header">
                                                 Export Data
                                             </div>
