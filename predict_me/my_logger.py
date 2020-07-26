@@ -1,9 +1,8 @@
 import logging
-import os
 import sys
 import traceback
 from pathlib import Path
-from django.core.files.storage import default_storage
+
 
 
 def setup_logging_to_file():
