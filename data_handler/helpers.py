@@ -7,7 +7,8 @@ from .validators import *
 from itertools import islice
 import copy
 from termcolor import cprint
-import traceback, gc
+import traceback
+from predict_me.my_logger import log_exception
 
 validate_obj = DataValidator()
 
@@ -47,8 +48,9 @@ def save_data_file_rounded(file_path):
             if df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
-                # df_copy[col] = df_copy.loc[df_copy[col].str.startswith("$", na=False), col]
-                # df_copy[col] = df_copy[col].apply(clean_currency).astype('float')
+            # if df_copy[col].dtype == "bool":
+            #     df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
+
 
         # print(df.columns)
         # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
@@ -64,6 +66,7 @@ def save_data_file_rounded(file_path):
     except Exception as ex:
         cprint(str(ex), 'red')
         delete_data_file(file_path)
+        log_exception(traceback.format_exc())
 
 
 def download_data_file_converter(member_data_file):
@@ -77,41 +80,52 @@ def download_data_file_converter(member_data_file):
         elif data_file_path.suffix == ".csv":
             df.to_csv(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
     except Exception as ex:
-        cprint(str(ex))
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def extract_all_columns_with_dtypes(file_name):
-    all_columns = {}  # hold all columns in the file
+    try:
+        all_columns = {}  # hold all columns in the file
 
-    df = get_df_from_data_file(file_name)
+        df = get_df_from_data_file(file_name)
 
-    # iterating the columns
-    for col in df.columns:
-        # print(col)
-        # print(type(df.dtypes[col]))
-        all_columns[col] = str(df.dtypes[col])
+        # iterating the columns
+        for col in df.columns:
+            # print(col)
+            # print(type(df.dtypes[col]))
+            all_columns[col] = str(df.dtypes[col])
 
-    # all_columns = sorted(all_columns)
-    # print(all_columns)
-    return all_columns
+        # all_columns = sorted(all_columns)
+        # print(all_columns)
+        return all_columns
+
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def extract_all_column_names(file_name):
-    all_columns = []  # hold all columns in the file
+    try:
+        all_columns = []  # hold all columns in the file
 
-    df = get_df_from_data_file(file_name)
-    full_file_path = Path(file_name)
+        df = get_df_from_data_file(file_name)
+        full_file_path = Path(file_name)
 
-    # iterating the columns
-    for col in df.columns:
-        # print(col)
-        # print(type(df.dtypes[col]))
-        all_columns.append(col)
-    # all_columns = df.columns
+        # iterating the columns
+        for col in df.columns:
+            # print(col)
+            # print(type(df.dtypes[col]))
+            all_columns.append(col)
+        # all_columns = df.columns
 
-    # all_columns = sorted(all_columns)
-    # print(all_columns)
-    return all_columns
+        # all_columns = sorted(all_columns)
+        # print(all_columns)
+        return all_columns
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def get_row_count(file_path):
@@ -125,7 +139,7 @@ def get_row_count(file_path):
 
 def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, unique_column):
     try:
-        all_rows = []
+        all_rows = ()
         # print(columns)
         df = get_df_from_data_file(file_path)
         records_count = int(records_count)
@@ -161,40 +175,46 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
         else:
             return all_rows
     except Exception as ex:
-        cprint(str(ex), 'red')
+        # cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def get_rows_data_by_search_query(file_path, columns, search_query, columns_with_dtypes):
-    all_rows = []
-    search_query = str(search_query)
-    df = get_df_from_data_file(file_path)
+    try:
+        all_rows = []
+        search_query = str(search_query)
+        df = get_df_from_data_file(file_path)
 
-    current_record_data = {}
-    for index, row in df.iterrows():
-        # index is the index in the data frame
-        # row is the series object
-
-        for col in columns:
-            # print(index, "----> ", col, "--->", row[col], end='\n')
-
-            if row.str.contains(search_query, case=False).any() is True:
-                # print(row.str.contains(search_query, case=False).any())
-                tmp_dtype = columns_with_dtypes[col]
-                tmp_cell_val = row[col]
-                current_record_data["ID"] = index
-                tmp_cell_val = replace_nan_value(tmp_cell_val)
-                current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
-
-        if current_record_data:  # check if the dictionary is empty or contain elements
-            all_rows.insert(0, current_record_data)
         current_record_data = {}
+        for index, row in df.iterrows():
+            # index is the index in the data frame
+            # row is the series object
 
-    # print(all_rows[0])
-    if len(all_rows) <= 0:
-        return 0
-    else:
-        return all_rows
+            for col in columns:
+                # print(index, "----> ", col, "--->", row[col], end='\n')
+
+                if row.str.contains(search_query, case=False).any() is True:
+                    # print(row.str.contains(search_query, case=False).any())
+                    tmp_dtype = columns_with_dtypes[col]
+                    tmp_cell_val = row[col]
+                    current_record_data["ID"] = index
+                    tmp_cell_val = replace_nan_value(tmp_cell_val)
+                    current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
+
+            if current_record_data:  # check if the dictionary is empty or contain elements
+                all_rows.insert(0, current_record_data)
+            current_record_data = {}
+
+        # print(all_rows[0])
+        if len(all_rows) <= 0:
+            return 0
+        else:
+            return all_rows
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def get_not_validate_rows(file_path, all_columns, column_name):
@@ -235,59 +255,66 @@ ERROR_ROWS_IDXS = []  # the rows which contains error or not validate data
 
 
 def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dtypes, records_count=50):
-    global SELECTED_COLUMN, ERROR_ROWS_IDXS
-    SELECTED_COLUMN = column_name
-    # print(SELECTED_COLUMN)
-    # all_columns = sorted(all_columns)
-    errors_idx_lst = []
-    all_rows = []
-    df = get_df_from_data_file(file_path)
-    records_count = int(records_count)
-    print(records_count)
+    try:
+        global SELECTED_COLUMN, ERROR_ROWS_IDXS
+        SELECTED_COLUMN = column_name
+        # print(SELECTED_COLUMN)
+        # all_columns = sorted(all_columns)
+        errors_idx_lst = []
+        all_rows = []
+        df = get_df_from_data_file(file_path)
+        records_count = int(records_count)
+        print(records_count)
 
-    for tupls in df.itertuples():
-        row_as_dict = tupls._asdict()
-        for key, value in row_as_dict.items():
-            # print(key, "------>", value)
-            if key == column_name:
-                tmp_dtype = columns_with_dtypes[key]
-                curr_row = validate_obj.detect_and_validate(value, dtype=tmp_dtype)
-                if curr_row['is_error'] is True:
-                    errors_idx_lst.append(row_as_dict['Index'])
+        for tupls in df.itertuples():
+            row_as_dict = tupls._asdict()
+            for key, value in row_as_dict.items():
+                # print(key, "------>", value)
+                if key == column_name:
+                    tmp_dtype = columns_with_dtypes[key]
+                    curr_row = validate_obj.detect_and_validate(value, dtype=tmp_dtype)
+                    if curr_row['is_error'] is True:
+                        errors_idx_lst.append(row_as_dict['Index'])
 
-    df_error = df.copy().reindex(errors_idx_lst)
-    df_correct = df.loc[~df.index.isin(errors_idx_lst)]
-    cprint(f"Valid Rows {len(df_correct)}", 'green')
-    cprint(f"Not Valid Rows {len(df_error)}", "red")
-    # df_error = df_error.append(df_correct, ignore_index=True)
-    df_error = df_error.append(df_correct)
-    cprint(f"All Rows {len(df_error)}", 'yellow')
-    # print(df_error.head())
+        df_error = df.copy().reindex(errors_idx_lst)
+        df_correct = df.loc[~df.index.isin(errors_idx_lst)]
+        cprint(f"Valid Rows {len(df_correct)}", 'green')
+        cprint(f"Not Valid Rows {len(df_error)}", "red")
+        # df_error = df_error.append(df_correct, ignore_index=True)
+        df_error = df_error.append(df_correct)
+        cprint(f"All Rows {len(df_error)}", 'yellow')
+        # print(df_error.head())
 
-    current_record_data = {}
-
-    previous_50_count = records_count - 50
-
-    for index, row in islice(df_error.iterrows(), previous_50_count, records_count):
-        # for index, row in results.iterrows():
-        # row is the series object
-        for col in all_columns:
-            # print(index, "----> ", col, "--->", row[col], end='\n')
-            tmp_dtype = columns_with_dtypes[col]
-            tmp_cell_val = row[col]
-            tmp_cell_val = replace_nan_value(tmp_cell_val)
-            current_record_data["ID"] = index
-            current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
-        # all_rows.insert(0, current_record_data)
-        all_rows.append(current_record_data)
         current_record_data = {}
 
-    # del results, df_copy_error_data, df_copy_correct_data, frames
-    # print(len(all_rows))
-    if len(all_rows) <= 0:
-        return 0
-    else:
-        return all_rows
+        previous_50_count = records_count - 50
+
+        for index, row in islice(df_error.iterrows(), previous_50_count, records_count):
+            # for index, row in results.iterrows():
+            # row is the series object
+            for col in all_columns:
+                # print(index, "----> ", col, "--->", row[col], end='\n')
+                tmp_dtype = columns_with_dtypes[col]
+                tmp_cell_val = row[col]
+                tmp_cell_val = replace_nan_value(tmp_cell_val)
+                current_record_data["ID"] = index
+                current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
+            # all_rows.insert(0, current_record_data)
+            all_rows.append(current_record_data)
+            current_record_data = {}
+
+        # del results, df_copy_error_data, df_copy_correct_data, frames
+        # print(len(all_rows))
+        if len(all_rows) <= 0:
+            return 0
+        else:
+            return all_rows
+
+    except Exception as ex:
+        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
+
 
 
 def validate_series(data_value: pd.Series):
@@ -341,6 +368,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
@@ -364,22 +392,27 @@ def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
 def get_df_from_data_file(file_path):
     data_file = Path(file_path)
     df = None
-    if data_file.exists():
-        if data_file.suffix == ".xlsx":
-            df = pd.read_excel(data_file.as_posix())
-        elif data_file.suffix == ".csv":
-            df = pd.read_csv(data_file.as_posix(), sep=',')
+    try:
+        if data_file.exists():
+            if data_file.suffix == ".xlsx":
+                df = pd.read_excel(data_file.as_posix(), true_values=['1'], false_values=['0'])
+            elif data_file.suffix == ".csv":
+                df = pd.read_csv(data_file.as_posix(), sep=',', true_values=['1'], false_values=['0'])
 
-    # df = df.fillna(0)
-    # df = df.fillna(method='pad')
-    # this for fill the empty cells with its own empty values
-    float_cols = df.select_dtypes(include=['float64']).columns
-    str_cols = df.select_dtypes(include=['object']).columns
-    int_cols = df.select_dtypes(include=['int64']).columns
-    df.loc[:, float_cols] = df.loc[:, float_cols].fillna(0)
-    df.loc[:, int_cols] = df.loc[:, int_cols].fillna(0)
-    df.loc[:, str_cols] = df.loc[:, str_cols].fillna('NULL')
-    return df
+        # df = df.fillna(0)
+        # df = df.fillna(method='pad')
+        # this for fill the empty cells with its own empty values
+        float_cols = df.select_dtypes(include=['float64']).columns
+        str_cols = df.select_dtypes(include=['object']).columns
+        int_cols = df.select_dtypes(include=['int64']).columns
+        df.loc[:, float_cols] = df.loc[:, float_cols].fillna(0)
+        df.loc[:, int_cols] = df.loc[:, int_cols].fillna(0)
+        df.loc[:, str_cols] = df.loc[:, str_cols].fillna('NULL')
+        return df
+
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def replace_nan_value(value):
@@ -418,24 +451,29 @@ def reorder_columns(the_reset_of_column, is_dict=False):
     unique_idx = "unique identifier (id)"
     unique_col = ''
 
-    if is_dict is False:
-        for col in the_reset_of_column:
-            if unique_idx in col.lower():
-                idx = the_reset_of_column.index(col)
-                unique_col = col
-                del the_reset_of_column[idx]
-                the_reset_of_column.insert(0, unique_col)
+    try:
+        if is_dict is False:
+            for col in the_reset_of_column:
+                if unique_idx in col.lower():
+                    idx = the_reset_of_column.index(col)
+                    unique_col = col
+                    del the_reset_of_column[idx]
+                    the_reset_of_column.insert(0, unique_col)
 
-        return the_reset_of_column
-    else:
-        new_ordered_list = []
-        for col_name, col_dtype in the_reset_of_column.items():
-            if unique_idx in col_dtype:
-                new_ordered_list.insert(0, col_name)
-            else:
-                new_ordered_list.append(col_name)
+            return the_reset_of_column
+        else:
+            new_ordered_list = []
+            for col_name, col_dtype in the_reset_of_column.items():
+                if unique_idx in col_dtype:
+                    new_ordered_list.insert(0, col_name)
+                else:
+                    new_ordered_list.append(col_name)
 
-        return new_ordered_list
+            return new_ordered_list
+
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def validate_column_date_type(columns):
@@ -473,29 +511,37 @@ def delete_all_member_data_file_info(member_data_file):
     Returns:
 
     """
-    member_data_file.data_file_path = "None"
-    member_data_file.file_upload_procedure = "None"
-    member_data_file.all_records_count = 0
-    member_data_file.selected_columns = ""
-    member_data_file.selected_columns_dtypes = ""
-    member_data_file.donor_id_column = ""
-    member_data_file.is_donor_id_selected = False
-    member_data_file.unique_id_column = ""
-    member_data_file.all_columns_with_dtypes = ""
-    member_data_file.is_process_complete = False
-    member_data_file.data_handler_session_label = ""
-    member_data_file.current_session_name = ""
-    member_data_file.save()
+    try:
+        member_data_file.data_file_path = "None"
+        member_data_file.file_upload_procedure = "None"
+        member_data_file.all_records_count = 0
+        member_data_file.selected_columns = ""
+        member_data_file.selected_columns_dtypes = ""
+        member_data_file.donor_id_column = ""
+        member_data_file.is_donor_id_selected = False
+        member_data_file.unique_id_column = ""
+        member_data_file.all_columns_with_dtypes = ""
+        member_data_file.is_process_complete = False
+        member_data_file.data_handler_session_label = ""
+        member_data_file.current_session_name = ""
+        member_data_file.save()
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list, file_path: Path, file_ext: str):
-    parent_dir = Path() / file_path.parent
-    df_selected_columns = df[selected_columns]
-    if file_ext == "xlsx":
-        full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.xlsx"
-        df_selected_columns.to_excel(full_file_path, header=True, index=False)
-        return full_file_path
-    elif file_ext == "csv":
-        full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.csv"
-        df_selected_columns.to_csv(full_file_path, header=True, index=False)
-        return full_file_path
+    try:
+        parent_dir = Path() / file_path.parent
+        df_selected_columns = df[selected_columns]
+        if file_ext == "xlsx":
+            full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.xlsx"
+            df_selected_columns.to_excel(full_file_path, header=True, index=False)
+            return full_file_path
+        elif file_ext == "csv":
+            full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.csv"
+            df_selected_columns.to_csv(full_file_path, header=True, index=False)
+            return full_file_path
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())

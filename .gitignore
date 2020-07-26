@@ -17,6 +17,7 @@ db.sqlite3-journal
 .idea
 *.json
 db_data
+logs
 
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
@@ -288,6 +289,7 @@ changes.txt
 custom_requirements.txt
 *.wpd
 *.wps
+.log
 
 ### VisualStudioCode ###
 .vscode/*

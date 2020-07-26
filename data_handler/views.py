@@ -31,17 +31,22 @@ class DataListView(LoginRequiredMixin, View):
 
     # template_name = "data_handler/list.html"
     def get(self, request, *args, **kwargs):
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        # this step will work when the member upload the file but did not pick any column
-        file_path = member_data_file.data_file_path
-        file_columns = member_data_file.get_selected_columns_as_list
-        columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
-        unique_column = member_data_file.unique_id_column
-        if (not bool(unique_column) and not bool(columns_with_dtypes)) and file_path != "None":
-            delete_data_file(member_data_file.data_file_path)
-            delete_all_member_data_file_info(member_data_file)
-        return render(request, "data_handler/list.html")
+        try:
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            # this step will work when the member upload the file but did not pick any column
+            file_path = member_data_file.data_file_path
+            file_columns = member_data_file.get_selected_columns_as_list
+            columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes
+            unique_column = member_data_file.unique_id_column
+            if (not bool(unique_column) and not bool(columns_with_dtypes)) and file_path != "None":
+                delete_data_file(member_data_file.data_file_path)
+                delete_all_member_data_file_info(member_data_file)
+            return render(request, "data_handler/list.html")
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
 
 @api_view(['POST'])
@@ -64,29 +69,33 @@ class DataHandlerFileUpload(APIView):
     parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request, filename, format=None):
-        from data_handler.models import DataFile
-        data_file = DataFile.objects.get(member=request.user)
-        dfile = request.FILES['donor_file']
-        path = default_storage.save(f"data/{dfile.name}", ContentFile(dfile.read()))
-        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-        save_data_file_rounded(tmp_file)
-        row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
-        columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
+        try:
+            from data_handler.models import DataFile
+            data_file = DataFile.objects.get(member=request.user)
+            dfile = request.FILES['donor_file']
+            path = default_storage.save(f"data/{dfile.name}", ContentFile(dfile.read()))
+            tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+            save_data_file_rounded(tmp_file)
+            row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
+            columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
 
-        ## save the file path after upload it into the db
-        if data_file.data_file_path is not None:
-            data_file.data_file_path = tmp_file
-            data_file.file_upload_procedure = "local_file"
-            data_file.all_records_count = row_count
-            data_file.save()
-        if row_count > data_file.allowed_records_count:
-            # return Response("Columns count bigger than the allowed")
-            resp = {"is_allowed": False, "row_count": row_count}
-            return Response(resp, status=200)
-        else:
-            resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
-            # print(columns)
-            return Response(resp, status=200)
+            ## save the file path after upload it into the db
+            if data_file.data_file_path is not None:
+                data_file.data_file_path = tmp_file
+                data_file.file_upload_procedure = "local_file"
+                data_file.all_records_count = row_count
+                data_file.save()
+            if row_count > data_file.allowed_records_count:
+                # return Response("Columns count bigger than the allowed")
+                resp = {"is_allowed": False, "row_count": row_count}
+                return Response(resp, status=200)
+            else:
+                resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
+                # print(columns)
+                return Response(resp, status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
 
 class SaveColumnsView(APIView):
@@ -149,8 +158,9 @@ class SaveColumnsView(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             cprint(str(ex), "red")
-            print(exc_type, fname, exc_tb.tb_lineno)
-            print(traceback.format_exc())
+            # print(exc_type, fname, exc_tb.tb_lineno)
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
             return Response(str(ex), status=401)
 
         finally:
@@ -188,6 +198,7 @@ class GetColumnsView(APIView):
 
         except Exception as ex:
             cprint(f"{ex}", 'red')
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -218,8 +229,12 @@ class GetAllColumnsView(APIView):
             return Response(
                 {"all_columns": all_columns, "selected_columns": selected_columns, "unique_column": unique_column},
                 status=200, content_type='application/json')
-        except AttributeError:
+        except AttributeError as aerr:
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
 
 class GetRowsView(APIView):
@@ -264,6 +279,7 @@ class GetRowsView(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), "red")
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -301,7 +317,11 @@ class GetRowsBySearchQueryView(APIView):
                 delete_all_member_data_file_info(member_data_file)
 
         except AttributeError:
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
 
 class NotValidateRowsView(APIView):
@@ -339,6 +359,7 @@ class NotValidateRowsView(APIView):
 
 
         except Exception as ex:
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -394,8 +415,10 @@ class SaveNewRowsUpdateView(APIView):
 
 
         except AttributeError:
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
         except Exception as ex:
+            log_exception(traceback.format_exc())
             cprint(str(ex), 'red')
             return Response(f"{ex}", status=200)
 
@@ -438,6 +461,7 @@ class DeleteDataFileView(APIView):
 
         except Exception as ex:
             print(ex)
+            log_exception(traceback.format_exc())
             return Response(str(ex), status=200)
 
 
@@ -456,27 +480,26 @@ class ValidateColumnsView(APIView):
     # parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request, format=None):
-        # try:
-        # print(request.user)
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        data_file = member_data_file.data_file_path
-        columns_list = member_data_file.get_selected_columns_as_list
-        columns = request.POST.get("columns")  # as a dict
-        columns_json = json.loads(columns)  # as a dict
-        # print(columns_json)
-        validate_columns_result = validate_data_type_in_dualbox(columns_json, data_file, columns_list)
-        # print(validate_columns_result)
+        try:
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            data_file = member_data_file.data_file_path
+            columns_list = member_data_file.get_selected_columns_as_list
+            columns = request.POST.get("columns")  # as a dict
+            columns_json = json.loads(columns)  # as a dict
+            # print(columns_json)
+            validate_columns_result = validate_data_type_in_dualbox(columns_json, data_file, columns_list)
+            # print(validate_columns_result)
 
-        if len(columns_json) > 3:
-            return Response({"msg": "THe message is here"}, status=200, content_type='application/json')
+            if len(columns_json) > 3:
+                return Response({"msg": "THe message is here"}, status=200, content_type='application/json')
 
-        else:
-            return Response("Please select at least 3 columns with the data type!", status=200)
+            else:
+                return Response("Please select at least 3 columns with the data type!", status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
-    # except Exception as ex:
-    #     print(ex)
-    #     return Response(str(ex), status=200)
 
 
 class FilterRowsView(APIView):
@@ -512,6 +535,7 @@ class FilterRowsView(APIView):
 
         except Exception as ex:
             cprint(str(ex), 'red')
+            log_exception(traceback.format_exc())
             return Response(str(ex), status=200)
 
 
@@ -537,6 +561,7 @@ class AcceptsDownload(APIView):
             return Response("update done", status=200)
 
         except ObjectDoesNotExist:
+            log_exception(traceback.format_exc())
             # if the member not exists before
             new_rec = MemberDownloadCounter()
             new_rec.member = request.user
@@ -549,6 +574,7 @@ class AcceptsDownload(APIView):
 
         except Exception as ex:
             print(ex)
+            log_exception(traceback.format_exc())
             return Response(str(ex), status=200)
 
 
@@ -563,9 +589,13 @@ class CheckMemberUpload(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        return Response(member_data_file.file_upload_procedure, status=200)
+        try:
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            return Response(member_data_file.file_upload_procedure, status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
 
 class CheckMemberProcessStatus(APIView):
@@ -596,6 +626,7 @@ class CheckMemberProcessStatus(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), 'red')
+            log_exception(traceback.format_exc())
 
         # print(process_status)
         return Response(process_status, status=200)
@@ -612,15 +643,16 @@ class FetchLastSessionNameView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        session_name = member_data_file.is_process_complete
+
 
         try:
-            print(session_name)
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            session_name = member_data_file.is_process_complete
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
             cprint(str(ex), 'red')
 
         # print(process_status)
@@ -638,16 +670,18 @@ class SetLastSessionName(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        session_name = request.POST.get("session_name")
+
 
         try:
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            session_name = request.POST.get("session_name")
             member_data_file.current_session_name = session_name
             member_data_file.save()
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
             cprint(str(ex), 'red')
 
         # print(process_status)
@@ -665,14 +699,15 @@ class SetSessionLabel(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-        from data_handler.models import DataFile
-        member_data_file = DataFile.objects.get(member=request.user)
-        print(request.POST)
-        session_label = request.POST.get("session_label")
-        session_task = request.POST.get("session_task", '')
-        session_get = request.POST.get('get_session_label', False)
-        session_get = bool(session_get)
+
         try:
+            from data_handler.models import DataFile
+            member_data_file = DataFile.objects.get(member=request.user)
+            print(request.POST)
+            session_label = request.POST.get("session_label")
+            session_task = request.POST.get("session_task", '')
+            session_get = request.POST.get('get_session_label', False)
+            session_get = bool(session_get)
             # this when member want to check the value of current session in the db
             if session_get is True:
                 # check if the session is null return False, True if the session in db
@@ -688,3 +723,4 @@ class SetSessionLabel(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), 'red')
+            log_exception(traceback.format_exc())
