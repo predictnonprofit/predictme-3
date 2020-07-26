@@ -257,6 +257,7 @@ class GetRowsView(APIView):
         try:
             # print(request.user)
             records_count = request.POST.get("recordsCount")
+
             file_path = member_data_file.data_file_path
             file_columns = member_data_file.get_selected_columns_as_list
             columns_with_dtypes = member_data_file.get_selected_columns_with_dtypes

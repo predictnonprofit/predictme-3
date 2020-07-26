@@ -501,10 +501,10 @@ $(document).ready(function () {
         clickedRecordsCount = 50;
         clickedFilteredColName = "";
         $("#no-data-watermark").hide();
-        $(".data-table-nav-btns[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-        $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-        $(".data-table-nav-btns[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
-        $(".data-table-nav-btns[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
     });
 
 
@@ -525,26 +525,47 @@ $(document).ready(function () {
             $.when(checkLastPageResponse).done(function (data, textStatus, jqXHR){
                 // console.log(data['data'].length);
                 if(data['data'].length  < 50){
-                   $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                   $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                   $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                   $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                 }
             });
         } else if (theAction === "previous") {
             if (clickedRecordsCount !== 50) {
                 clickedRecordsCount = clickedRecordsCount - 50;
-
-
                 // check if the next indicator ">" is disabled because the member was in the last page, enable it
-                if(($(".data-table-nav-btns[data-action='next']").is(":disabled") === true) && ($("#no-data-watermark").is(":visible") === true) ){
-                    $(".data-table-nav-btns").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                if($("[data-action='next']").is(":disabled") === true){
+                    $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                    $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                     $("#no-data-watermark").hide();
                 }
             }
 
+        }else if (theAction === 'first'){
+            // when member click on first page
+            clickedRecordsCount = 50;
+            $("[data-action='previous']").attr("disabled", 'disabled').addClass("disabled");
+            $(this).tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
+            $("[data-action='next']").tooltip('update').removeAttr("disabled").removeClass("disabled");
+            $("[data-action='last']").tooltip('update').removeAttr("disabled").removeClass("disabled");
+
+        }else if (theAction === 'last'){
+            // when member click on last btn
+            const allRecords = $("#records-count-alert b:first");  // get all records from alert in web page
+            const tmpDiv = parseInt(parseInt(allRecords.text()) / 50);
+            let lastRecordsTotal = 0;
+            for (let i = 0; i < tmpDiv; i++) {
+                lastRecordsTotal += 50;
+            }
+            clickedRecordsCount = parseInt(lastRecordsTotal);
+            $(this).tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
+            $("[data-action='next']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
         }
+
         if (clickedFilteredColName !== "") {
             let notValidateRowsResponse = fetchNotValidateRows(clickedFilteredColName);
             $.when(notValidateRowsResponse).done(function (data, textStatus, jqXHR) {
-                if (textStatus == "success" && jqXHR.status == 200) {
+                if ((textStatus == "success") && (jqXHR.status == 200)) {
                     $("#loadingDataSpinner").fadeOut();
                     drawDataTableRows(data, false);
                 } else {

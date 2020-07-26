@@ -385,14 +385,16 @@ function drawDataTableRows(rowsData, isValidate) {
     if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
-        $(".data-table-nav-btns[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $("#no-data-watermark").show();
     } else {
         // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
         if (clickedRecordsCount === 50) {
-            $(".data-table-nav-btns[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+            $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+            $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         } else {
-            $(".data-table-nav-btns[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+            $("[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+            $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
         }
 
         // check if the no data watermark exists remove it before display if there is new data

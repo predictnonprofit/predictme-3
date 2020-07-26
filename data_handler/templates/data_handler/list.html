@@ -371,7 +371,7 @@ Data Handler
                         <div class="alert-icon">
                             <span class="label label-xl label-success mr-2">{{get_user_membership.data_file_obj.all_records_count}}</span>
                         </div>
-                        <div class="alert-text">
+                        <div class="alert-text" id="records-count-alert">
                             <b>{{get_user_membership.data_file_obj.all_records_count}}</b>
                             of
                             <b>{{get_user_membership.membership.allowed_records_count}}</b>
@@ -487,7 +487,7 @@ Data Handler
                                                         title="Next 50 records">
                                                     <i class="la la-angle-right"></i>
                                                 </button>
-                                                <button type="button" data-action="last" disabled
+                                                <button type="button" data-action="last"
                                                         class="btn btn-secondary data-table-nav-btns"
                                                         data-toggle="tooltip"
                                                         title="Last Page">
