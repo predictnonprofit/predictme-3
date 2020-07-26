@@ -96,6 +96,7 @@ class MemberDownloadCounter(models.Model):
     is_download_template = models.BooleanField(null=True, blank=True,
                                                default=False)  # this if the member download the template or not
     download_counter = models.IntegerField(null=True, blank=True, default=0)
+    date_inserted = models.DateTimeField(null=True, blank=True, auto_now=True)
 
     class Meta:
         db_table = 'members_download_counter'
