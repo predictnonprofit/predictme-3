@@ -20,7 +20,7 @@ def clean_currency(x: str):
 
     if isinstance(x, str) or x.startswith("$"):
         return (x.replace('$', '').replace(',', ''))
-    return (x)
+    return (float(x))
 
 
 def get_selected_columns_as_list(member_data_file):
@@ -43,22 +43,29 @@ def save_data_file_rounded(file_path):
     saved_logged_cols_base = []  # the columns with dtype log will save, contains columns name, columns dtypes
     saved_logged_cols_after = []  # the columns with converted dtype
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
+    # Volunteered in the past
+
     try:
+        # mask = df_copy.applymap(type) != bool
+        # d = {True: 'TRUE', False: 'FALSE'}
+        # df_copy = df_copy.where(mask, df_copy.replace(d))
+        # cprint(df_copy['Volunteered in the past'].dtype, 'green')
         for col in df_copy.columns.tolist():
             new_cleand_cols.append(col.strip())
-            saved_logged_cols_base.append(f"{col}: {df[col].dtype}")
+            saved_logged_cols_base.append(f"{col}: {df_copy[col].dtype}")
             if df_copy[col].dtype == "float64":
                 df_copy[col] = df_copy[col].round().astype(int)
             if df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
-            saved_logged_cols_after.append(f"{col}: {df[col].dtype}")
-            # if df_copy[col].dtype == "bool":
-            #     df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
+            if df_copy[col].dtype == "bool":
+                df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
+            saved_logged_cols_after.append(f"{col}: {df_copy[col].dtype}")
 
 
         # print(df.columns)
         # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        # the messages will save the logs of data file columns
         msg_str_before = '\n'.join(saved_logged_cols_base)
         msg_str_after = '\n'.join(saved_logged_cols_after)
         saved_logged_msg = "\nMain Column with Data type: \n[\n {} \n]\n Converted Columns data type: \n[\n {} \n]\n".format(msg_str_before, msg_str_after)

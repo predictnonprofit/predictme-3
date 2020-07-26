@@ -717,6 +717,7 @@ class SetSessionLabel(APIView):
                 else:
                     return Response(True, status=200)
             elif session_task != '' and session_task == 'set':
+
                 member_data_file.data_handler_session_label = session_label
                 member_data_file.save()
                 return Response('Session label saved successfully!', status=200)

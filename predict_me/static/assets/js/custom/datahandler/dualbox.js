@@ -415,7 +415,8 @@ function sendRequestValidate() {
         console.log(jqXHR);
 
         if ((textStatus === 'success') && (jqXHR.status === 200)) {
-            setSessionLastName("pick_columns"); // to save the current session name
+            // setSessionLastName("pick_columns"); // to save the current session name
+            setSessionLastName("data_process");
             $("#processPickedColumnsBtn").removeClass("disabled").removeAttr("disabled style");
             for (let key in selectedValidateColumns) {
                 // let colKey = key.split(". ")[1].trim(); // to split the column name from the index number
