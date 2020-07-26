@@ -280,7 +280,7 @@ class GetRowsView(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), "red")
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -317,12 +317,12 @@ class GetRowsBySearchQueryView(APIView):
                 delete_data_file(file_path)
                 delete_all_member_data_file_info(member_data_file)
 
-        except AttributeError:
-            log_exception(traceback.format_exc())
+        except AttributeError as arex:
+            log_exception(arex)
             return Response("No Data file uploaded Yet!", status=200)
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
 
 
 class NotValidateRowsView(APIView):
@@ -360,7 +360,7 @@ class NotValidateRowsView(APIView):
 
 
         except Exception as ex:
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             return Response("No Data file uploaded Yet!", status=200)
 
 
@@ -415,11 +415,11 @@ class SaveNewRowsUpdateView(APIView):
             return response
 
 
-        except AttributeError:
-            log_exception(traceback.format_exc())
+        except AttributeError as arex:
+            log_exception(arex)
             return Response("No Data file uploaded Yet!", status=200)
         except Exception as ex:
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             cprint(str(ex), 'red')
             return Response(f"{ex}", status=200)
 
@@ -462,7 +462,7 @@ class DeleteDataFileView(APIView):
 
         except Exception as ex:
             print(ex)
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             return Response(str(ex), status=200)
 
 
@@ -499,7 +499,7 @@ class ValidateColumnsView(APIView):
                 return Response("Please select at least 3 columns with the data type!", status=200)
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
 
 
 
@@ -536,7 +536,7 @@ class FilterRowsView(APIView):
 
         except Exception as ex:
             cprint(str(ex), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             return Response(str(ex), status=200)
 
 
@@ -561,8 +561,8 @@ class AcceptsDownload(APIView):
             member_down_counter.save()
             return Response("update done", status=200)
 
-        except ObjectDoesNotExist:
-            log_exception(traceback.format_exc())
+        except ObjectDoesNotExist as objNotex:
+            log_exception(objNotex)
             # if the member not exists before
             new_rec = MemberDownloadCounter()
             new_rec.member = request.user
@@ -575,7 +575,7 @@ class AcceptsDownload(APIView):
 
         except Exception as ex:
             print(ex)
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             return Response(str(ex), status=200)
 
 
@@ -596,7 +596,7 @@ class CheckMemberUpload(APIView):
             return Response(member_data_file.file_upload_procedure, status=200)
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
 
 
 class CheckMemberProcessStatus(APIView):
@@ -627,7 +627,7 @@ class CheckMemberProcessStatus(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
 
         # print(process_status)
         return Response(process_status, status=200)
@@ -653,7 +653,7 @@ class FetchLastSessionNameView(APIView):
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             cprint(str(ex), 'red')
 
         # print(process_status)
@@ -682,7 +682,7 @@ class SetLastSessionName(APIView):
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)
             cprint(str(ex), 'red')
 
         # print(process_status)
@@ -724,4 +724,4 @@ class SetSessionLabel(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             cprint(str(ex), 'red')
-            log_exception(traceback.format_exc())
+            log_exception(ex)

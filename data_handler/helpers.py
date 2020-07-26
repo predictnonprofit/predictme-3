@@ -8,7 +8,7 @@ from itertools import islice
 import copy
 from termcolor import cprint
 import traceback
-from predict_me.my_logger import log_exception
+from predict_me.my_logger import (log_exception, log_info)
 
 validate_obj = DataValidator()
 
@@ -39,22 +39,30 @@ def save_data_file_rounded(file_path):
     data_file = Path(file_path)
     df = get_df_from_data_file(file_path)
     df_copy = df.copy()
+    saved_logged_msg = ''   # the info log will save, contains columns name, columns dtypes
+    saved_logged_cols_base = []  # the columns with dtype log will save, contains columns name, columns dtypes
+    saved_logged_cols_after = []  # the columns with converted dtype
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
     try:
         for col in df_copy.columns.tolist():
             new_cleand_cols.append(col.strip())
+            saved_logged_cols_base.append(f"{col}: {df[col].dtype}")
             if df_copy[col].dtype == "float64":
                 df_copy[col] = df_copy[col].round().astype(int)
             if df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
+            saved_logged_cols_after.append(f"{col}: {df[col].dtype}")
             # if df_copy[col].dtype == "bool":
             #     df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
 
 
         # print(df.columns)
         # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
-        # print(df.columns)
+        msg_str_before = '\n'.join(saved_logged_cols_base)
+        msg_str_after = '\n'.join(saved_logged_cols_after)
+        saved_logged_msg = "\nMain Column with Data type: \n[\n {} \n]\n Converted Columns data type: \n[\n {} \n]\n".format(msg_str_before, msg_str_after)
+        log_info(saved_logged_msg)
         delete_data_file(file_path)
 
         if data_file.suffix == ".xlsx":
@@ -66,7 +74,7 @@ def save_data_file_rounded(file_path):
     except Exception as ex:
         cprint(str(ex), 'red')
         delete_data_file(file_path)
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def download_data_file_converter(member_data_file):
@@ -81,7 +89,7 @@ def download_data_file_converter(member_data_file):
             df.to_csv(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def extract_all_columns_with_dtypes(file_name):
@@ -102,7 +110,7 @@ def extract_all_columns_with_dtypes(file_name):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def extract_all_column_names(file_name):
@@ -125,7 +133,7 @@ def extract_all_column_names(file_name):
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def get_row_count(file_path):
@@ -177,7 +185,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
     except Exception as ex:
         # cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def get_rows_data_by_search_query(file_path, columns, search_query, columns_with_dtypes):
@@ -214,7 +222,7 @@ def get_rows_data_by_search_query(file_path, columns, search_query, columns_with
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def get_not_validate_rows(file_path, all_columns, column_name):
@@ -313,7 +321,7 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 
@@ -368,7 +376,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
@@ -412,7 +420,7 @@ def get_df_from_data_file(file_path):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def replace_nan_value(value):
@@ -473,7 +481,7 @@ def reorder_columns(the_reset_of_column, is_dict=False):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def validate_column_date_type(columns):
@@ -527,7 +535,7 @@ def delete_all_member_data_file_info(member_data_file):
         member_data_file.save()
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
 
 
 def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list, file_path: Path, file_ext: str):
@@ -544,4 +552,4 @@ def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list
             return full_file_path
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(traceback.format_exc())
+        log_exception(ex)
