@@ -4,7 +4,6 @@ import traceback
 from pathlib import Path
 
 
-
 def setup_logging_to_file():
     '''
     Setup and initializes the logging file

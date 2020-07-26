@@ -139,7 +139,7 @@ def get_row_count(file_path):
 
 def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, unique_column):
     try:
-        all_rows = ()
+        all_rows = []
         # print(columns)
         df = get_df_from_data_file(file_path)
         records_count = int(records_count)
