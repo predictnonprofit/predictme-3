@@ -22,7 +22,10 @@
 
                         <div class="row mb-8">
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Register Date:</label>
+                                <label class="checkbox checkbox-rounded my-1">Register Date:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="reg-date">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <div class="input-daterange input-group" id="kt_datepicker_5">
                                     <input type="text" class="form-control" name="gen-filter-start"
                                            id="gen-filter-start">
@@ -35,18 +38,27 @@
                                 </div>
                             </div>
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Status:</label>
+                                <label class="checkbox checkbox-rounded my-1">Status:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="status">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <input id="gen-filter-users-status" class="form-control tagify--outside" name='gen-filter-users-status' placeholder='type...' />
 
                             </div>
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Organization Type:</label>
+                                <label class="checkbox checkbox-rounded my-1">Organization Type:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="org-type">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <input id="gen-filter-users-org-type" class="form-control tagify--outside" name='gen-filter-users-org-type' placeholder='type...'/>
 
 
                             </div>
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Other Organization Type:</label>
+                                <label class="checkbox checkbox-rounded my-1">Other Organization Type:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="other-org-type">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <input type="text" class="form-control datatable-input disabled not-allowed-cursor"
                                        placeholder="Enter Manually"
                                        disabled="disabled" id="gen-filter-other-org-type"
@@ -56,7 +68,10 @@
                         <div class="row mb-8">
 
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Country:</label>
+                                <label class="checkbox checkbox-rounded my-1">Country:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="country">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <select id="gen-filter-users-country" name="gen-filter-users-country"
                                         class="form-control datatable-input select2">
                                     <option value="Afghanistan">Afghanistan</option>
@@ -334,7 +349,10 @@
                             </div>
 
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>State</label>
+                                <label class="checkbox checkbox-rounded my-1">State:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="state">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <select class="form-control datatable-input select2" name="gen-filter-state"
                                         id="gen-filter-state">
 
@@ -399,12 +417,18 @@
                             </div>
 
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>City:</label>
+                                <label class="checkbox checkbox-rounded my-1">City:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="city">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <input type="text" class="form-control datatable-input" placeholder="Enter City"
                                        id="gen-filter-users-city" name="gen-filter-users-city">
                             </div>
                             <div class="col-lg-3 mb-lg-0 mb-6">
-                                <label>Address:</label>
+                                <label class="checkbox checkbox-rounded my-1">Address:
+                                       <input class="generic-reports-filters-lbl-display" type="checkbox" checked="checked" data-col-name="address">
+                                        <span class="ml-1"></span>
+                                </label>
                                 <input type="text" class="form-control datatable-input" placeholder="Address"
                                        id="gen-filter-address" name="gen-filter-address">
                             </div>
@@ -414,69 +438,7 @@
                     <!-- End Filter Form-->
 
                     <!-- Start Displayed columns checkboxes -->
-                    <div class="row border-bottom">
-                        <div class="col">
-                            <form>
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label>Columns to display</label>
-                                    <div class="checkbox-inline">
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" checked="checked" name="Checkboxes15_1">
-                                            <span></span>
-                                            ID
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Name
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Email
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Register Date
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Status
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Organization Type
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            Country
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                            State
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                           City
-                                        </label>
-                                        <label class="checkbox checkbox-rounded">
-                                            <input type="checkbox" name="Checkboxes15_1">
-                                            <span></span>
-                                           Address
-                                        </label>
-                                    </div>
 
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     <!-- End Displayed columns checkboxes -->
                 </div>
                 <div class="card-footer d-flex justify-content-between">
