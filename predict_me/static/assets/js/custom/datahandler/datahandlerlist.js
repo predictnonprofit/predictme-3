@@ -552,14 +552,11 @@ $(document).ready(function () {
         }else if (theAction === 'last'){
             // when member click on last btn
             const allRecords = $("#records-count-alert b:first");  // get all records from alert in web page
-            const tmpDiv = parseInt(parseInt(allRecords.text()) / 50);
-            let lastRecordsTotal = 0;
-            for (let i = 0; i < tmpDiv; i++) {
-                lastRecordsTotal += 50;
-            }
+            const tmpDiv = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
+            let lastRecordsTotal = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
             clickedRecordsCount = parseInt(lastRecordsTotal);
-            $(this).tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
-            $("[data-action='next']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
+            $(".data-table-nav-btns[data-action='last']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
+            $(".data-table-nav-btns[data-action='next']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
         }
 
         if (clickedFilteredColName !== "") {

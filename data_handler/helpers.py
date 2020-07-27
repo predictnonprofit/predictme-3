@@ -39,7 +39,7 @@ def save_data_file_rounded(file_path):
     data_file = Path(file_path)
     df = get_df_from_data_file(file_path)
     df_copy = df.copy()
-    saved_logged_msg = ''   # the info log will save, contains columns name, columns dtypes
+    saved_logged_msg = ''  # the info log will save, contains columns name, columns dtypes
     saved_logged_cols_base = []  # the columns with dtype log will save, contains columns name, columns dtypes
     saved_logged_cols_after = []  # the columns with converted dtype
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
@@ -62,13 +62,13 @@ def save_data_file_rounded(file_path):
                 df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
             saved_logged_cols_after.append(f"{col}: {df_copy[col].dtype}")
 
-
         # print(df.columns)
         # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
         # the messages will save the logs of data file columns
         msg_str_before = '\n'.join(saved_logged_cols_base)
         msg_str_after = '\n'.join(saved_logged_cols_after)
-        saved_logged_msg = "\nMain Column with Data type: \n[\n {} \n]\n Converted Columns data type: \n[\n {} \n]\n".format(msg_str_before, msg_str_after)
+        saved_logged_msg = "\nMain Column with Data type: \n[\n {} \n]\n Converted Columns data type: \n[\n {} \n]\n".format(
+            msg_str_before, msg_str_after)
         log_info(saved_logged_msg)
         delete_data_file(file_path)
 
@@ -239,7 +239,6 @@ def get_not_validate_rows(file_path, all_columns, column_name):
     df = get_df_from_data_file(file_path)
 
     # df.fillna(method='pad')
-    row_count = df.shape[0]
     current_record = []  # will be dynamic record, will indicate to current row in the loop, then set it to null
     # column_mask = (df[column_name] == "NaN")
     column_mask = df[column_name].isnull()
@@ -279,31 +278,41 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
         all_rows = []
         df = get_df_from_data_file(file_path)
         records_count = int(records_count)
-        print(records_count)
+        # print(records_count)
 
-        for tupls in df.itertuples():
-            row_as_dict = tupls._asdict()
-            for key, value in row_as_dict.items():
-                # print(key, "------>", value)
-                if key == column_name:
-                    tmp_dtype = columns_with_dtypes[key]
-                    curr_row = validate_obj.detect_and_validate(value, dtype=tmp_dtype)
+        for index, row in df.iterrows():
+            # print(index, row)
+            # print(row.name)
+            for col in all_columns:
+                if col == column_name:
+                    tmp_dtype = columns_with_dtypes[col]
+                    curr_row = validate_obj.detect_and_validate(row[col], dtype=tmp_dtype)
                     if curr_row['is_error'] is True:
-                        errors_idx_lst.append(row_as_dict['Index'])
+                        errors_idx_lst.append(index)
 
         df_error = df.copy().reindex(errors_idx_lst)
         df_correct = df.loc[~df.index.isin(errors_idx_lst)]
         cprint(f"Valid Rows {len(df_correct)}", 'green')
         cprint(f"Not Valid Rows {len(df_error)}", "red")
         # df_error = df_error.append(df_correct, ignore_index=True)
-        df_error = df_error.append(df_correct)
+        # df2 = pd.concat([df_error, df_correct], ignore_index=False)
+        # pprint(df_correct)
+        # df_error = df_error.append(df_correct)
+        df_concat_errors = pd.concat([df_error, df_correct])
         cprint(f"All Rows {len(df_error)}", 'yellow')
-        # print(df_error.head())
-
+        # print(df_error)
         current_record_data = {}
-
+        rows_count = df.shape[0]
+        x_total = int(int(rows_count / 50) * 50)
+        # cprint(x_total, 'blue')
+        # rows_list = (x for x in range(0, rows_count))
+        rows_array = np.arange(0, rows_count)
+        rows_array2 = ""
+        # rows_array = np.delete(rows_array, 5)
+        # cprint(len(rows_array), "green")
+        # pprint(df_error.head())
         previous_50_count = records_count - 50
-
+        print(previous_50_count, records_count)
         for index, row in islice(df_error.iterrows(), previous_50_count, records_count):
             # for index, row in results.iterrows():
             # row is the series object
@@ -317,19 +326,34 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
             # all_rows.insert(0, current_record_data)
             all_rows.append(current_record_data)
             current_record_data = {}
-
+        tmm = df_correct.index.tolist()
+        valide_df = df.loc[tmm, all_columns]
+        all_rows2 = []
+        # check if it is the last page
+        if x_total == records_count:
+            for idx, row in valide_df.iterrows():
+                for col in valide_df.columns:
+                    tmp_dtype = columns_with_dtypes[col]
+                    tmp_cell_val = row[col]
+                    tmp_cell_val = replace_nan_value(tmp_cell_val)
+                    current_record_data["ID"] = idx
+                    current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
+                all_rows2.append(current_record_data)
+                current_record_data = {}
+        # cprint(all_rows[-1], 'green')
+        all_rows = all_rows + all_rows2[::-1]
         # del results, df_copy_error_data, df_copy_correct_data, frames
-        # print(len(all_rows))
+        print(len(all_rows))
+        # print(all_rows2[::-1])
         if len(all_rows) <= 0:
             return 0
         else:
-            return all_rows
+            return all_rows[::-1]
 
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
         log_exception(ex)
-
 
 
 def validate_series(data_value: pd.Series):
