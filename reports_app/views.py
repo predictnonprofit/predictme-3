@@ -48,6 +48,7 @@ class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "email": faker_obj.email(),
                 "reg_date": faker_obj.date_this_year(),
                 "status": faker_obj.word(USERS_STATUS),
+                "sub_plan": faker_obj.word(SUB_PLANS),
             })
 
         return render(request, "reports_app/list.html", context={"dummy_data": faker_holder})

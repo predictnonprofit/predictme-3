@@ -84,46 +84,55 @@
                                 <caption>Report of users</caption>
                                 <thead class="bg-primary-o-20">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Full Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Register Date</th>
-                                    <th scope="col">Status</th>
+                                    <th width="13%">Full Name</th>
+                                    <th width="13%">Email</th>
+                                    <th width="7%">Register Date</th>
+                                    <th width="7%">Status</th>
+                                    <th width="7%">Plan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
                                 {% for trow in dummy_data %}
-                                    <tr>
-                                    {% for tdkey, tdvalue in trow.items %}
-                                        {% if tdkey == 'id' %}
-                                            <th scope="row">{{tdvalue}}</th>
-                                        {% elif tdkey == 'status' %}
-                                            {% if tdvalue == 'Active' %}
-                                                <td>
-                                                    <span class="label label-inline label-light-success font-weight-bold">
-                                                        {{tdvalue}}
-                                                    </span>
-                                                </td>
-                                            {% elif tdvalue == 'Cancel' %}
-                                                <td>
-                                                <span class="label label-inline label-light-danger font-weight-bold">
-                                                    {{tdvalue}}
-                                                </span>
-                                            </td>
-                                            {% else %}
-                                                <td>
-                                                <span class="label label-inline label-light-info font-weight-bold">
-                                                    {{tdvalue}}
-                                                </span>
-                                            </td>
-                                            {% endif %}
-                                        {% else %}
-                                        <td>{{tdvalue}}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                        </tr>
 
+                                    <tr>
+
+
+                                        <td>
+                                            {{trow.name}}
+                                        </td>
+                                        <td>
+                                            {{trow.email}}
+                                        </td>
+                                        <td>
+                                            {{trow.reg_date}}
+                                        </td>
+                                            <td>
+                                            {% if trow.status == 'Active' %}
+
+                                                    <span class="label label-inline label-light-success font-weight-bold">
+                                                        {{trow.status}}
+                                                    </span>
+
+                                            {% elif trow.status == 'Cancel' %}
+
+                                                <span class="label label-inline label-light-danger font-weight-bold">
+                                                    {{trow.status}}
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="label label-inline label-light-info font-weight-bold">
+                                                    {{trow.status}}
+                                                </span>
+
+                                            {% endif %}
+                                            </td>
+                                        <td>
+                                            {{trow.sub_plan}}
+                                        </td>
+
+                                    </tr>
                                 {% empty %}
                                     <p class="text-danger h2">Sorry, no members in this report.</p>
                                 {% endfor %}
