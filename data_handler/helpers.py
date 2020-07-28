@@ -58,8 +58,11 @@ def save_data_file_rounded(file_path):
             if df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
-            if df_copy[col].dtype == "bool":
-                df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
+            # if df_copy[col].dtype == "bool":
+            #     # df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
+            #     cprint(df_copy[col].dtype, 'green')
+            #     df_copy[col] = df_copy[col].apply(str)
+            #     cprint(df_copy[col].dtype, 'blue')
             saved_logged_cols_after.append(f"{col}: {df_copy[col].dtype}")
 
         # print(df.columns)
@@ -392,6 +395,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
             # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
             # print(key, value)
             for val in value:
+                current_value = val['colValue']
                 df2.at[int(key), val['colName']] = val['colValue']
 
         # save all changes to the file
@@ -426,32 +430,6 @@ def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
             # tmp = df[col_name].apply(validate_obj.is_valid_number)
             # print(df[col_name][tmp])
             df[col_name].astype(str).str.isdigit()
-
-
-def get_df_from_data_file(file_path):
-    data_file = Path(file_path)
-    df = None
-    try:
-        if data_file.exists():
-            if data_file.suffix == ".xlsx":
-                df = pd.read_excel(data_file.as_posix(), true_values=['1'], false_values=['0'])
-            elif data_file.suffix == ".csv":
-                df = pd.read_csv(data_file.as_posix(), sep=',', true_values=['1'], false_values=['0'])
-
-        # df = df.fillna(0)
-        # df = df.fillna(method='pad')
-        # this for fill the empty cells with its own empty values
-        float_cols = df.select_dtypes(include=['float64']).columns
-        str_cols = df.select_dtypes(include=['object']).columns
-        int_cols = df.select_dtypes(include=['int64']).columns
-        df.loc[:, float_cols] = df.loc[:, float_cols].fillna(0)
-        df.loc[:, int_cols] = df.loc[:, int_cols].fillna(0)
-        df.loc[:, str_cols] = df.loc[:, str_cols].fillna('NULL')
-        return df
-
-    except Exception as ex:
-        cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
 
 
 def replace_nan_value(value):
@@ -581,6 +559,39 @@ def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list
             full_file_path = Path() / f"{os.path.splitext(file_path.name)[0]}.csv"
             df_selected_columns.to_csv(full_file_path, header=True, index=False)
             return full_file_path
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(ex)
+
+
+def get_df_from_data_file(file_path):
+    try:
+        data_file = Path(file_path)
+        df = None
+        if data_file.exists():
+            if data_file.suffix == ".xlsx":
+                df = pd.read_excel(data_file.as_posix())
+            elif data_file.suffix == ".csv":
+                df = pd.read_csv(data_file.as_posix(), sep=',')
+
+        # this for fill the empty cells with its own empty values
+        float_cols = df.select_dtypes(include=['float64']).columns
+        str_cols = df.select_dtypes(include=['object']).columns
+        int_cols = df.select_dtypes(include=['int64']).columns
+        df.loc[:, float_cols] = df.loc[:, float_cols].fillna(0)
+        df.loc[:, int_cols] = df.loc[:, int_cols].fillna(0)
+        df.loc[:, str_cols] = df.loc[:, str_cols].fillna('NULL')
+        df_clone = df.copy()
+
+        # this loop to convert bool dtype to string
+        for co in df_clone.columns.tolist():
+            if df_clone[co].dtype == 'bool':
+                # cprint(df_clone[co].dtype, 'blue')
+                df_clone[co] = df_clone[co].apply(str)
+                # cprint(df_clone[co].dtype, 'green')
+
+        return df_clone
+
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         log_exception(ex)

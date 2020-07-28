@@ -32,7 +32,6 @@ class DataValidator:
         # [unique identifier (id), textual field, numeric field, donation field]
         try:
             the_value = val
-
             if "unique identifier" in dtype:
                 san = self.sanitize_numeric_data(the_value, 'unique_id')
             elif "textual field" in dtype:
