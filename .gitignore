@@ -17,7 +17,6 @@ db.sqlite3-journal
 .idea
 *.json
 db_data
-*.log
 
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
