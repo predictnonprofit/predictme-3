@@ -14,6 +14,7 @@ Manage Your Data
 <link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css"/>
 <link href="{% static 'assets/css/protip.min.css' %}" rel="stylesheet" type="text/css"/>
 <style>
+
     .myText {
         text-decoration: line-through;
     }
@@ -95,23 +96,29 @@ Manage Your Data
 
 
 /* Just common table stuff. Really. */
-
-.tableFixHead          { overflow-y: auto; height: 100px; }
-.tableFixHead thead th { position: sticky; top: 0; }
-
-/* Just common table stuff. Really. */
-table  { border-collapse: collapse; width: 100%; }
-th, td { padding: 8px 16px; z-index: auto !important; }
-th     { background:#eee; }
-
-/* Borders (if you need them) */
-.tableFixHead,
-.tableFixHead td {
-  box-shadow: inset 1px -1px #efeff0;
+.tableFixHead {
+    overflow: auto;
+    height: 150px;
+    display: inline-block;
 }
-.tableFixHead th {
-  box-shadow: inset 1px 1px #eee, 0 1px #eee;
+.tableFixHead table {
+    white-space:nowrap;
+    table-layout: fixed;
+    width: 100%;
 }
+.tableFixHead table thead th {
+ position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0px;
+    {#z-index: 97 !important;#}
+
+}
+
+
+
 </style>
 
 {% endblock customcss %}
@@ -678,8 +685,13 @@ Data Handler
 
 <script>
     $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
     $.protip();
+
+
 });
+
 </script>
+
 
 {% endblock customjs %}

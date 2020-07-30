@@ -36,7 +36,7 @@ function swConfrim(title, msg) {
 }
 
 // sweetalert2 confirm custom dialogbox only show when the memeber change the data type of the column
-function swConfrimDtype(elem, msg, tmpSpan) {
+function swConfirmDtype(elem, msg, tmpSpan) {
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -63,7 +63,7 @@ function swConfrimDtype(elem, msg, tmpSpan) {
         if (result.value) {
 
             tmpSpan.show();
-            elem.attr("title", `Default data format Textual\nCurrent data format ${elem.val().split(" ")[0]}`);
+            elem.attr("title", `Default data format: TEXT\nCurrent data format: ${elem.val().split(" ")[0].toUpperCase()}`);
 
         } else if (
             /* Read more about handling dismissals below */
@@ -365,11 +365,11 @@ function setColumnNamesHeader(columnsList) {
         let row = "";
         if (col['isUnique'] === true) {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
+            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         } else {
             row = `
-            <th style="cursor: default !important; width:50%" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
+            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         }
         tableHeaderElement.append(row);
@@ -752,7 +752,7 @@ function uploadProgressModal(isOk, data) {
                     <li data-idx='${i}' class="columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action noselect">
                                 ${i}. ${name.trim()}
                                 <span class="noselect">
-                                <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                <span class="noselect label label-inline label-light-primary font-weight-bold w-60px">${getDataType(dType)}</span>
                                
                                 
                            </span>
@@ -870,9 +870,9 @@ function fetchDataFileAllColumns(withDtypes) {
 function getDataType(dt) {
     // const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
     if (dt === "int64" || dt === "float64") {
-        return "Numeric";
+        return "Numbers";
     } else if ((dt === "object") || (dt === "category") || (dt === "bool")) {
-        return "Textual";
+        return "Text";
     } else {
         return "Alphanumeric";
     }
@@ -951,7 +951,7 @@ function reselectColumnsFunc() {
                     <li data-idx = '${i}' class="disabled noselect bg-gray-200 columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
-                                    <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                    <span class="noselect label label-inline label-light-primary font-weight-bold w-60px">${getDataType(dType)}</span>
                                    
                                </span>
                             </li>
@@ -962,7 +962,7 @@ function reselectColumnsFunc() {
                     <li data-idx = '${i}' class="noselect columnItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action" >
                                ${i}. ${name.trim()}
                                <span>
-                                    <span class="noselect label label-inline label-light-primary font-weight-bold">${getDataType(dType)}</span>
+                                    <span class="noselect label label-inline label-light-primary font-weight-bold w-60px">${getDataType(dType)}</span>
                                     
                                </span>
                             </li>
@@ -984,7 +984,7 @@ function reselectColumnsFunc() {
                         class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                         ${name}
                         <span class="nav-label mx-10" >
-                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm h-40px column-option-dtype">
+                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm column-option-dtype w-130px">
                                     ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>

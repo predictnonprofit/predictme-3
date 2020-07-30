@@ -3,8 +3,6 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-
-
 [packages]
 psycopg2-binary = "*"
 pathtools = "*"
@@ -39,6 +37,9 @@ google-auth-oauthlib = "*"
 termcolor = "*"
 prettyprinter = "*"
 faker = "*"
+pip = "*"
+google-auth = "*"
+cffi = "*"
 
 [requires]
 python_version = "3.8"

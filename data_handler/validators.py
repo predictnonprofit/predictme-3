@@ -34,8 +34,8 @@ class DataValidator:
             the_value = val
             if "unique identifier" in dtype:
                 san = self.sanitize_numeric_data(the_value, 'unique_id')
-            elif "textual field" in dtype:
-                san = self.sanitize_numeric_data(the_value, 'textual')
+            elif "text field" in dtype:
+                san = self.sanitize_numeric_data(the_value, 'text')
             elif "numeric field" in dtype:
                 san = self.sanitize_numeric_data(the_value, 'numeric')
             elif "donation field" in dtype:
@@ -110,7 +110,7 @@ class DataValidator:
                     else:
                         results = DataStatus(status=False, value=data_value)
 
-            elif dtype == "textual":
+            elif dtype == "text":
                 results = DataStatus(status=False, value=data_value)
                 # print(f"data value =--> {data_value}  <=====> sanitized --> {sanitized}")
 
