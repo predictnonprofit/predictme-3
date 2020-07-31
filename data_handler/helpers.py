@@ -84,7 +84,7 @@ def save_data_file_rounded(file_path):
     except Exception as ex:
         cprint(str(ex), 'red')
         delete_data_file(file_path)
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def download_data_file_converter(member_data_file):
@@ -99,7 +99,7 @@ def download_data_file_converter(member_data_file):
             df.to_csv(data_file_path.as_posix(), header=True, index=False, columns=selected_columns)
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def extract_all_columns_with_dtypes(file_name):
@@ -120,7 +120,7 @@ def extract_all_columns_with_dtypes(file_name):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def extract_all_column_names(file_name):
@@ -143,7 +143,7 @@ def extract_all_column_names(file_name):
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def get_row_count(file_path):
@@ -195,7 +195,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
     except Exception as ex:
         # cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def get_rows_data_by_search_query(file_path, columns, search_query, columns_with_dtypes):
@@ -232,7 +232,7 @@ def get_rows_data_by_search_query(file_path, columns, search_query, columns_with
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def get_not_validate_rows(file_path, all_columns, column_name):
@@ -356,7 +356,7 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def validate_series(data_value: pd.Series):
@@ -411,7 +411,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
     except Exception as ex:
         cprint(str(ex), 'red')
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def validate_data_type_in_dualbox(columns: dict, data_file_path, columns_list):
@@ -490,7 +490,7 @@ def reorder_columns(the_reset_of_column, is_dict=False):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def validate_column_date_type(columns):
@@ -544,7 +544,7 @@ def delete_all_member_data_file_info(member_data_file):
         member_data_file.save()
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list, file_path: Path, file_ext: str):
@@ -561,7 +561,7 @@ def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list
             return full_file_path
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
 
 
 def get_df_from_data_file(file_path):
@@ -594,4 +594,15 @@ def get_df_from_data_file(file_path):
 
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
-        log_exception(ex)
+        log_exception(traceback.format_exc())
+
+
+def check_empty_df(file_path):
+    try:
+        df = get_df_from_data_file(file_path)
+        if df.empty is True:
+            return True
+        return False
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())

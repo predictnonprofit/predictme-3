@@ -79,20 +79,28 @@ class DataHandlerFileUpload(APIView):
             row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
             columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
 
-            ## save the file path after upload it into the db
-            if data_file.data_file_path is not None:
-                data_file.data_file_path = tmp_file
-                data_file.file_upload_procedure = "local_file"
-                data_file.all_records_count = row_count
-                data_file.save()
-            if row_count > data_file.allowed_records_count:
-                # return Response("Columns count bigger than the allowed")
-                resp = {"is_allowed": False, "row_count": row_count}
+            # first check if the file empty or not
+            if check_empty_df(tmp_file) is True:
+                resp = {"is_allowed": False, "row_count": row_count, "msg": "The file is empty please re-upload correct file", "is_empty": True}
                 return Response(resp, status=200)
             else:
-                resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
-                # print(columns)
-                return Response(resp, status=200)
+                # here the file not empty
+                # save the file path after upload it into the db
+                if data_file.data_file_path is not None:
+                    data_file.data_file_path = tmp_file
+                    data_file.file_upload_procedure = "local_file"
+                    data_file.all_records_count = row_count
+                    data_file.save()
+                if row_count > data_file.allowed_records_count:
+                    # return Response("Columns count bigger than the allowed")
+                    resp = {"is_allowed": False, "row_count": row_count}
+                    return Response(resp, status=200)
+                else:
+                    resp = {"is_allowed": True, "columns": columns, "row_count": row_count}
+                    # print(columns)
+                    return Response(resp, status=200)
+
+
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             log_exception(traceback.format_exc())
@@ -502,7 +510,6 @@ class ValidateColumnsView(APIView):
             log_exception(ex)
 
 
-
 class FilterRowsView(APIView):
     """
     ### Developement only ###
@@ -645,7 +652,6 @@ class FetchLastSessionNameView(APIView):
 
     def post(self, request, format=None):
 
-
         try:
             from data_handler.models import DataFile
             member_data_file = DataFile.objects.get(member=request.user)
@@ -671,7 +677,6 @@ class SetLastSessionName(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-
 
         try:
             from data_handler.models import DataFile

@@ -91,7 +91,10 @@ Manage Your Data
             margin-top: 60px;
             text-align: center;
         }
+
     }
+
+
 
 
 
@@ -100,11 +103,13 @@ Manage Your Data
     overflow: auto;
     height: 150px;
     display: inline-block;
+
 }
 .tableFixHead table {
     white-space:nowrap;
     table-layout: fixed;
     width: 100%;
+    border-collapse: collapse !important;
 }
 .tableFixHead table thead th {
  position: -webkit-sticky;
@@ -113,10 +118,18 @@ Manage Your Data
     position: -o-sticky;
     position: sticky;
     top: 0px;
+    max-width: 180px;
+    width: 180px;
+
+
     {#z-index: 97 !important;#}
-
 }
-
+td {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 
 </style>
@@ -441,7 +454,7 @@ Data Handler
 
                                 </div>
                                 <div class="container">
-                                    <h3 class="card-title w-100 row" id="top-data-table-toolbar">
+                                    <h3 class="card-title w-100 row " id="top-data-table-toolbar">
                                     <div class="col-sm-12 col-md-12 col-lg-3">
                                         <div class="form-group">
                                             <div class="input-group">
@@ -456,7 +469,7 @@ Data Handler
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-3">
+                                    <div class="col-sm-4 col-md-4 col-lg-3">
                                         <div class="form-group">
                                             <button type="button" data-toggle="tooltip" title="Undo last change"
                                                     class="btn btn-outline-warning disabled"
@@ -472,7 +485,7 @@ Data Handler
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-6 col-md-6 col-lg-4 text-lg-left">
+                                    <div class="col-sm-4 col-md-4 col-lg-4 ">
                                         <div class="form-group">
                                             <div class="btn-group" role="group" aria-label="Data Table Navigation">
                                                 <button type="button" data-action="first" disabled
@@ -526,7 +539,7 @@ Data Handler
                                         </div>
                                     </div>
 
-                                    <section id="dataListTable" class="table-responsive "
+                                    <section id="dataListTable" class="table-responsive"
                                              style="transition: all 0.5s ease-out;">
                                         <div class="container position-relative" id="loadingDataSpinner">
                                             <div class="row justify-content-center">
@@ -540,7 +553,9 @@ Data Handler
                                         </div>
                                         <form method="POST" id="dataFileTableForm" onsubmit="return false;">
                                             {% csrf_token %}
-                                            <div style="overflow:auto; height:700px;" id="dataTableWrapper"
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div style="overflow:auto; height:700px;" id="dataTableWrapper"
                                                  class="position-relative tableFixHead">
                                                 <table id="data_handler_table" class="table">
 
@@ -566,6 +581,8 @@ Data Handler
                                                     </tfoot>
 
                                                 </table>
+                                            </div>
+                                                </div>
                                             </div>
                                             <div class="card card-custom gutter-b m-auto">
 
