@@ -4957,8 +4957,6 @@ var KTWizard = function(elementId, options) {
          * Handles wizard click wizard
          */
         goTo: function(number, eventHandle) {
-            console.log('go to:' + number);
-
             // Skip if this step is already shown
             if (number === the.currentStep || number > the.totalSteps || number < 0) {
                 return;
@@ -6667,6 +6665,10 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 						Plugin.dataRender();
 					},
 					populate: function() {
+						datatable.dataSet = datatable.dataSet || [];
+						// no records available
+						if (datatable.dataSet.length === 0) return;
+
 						var icons = Plugin.getOption('layout.icons.pagination');
 						var title = Plugin.getOption('translate.toolbar.pagination.items.default');
 						// pager root element
@@ -8144,7 +8146,28 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 				datatable = initialDatatable;
 				$(datatable).trigger(pfx + 'datatable-on-destroy');
 				Plugin.isInit = false;
+
+				// clean up variables
 				initialDatatable = null;
+				datatable.dataSet = null;
+				datatable.originalDataSet = null;
+				datatable.tableHead = null;
+				datatable.tableBody = null;
+				datatable.table = null;
+				datatable.wrap = null;
+				datatable.API = {
+					record: null,
+					value: null,
+					params: null,
+				};
+
+				Plugin.ajaxParams = {};
+				Plugin.pagingObject = {};
+				Plugin.nodeTr = [];
+				Plugin.nodeTd = [];
+				Plugin.nodeCols = [];
+				Plugin.recentNode = [];
+
 				return initialDatatable;
 			},
 
@@ -9123,6 +9146,8 @@ KTUtil.ready(function() {
     //////////////////////////////////////////////
     // Layout Extended Partials(optional to use)//
     //////////////////////////////////////////////
+    // Init Quick User Panel
+    KTLayoutQuickUser.init('kt_quick_user');
 
     // Init Scrolltop
     KTLayoutScrolltop.init('kt_scrolltop');
@@ -9530,10 +9555,6 @@ var KTLayoutHeader = function() {
 		var options = {
             offset: {
                 desktop: 300,
-                tabletAndMobile: false
-            },
-            releseOnReverse: {
-                desktop: true,
                 tabletAndMobile: false
             }
 		};

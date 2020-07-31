@@ -256,7 +256,7 @@ $(function () {
             // console.log(data);
             // console.log(textStatus);
             // console.log(jqXHR);
-            if (textStatus === "success") {
+            if ((textStatus === "success") && (jqXHR.status === 200)) {
                 // var optionsList = [];
                 if (typeof data === "object") {
                     //console.log(data);
@@ -283,6 +283,9 @@ $(function () {
                         }
 
 
+                    }else if((data['is_allowed'] === false) && (data['is_empty'] === true)){
+                        // this mean no row count, which means the donor id column not exists
+                        swAlert("attention!!".toUpperCase(), `${data['msg']}`, 'error');
                     }
 
                 }
