@@ -749,7 +749,7 @@ function uploadProgressModal(isOk, data) {
         if (isOk === true) {
             if (progVal <= rowCount) {
                 progVal++;
-                console.log(progVal, ' of ', rowCount);
+                // console.log(progVal, ' of ', rowCount);
 
             } else {
                 clearInterval(progressInterval);
@@ -778,11 +778,11 @@ function uploadProgressModal(isOk, data) {
                 $("#uploadFileModal").modal('hide');
                 $('#columnsDualBoxModal').modal('show');
                 $('#columnsDualBoxModal').modal('handleUpdate');
-                if(rowCountProgressDialog.hasClass('show') === true){
+                /*if(rowCountProgressDialog.hasClass('show') === true){
                     console.error('modal is shown');
                 }else{
                     console.log('modal is hidden')
-                }
+                }*/
 
             }
 
