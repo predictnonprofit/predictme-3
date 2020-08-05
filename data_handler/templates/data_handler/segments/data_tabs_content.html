@@ -1,0 +1,185 @@
+{% load socialaccount %}
+<div class="card card-custom gutter-b">
+
+    <div class="card-body">
+        <!-- Start Tabs (<ul>) -->
+        <ul class="nav nav-tabs nav-tabs-line justify-content-center nav-bolder border-bottom-0" id="wrapper-ul">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" data-section-name="upload" href="#upload-file-tab">1.
+                    Re-Upload
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" data-section-name="pick_columns"
+                   href="#pick-columns-tab">2. Pick
+                    Columns </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" data-section-name="data_process"
+                   href="#data-process-tab">3. Data
+                    Processing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " data-toggle="tab" href="#run-predictive-modal-tab"
+                   data-section-name="run_modal"
+                   tabindex="-1">4. Execute Model</a>
+            </li>
+        </ul>
+        <!-- End Tabs (<ul>) -->
+
+
+    </div>
+</div>
+
+<!-- Start Tabs Wrapper Content -->
+<div class="tab-content mt-10 h-auto" id="wrapper-content">
+    {# Start Upload tab #}
+    <div class="tab-pane fade active show position-relative" id="upload-file-tab" role="tabpanel"
+         aria-labelledby="upload-file-tab">
+        <div class="card card-custom gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <form method="PUT">
+                        {% csrf_token %}
+                        <h3 class="card-label">
+                        Re-upload your data file for <input class="" type="text" id="rename-session-input" value="{{ session_info.data_handler_session_label }}" />
+                            <button id="rename-session-btn" class="btn btn-sm btn-primary" type="button">
+                                Rename
+                            </button>
+
+                    </h3>
+                    </form>
+
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="semitransparent" class="text-center bg-gray-200">
+                    <h2 class="font-weight-bolder my-15 mx-auto" style="color: #000000;">
+                        Pleas read <span class='text-danger cursor-pointer btn-link h2'
+                                         data-target='#instructionsModal'
+                                         data-toggle="modal"><b>Donor File Upload Instructions</b></span>
+                        and
+                        accept the terms to re-upload file for the current session.
+                    </h2>
+                </div>
+                <div id="upload-div">
+                    <form class="kt-form " enctype="multipart/form-data" method="POST"
+                          id="uploadDataFileForm">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">Rename Session</label>
+                            <div class="col-10">
+                                <input class="form-control" type="text" id="session-name" value="{{ session_info.data_handler_session_label }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <!-- <label>File Browser</label> -->
+                            <div></div>
+                            <div class="custom-file">
+                                <input disabled type="file" class="custom-file-input" id="donerFile"
+                                       name="donor_file"
+                                       required
+                                       accept=".xlsx, .csv"/>
+                                <label class="custom-file-label" for="donerFile">Choose file</label>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="form-group">
+                    <button type="submit" id="uploadDataFileBtn" class="btn btn-primary btn-lg btn-block"
+                            data-toggle="tooltip"
+                            title="Upload!">
+                        <i class="la la-upload"></i>
+                    </button>
+                </div>
+
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+    {# End Upload tab #}
+
+    {# Start Pick column Tab #}
+    <div class="tab-pane fade" id="pick-columns-tab" role="tabpanel"
+         aria-labelledby="pick-columns-tab">
+        <!-- Start Pick Columns -->
+            {% include 'data_handler/segments/pick_columns_tab.html' %}
+        <!-- End Pick Columns -->
+
+    </div>
+    {# End Pick column Tab #}
+
+    {# Start The Data table Tab #}
+    <div class="tab-pane fade" id="data-process-tab" role="tabpanel"
+         aria-labelledby="data-process-tab">
+
+        <div class="alert alert-custom alert-notice alert-light-success fade show mb-5 mx-5" role="alert">
+            <div class="alert-icon">
+                <span class="label label-xl label-success mr-2">{{ session_info.all_records_count }}</span>
+            </div>
+            <div class="alert-text" id="records-count-alert">
+                <b>{{ session_info.all_records_count }}</b>
+                of
+                <b>{{ get_user_membership.membership.allowed_records_count }}</b>
+                record(s) have been used
+            </div>
+
+        </div>
+        <!-- Start Data Table -->
+        {% include 'data_handler/segments/data_table.html' %}
+        <!-- End Data Table -->
+    </div>
+    {# End The Data table Tab #}
+
+    {# Start Run modal tab #}
+    <div class="tab-pane fade" id="run-predictive-modal-tab" role="tabpanel"
+         aria-labelledby="run-predictive-modal-tab">
+
+
+        <div class="card card-custom gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">
+                        Run The modal
+
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="alert alert-custom alert-notice alert-light-warning fade show" role="alert">
+                        <div class="alert-icon"><i class="flaticon-warning"></i></div>
+                        <div class="alert-text font-weight-bolder h4">You cant run the model until validate all data
+                            types
+                            errors!
+                        </div>
+                        <div class="alert-close">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true"><i class="ki ki-close"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-center my-10">
+                        <!--begin::Button-->
+                        <button style="border-radius: 0;" type="button" id="run-modal-btn"
+                                class="btn p-5 btn-success mx-2 font-weight-bolder ">
+
+                            <i class="icon-lg fas fa-cogs"></i>
+                            Run Predictive Model
+                        </button>
+                        <!--end::Button-->
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {# End Run modal tab #}
+</div>
+<!-- End Tabs Wrapper Content -->

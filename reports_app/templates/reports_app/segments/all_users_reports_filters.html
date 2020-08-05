@@ -1,0 +1,68 @@
+<form class="kt-form kt-form--fit mb-10" id='all-users-form-report-filter'>
+    {{ csrf }}
+
+    <div class="row mb-8">
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">First Name:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="first-name">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text" class="form-control datatable-input" placeholder="Enter First Name"
+                   id="users-filter-first-name" name="users-filter-first-name">
+        </div>
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">Last Name:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="first-name">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text" class="form-control datatable-input" placeholder="Enter Last Name"
+                   id="users-filter-last-name" name="users-filter-last-name">
+        </div>
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">Email Address:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="first-name">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text" class="form-control datatable-input" placeholder="Email Address"
+                   id="users-filter-email" name="users-filter-email">
+        </div>
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">Other Organization Type:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="other-org-type">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text"
+                   class="form-control datatable-input disabled not-allowed-cursor"
+                   placeholder="Enter Manually"
+                   disabled="disabled" id="gen-filter-other-org-type"
+                   name="gen-filter-other-org-type">
+        </div>
+    </div>
+    <div class="row mb-8">
+
+
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">City:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="city">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text" class="form-control datatable-input" placeholder="Enter City"
+                   id="gen-filter-users-city" name="gen-filter-users-city">
+        </div>
+        <div class="col-lg-3 mb-lg-0 mb-6">
+            <label class="checkbox checkbox-rounded my-1">Address:
+                <input class="users-reports-filters-lbl-display" type="checkbox"
+                       checked="checked" data-col-name="address">
+                <span class="ml-1"></span>
+            </label>
+            <input type="text" class="form-control datatable-input" placeholder="Address"
+                   id="gen-filter-address" name="gen-filter-address">
+        </div>
+    </div>
+
+</form>

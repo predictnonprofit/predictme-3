@@ -1,0 +1,129 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+
+            <h3 class="card-label">
+                Pick columns
+
+            </h3>
+        </div>
+      
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <div class="row ">
+                <div class="col-md-12 col-sm-12 col-lg-5">
+                    <div class="d-inline-flex justify-content-between w-100">
+                        <div class="p-1 mx-3">
+                            <div class="font-weight-bolder" id='avaliableColumnsTotal'>
+                                <h5>Columns total &nbsp;<b></b></h5>
+
+                            </div>
+                        </div>
+
+                        <div class="p-1">
+                            <h6 class="font-weight-bolder">Default Data Format</h6>
+                        </div>
+                    </div>
+
+
+                    <ul class="list-group border-bottom border-left w-100" id="availableColumnsList"
+                        style="overflow-y: scroll; height: 400px;">
+
+                    </ul>
+
+                </div>
+
+                <div class="col-sm col-md col-lg">
+                    <div id="pick-columns-btns" class="mt-lg-15 mt-sm-5 mt-md-15 text-center">
+
+                        <button type="button" id="removeAllColumnsBtn" class="btn btn-light ">
+                            <<
+                        </button>
+                        <button type="button" id="removeColumnBtn" class="btn btn-light ">
+                            <
+                        </button>
+
+                        <button type="button" id="addColumnBtn" class="btn btn-light ">></button>
+                        <button type="button" id="addAllColumnsBtn"
+                                class="btn btn-light ">>>
+                        </button>
+                    </div>
+                    <div id="validate-reset-btns-block" class="mb-10 mt-7">
+                        <button type="button" id='validateColumnsBtn'
+                                class="btn btn-light-primary btn-block font-weight-bold disabled"
+                                style="cursor: not-allowed;"
+                                disabled>Validate
+                        </button>
+                        <button type="button" id="resetColumnBoxBtn"
+                                class="btn btn-outline-danger btn-block font-weight-bold">Reset
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-12 col-sm-12 col-lg-5">
+                    <div class="d-inline-flex justify-content-between w-100">
+                        <div class="p-1">
+                            <div class="font-weight-bolder" id='pickedColumnsTotal'>
+                                <h5>Columns picked &nbsp;<b></b></h5>
+                            </div>
+                        </div>
+
+                        <div class="p-1">
+                            <h6 class="font-weight-bolder">Confirm Data Format</h6>
+                        </div>
+                    </div>
+                    <!--begin::Table-->
+
+                    <ul class="list-group border-bottom w-100" id="pickedColumnsList"
+                        style="overflow-y: scroll; height: 400px;">
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-custom alert-outline-2x alert-light-warning fade show mt-10"
+                         role="alert">
+
+                        <div class="alert-text">
+                            <ul id="dataFileUploadCheckList" class="pt-0">
+                                <li class="font-weight-bolder">Select Unique ID <span
+                                        id="selectUniqueID"
+                                        class="ml-2 text-danger">&#10060;</span>
+                                </li>
+                                <li class="font-weight-bolder">Minimum select 3 text columns <span
+                                        id="isSelect3Col" class="ml-2 text-danger">&#10060;</span></li>
+                                <li class="font-weight-bolder">Select the data type of selected columns
+                                    <span
+                                            id="isValidateData" class="ml-2 text-danger">&#10060;</span>
+                                </li>
+                                <li class="font-weight-bolder d-none" id="donationFieldLi">Select
+                                    Donation
+                                    Field<span id="donationField"
+                                               class="ml-2 text-danger">&#10060;</span></li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-light-danger font-weight-bold mr-auto" id="cancelReuploadBtn">
+            Delete the file &
+            Re-upload
+        </button>
+        <button type="button" style="cursor: not-allowed;" class="btn btn-primary  font-weight-bold disabled"
+                disabled
+                id="processPickedColumnsBtn">Process
+        </button>
+    </div>
+</div>
