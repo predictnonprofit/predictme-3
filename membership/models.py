@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from data_handler.models import DataFile
+from data_handler.models import DataFile, DataHandlerSession
 
 MEMBERSHIP_LABELS = (
     ("starter", "Starter"),
@@ -8,11 +8,11 @@ MEMBERSHIP_LABELS = (
     ("expert", "Expert")
 )
 
-
 SUB_RANGE = (
     ("monthly", "Monthly"),
     ("yearly", "Yearly",),
 )
+
 
 class Membership(models.Model):
     slug = models.SlugField(null=True, blank=True, db_index=True)
@@ -29,23 +29,28 @@ class Membership(models.Model):
 
 
 class Subscription(models.Model):
-    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription", null=True, blank=True)
+    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription",
+                               null=True, blank=True)
     stripe_subscription_id = models.CharField(max_length=60, null=True, blank=True)
     active = models.BooleanField()
     sub_range = models.CharField(max_length=20, choices=SUB_RANGE, null=True, blank=True)
     subscription_start_date = models.DateField(blank=True, null=True)
     subscription_end_date = models.DateField(blank=True, null=True)
 
+
 class UserMembership(models.Model):
     """
     Model can access to member with its membership and data file
     """
-    member = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, primary_key=True, related_name="user_membership")
+    member = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, primary_key=True,
+                                  related_name="user_membership")
     stripe_member_id = models.CharField(max_length=50)
-    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True, blank=True, related_name="membership")
-    data_file_obj = models.ForeignKey(DataFile, on_delete=models.CASCADE, null=True, blank=True, related_name="data_file")
-    subscription_obj = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True, related_name="sub_obj")
-
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True, blank=True,
+                                   related_name="membership")
+    data_file_obj = models.ForeignKey(DataFile, on_delete=models.CASCADE, null=True, blank=True,
+                                      related_name="data_file")
+    subscription_obj = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True,
+                                         related_name="sub_obj")
 
     def __str__(self):
         return f"User Membership of {self.member.email}"

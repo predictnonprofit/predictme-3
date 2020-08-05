@@ -40,6 +40,8 @@ faker = "*"
 pip = "*"
 google-auth = "*"
 cffi = "*"
+setuptools = "*"
+protobuf = "*"
 
 [requires]
 python_version = "3.8"

@@ -3,11 +3,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 from django.contrib.auth import get_user_model
 from membership.models import UserMembership
-from data_handler.models import DataFile
+from data_handler.models import (DataFile, DataHandlerSession)
 import stripe
 import os
+from termcolor import cprint
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-
 
 
 def create_usermembership_memberdatafile(sender, instance, created, **kwargs):
@@ -35,13 +35,11 @@ def create_usermembership_memberdatafile(sender, instance, created, **kwargs):
                 # create data file object for the new member
                 data_file = DataFile()
                 data_file.member = instance
-                data_file.file_upload_procedure = "None"
-                data_file.data_file_path = "None"
+                # data_file.file_upload_procedure = None
+                # data_file.data_file_path = None
                 data_file.save()
                 user_membership_obj.data_file_obj = data_file
                 user_membership_obj.save()
-
-
 
             # data_file_obj, created = DataFile.objects.get_or_create(member=user_membership_obj)
             # data_file_obj.save()

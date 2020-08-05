@@ -3,7 +3,6 @@ from django.shortcuts import (redirect, reverse)
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 
 
-
 class UsersListView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "dash_users/list.html"
 

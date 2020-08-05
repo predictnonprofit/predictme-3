@@ -71,13 +71,24 @@ $(function () {
         // check if the two options checked enable the check button in the modal
         if ((validateObj['agree'] === true && validateObj['download'] === true) && (isDownloaded === true)) {
             $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+            $("#uploadDataFileBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+            $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-success la la-check-double" id="acceptsCheckMark"></i>');
         } else {
             dataUploadBtn.attr("disabled", "disabled");
             $("#semitransparent").removeClass("d-none");
             $("#donerFile").attr("disabled", "disabled");
             $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
+            $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');
         }
 
+    });
+
+    // this here when member close the upload modal with instructions
+    $('#uploadFileModal').on('hidden.bs.modal', function (e) {
+        $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", 'disabled');
+        $("#uploadDataFileBtn").addClass("disabled notAllowedCur").attr("disabled", 'disabled');
+        $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');
+        $("#donerFile").attr("disabled", "disabled");
     })
     // accept upload instruction terms button
     acceptUploadInstBtn.click(function (e) {
@@ -98,7 +109,7 @@ $(function () {
         acceptDownloadObj['is_download_template'] = isDownloaded;
         const acceptDownloadResponse = saveMemberAccepts(acceptDownloadObj);
         $.when(acceptDownloadResponse).done(function (data, textStatus, jqXHR) {
-            if (textStatus == "success") {
+            if ((textStatus == "success") && (jqXHR.status === 200)) {
                 // console.log(data);
 
             } else {
@@ -113,6 +124,7 @@ $(function () {
         if (agreeDataHandlerCheckBox.prop("checked") === false || agreeDataHandlerCheckBox.prop("checked") === true) {
             agreeDataHandlerCheckBox.prop("checked", false);
             dataUploadBtn.prop("disabled", true);
+
         }
 
     });
@@ -171,13 +183,22 @@ $(function () {
                 confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.value) {
-                    /*Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )*/
+                    let deleteDataFileResponse = deleteDataFile();
+                    $.when(deleteDataFileResponse).done(function (data, textStatus, jqXHR) {
+                        // console.log(textStatus);
+                        // console.log(jqXHR);
+                        // console.log(data);
+
+                        if ((textStatus === "success") && (jqXHR.status === 200)) {
+                            // swAlert("Success", "Your data file has been deleted successfully!", "success");
+                            window.location.reload();
+                        } else {
+                            swAlert("Error", "Error when delete the data file!", "error");
+                        }
+
+                    });
+
                     $("#extraRecordsModel").modal("hide");
-                    window.location.reload();
                 }
             });
         } else {
@@ -223,23 +244,23 @@ $(function () {
 
     // upgrade plan button
     // this to get the selected plan to upgrade
-     purchaseUpgradeExtraBtn.on('click', function (e) {
-      let actionLabel = $(this).data("action");
-      const upgradePlanBtn = $('input[name=upgrade_plane]:checked').val();
-      if (actionLabel === "upgrade") {
-        if (upgradePlanBtn === "" || upgradePlanBtn === undefined) {
-          swal.fire("Error", "You have to select plan!", "error");
-        } else {
-          swal.fire("Good", `You select ${upgradePlanBtn}`, "success");
-            $(this).text("Upgrading...");
-            $(this).addClass('spinner spinner-darker-success spinner-left');
-            $(this).attr("disabled", "disabled");
+    purchaseUpgradeExtraBtn.on('click', function (e) {
+        let actionLabel = $(this).data("action");
+        const upgradePlanBtn = $('input[name=upgrade_plane]:checked').val();
+        if (actionLabel === "upgrade") {
+            if (upgradePlanBtn === "" || upgradePlanBtn === undefined) {
+                swal.fire("Error", "You have to select plan!", "error");
+            } else {
+                swal.fire("Good", `You select ${upgradePlanBtn}`, "success");
+                $(this).text("Upgrading...");
+                $(this).addClass('spinner spinner-darker-success spinner-left');
+                $(this).attr("disabled", "disabled");
 
+            }
+
+        } else if (actionLabel === "pay") {
+            swal.fire("👍", `Purchased done`, "success");
         }
-
-      } else if (actionLabel === "pay") {
-        swal.fire("👍", `Purchased done`, "success");
-      }
 
     });
 
@@ -251,17 +272,16 @@ $(function () {
     uploadDataFileForm.submit(function (e) {
         e.preventDefault();
         let donorFileuploadFormRequest = uploadDonorDataFile($(this));
-
+        // console.log($("#session-name").val());
         $.when(donorFileuploadFormRequest).done(function (data, textStatus, jqXHR) {
-            // console.log(data);
-            // console.log(textStatus);
-            // console.log(jqXHR);
+
             if ((textStatus === "success") && (jqXHR.status === 200)) {
                 // var optionsList = [];
                 if (typeof data === "object") {
                     //console.log(data);
                     if (data['is_allowed'] === true) {
                         // this mean the records total more than the allowed in subscription plan
+                        $("#uploadFileModal").modal('hide');
                         uploadProgressModal(true, data);
 
                         nextProgressBtnModal.on('click', function (event) {
@@ -283,7 +303,7 @@ $(function () {
                         }
 
 
-                    }else if((data['is_allowed'] === false) && (data['is_empty'] === true)){
+                    } else if ((data['is_allowed'] === false) && (data['is_empty'] === true)) {
                         // this mean no row count, which means the donor id column not exists
                         swAlert("attention!!".toUpperCase(), `${data['msg']}`, 'error');
                     }
@@ -309,8 +329,8 @@ $(function () {
         // throw new Error("Something went badly wrong!");
         let selectedColumnsRequest = sendPickedColumns();
         $.when(selectedColumnsRequest).done(function (data, textStatus, jqXHR) {
-            console.log(jqXHR.statusCode);
-            console.log(jqXHR.responseText);
+            // console.log(jqXHR.statusCode);
+            // console.log(jqXHR.responseText);
             //data, textStatus, jqXHR
             // console.log(data);
             // console.log(textStatus);
@@ -337,54 +357,55 @@ newStripeCardBtn.click(function (e) {
 });
 
 $(document).ready(function () {
-    setTheCookie();
+    // setTheCookie();
     // stripeElementsFormDataHandler();
     let fetchedColumns = fetchDataFileColumns();
 
     $.when(fetchedColumns).done(function (data, textStatus, jqXHR) {
         // console.log(Object.keys(data));
-        /*console.log(data);
-        console.log(textStatus);
-        console.log(jqXHR);
-        console.log(jqXHR.status);*/
+        /* console.log(data);
+         console.log(textStatus);
+         console.log(jqXHR);*/
+        // console.log(jqXHR.status);
 
         // check if the data not equal "", this mean no columns
 
-        if(textStatus === 'success' && jqXHR.status === 200){
-                if (data !== "") {
-                    let sortedColumns = Array();
-                    let columnsLabels = data;
-                    for (let cl in data) {
-                       //unique identifier (id)
-                        if(data[cl] === "unique identifier (id)"){
-                            sortedColumns.push({"isUnique": true, "headerName": cl});
-                        }else{
-                            sortedColumns.push({"isUnique": false, "headerName": cl});
-                        }
+        if (textStatus === 'success' && jqXHR.status === 200) {
 
+            if (data !== "") {
+                let sortedColumns = Array();
+                let columnsLabels = data;
+                for (let cl in data) {
+                    //unique identifier (id)
+                    if (data[cl] === "unique identifier (id)") {
+                        sortedColumns.push({"isUnique": true, "headerName": cl});
+                    } else {
+                        sortedColumns.push({"isUnique": false, "headerName": cl});
                     }
-                    // sortedColumns = sortedColumns.sort();
-                    //initialise columns for the data table
-                    setColumnNamesHeader(sortedColumns);
-                    //initialise (fetch) rows, fetch the rows to datatable
-                    let dataFileRows = fetchDataFileRows();
-                    $.when(dataFileRows).done(function (rowData, rowTextStatus, rowJqXHR) {
 
-                        //  console.log(rowData);
-                        // console.log(rowTextStatus);
-                        // console.log(rowJqXHR);
+                }
+                // sortedColumns = sortedColumns.sort();
+                //initialise columns for the data table
+                setColumnNamesHeader(sortedColumns);
+                //initialise (fetch) rows, fetch the rows to datatable
+                let dataFileRows = fetchDataFileRows();
+                $.when(dataFileRows).done(function (rowData, rowTextStatus, rowJqXHR) {
 
-                        // check if there is any returned data
-                        if(rowTextStatus === 'success' && rowJqXHR.status === 200){
-                            // first hide the spinner loding div
-                            $("#loadingDataSpinner").hide();
-                            let rowsObject = rowData;
-                            // console.log(rowsObject);
-                            drawDataTableRows(rowsObject, false);
-                        }
+                    //  console.log(rowData);
+                    // console.log(rowTextStatus);
+                    // console.log(rowJqXHR);
+
+                    // check if there is any returned data
+                    if (rowTextStatus === 'success' && rowJqXHR.status === 200) {
+                        // first hide the spinner loding div
+                        $("#loadingDataSpinner").hide();
+                        let rowsObject = rowData;
+                        // console.log(rowsObject);
+                        drawDataTableRows(rowsObject, false);
+                    }
 
 
-                    });
+                });
             }
         }
 
@@ -401,7 +422,7 @@ $(document).ready(function () {
         // console.log(undoElement.data());
         let clonedNewRowsUpdates = allNewRowsUpdates;
         // console.log(clonedNewRowsUpdates);
-        for(let row in clonedNewRowsUpdates){
+        for (let row in clonedNewRowsUpdates) {
             clonedNewRowsUpdates[row]['colValue'] = undoElement.data("undo-val");
             // console.log(undoElement.data());
             // console.log(allNewRowsUpdates[row]);
@@ -489,7 +510,7 @@ $(document).ready(function () {
     reselectColumnsBtn.on("click", function (e) {
         e.preventDefault();
         $('[data-toggle="tooltip"]').tooltip('dispose');
-        reselectColumnsFunc();
+        reselectColumnsFunc(true);
     });
 
     const resetSortTableBtn = $("#resetSortTableBtn");
@@ -525,26 +546,26 @@ $(document).ready(function () {
         if (theAction === 'next') {
             clickedRecordsCount += 50;
             let checkLastPageResponse = fetchDataFileRows(clickedRecordsCount + 50);
-            $.when(checkLastPageResponse).done(function (data, textStatus, jqXHR){
+            $.when(checkLastPageResponse).done(function (data, textStatus, jqXHR) {
                 // console.log(data['data'].length);
-                if(data['data'].length  < 50){
-                   $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-                   $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-                   $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                if (data['data'].length < 50) {
+                    $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                    $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                    $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                 }
             });
         } else if (theAction === "previous") {
             if (clickedRecordsCount !== 50) {
                 clickedRecordsCount = clickedRecordsCount - 50;
                 // check if the next indicator ">" is disabled because the member was in the last page, enable it
-                if($("[data-action='next']").is(":disabled") === true){
+                if ($("[data-action='next']").is(":disabled") === true) {
                     $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                     $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                     $("#no-data-watermark").hide();
                 }
             }
 
-        }else if (theAction === 'first'){
+        } else if (theAction === 'first') {
             // when member click on first page
             clickedRecordsCount = 50;
             $("[data-action='previous']").attr("disabled", 'disabled').addClass("disabled");
@@ -552,7 +573,7 @@ $(document).ready(function () {
             $("[data-action='next']").tooltip('update').removeAttr("disabled").removeClass("disabled");
             $("[data-action='last']").tooltip('update').removeAttr("disabled").removeClass("disabled");
 
-        }else if (theAction === 'last'){
+        } else if (theAction === 'last') {
             // when member click on last btn
             const allRecords = $("#records-count-alert b:first");  // get all records from alert in web page
             const tmpDiv = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
@@ -588,7 +609,7 @@ $(document).ready(function () {
         if (searchQuery !== "") {
             fetchRecordsBySearchQuery(searchQuery);
             $("#loadingDataSpinner").fadeOut();
-            $('.data-table-nav-btns').attr("disabled", 'disabled').toggleClass('disabled');
+            $('.data-table-nav-btns').attr("disabled", 'disabled').addClass('disabled');
         }
     });
 
@@ -625,29 +646,61 @@ $(document).ready(function () {
     });
 
     // data handler wrapper function
-    dataHandlerWrapperTabs();
+    // dataHandlerWrapperTabs();
 
     // this to reset upload checkbox when closed
-    $('#instructionsModal').on('show.bs.modal', function() {
+    $('#instructionsModal').on('show.bs.modal', function () {
         let instructionInputs = $(".instruction-check-btn");
         // this to reset the check boxes in upload instruction model if closed and not click on check mark
         for (const input of instructionInputs) {
             const inputJQ = $(input);
             inputJQ.prop("checked", false);
         }
-      $(this).find('.modal-body').css({
+
+        $(this).find('.modal-body').css({
             'max-height': '100%'
-      });
+        });
+    });
+    $('#instructionsModal').on('close.bs.modal', function () {
+        let instructionInputs = $(".instruction-check-btn");
+        // this to reset the check boxes in upload instruction model if closed and not click on check mark
+        for (const input of instructionInputs) {
+            const inputJQ = $(input);
+            inputJQ.prop("checked", false);
+        }
+
+        $(this).find('.modal-body').css({
+            'max-height': '100%'
+        });
     });
 
     // this to make pick column window responsive
-    $('#columnsDualBoxModal').on('show.bs.modal', function() {
-      $(this).find('.modal-body').css({
+    $('#columnsDualBoxModal').on('show.bs.modal', function () {
+        $(this).find('.modal-body').css({
             'max-height': '100%',
             'max-width': '100%'
-      });
+        });
     });
 
+    // this to prevent the sessions table dropdown from close when sort the sessions table
+    $(document).on('click', '#sessions-table-dropdown .dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+
+    // here when member will delete single session from table
+    deleteSingleSession();
+
+    $('#wrapper-ul a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        // console.log(e.target) // newly activated tab
+        // console.log(e.relatedTarget) // previous active tab
+        const activeTab = $(e.target);
+        if (activeTab.data('section-name') === 'pick_columns') {
+            reselectColumnsFunc();
+        }
+    });
+
+    // when member click on rename session button in details page
+    renameSessionFunc();
 
 });  // end of $(document).ready() event
 
@@ -655,8 +708,8 @@ $(document).ready(function () {
 /*$(function(){
     setTimeout(checkMemberSessionStatus,10000);
 });*/
-$(document).ajaxError(function() {
-  console.error('Triggered ajaxError handler.');
+$(document).ajaxError(function () {
+    console.error('Triggered ajaxError handler.');
 });
 
 

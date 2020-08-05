@@ -5,7 +5,6 @@ import os
 from prettyprinter import pprint
 from .validators import *
 from itertools import islice
-import copy
 from termcolor import cprint
 import traceback
 from predict_me.my_logger import (log_exception, log_info)
@@ -17,10 +16,13 @@ def clean_currency(x: str):
     """ If the value is a string, then remove currency symbol and delimiters
     otherwise, the value is numeric and can be converted
     """
-
-    if isinstance(x, str) or x.startswith("$"):
-        return (x.replace('$', '').replace(',', ''))
-    return (float(x))
+    try:
+        if isinstance(x, str) or x.startswith("$"):
+            return (x.replace('$', '').replace(',', ''))
+        return (float(x))
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
 
 
 def get_selected_columns_as_list(member_data_file):
@@ -82,7 +84,7 @@ def save_data_file_rounded(file_path):
 
         cprint("save done", 'green')
     except Exception as ex:
-        cprint(str(ex), 'red')
+        cprint(traceback.format_exc(), 'red')
         delete_data_file(file_path)
         log_exception(traceback.format_exc())
 
@@ -151,7 +153,7 @@ def get_row_count(file_path):
     row_counts = None
     df = get_df_from_data_file(file_path)
     row_counts = df.shape[0]
-
+    cprint(df.shape, 'blue')
     return row_counts
 
 
@@ -529,19 +531,25 @@ def delete_all_member_data_file_info(member_data_file):
 
     """
     try:
-        member_data_file.data_file_path = "None"
-        member_data_file.file_upload_procedure = "None"
-        member_data_file.all_records_count = 0
-        member_data_file.selected_columns = ""
-        member_data_file.selected_columns_dtypes = ""
-        member_data_file.donor_id_column = ""
-        member_data_file.is_donor_id_selected = False
-        member_data_file.unique_id_column = ""
-        member_data_file.all_columns_with_dtypes = ""
-        member_data_file.is_process_complete = False
-        member_data_file.data_handler_session_label = ""
-        member_data_file.current_session_name = ""
-        member_data_file.save()
+        from data_handler.models import DataHandlerSession
+        for dfile in DataHandlerSession.objects.filter(data_handler_id=member_data_file):
+            delete_data_file(dfile.data_file_path)
+        DataHandlerSession.objects.filter(data_handler_id=member_data_file).delete()
+        # member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
+        # member_data_file.data_file_path = "None"
+        # member_data_file.file_upload_procedure = "None"
+        # member_data_file.all_records_count = 0
+        # member_data_file.selected_columns = ""
+        # member_data_file.selected_columns_dtypes = ""
+        # member_data_file.donor_id_column = ""
+        # member_data_file.is_donor_id_selected = False
+        # member_data_file.unique_id_column = ""
+        # member_data_file.all_columns_with_dtypes = ""
+        # member_data_file.is_process_complete = False
+        # member_data_file.save()
+    except DataHandlerSession.DoesNotExist:
+        cprint('DataHandlerSession.DoesNotExist', 'red')
+
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         log_exception(traceback.format_exc())
@@ -603,6 +611,24 @@ def check_empty_df(file_path):
         if df.empty is True:
             return True
         return False
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())
+
+
+def check_data_or_num(params: str):
+    try:
+        data_or_num = ''
+        last_param = params.strip().split('/')[-1]
+        if last_param == '':
+            last_param = params.strip().split('/')[-2]
+        if last_param.isdigit():
+            data_or_num = int(last_param)
+        else:
+            data_or_num = 'data'
+        return data_or_num
+    except AttributeError:
+        pass
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         log_exception(traceback.format_exc())

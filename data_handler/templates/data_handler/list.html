@@ -5,710 +5,248 @@
 
 
 {% block title %}
-Manage Your Data
+    Manage Your Data
 {% endblock title %}
 
 {% block customcss %}
-<!--begin::Page Vendors Styles(used by this page)-->
-<link href="{% static 'assets/css/custom/stripe_extra_form.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{% static 'assets/css/protip.min.css' %}" rel="stylesheet" type="text/css"/>
-<style>
+    <!--begin::Page Vendors Styles(used by this page)-->
+    <link href="{% static 'assets/css/custom/stripe_extra_form.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/protip.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
 
-    .myText {
-        text-decoration: line-through;
-    }
+        .myText {
+            text-decoration: line-through;
+        }
 
-    .row-full {
-        width: 90vw;
-        position: relative;
-        margin-left: -50vw;
-        left: 57%;
-    }
+        .row-full {
+            width: 90vw;
+            position: relative;
+            margin-left: -50vw;
+            left: 57%;
+        }
 
-    #data_handler_table thead {
-        color: #B5B5C3;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.1rem;
-        cursor: pointer;
-    }
+        #data_handler_table thead {
+            color: #B5B5C3;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.1rem;
+            cursor: pointer;
+        }
 
-    ul.vakata-context,
-    ul.jstree-contextmenu,
-    ul.jstree-default-contextmenu {
-        z-index: 1;
-    }
+        ul.vakata-context,
+        ul.jstree-contextmenu,
+        ul.jstree-default-contextmenu {
+            z-index: 1;
+        }
 
-    #semitransparent {
-        width: auto;
-        height: 313px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 2;
-        -moz-opacity: .80;
-        filter: alpha(opacity=80);
-        opacity: .80;
-    }
+        #semitransparent {
+            width: auto;
+            height: 250px;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            -moz-opacity: .80;
+            filter: alpha(opacity=80);
+            opacity: .80;
+        }
 
-    .notAllowedCur {
-        cursor: not-allowed !important;
-    }
+        .notAllowedCur {
+            cursor: not-allowed !important;
+        }
 
-    .list-group-item.active {
-        background-color: rgba(105, 147, 255, 0.2) !important;
-        border-color: rgba(105, 147, 255, 0.2) !important;
-        color: #0a0a0a !important;
-    }
+        .list-group-item.active {
+            background-color: rgba(105, 147, 255, 0.2) !important;
+            border-color: rgba(105, 147, 255, 0.2) !important;
+            color: #0a0a0a !important;
+        }
 
-    #availableColumnsList li.disabled:HOVER, .columnItem.disabled:HOVER {
-        cursor: not-allowed !important;
-    }
+        #availableColumnsList li.disabled:HOVER, .columnItem.disabled:HOVER {
+            cursor: not-allowed !important;
+        }
 
-    .protip, .protip-open {
-        z-index: auto !important;
-    }
-     #pick-columns-btns{
-        margin-left: 8px;
-        max-width: 100%;
-    }
-    #pick-columns-btns button{
-        margin-left: -12px;
-    }
-    #top-data-table-toolbar{
+        .protip, .protip-open {
+            z-index: auto !important;
+        }
+
+        #pick-columns-btns {
+            margin-left: 8px;
+            max-width: 100%;
+        }
+
+        #pick-columns-btns button {
+            margin-left: -12px;
+        }
+
+        #top-data-table-toolbar {
             margin-top: 15px;
 
         }
-    @media only screen and (max-width: 768px) {
-            #pick-columns-btns{
+
+        @media only screen and (max-width: 768px) {
+            #pick-columns-btns {
                 margin-top: 25px;
+            }
+
+            #top-data-table-toolbar {
+                margin-top: 60px;
+                text-align: center;
+            }
+
         }
-        #top-data-table-toolbar{
-            margin-top: 60px;
-            text-align: center;
+
+
+        /* Just common table stuff. Really. */
+        .tableFixHead {
+            overflow: auto;
+            height: 150px;
+            display: inline-block;
+
         }
 
-    }
+        .tableFixHead table {
+            white-space: nowrap;
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse !important;
+        }
+
+        .tableFixHead table thead th {
+            position: -webkit-sticky;
+            position: -moz-sticky;
+            position: -ms-sticky;
+            position: -o-sticky;
+            position: sticky;
+            top: 0px;
+            max-width: 180px;
+            width: 180px;
 
 
+        {#z-index: 97 !important;#}
+        }
+
+        td {
+            max-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
 
-
-/* Just common table stuff. Really. */
-.tableFixHead {
-    overflow: auto;
-    height: 150px;
-    display: inline-block;
-
-}
-.tableFixHead table {
-    white-space:nowrap;
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse !important;
-}
-.tableFixHead table thead th {
- position: -webkit-sticky;
-    position: -moz-sticky;
-    position: -ms-sticky;
-    position: -o-sticky;
-    position: sticky;
-    top: 0px;
-    max-width: 180px;
-    width: 180px;
-
-
-    {#z-index: 97 !important;#}
-}
-td {
-    max-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-</style>
+    </style>
 
 {% endblock customcss %}
 
 {% block pagename %}
-Data Handler
+    List All your sessions
+
 {% endblock pagename %}
 
 
 {% block content %}
-<!-- Instructions Modal  -->
-{% include "data_handler/inc/instructions_modal.html" %}
-<!-- ./Instructions Modal  -->
+    {% include 'data_handler/inc/upload_file_modal.html' %}
+    <!-- Instructions Modal  -->
+    {% include "data_handler/inc/instructions_modal.html" %}
+    <!-- ./Instructions Modal  -->
+    <!-- donor Data Files Modal  -->
+    {% include "data_handler/inc/donor_files_modal.html" %}
+    <!-- ./donor Data Files Modal  -->
 
-<!-- donor Data Files Modal  -->
-{% include "data_handler/inc/donor_files_modal.html" %}
-<!-- ./donor Data Files Modal  -->
+    <!-- Pay for extra records or update subscription   -->
+    {% include "data_handler/inc/extra_records_or_upgrade_sub_modal.html" %}
+    <!-- ./Pay for extra records or update subscription   -->
 
-<!-- donor Data Upload Form Modal  -->
-{# include "data_handler/inc/upload_donor_file_form.html" #}
-<!-- ./donor Data Upload Form Modal  -->
+    <!-- Columns Dual Box   -->
+    {% include "data_handler/inc/columns_dualbox.html" %}
+    <!-- ./Columns Dual Box   -->
 
-<!-- Pay for extra records or update subscription   -->
-{% include "data_handler/inc/extra_records_or_upgrade_sub_modal.html" %}
-<!-- ./Pay for extra records or update subscription   -->
+    <!-- Records Counter Box   -->
+    {% include "data_handler/inc/count_records_progress_modal.html" %}
+    <!-- ./Records Counter Box  -->
 
-<!-- Columns Dual Box   -->
-{% include "data_handler/inc/columns_dualbox.html" %}
-<!-- ./Columns Dual Box   -->
-
-<!-- Records Counter Box   -->
-{% include "data_handler/inc/count_records_progress_modal.html" %}
-<!-- ./Records Counter Box  -->
-
-<!-- Start Tabs Wrapper -->
-<section id="data-handler-tabs-wrapper">
-    <!-- Start Spinner   -->
-    <div id="data-handler-wrapper-spinner" class="position-relative text-center" style="height: auto;">
-        <div class="spinner spinner-danger spinner-lg position-absolute"
-             style="z-index: 10; left: 50%; top: 50px;"></div>
-    </div>
-    <!-- End Spinner   -->
-
-    <!-- Start tabs wrapper   -->
-    <div class="card card-custom" id="data-handler-wrapper">
-        <div class="card-body px-0 pb-0">
-
-
-            <ul class="nav nav-tabs nav-tabs-line justify-content-center nav-bolder" style="display: none;" id="wrapper-ul">
-                {% if get_user_membership.data_file_obj.current_session_name == "" %}
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" data-section-name="upload" href="#upload-file-tab">1. Upload
-                        </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="pick_columns" href="#pick-columns-tab">2. Pick
-                        Columns </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="data_process" href="#data-process-tab">3. Data
-                        Processing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Execute Model</a>
-                </li>
-                {% elif get_user_membership.data_file_obj.current_session_name == "pick_columns" %}
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="upload" href="#upload-file-tab">1. Upload
-                        <i title="Success" class="icon-lg ml-auto far fa-check-circle text-success"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" data-section-name="pick_columns" href="#pick-columns-tab">2. Pick
-                        Columns</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="data_process" href="#data-process-tab">3. Data
-                        Processing <i class="icon-2x text-dark-50 flaticon-edit-1 ml-auto"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Execute Model</a>
-                </li>
-                {% elif get_user_membership.data_file_obj.current_session_name == "data_process" %}
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="upload" href="#upload-file-tab">1. Upload
-                        <i title="Success" class="icon-lg ml-auto far fa-check-circle text-success"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" data-section-name="pick_columns" href="#pick-columns-tab">2. Pick
-                        Columns <i title="Success" class="icon-lg ml-auto far fa-check-circle text-success"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" data-section-name="data_process" href="#data-process-tab">3. Data
-                        Processing <i data-toggle="tooltip" title="edit your data" class="icon-md text-dark-50 flaticon-edit-1 ml-auto"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#run-predictive-modal-tab" data-section-name="run_modal"
-                       tabindex="-1">4. Execute Model</a>
-                </li>
-            {% endif %}
-            </ul>
-
-            <!-- Start Wrapper Content -->
-            <div class="tab-content mt-5" id="wrapper-content" style="display: none;">
-                {% if get_user_membership.data_file_obj.current_session_name == "upload" or get_user_membership.data_file_obj.current_session_name == '' %}
-                    <div class="tab-pane fade active show" id="upload-file-tab" role="tabpanel"
-                     aria-labelledby="upload-file-tab">
-                    {% if get_user_membership.data_file_obj.file_upload_procedure == "None" %}
-                    <div class="card card-custom ">
-
-                        <div class="card-header card-header-tabs-line">
-                            <div class="card-title">
-                                <h3 class="card-label">Upload Your data file</h3>
-                                <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                    <div class="btn-group mr-2 mt-3" role="group" aria-label="...">
-                                        <button data-target='#instructionsModal' data-toggle="modal" type="button"
-                                                class="btn btn-outline-primary btn-icon ">
-              <span data-toggle="tooltip" title='Read upload instructions'>
-                <i class="icon-2x text-dark-50 flaticon-information"></i>
-              </span>
-                                        </button>
-
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                            <div class="card-toolbar">
-                                <form class="kt-form " enctype="multipart/form-data" method="POST"
-                                      id="uploadDataFileForm">
-                                    {% csrf_token %}
-                                    <ul class="nav nav-tabs nav-bold nav-tabs-line">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="#upload_tab">
-                                                <span class="nav-icon"><i class="icon-xl fas fa-file-upload"></i></span>
-                                                <span class="nav-text">Upload</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item" data-toggle="tooltip" title="Soon!">
-                                            <a class="nav-link disabled" data-toggle="tab" href="#google_drive_tab">
-                                <span class="nav-icon"><i style="color: #FFD04B;"
-                                                          class="icon-xl fab fa-google-drive"></i></span>
-                                                <span class="nav-text">Drive</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item" data-toggle="tooltip" title="Soon!">
-                                            <a class="nav-link disabled" data-toggle="tab" href="#dropbox_tab">
-                                <span class="nav-icon"><i style="color: #0060FF;"
-                                                          class="icon-xl fab fa-dropbox"></i></span>
-                                                <span class="nav-text">Dropbox</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item" data-toggle="tooltip" title="Soon!">
-                                            <a class="nav-link disabled" data-toggle="tab" href="#onedrive_tab">
-                                <span class="nav-icon"><i style="color: #2778D3;"
-                                                          class="icon-xl fas fa-cloud"></i></span>
-                                                &nbsp;<span class="nav-text">OneDrive</span>
-                                            </a>
-                                        </li>
-
-
-                                    </ul>
-                            </div>
-                        </div>
-                        <div class="card-body position-relative">
-                            <div id="semitransparent" class="text-center bg-gray-200">
-                                <h2 class="font-weight-bolder my-35 mx-auto" style="color: #000000;">
-                                    Pleas read <span class='text-danger cursor-pointer btn-link h2'
-                                                     data-target='#instructionsModal'
-                                                     data-toggle="modal"><b>Donor File Upload Instructions</b></span>
-                                    and
-                                    accept the terms to upload the file.
-                                </h2>
-                            </div>
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="upload_tab" role="tabpanel"
-                                     aria-labelledby="upload_tab">
-                                    <div class="form-group">
-
-                                        <!-- <label>File Browser</label> -->
-                                        <div></div>
-                                        <div class="custom-file">
-                                            <input disabled type="file" class="custom-file-input" id="donerFile"
-                                                   name="donor_file"
-                                                   required
-                                                   accept=".xlsx, .csv"/>
-                                            <label class="custom-file-label" for="donerFile">Choose file</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group ">
-                                        <div class="alert alert-custom alert-secondary" role="alert">
-                                            <div class="alert-icon">
-                                                <i class="flaticon-questions-circular-button"></i>
-                                            </div>
-                                            <div class="alert-text">Allowed Files (csv, xlsx)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade text-center" id="google_drive_tab" role="tabpanel"
-                                     aria-labelledby="google_drive_tab">
-                                    <a target="_blank" href="{% provider_login_url 'google' process=" connect" %}"
-                                    class="btn btn-primary border-0 w-75" style="background-color: #1FA463;">
-                                    <i class="icon-xl fab fa-google-drive"></i> Browse
-                                    </a>
-                                </div>
-                                <div class="tab-pane fade text-center" id="dropbox_tab" role="tabpanel"
-                                     aria-labelledby="dropbox_tab">
-                                    <button type="button" class="btn btn-primary border-0 w-75"
-                                            style="background-color: #0060FF;">
-                                        <i class="icon-xl fab fa-dropbox"></i> Browse
-                                    </button>
-                                </div>
-                                <div class="tab-pane text-center fade" id="onedrive_tab" role="tabpanel"
-                                     aria-labelledby="onedrive_tab">
-                                    <button type="button" class="btn btn-primary border-0 w-75"
-                                            style="background-color: #2778D3;">
-                                        <i class="icon-xl fas fa-cloud"></i> Browse
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            {% comment %}
-                            <button type="button" style="width: 100px;" class="btn btn-danger" data-dismiss="modal"
-                                    data-toggle="tooltip" title="Cancel and close">
-                                <i class="la la-close"></i>
-                            </button>
-                            {% endcomment %}
-                            &nbsp;
-                            <button type="submit" id="uploadDataFileBtn" class="btn btn-primary " style="width: 100px;"
-                                    data-toggle="tooltip"
-                                    title="Upload!">
-                                <i class="la la-upload"></i>
-                            </button>
-                        </div>
-                        </form>
-                    </div>
-                    {% endif %}
-
-                </div>
-                {% endif %}
-                {% if get_user_membership.data_file_obj.current_session_name == "pick_columns" %}
-                   <div class="tab-pane fade active show" id="pick-columns-tab" role="tabpanel" aria-labelledby="pick-columns-tab">
-                    <p class="text-center font-weight-bolder h2 text-dark my-10">
-                        Please Pick The Columns...
-                    </p>
-                </div>
-                {% endif %}
-
-                {% if get_user_membership.data_file_obj.current_session_name == "data_process" %}
-                   <div class="tab-pane fade active show" id="data-process-tab" role="tabpanel" aria-labelledby="data-process-tab">
-
-                    <div class="alert alert-custom alert-notice alert-light-success fade show mb-5 mx-5" role="alert">
-                        <div class="alert-icon">
-                            <span class="label label-xl label-success mr-2">{{get_user_membership.data_file_obj.all_records_count}}</span>
-                        </div>
-                        <div class="alert-text" id="records-count-alert">
-                            <b>{{get_user_membership.data_file_obj.all_records_count}}</b>
-                            of
-                            <b>{{get_user_membership.membership.allowed_records_count}}</b>
-                            record(s) have been used
-                        </div>
-
-                    </div>
-                    <!-- Start Data Table -->
-                    <section id="tab-data-table-section">
-                        <div class="card card-custom">
-                            <div class="card-header ribbon ribbon-clip ribbon-right px-3">
-                                <div class="ribbon-target" data-toggle="tooltip" title="options" style="top: 12px;">
-                                    <span class="ribbon-inner"></span>
-                                    <div class="dropdown dropleft dropdown-inline" id="data-table-options-dropdown">
-                                        <button type="button" class="btn btn-outline-primary btn-icon"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="ki ki-bold-more-hor text-white"></i>
-                                        </button>
-                                        <div class="dropdown-menu" style="z-index: auto !important;" aria-labelledby="dataHandlerActions">
-                                            <div class="dropdown-header">
-                                                Export Data
-                                            </div>
-                                            <a href="{% url 'data-handler-excel-download' %}"
-                                               class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
-                                                <i class="fas fa-file-excel text-success d-inline-block  position-relative" style="top: 1px"></i>
-                                                Excel
-                                            </a>
-                                            <a href="{% url 'data-handler-csv-download' %}"
-                                               class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
-                                                <i class="fas fa-file-csv text-dark d-inline-block position-relative" style="top: 1px"></i>
-                                                CSV
-                                            </a>
-                                            <a id='reselectColumnsBtn' href="#" data-toggle="tooltip"
-                                               data-placement="left" title="Reselect the columns"
-                                               class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
-                                                <i class="text-dark-50 flaticon-list d-inline-block icon-lg position-relative"
-                                                   style="top: 1px"></i>
-                                                Reselect columns
-                                            </a>
-                                             <div class="dropdown-divider"></div>
-                                            <a href="#"
-                                               class="btn border-0 font-weight-bolder text-hover-dark btn-outline-success disabled dropdown-item"
-                                               disabled style="cursor: not-allowed" id="saveDataFileBtn">
-                                                <i class="icon-lg la la-save d-inline-block icon-lg position-relative"
-                                                   style="top: 1px"></i>
-                                                Save Changes
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a href="#"
-                                               class="btn btn-outline-danger dropdown-item border-0 font-weight-bolder "
-                                               data-toggle="tooltip"
-                                               id="deleteDataFileBtn" data-placement="left" title="be careful!">
-                                                <i class="flaticon2-trash d-inline-block icon-lg position-relative"
-                                                   style="top: 1px"></i>
-                                                Delete Data File!
-                                            </a>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="container">
-                                    <h3 class="card-title w-100 row " id="top-data-table-toolbar">
-                                    <div class="col-sm-12 col-md-12 col-lg-3">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="search" id="searchQuery" class="form-control"
-                                                       placeholder="Search for...">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-primary btn-icon" type="button"
-                                                            id="searchDataTableBtn">
-                                                        <i class="flaticon2-search-1 icon-md"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4 col-md-4 col-lg-3">
-                                        <div class="form-group">
-                                            <button type="button" data-toggle="tooltip" title="Undo last change"
-                                                    class="btn btn-outline-warning disabled"
-                                                    style="cursor: not-allowed;"
-                                                    disabled id="undoBtn">
-                                                <i class="la la-undo-alt"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-secondary disabled"
-                                                    style="cursor: not-allowed;" disabled
-                                                    id="resetSortTableBtn">
-                                                <i class="la la-undo-alt"></i> Reset
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-4 col-md-4 col-lg-4 ">
-                                        <div class="form-group">
-                                            <div class="btn-group" role="group" aria-label="Data Table Navigation">
-                                                <button type="button" data-action="first" disabled
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="First Page">
-                                                    <i class="icon-lg la la-angle-double-left"></i>
-                                                </button>
-                                                <button type="button" data-action="previous" disabled
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Previous 50 records">
-                                                    <i class="icon-lg la la-angle-left"></i>
-                                                </button>
-
-                                                <button data-action="next" type="button"
-                                                        class="btn btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Next 50 records">
-                                                    <i class="la la-angle-right"></i>
-                                                </button>
-                                                <button type="button" data-action="last"
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Last Page">
-                                                    <i class="icon-lg la la-angle-double-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </h3>
-                                </div>
-                            </div>
-                            <div class="card-body p-0">
-                                <!--begin: Datatable-->
-                                <section id="donorDataTable">
-
-
-                                    <div id="save-row-loader" class="position-relative text-center mx-auto"
-                                         style="z-index: 1; display: none;">
-                                        <div class=" w-25  position-absolute" style="left: 38%;">
-                                            <div class="card card-custom gutter-b border "
-                                                 style="background-color: #EEF0F8;">
-
-                                                <div class="card-body ">
-                                                    <h4>Please wait...</h4>
-                                                    <div class="spinner spinner-track spinner-dark spinner-lg mt-7"
-                                                         style="left: 45%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <section id="dataListTable" class="table-responsive"
-                                             style="transition: all 0.5s ease-out;">
-                                        <div class="container position-relative" id="loadingDataSpinner">
-                                            <div class="row justify-content-center">
-                                                <div class="col-1 text-center">
-                                                    <div class="position-absolute" style="top: 120px;">
-                                                        <div class="spinner spinner-primary spinner-lg"></div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <form method="POST" id="dataFileTableForm" onsubmit="return false;">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div style="overflow:auto; height:700px;" id="dataTableWrapper"
-                                                 class="position-relative tableFixHead">
-                                                <table id="data_handler_table" class="table">
-
-                                                    <caption>Member Data File</caption>
-
-                                                    <thead class='thead-light mb-2'>
-                                                    <div id="no-data-watermark" style="display: none;">
-                                                        <p class="text-danger">
-                                                            NO RECORDS TO DISPLAY!!
-                                                        </p>
-                                                    </div>
-                                                    <tr></tr>
-                                                    </thead>
-
-                                                    <tbody id="data_handler_body">
-                                                    <tr></tr>
-                                                    </tbody>
-
-                                                    <tfoot>
-                                                    <tr>
-
-                                                    </tr>
-                                                    </tfoot>
-
-                                                </table>
-                                            </div>
-                                                </div>
-                                            </div>
-                                            <div class="card card-custom gutter-b m-auto">
-
-                                                <div class="card-body">
-                                                    <div class="container">
-                                                        <div class="row">
-                                                           <div class="col-sm col-md col-lg text-center">
-                                        <div class="form-group">
-                                            <div class="btn-group" role="group" aria-label="Data Table Navigation">
-                                                <button type="button" data-action="first" disabled
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="First Page">
-                                                    <i class="icon-lg la la-angle-double-left"></i>
-                                                </button>
-                                                <button type="button" data-action="previous" disabled
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Previous 50 records">
-                                                    <i class="icon-lg la la-angle-left"></i>
-                                                </button>
-
-                                                <button data-action="next" type="button"
-                                                        class="btn btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Next 50 records">
-                                                    <i class="la la-angle-right"></i>
-                                                </button>
-                                                <button type="button" data-action="last"
-                                                        class="btn btn-secondary data-table-nav-btns"
-                                                        data-toggle="tooltip"
-                                                        title="Last Page">
-                                                    <i class="icon-lg la la-angle-double-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </section>
-                                    <!--end: Datatable-->
-                                </section>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- End Data Table -->
-                </div>
-                    <div class="tab-pane fade" id="run-predictive-modal-tab" role="tabpanel"
-                     aria-labelledby="run-predictive-modal-tab">
-                        <div class="container">
-                            <div class="alert alert-custom alert-notice alert-light-warning fade show" role="alert">
-                            <div class="alert-icon"><i class="flaticon-warning"></i></div>
-                            <div class="alert-text font-weight-bolder h4">You cant run the model until validate all data types errors!</div>
-                            <div class="alert-close">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true"><i class="ki ki-close"></i></span>
-                                </button>
-                            </div>
-                        </div>
-
-                            <p class="text-center my-10">
-                        <!--begin::Button-->
-                        <button style="border-radius: 0;" type="button" id="run-modal-btn"
-                                class="btn p-5 btn-success mx-2 font-weight-bolder ">
-
-                            <i class="icon-lg fas fa-cogs"></i>
-                            Run Predictive Model
-                        </button>
-                        <!--end::Button-->
-                    </p>
-                        </div>
-
-                </div>
-                {% endif %}
-
-
-
+    <section id="sessions-list-table">
+        {# first check if the member has previous sessions or not #}
+        {% if has_session == True %}
+            <!-- Start Spinner   -->
+            <div id="data-handler-wrapper-spinner" class="position-relative text-center"
+                 style="height: auto; display: none;">
+                <div class="spinner spinner-danger spinner-lg position-absolute"
+                     style="z-index: 10; left: 50%; top: 50px;"></div>
             </div>
-            <!-- End Wrapper Content -->
+            <!-- End Spinner   -->
+            <!-- Start Session List Table -->
+            {% include 'data_handler/segments/sessions_list.html' with member_sessions=member_sessions %}
+            <!-- End Session List Table -->
 
-        </div>
+        {% else %}
 
-    </div>
-    <!-- End tabs wrapper   -->
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+
+                    </div>
+                    <div class="card-toolbar">
+                        <button type="button" data-toggle="modal" data-target="#uploadFileModal"
+                                class="btn btn-sm btn-success font-weight-bold">
+                            <i class="icon-lg la la-upload"></i> Upload
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <section id="no-sessions" class="bg-warning-o-25 text-center"
+                             style="width: auto;height: 200px; max-height: 200px;">
+                        <p class="display3 display4-lg py-10">
+
+                        <h1 class="text-danger"> No Sessions
+                            <small class="text-muted">
+                                to start new session upload a file from upload button
+                            </small>
+                        </h1>
+                        </p>
+                    </section>
+                </div>
+            </div>
+
+        {% endif %}
+    </section>
 
 
-</section>
-<!-- End Tabs Wrapper -->
-
-
-
-{% endblock content%}
+{% endblock content %}
 
 {% block customjs %}
-<script src="{% static 'assets/js/custom/datahandler/data_handler_stripe.js' %}"></script>
-<script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}"></script>
-<script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/js/custom/library/protip.min.js' %}" type="text/javascript"></script>
-<!--end::Page Vendors-->
-<!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/datahandler/data_handler_tree.js' %}"></script>
-<!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/datahandler/helpers.js' %}" type="text/javascript"></script>
-<!--end::Page Vendors-->
-<!--begin::Page Scripts(used by this page)-->
-<script src="{% static 'assets/js/custom/datahandler/data_handler_fetch_rows.js' %}"></script>
+    <script src="{% static 'assets/js/custom/datahandler/data_handler_stripe.js' %}"></script>
+    <script src="{% static 'assets/plugins/custom/jstree/jstree.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/custom/library/protip.min.js' %}" type="text/javascript"></script>
+    <!--end::Page Vendors-->
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="{% static 'assets/js/custom/datahandler/data_handler_tree.js' %}"></script>
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="{% static 'assets/js/custom/datahandler/helpers.js' %}" type="text/javascript"></script>
+    <!--end::Page Vendors-->
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="{% static 'assets/js/custom/datahandler/data_handler_fetch_rows.js' %}"></script>
 
-<!-- Custom script of dualbox -->
-<script src="{% static 'assets/js/custom/datahandler/dualbox.js' %}"></script>
-
-
-<!-- Custom Script of data handler list page -->
-<script src="{% static 'assets/js/custom/datahandler/datahandlerlist.js' %}"></script>
-
-<script>
-    $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
-    $.protip();
+    <!-- Custom script of dualbox -->
+    <script src="{% static 'assets/js/custom/datahandler/dualbox.js' %}"></script>
 
 
-});
+    <!-- Custom Script of data handler list page -->
+    <script src="{% static 'assets/js/custom/datahandler/datahandlerlist.js' %}"></script>
 
-</script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $.protip();
+
+
+        });
+
+    </script>
 
 
 {% endblock customjs %}

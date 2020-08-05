@@ -7,6 +7,7 @@ var isAjaxRequestDone = {  // this object will be in the success(), method of aj
 
 // this function will fetch the rows of the saved file
 function fetchDataFileRows(recordsCount){
+    const parameters = window.location.pathname;
     if(typeof recordsCount === 'undefined'){
         recordsCount = 50;
     }
@@ -17,7 +18,8 @@ function fetchDataFileRows(recordsCount){
         },
         method: "POST",
         data: {
-            "recordsCount": parseInt(recordsCount)
+            "recordsCount": parseInt(recordsCount),
+            'parameters': parameters,
         },
         error: function (error) {
             //called when there is an error
@@ -63,6 +65,7 @@ function fetchDataFileRows(recordsCount){
 
 // this function will fetch rows with not validate data
 function fetchNotValidateRows(colName){
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/filter-rows",
         beforeSend: function (xhr, settings) {
@@ -72,6 +75,7 @@ function fetchNotValidateRows(colName){
         data: {
             "column_name": colName,
             'records_number': clickedRecordsCount,
+            'parameters': parameters,
         },
         dataSrc: '',
         error: function (error) {
@@ -155,7 +159,7 @@ function fetchRecordsByCount(recordsCount){
 
 // this function will fetch the rows which contain search query
 function fetchDataFileRowsBySearchQuery(searchQuery){
-    
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/search-query-records",
         beforeSend: function (xhr, settings) {
@@ -163,7 +167,8 @@ function fetchDataFileRowsBySearchQuery(searchQuery){
         },
         method: "POST",
         data: {
-            "searchQuery": searchQuery
+            "searchQuery": searchQuery,
+            'parameters': parameters,
         },
         error: function (error) {
             //called when there is an error
@@ -207,8 +212,8 @@ function fetchRecordsBySearchQuery(searchQuery){
     // tableBody.innerHTML = "";
     let searchQureyResponse = fetchDataFileRowsBySearchQuery(searchQuery);
     $.when(searchQureyResponse).done(function (data, textStatus, jqXHR){
-        if(textStatus == "success"){
-            console.log(data.length)
+        if((textStatus == "success") && (jqXHR.status === 200)){
+            // console.log(data);
             drawDataTableRows(data, false);
         }else{
             swAlert("Error", data, 'error');
@@ -219,6 +224,7 @@ function fetchRecordsBySearchQuery(searchQuery){
 
 // function will save if the member accept and download upload template
 function saveMemberAccepts(acceptData) {
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/accepts-download",
         beforeSend: function (xhr, settings) {
@@ -226,7 +232,8 @@ function saveMemberAccepts(acceptData) {
         },
         method: "POST",
         data: {
-            "accept_data": JSON.stringify(acceptData)
+            "accept_data": JSON.stringify(acceptData),
+            'parameters': parameters,
         },
         error: function (error) {
             //called when there is an error
@@ -263,12 +270,15 @@ function saveMemberAccepts(acceptData) {
 
 // function will send request for the server to check if member upload data file, this will use in setTheCookie function
 function checkIfMemberUploadDataFile() {
+    const parameters = window.location.pathname;
+
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/check-upload-member",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
+        data: {'parameters': parameters},
         error: function (error) {
             //called when there is an error
             swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
@@ -304,8 +314,9 @@ function checkIfMemberUploadDataFile() {
 
 // function will check if the member set his process steps to done
 function checkIfMemberProcessStatus(choice) {
+    const parameters = window.location.pathname;
     let data = "";
-    if(typeof choice !== "undefined") data = {"choice": choice}
+    if(typeof choice !== "undefined") data = {"choice": choice, 'parameters': parameters}
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/check-process-status",
         beforeSend: function (xhr, settings) {
@@ -349,13 +360,16 @@ function checkIfMemberProcessStatus(choice) {
 
 // fetch the last session name of the member
 function fetchLastSessionName() {
+    const parameters = window.location.pathname;
+    const data = {'parameters': parameters};
+
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/fetch-last-session-name",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
-        // data: data,
+        data: data,
         global: false,
         error: function (error) {
             //called when there is an error
@@ -392,13 +406,14 @@ function fetchLastSessionName() {
 
 // set the last session name or the last step on datahandler
 function setSessionLastName(sessionName) {
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/set-last-session-name",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
-        data: {"session_name": sessionName},
+        data: {"session_name": sessionName, 'parameters': parameters},
         global: false,
         error: function (error) {
             //called when there is an error
@@ -433,13 +448,14 @@ function setSessionLastName(sessionName) {
 }
 
 function checkSessionLabelRequest(){
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/set-session-label",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
-        data: {'get_session_label': true},
+        data: {'get_session_label': true, 'parameters': parameters},
         // global: false,
         error: function (error) {
             //called when there is an error
@@ -474,15 +490,102 @@ function checkSessionLabelRequest(){
 }
 
 function setSessionLabelRequest(sessionLabel, sessionTask){
-
+    const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/set-session-label",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
-        data: {'session_task': sessionTask, "session_label": sessionLabel},
+        data: {'session_task': sessionTask, "session_label": sessionLabel, 'parameters': parameters},
         // global: false,
+        error: function (error) {
+            //called when there is an error
+            swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
+        },
+        statusCode: {
+            404: function () {
+                swAlert("Error", "Page not Found!!", "error");
+            },
+            400: function () {
+                swAlert("Error", "Bad Request!!!", "error");
+            },
+            401: function () {
+                swAlert("Error", "Unauthorized!!", "error");
+            },
+            403: function () {
+                swAlert("Error", "Forbidden!!", "error");
+            },
+            500: function () {
+                swAlert("Error", "Internal Server Error!!", "error");
+            },
+            502: function () {
+                swAlert("Error", "Bad Gateway!!", "error");
+            },
+            503: function () {
+                swAlert("Error", "Service Unavailable!!", "error");
+            },
+
+        }
+
+    });
+}
+
+// delete single or all sessions for the user
+function deleteDataSessionsRequest(singleOrAll) {
+    const parameters = window.location.pathname;
+    let data = {'parameters': parameters, "method": singleOrAll};
+    return $.ajax({
+        url: webSiteUrl + "/dashboard/data/api/delete-data-session",
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        method: "POST",
+        data: data,
+        global: false,
+        error: function (error) {
+            //called when there is an error
+            swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
+        },
+        statusCode: {
+            404: function () {
+                swAlert("Error", "Page not Found!!", "error");
+            },
+            400: function () {
+                swAlert("Error", "Bad Request!!!", "error");
+            },
+            401: function () {
+                swAlert("Error", "Unauthorized!!", "error");
+            },
+            403: function () {
+                swAlert("Error", "Forbidden!!", "error");
+            },
+            500: function () {
+                swAlert("Error", "Internal Server Error!!", "error");
+            },
+            502: function () {
+                swAlert("Error", "Bad Gateway!!", "error");
+            },
+            503: function () {
+                swAlert("Error", "Service Unavailable!!", "error");
+            },
+
+        }
+
+    });
+}
+
+function renameSessionRequest(sessionName) {
+    const parameters = window.location.pathname;
+    let data = {'parameters': parameters, "session_name": sessionName};
+    return $.ajax({
+        url: webSiteUrl + "/dashboard/data/api/rename-data-session",
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        method: "POST",
+        data: data,
+        global: false,
         error: function (error) {
             //called when there is an error
             swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");

@@ -61,7 +61,7 @@ List of reports
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-10">
+                            <div class="col-lg-10 col-md-4 col-sm-4">
                                 <form method="POST" class="form">
                                     {% csrf_token %}
                                     <div class="form-group">
@@ -87,7 +87,7 @@ List of reports
                                     </div>
                                 </form>
                             </div>
-                            <div class="col">
+                            <div class="col-lg-1 col-md-1 col-sm-4">
                                 <div class="input-group-append">
                                     <button data-toggle="tooltip" id="reportsFilterBtn" title="Filter"
                                             class="btn btn-secondary"
@@ -95,13 +95,16 @@ List of reports
                                         <i class="icon-md la la-filter"></i>
 
                                     </button>
-                                    <button data-toggle="tooltip" id="resetReportsFilterBtn" title="Reset Filter"
+                                </div>
+
+                            </div>
+                            <div class="ol-lg-1 col-md-1 col-sm-4">
+                                <button data-toggle="tooltip" id="resetReportsFilterBtn" title="Reset Filter"
                                             class="btn btn-light-danger font-weight-bold ml-2"
                                             type="button">
                                        <i class="icon-md la la-minus-circle"></i>
 
                                     </button>
-                                </div>
                             </div>
 
                         </div>
@@ -130,6 +133,10 @@ List of reports
                         <!-- Start data usage reports segments -->
                                 {% include 'reports_app/inc/extra_records_reports.html' %}
                         <!-- End data usage reports segments -->
+                    {% elif request.path|slice_url_path == 'revenues' %}
+                        <!-- Start revenues reports segments -->
+                                    {% include 'reports_app/inc/revenues_reports.html' %}
+                            <!-- End revenues reports segments -->
                 {% endif %}
 
                 <!-- Start Default no filter -->

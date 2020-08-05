@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     "membership",
     "activity_app",
     "predictme_context_processors",
-    "data_handler",
+    "data_handler.apps.DataHandlerConfig",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

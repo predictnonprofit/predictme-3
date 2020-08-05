@@ -121,12 +121,16 @@ function checkValueExists(json, value) {
 // this ajax function which will upload the donor data file
 function uploadDonorDataFile(uploadForm) {
     const webSiteUrl = window.location.origin;
+    const parameters = window.location.pathname;
     // const webSiteMemberUrl = window.location;
     const donerFileInput = $("#donerFile");
     if (donerFileInput.val()) {
         // $form = uploadForm;
         var formData = new FormData($("#uploadDataFileForm")[0]);
         const fileName = donerFileInput.val().split(/(\\|\/)/g).pop(); // get the file name to parse it in url
+        formData.append('parameters', parameters);
+        formData.append('session-label', $("#session-name").val());
+        formData.append('file_name', fileName);
         // ajax request to data handler init
         return $.ajax({
             method: "POST",
@@ -235,12 +239,14 @@ function uploadDonorDataFile(uploadForm) {
 
 // this function which will take the picked columns and send them to make the datatable view
 function sendPickedColumns(params) {
+    const parameters = window.location.pathname;
     // let selectedColumns = JSON.stringify(pickedColumns);
     // let selectedColumns = JSON.parse(pickedColumns);
     // console.log(typeof JSON.stringify(selectedValidateColumns));
     let selectedColumns = {
         "columns": selectedPickedColumns,
-        "columns_with_datatype": JSON.stringify(selectedValidateColumns)
+        "columns_with_datatype": JSON.stringify(selectedValidateColumns),
+        'parameters': parameters
     };
     // console.log(selectedColumns);
     // throw new Error("Wait");
@@ -302,6 +308,7 @@ function sendPickedColumns(params) {
 
 // this function will fetch the columns of the saved file
 function fetchDataFileColumns(fetchedColumns) {
+    const parameters = window.location.pathname;
 
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
@@ -311,7 +318,7 @@ function fetchDataFileColumns(fetchedColumns) {
         timeout: 300000, // 5 minutes
         url: webSiteUrl + "/dashboard/data/api/get-columns",
         // dataType: "json",
-        data: fetchedColumns,
+        data: {'parameters': parameters},
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
@@ -358,7 +365,6 @@ function fetchDataFileColumns(fetchedColumns) {
 
 
 function setColumnNamesHeader(columnsList) {
-    // console.log(columnsList);
     let tableHeaderElement = $("#data_handler_table > thead > tr:last");
     for (let col of columnsList) {
 
@@ -598,7 +604,8 @@ function updateMemberDataFile(updatedRowsObj) {
         url: webSiteUrl + "/dashboard/data/api/update-rows",
         // dataType: "json",
         data: {
-            "rows": JSON.stringify(updatedRowsObj)
+            "rows": JSON.stringify(updatedRowsObj),
+            "parameters": window.location.pathname,
         },
         // dataType: "json",
         beforeSend: function (xhr, settings) {
@@ -646,6 +653,7 @@ function updateMemberDataFile(updatedRowsObj) {
 
 // delete data file function
 function deleteDataFile() {
+    const parameters = window.location.pathname;
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
         cache: false,
@@ -655,7 +663,8 @@ function deleteDataFile() {
         url: webSiteUrl + "/dashboard/data/api/delete-file",
         // dataType: "json",
         data: {
-            "rows[]": allRowsUpdated
+            "rows[]": allRowsUpdated,
+            'parameters': parameters
         },
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
@@ -709,15 +718,14 @@ function uploadProgressModal(isOk, data) {
     // is Ok mean if the row counts dont cross the records limit of the member supscription plan
 
     let rowCount = parseInt(data['row_count']);
-    // console.log(rowCount);
     var rowCountProgressDialog = $("#recordsCountModal");
     var recordsCounterProgressBar = $("#recordsCounterProgressBar");
     let currentRowCounter = $("#currentRowCounter > b");
     let progressWarnText = $("#progressWarnText");
     let nextProgressBtnModal = $("#nextProgressBtnModal");
     let allowdedRowsCount = $("#progressRecords > b:first");
-    rowCountProgressDialog.modal('handleUpdate');
     rowCountProgressDialog.modal('show');
+    rowCountProgressDialog.modal('handleUpdate');
     recordsCounterProgressBar.attr("aria-valuemax", '100');
     let progVal = 0;
     // the interval
@@ -726,21 +734,23 @@ function uploadProgressModal(isOk, data) {
     function progressIntervalFunc() {
 
         let recordNowValue = parseInt(recordsCounterProgressBar.attr("aria-valuenow"));
-        recordsCounterProgressBar.attr("aria-valuenow", recordNowValue + 1);
-        var progressPercentage = ((recordNowValue / rowCount) * 100);
-        // var progressPercentage = Math.round((recordNowValue/rowCount) * 100);
-        // var progressPercentage = Math.trunc((recordNowValue/rowCount) * 100);
-        // var progressPercentage = Math.ceil((recordNowValue/rowCount) * 100);
 
+        let progressPercentage = ((recordNowValue / rowCount) * 100);
+        // console.log(progressPercentage);
         //set the labels and width to progressbar
-        recordsCounterProgressBar.css('width', progressPercentage + '%');
-        recordsCounterProgressBar.children().text(progressPercentage.toFixed() + " %");
+
+        if(progressPercentage <= 100){
+            recordsCounterProgressBar.children().text(progressPercentage.toFixed() + " %");
+            recordsCounterProgressBar.css('width', progressPercentage + '%');
+            recordsCounterProgressBar.attr("aria-valuenow", recordNowValue + 1);
+        }
         currentRowCounter.text(recordNowValue);
 
         if (isOk === true) {
             if (progVal <= rowCount) {
                 progVal++;
-                // console.log(progVal);
+                console.log(progVal, ' of ', rowCount);
+
             } else {
                 clearInterval(progressInterval);
                 let i = 0;
@@ -764,11 +774,15 @@ function uploadProgressModal(isOk, data) {
                 }
 
                 dataFileColumnsSelect.html(optionsList);
-                // console.log(dataFileColumnsSelect);
-                //KTDualListbox.init();
                 rowCountProgressDialog.modal('hide');
-                $('#columnsDualBoxModal').modal('handleUpdate');
+                $("#uploadFileModal").modal('hide');
                 $('#columnsDualBoxModal').modal('show');
+                $('#columnsDualBoxModal').modal('handleUpdate');
+                if(rowCountProgressDialog.hasClass('show') === true){
+                    console.error('modal is shown');
+                }else{
+                    console.log('modal is hidden')
+                }
 
             }
 
@@ -780,12 +794,15 @@ function uploadProgressModal(isOk, data) {
                 // console.log(progVal);
             } else {
                 // clearInterval(progressInterval);
+                $("#uploadFileModal").modal('hide');
                 currentRowCounter.addClass("text-danger bg-danger-o-50 p-1");
                 recordsCounterProgressBar.removeClass("bg-success");
                 recordsCounterProgressBar.addClass("bg-danger-o-50");
                 nextProgressBtnModal.fadeIn();
                 $("#useSubPlanBtn").fadeIn();
                 progressWarnText.fadeIn();
+
+
 
 
             }
@@ -799,6 +816,7 @@ function uploadProgressModal(isOk, data) {
     nextProgressBtnModal.on('click', function (ev) {
         clearInterval(progressInterval);
         rowCountProgressDialog.modal('hide');
+
         $("#extraRecordsModel").modal("handleUpdate");
         $("#extraRecordsModel").modal("show");
     });
@@ -807,9 +825,12 @@ function uploadProgressModal(isOk, data) {
 
 // this function will fetch all columns in the data file to make the member reselect the columns
 function fetchDataFileAllColumns(withDtypes) {
+    const parameters = window.location.pathname;
     let data = '';
     if (typeof withDtypes !== undefined) {
-        data = {"with_dtype": true}
+        data = {"with_dtype": true, 'parameters': parameters};
+    } else {
+        data = {'parameters': parameters};
     }
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
@@ -920,7 +941,8 @@ function dataTypeOptions(dataType, setSelected, uniqueColumn, colName) {
 }
 
 // when user click on reselect columns btn
-function reselectColumnsFunc() {
+function reselectColumnsFunc(openDialog) {
+
     $("#closeReselectColsModal").removeClass("d-none");
     let optionsList = '';
     let rightOptionsList = '';
@@ -936,6 +958,7 @@ function reselectColumnsFunc() {
         /*console.log(textStatus);
         console.log(jqXHR);
         console.log(data);*/
+
 
         const tmpSelectedColsArr = Object.keys(data['selected_columns']);  // member selected columns
         let i = 0;
@@ -1007,8 +1030,11 @@ function reselectColumnsFunc() {
         dataFileColumnsSelect.html(optionsList);
         rightPickedColumnsList.html(rightOptionsList);
         fixSelectedColumnsItems(rightPickedColumnsList);
-        columnsDualBoxModal.modal("handleUpdate");
-        columnsDualBoxModal.modal("show");
+        if (openDialog === true) {
+            columnsDualBoxModal.modal("handleUpdate");
+            columnsDualBoxModal.modal("show");
+        }
+
 
     });
 
@@ -1189,7 +1215,7 @@ function saveTheUpdates(allUpdatedRows, elem) {
             undoValue = "";
             undoValue2 = "";
             // console.log(currInput.data());
-            console.log(data);
+            // console.log(data);
             if (data['is_error'] === true || data['msg'].includes("could not")) {
                 currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
                 showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
@@ -1378,18 +1404,7 @@ function confirmRunModal() {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
                     console.log('I was closed by the timer');
-                    let sessionLabelCheckResponse = checkSessionLabelRequest();
-                    console.log(sessionLabelCheckResponse);
-                    $.when(sessionLabelCheckResponse).done(function (data, textStatus, jqXHR) {
-                        if ((jqXHR.status === 200) && (textStatus === 'success')) {
-                            console.log(data);
-                            if (data === false) {
-                                console.log('after timer');
-                                setSessionLabel();
-                            }
 
-                        }
-                    });
                 }
             })
         } else if (
@@ -1468,4 +1483,79 @@ async function setSessionLabel() {
         }
     }
 
+}
+
+
+// delete single session from table
+function deleteSingleSession() {
+    $(".delete-data-session, #deleteAllSessionsBtn").on('click', function (evt) {
+        const elem = $(this);
+        const sessionID = elem.data('session-id');
+        let deleteMsg = ""
+        if (typeof sessionID === 'number') {
+            deleteMsg = "Do you want to delete your session with its file, You won't be able to revert this!";
+        } else {
+            deleteMsg = "Do you want to delete all your sessions and files!, You won't be able to revert this!";
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: deleteMsg,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete!',
+            allowEnterKey: false,
+        }).then((result) => {
+            if (result.value) {
+                const deleteSessionResponse = deleteDataSessionsRequest(sessionID);
+                $.when(deleteSessionResponse).done(function (data, textStatus, jqXHR) {
+                    //  console.log(textStatus);
+                    // console.log(jqXHR);
+                    // console.log(data);
+                    if ((textStatus === 'success') && (jqXHR.status === 200)) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Delete Successfully!.',
+                            'success'
+                        );
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                });
+
+            }
+        })
+
+
+    })
+}
+
+
+// rename session function
+function renameSessionFunc() {
+    $("#rename-session-btn").on('click', function (evt) {
+        const newSessionNameJq = $("#rename-session-input");
+        if (newSessionNameJq.val() !== "") {
+            const renameSessionResponse = renameSessionRequest(newSessionNameJq.val());
+            $.when(renameSessionResponse).done(function (data, textStatus, jqXHR) {
+                /* console.log(textStatus);
+                console.log(jqXHR);
+                console.log(data);*/
+                if ((textStatus === 'success') && (jqXHR.status === 200)) {
+                    Swal.fire(
+                        'Updated!',
+                        'Rename Successfully!.',
+                        'success'
+                    );
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+        }
+
+
+    });
 }

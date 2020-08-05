@@ -2,6 +2,7 @@ from django.db import models
 # from membership.models import UserMembership
 # Create your models here.
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 UPLOAD_PROCEDURES = (
     ("local_file", "Local File"),
@@ -22,12 +23,27 @@ DATA_HANDLER_SESSION_NAMES = (
 class DataFile(models.Model):
     member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True,
                                related_name='member_data_file')
+    allowed_records_count = models.IntegerField(null=True, blank=True)
+    join_date = models.DateTimeField(auto_now_add=True)
+    has_sessions = models.BooleanField(default=False)
+    last_uploaded_session = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        # verbose_name = "member_data_file"
+        db_table = 'member_data_files'
+
+    def __str__(self):
+        return f"Data file object for {self.member}"
+
+
+class DataHandlerSession(models.Model):
+    data_handler_id = models.ForeignKey(to=DataFile, on_delete=models.CASCADE, null=True, blank=True,
+                                        related_name='data_sessions_set')
     file_upload_procedure = models.CharField(max_length=20, null=True, blank=True, choices=UPLOAD_PROCEDURES)
     data_file_path = models.CharField(max_length=255, blank=True, null=True)
-    all_records_count = models.BigIntegerField(null=True, blank=True)
-    allowed_records_count = models.IntegerField(null=True, blank=True)
-    upload_date = models.DateTimeField(auto_now=True)
-    join_date = models.DateTimeField(auto_now_add=True)
+    current_session_name = models.CharField(max_length=70, null=True, blank=True, choices=DATA_HANDLER_SESSION_NAMES)
+    run_modal_date_time = models.CharField(null=True, blank=True, max_length=60)
+    data_handler_session_label = models.CharField(max_length=70, null=True, blank=True)
     selected_columns = models.TextField(null=True, blank=True)
     selected_columns_dtypes = models.TextField(null=True, blank=True)
     donor_id_column = models.CharField(max_length=150, null=False, blank=True)
@@ -35,15 +51,16 @@ class DataFile(models.Model):
     unique_id_column = models.CharField(max_length=200, null=True, blank=True)
     all_columns_with_dtypes = models.TextField(null=True, blank=True)
     is_process_complete = models.BooleanField(null=True, blank=True, default=False)
-    data_handler_session_label = models.CharField(max_length=70, null=True, blank=True)
-    current_session_name = models.CharField(max_length=70, null=True, blank=True, choices=DATA_HANDLER_SESSION_NAMES)
+    all_records_count = models.BigIntegerField(null=True, blank=True)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    file_name = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         # verbose_name = "member_data_file"
-        db_table = 'member_data_files'
+        db_table = 'data_handler_sessions'
 
     def __str__(self):
-        return f"{self.data_file_path}"
+        return f"{self.current_session_name}"
 
     @property
     def get_selected_columns_as_list(self):
@@ -83,6 +100,8 @@ class DataFile(models.Model):
             pass
         finally:
             return columns_with_dtypes
+
+
 
 
 

@@ -328,6 +328,7 @@ function validatePickedColumns(evt) {
 
 
 function validateColumnsAjaxRequest(columnsObj) {
+    const parameters = window.location.pathname;
     // this function when memeber want to validate the data type in dual dialog box
     return $.ajax({ // should return to can access from $.when()
         method: "POST",
@@ -338,7 +339,8 @@ function validateColumnsAjaxRequest(columnsObj) {
         url: webSiteUrl + "/dashboard/data/api/validate-columns",
         // dataType: "json",
         data: {
-            "columns": JSON.stringify(columnsObj)
+            "columns": JSON.stringify(columnsObj),
+            'parameters': parameters
         },
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
@@ -455,7 +457,7 @@ function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
     if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
-    element.attr('title', `Default data format TEXT\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
+    element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     // element.removeAttr('title');  // to remove current tooltip if exists, avoid tooltip bug
     const elementLiParent = $(element.parent().parent());
     const dataIX = elementLiParent.data("idx");
@@ -766,6 +768,7 @@ function mutationHandler(mutationRecords) {
                 } else {
                     $(".column-option-dtype  option:contains('Unique Identifier (ID)')").removeAttr("disabled");
                 }
+                setCriterias();
 
                 // here for set criteria to false because no data type selected for new column
 
@@ -778,7 +781,6 @@ function mutationHandler(mutationRecords) {
 
 
 jQuery(document).ready(function () {
-
     //mutationObservFunc();
     selectAvaliableColumns();
     selectPickedRightColumns();

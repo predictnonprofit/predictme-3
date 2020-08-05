@@ -23,6 +23,8 @@ urlpatterns = [
         path("fetch-last-session-name", FetchLastSessionNameView.as_view(), name="data-handler-fetch-last-session-name"),
         path("set-last-session-name", SetLastSessionName.as_view(), name="data-handler-set-last-session-name"),
         path("set-session-label", SetSessionLabel.as_view(), name="data-handler-set-session-label"),
+        path("delete-data-session", DeleteSessionView.as_view(), name="data-handler-delete-session"),
+        path("rename-data-session", RenameSessionView.as_view(), name="data-handler-rename-session"),
     ])),
 
 
