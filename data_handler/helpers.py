@@ -153,7 +153,6 @@ def get_row_count(file_path):
     row_counts = None
     df = get_df_from_data_file(file_path)
     row_counts = df.shape[0]
-    cprint(df.shape, 'blue')
     return row_counts
 
 

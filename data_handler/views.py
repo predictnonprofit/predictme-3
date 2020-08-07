@@ -193,7 +193,6 @@ class SaveColumnsView(APIView):
     # parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request, *args, **kwargs):
-        cprint(kwargs, 'green')
         # save_point = transaction.savepoint()
         all_columns_with_dtypes = []  # save all columns with data types which will save to db
         try:
