@@ -457,7 +457,12 @@ function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
     if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
-    element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
+    if(element.data('value').toUpperCase() === "NUMBERS"){
+        element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
+    }else{
+        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
+    }
+
     // element.removeAttr('title');  // to remove current tooltip if exists, avoid tooltip bug
     const elementLiParent = $(element.parent().parent());
     const dataIX = elementLiParent.data("idx");
