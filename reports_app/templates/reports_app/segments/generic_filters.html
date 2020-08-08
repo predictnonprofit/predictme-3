@@ -6,91 +6,26 @@
             <div class="card card-custom">
                 <div class="card-header card-header-tabs-line">
                     <div class="card-title">
-                        <h3 class="card-label" id="filter-title">Generic Filters</h3>
+                        <h3 class="card-label" id="filter-title">Filters</h3>
                     </div>
-                    <div class="card-toolbar">
-                        <ul class="nav nav-tabs nav-bold nav-tabs-line">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#generic-filters-tab">Generic</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#custom-filters-tab">Custom</a>
-                            </li>
 
-                        </ul>
-                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="generic-filters-tab" role="tabpanel">
-                            <!-- Start Filter Form-->
-                                <section id="generic-form-section">
-                                    <form class="kt-form kt-form--fit mb-10" id='generic-form-report-filter'>
-                                {{ csrf }}
+                    <!-- Start Filter Form-->
+                    <section class="my-5" id="generic-form-section">
+                        <form class="kt-form kt-form--fit mb-10" id='generic-form-report-filter'>
+                            {{ csrf }}
 
-                                <div class="row mb-8">
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">Register Date:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="reg-date">
-                                            <span class="ml-1"></span>
-                                        </label>
-                                        <div class="input-daterange input-group" id="kt_datepicker_5">
-                                            <input type="text" class="form-control" name="gen-filter-start"
-                                                   id="gen-filter-start">
-                                            <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="la la-ellipsis-h"></i>
-                            </span>
-                                            </div>
-                                            <input type="text" class="form-control" name="gen-filter-end"
-                                                   id="gen-filter-end">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">Status:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="status">
-                                            <span class="ml-1"></span>
-                                        </label>
-                                        <input id="gen-filter-users-status" class="form-control tagify--outside"
-                                               name='gen-filter-users-status' placeholder='type...'/>
-
-                                    </div>
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">Organization Type:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="org-type">
-                                            <span class="ml-1"></span>
-                                        </label>
-                                        <input id="gen-filter-users-org-type" class="form-control tagify--outside"
-                                               name='gen-filter-users-org-type' placeholder='type...'/>
-
-
-                                    </div>
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">Other Organization Type:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="other-org-type">
-                                            <span class="ml-1"></span>
-                                        </label>
-                                        <input type="text"
-                                               class="form-control datatable-input disabled not-allowed-cursor"
-                                               placeholder="Enter Manually"
-                                               disabled="disabled" id="gen-filter-other-org-type"
-                                               name="gen-filter-other-org-type">
-                                    </div>
-                                </div>
-                                <div class="row mb-8">
-
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
+                            <div class="row mb-8">
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <div class="form-group">
                                         <label class="checkbox checkbox-rounded my-1">Country:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="country">
+                                            <input class="lbl-reports-filter-display" type="checkbox"
+                                                   data-col-name="country">
                                             <span class="ml-1"></span>
                                         </label>
                                         <select id="gen-filter-users-country" name="gen-filter-users-country"
-                                                class="form-control datatable-input select2">
+                                                class="form-control datatable-input select2 reports-filter-input">
                                             <option value="Afghanistan">Afghanistan</option>
                                             <option value="Åland Islands">Åland Islands</option>
                                             <option value="Albania">Albania</option>
@@ -371,14 +306,17 @@
                                             <option value="Zimbabwe">Zimbabwe</option>
                                         </select>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <div class="form-group">
                                         <label class="checkbox checkbox-rounded my-1">State:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="state">
+                                            <input class="lbl-reports-filter-display" type="checkbox"
+                                                   data-col-name="state">
                                             <span class="ml-1"></span>
                                         </label>
-                                        <select class="form-control datatable-input select2" name="gen-filter-state"
+                                        <select class="form-control datatable-input select2 reports-filter-input"
+                                                name="gen-filter-state"
                                                 id="gen-filter-state">
 
                                             <option value="Alabama">Alabama</option>
@@ -438,46 +376,204 @@
                                             <option value="Wisconsin">Wisconsin</option>
                                             <option value="Wyoming">Wyoming</option>
                                         </select>
-
                                     </div>
 
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">City:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="city">
+                                </div>
+
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">City:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="city">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <input type="text" class="form-control datatable-input reports-filter-input"
+                                           placeholder="Enter City"
+                                           id="gen-filter-users-city" name="gen-filter-users-city">
+                                </div>
+
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <div class="form-group">
+                                        <label class="checkbox checkbox-rounded my-1">Plan:
+                                            <input class="lbl-reports-filter-display" type="checkbox"
+                                                   data-col-name="sub-plan">
                                             <span class="ml-1"></span>
                                         </label>
-                                        <input type="text" class="form-control datatable-input" placeholder="Enter City"
-                                               id="gen-filter-users-city" name="gen-filter-users-city">
-                                    </div>
-                                    <div class="col-lg-3 mb-lg-0 mb-6">
-                                        <label class="checkbox checkbox-rounded my-1">Address:
-                                            <input class="generic-reports-filters-lbl-display" type="checkbox"
-                                                   checked="checked" data-col-name="address">
-                                            <span class="ml-1"></span>
-                                        </label>
-                                        <input type="text" class="form-control datatable-input" placeholder="Address"
-                                               id="gen-filter-address" name="gen-filter-address">
+                                        <select class="form-control datatable-input reports-filter-input"
+                                                name="users-filter-sub-plan" id="users-filter-sub-plan">
+                                            <option value="all-plan">All</option>
+                                            <option value="starter">Starter</option>
+                                            <option value="professional">Professional</option>
+                                            <option value="expert">Expert</option>
+                                        </select>
+
                                     </div>
                                 </div>
 
-                            </form>
-                                </section>
-                            <!-- End Filter Form-->
-                        </div>
-                        <div class="tab-pane fade" id="custom-filters-tab" role="tabpanel">
-                            <!-- Start Custom Filter Form-->
-                            <section id="custom-form-section">
-                                {% if request.path|slice_url_path == 'users' %}
-                                    <!-- Start All users Report filters -->
-                                        {% include 'reports_app/segments/all_users_reports_filters.html' %}
-                                    <!-- End All users Report filters -->
-                                {% endif %}
-                            </section>
-                            <!-- End Custom Filter Form-->
-                        </div>
+                            </div>
+                            <div class="row mb-8">
 
-                    </div>
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Organization Type:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="org-type">
+                                        <span class="ml-1"></span>
+                                    </label>
+
+                                    <select name="gen-filter-users-org-type" id="gen-filter-users-org-type"
+                                            class="form-control reports-filter-input">
+                                        <option value="all">All</option>
+                                        <option value="Higher Education">Higher Education</option>
+                                        <option value="Arts and Culture">Arts and Culture</option>
+                                        <option value="Other Education">Other Education</option>
+                                        <option value="Health related">Health related</option>
+                                        <option value="Hospitals and Primary Care">Hospitals and Primary Care
+                                        </option>
+                                        <option value="Human and Social Services">Human and Social Services
+                                        </option>
+                                        <option value="Environment">Environment</option>
+                                        <option value="Animal">Animal</option>
+                                        <option value="International">International</option>
+                                        <option value="Religion">Religion related</option>
+                                        <option value="Other">
+                                            <b>Other (Enter it manually)</b>
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Other Organization Type:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="other-org-type">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control datatable-input disabled not-allowed-cursor reports-filter-input"
+                                           placeholder="Enter Manually"
+                                           disabled="disabled" id="gen-filter-other-org-type"
+                                           name="gen-filter-other-org-type">
+                                </div>
+
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Total Staff:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="gen-filter-total-staff">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <input type="number" class="form-control datatable-input reports-filter-input"
+                                           min="0"
+                                           name="gen-filter-total-staff"
+                                           placeholder="0" id="gen-filter-total-staff">
+                                </div>
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Number of Volunteer:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="gen-filter-number-volunteer">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <input type="number" class="form-control datatable-input reports-filter-input"
+                                           name="gen-filter-number-volunteer" min="0"
+                                           placeholder="0" id="gen-filter-number-volunteer">
+                                </div>
+
+
+                            </div>
+
+                            <div class="row mb-8">
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Status:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="status">
+                                        <span class="ml-1"></span>
+                                    </label>
+
+                                    <select class="reports-filter-input form-control" name="gen-filter-users-status" id="gen-filter-users-status">
+                                        <option value="all">All</option>
+                                        <option value="active">Active</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="canceled">Canceled</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Register Date:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="reg-date">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <div class="input-daterange input-group" id="kt_datepicker_5">
+                                        <input type="text" class="form-control reports-filter-input"
+                                               name="gen-filter-start"
+                                               id="gen-filter-start">
+                                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="la la-ellipsis-h"></i>
+                            </span>
+                                        </div>
+                                        <input type="text" class="form-control reports-filter-input"
+                                               name="gen-filter-end"
+                                               id="gen-filter-end">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Board Members:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="gen-filter-number-of-board-member">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <input type="number" min="0"
+                                           class="form-control datatable-input reports-filter-input"
+                                           placeholder="0" id="gen-filter-number-of-board-member"
+                                           name="gen-filter-number-of-board-member">
+                                </div>
+                                <div class="col-lg-3 mb-lg-0 mb-6">
+                                    <label class="checkbox checkbox-rounded my-1">Annual Revenue *:
+                                        <input class="lbl-reports-filter-display" type="checkbox"
+                                               data-col-name="annual-revenue">
+                                        <span class="ml-1"></span>
+                                    </label>
+                                    <select class="form-control reports-filter-input" id="annualRevenue"
+                                            name="annual_revenue">
+                                        <option value="all">All</option>
+                                        <option value="$5,000 - $50,000">$5,000 - $50,000</option>
+                                        <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                                        <option value="$100,000 - $250,000">$100,000 - $250,000</option>
+                                        <option value="$250,000 - $500,000">$250,000 - $500,000</option>
+                                        <option value="$500,000 - $1 million">$500,000 - $1 million</option>
+                                        <option value="$1 million - $5 million">$1 million - $5 million</option>
+                                        <option value="$5 million - $10 million">$5 million - $10 million</option>
+                                        <option value="$10 million or more">$10 million or more</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </section>
+                    <!-- End Filter Form-->
+                    <!-- Start Filter separator-->
+                    <div class="separator separator-solid separator-border-4"></div>
+                    <!-- Start Filter separator-->
+                    <!-- Start Custom Filter Form-->
+                    <section class="my-5" id="custom-form-section">
+                        {% if request.path|slice_url_path == 'users' %}
+                            <!-- Start All users Report filters -->
+                            {% include 'reports_app/segments/all_users_reports_filters.html' %}
+                            <!-- End All users Report filters -->
+
+                        {% elif request.path|slice_url_path == 'data_usage' %}
+                            <!-- Start Data Usage Report filters -->
+                            {% include 'reports_app/segments/data_usage_filters.html' %}
+                            <!-- End Data Usage Report filters -->
+
+                        {% elif request.path|slice_url_path == 'extra_records' %}
+                            <!-- Start Extra Records Report filters -->
+                            {% include 'reports_app/segments/extra_records_usage_filters.html' %}
+                            <!-- End Extra RecordsReport filters -->
+                        {% endif %}
+                    </section>
+                    <!-- End Custom Filter Form-->
+
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <button type="reset" class="btn btn-outline-danger btn-secondary-icon"
@@ -487,7 +583,7 @@
                         <span>Reset</span>
                     </span>
                     </button>
-                    <button class="btn btn-primary btn-primary-icon" type="button" id="members-filter-btn">
+                    <button class="btn btn-primary btn-primary-icon" type="button" id="members-submit-filter-btn">
                     <span>
                         <i class="la la-search"></i>
                         <span>Filter</span>

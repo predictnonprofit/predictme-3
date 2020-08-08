@@ -15,5 +15,17 @@ $(document).ready(function () {
     const resetReportsFilterBtn = $("#resetReportsFilterBtn");
     resetReportsFilterBtn.on('click', resetFilters);
 
+    // Watching filters inputs
+    watchFilters();
+
+    // set the filter input values after page load
+    setFilterInputCookieValue();
+
+    // reset button clicked
+    resetButton();
+
+    // set displayed columns of reports table
+    setReportTableColumns();
+
 });
 

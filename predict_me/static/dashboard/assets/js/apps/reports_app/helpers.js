@@ -2,6 +2,10 @@
 
 let currentFilterOptionSelected = '';  // this will change dynamically when user change filter option
 
+let typingTimer;                //timer identifier
+let doneTypingInterval = 1000;  //time in ms, 5 second for example
+
+let displayedColumnsArray = [];  // this array will hold any columns checked by label to display it in the report table
 
 // this function to build or set the query in url
 function setURLQuery(reportFilterOption) {
@@ -31,7 +35,7 @@ function setFilterOptions() {
         $("#no-filter-option").hide();
         filterTypeSelect.val(currentReportsVal).trigger('change');
         // $("#filterTypeSelect").select2(wholeSearchParam.get("reports")).trigger('change');
-    }else{
+    } else {
         $("#no-filter-option").show();
         filterTypeSelect.find("optgroup:first").before('<option selected disabled value="choose">Choose report section</option>');
     }
@@ -42,12 +46,12 @@ function enableOtherOrgType(selectID, otherInputID) {
     let selectIDJq = $(selectID);
     let otherIDJq = $(otherInputID);
     selectIDJq.on("change", function (evt) {
-        const selectedValue  = $(this).val();
-        if(selectedValue === "Other"){
+        const selectedValue = $(this).val();
+        if (selectedValue === "Other") {
             // selectIDJq.toggleClass('disabled').attr("disabled", "disabled");
             otherIDJq.toggleClass('disabled').removeAttr('disabled').removeClass("not-allowed-cursor");
-        }else{
-            otherIDJq.toggleClass('disabled not-allowed-cursor').attr("disabled", "disabled");
+        } else {
+            otherIDJq.toggleClass('disabled not-allowed-cursor').attr("disabled", "disabled").val('');
         }
     })
 
@@ -56,4 +60,109 @@ function enableOtherOrgType(selectID, otherInputID) {
 // this function will reset the filters fire when click reset filter button
 function resetFilters() {
     location.href = window.location.origin.concat("/dashboard/reports/");
+}
+
+function testCookies() {
+    console.log(document.cookie);
+    document.cookie = "filters=one";
+    document.cookie = "filters2=two";
+    console.log(document.cookie)
+}
+
+// this function will watch any change on the filters to save it in cookies
+function watchFilters() {
+    $(".reports-filter-input").on('keyup change', function (evt) {
+        clearTimeout(typingTimer);
+        const filterInputField = () => {
+            setCookieFilterFunc(this);
+        };
+        typingTimer = setTimeout(filterInputField, doneTypingInterval);
+    });
+
+    $(".reports-filter-input").on('keydown', function () {
+        clearTimeout(typingTimer);
+    });
+}
+
+// this function will set the cookie when input changed
+function setCookieFilterFunc(element) {
+    const elem = $(element);
+    /*$(elem[0].attributes).each(function () {
+        console.log(this.nodeName + ' => ' + this.nodeValue);
+    });*/
+    setFiltersCookie(elem.attr('id'), elem.val());
+
+}
+
+
+// function to set cookie with its key and value
+function setFiltersCookie(key, value) {
+    document.cookie = `${key}=${value}`;
+
+}
+
+// function to delete cookie by name or all cookies
+function deleteCookie(name, isAll) {
+    if (isAll === true) {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++)
+            deleteCookie(cookies[i].split("=")[0]);
+    } else {
+        document.cookie = `${name}= ; expires = Thu, 01 Jan 1970 00:00:00 GMT`;
+    }
+}
+
+// function to get cookie value by name
+function getCookieValue(name) {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith(name))
+        .split('=')[1];
+}
+
+
+// function will run after page load to check all filters cookies and set the value if exists
+function setFilterInputCookieValue() {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookieName = cookies[i].split("=")[0].trim();
+        const jqSelector = `#${cookieName}`;
+        // first check if the cookie not the csrftoken (django cookie)
+        if (cookieName !== 'csrftoken') {
+            // check if the input has select2 class
+            if ($(jqSelector).hasClass('select2') === true) {
+                $(jqSelector).val(getCookieValue(cookieName)).trigger('change');
+            } else {
+                // set the value of the input
+                $(jqSelector).val(getCookieValue(cookieName));
+            }
+
+        }
+    }
+}
+
+
+// this method will run when member click on reset button in report
+function resetButton() {
+    $("#members-table-reset-btn").on('click', function (evt) {
+        console.log('delete all cookies...');
+        deleteCookie("", true);
+        $(".reports-filter-input").val("");
+    });
+
+}
+
+
+// this function will set the checked label to display the checked columns in the data table
+function setReportTableColumns() {
+    $(".lbl-reports-filter-display").on('change', function (evt) {
+        const elem = $(this);
+        const colName = elem.data('col-name');
+        // if checked add to the array, otherwise delete it from the array
+        if (this.checked === true) {
+            displayedColumnsArray.push(colName);
+        } else {
+            displayedColumnsArray.splice(displayedColumnsArray.indexOf(colName), 1);
+        }
+    });
 }
