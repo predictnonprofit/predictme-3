@@ -363,7 +363,7 @@ function fetchDataFileColumns(fetchedColumns) {
 
 }
 
-
+// this function will sort the columns for data handler table
 function setColumnNamesHeader(columnsList) {
     let tableHeaderElement = $("#data_handler_table > thead > tr:last");
     for (let col of columnsList) {
