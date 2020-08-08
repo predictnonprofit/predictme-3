@@ -15,13 +15,13 @@
                         <div class="dropdown-header">
                             Export Data
                         </div>
-                        <a href="{% url 'data-handler-excel-download' %}"
+                        <a href="{% url 'data-handler-excel-download' session_info.pk %}"
                            class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
                             <i class="fas fa-file-excel text-success d-inline-block  position-relative"
                                style="top: 1px"></i>
                             Excel
                         </a>
-                        <a href="{% url 'data-handler-csv-download' %}"
+                        <a href="{% url 'data-handler-csv-download' session_info.pk %}"
                            class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
                             <i class="fas fa-file-csv text-dark d-inline-block position-relative" style="top: 1px"></i>
                             CSV

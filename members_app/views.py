@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
+from django.contrib.auth.decorators import login_required
 from users.models import Member
 from django.shortcuts import render, redirect, reverse
 from data_handler.helpers import download_data_file_converter
@@ -19,6 +20,7 @@ import traceback
 from predict_me.my_logger import (log_info, log_exception)
 
 
+@login_required
 def download_instructions_template(request):
     file_path = os.path.join(settings.MEDIA_ROOT, "files", 'Donor File Template.xlsx')
     if os.path.exists(file_path):
@@ -28,15 +30,17 @@ def download_instructions_template(request):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
 
-
-def download_data_file_xlsx(request):
-    from data_handler.models import DataFile
+@login_required
+def download_data_file_xlsx(request, id):
+    session_id = int(id)
+    from data_handler.models import (DataFile, DataHandlerSession)
     data_file = DataFile.objects.get(member=request.user)
-    selected_columns = data_file.selected_columns.split("|")
+    member_data_session = DataHandlerSession.objects.get(data_handler_id=data_file, pk=session_id)
+    selected_columns = member_data_session.selected_columns.split("|")
     # download_data_file_converter(data_file)
     new_xlsx_path = None
     try:
-        file_path = Path() / settings.MEDIA_ROOT / "data" / f'{data_file.data_file_path}'
+        file_path = Path() / settings.MEDIA_ROOT / "data" / f'{member_data_session.data_file_path}'
         response = None
 
         # first check if the file is csv or xlsx file, to converted to csv file
@@ -69,14 +73,16 @@ def download_data_file_xlsx(request):
             new_xlsx_path.unlink()
             cprint("Deleting xlsx file...", 'red')
 
-
-def download_data_file_csv(request):
-    from data_handler.models import DataFile
+@login_required
+def download_data_file_csv(request, id):
+    session_id = int(id)
+    from data_handler.models import (DataFile, DataHandlerSession)
     data_file = DataFile.objects.get(member=request.user)
-    selected_columns = data_file.selected_columns.split("|")
+    member_data_session = DataHandlerSession.objects.get(data_handler_id=data_file, pk=session_id)
+    selected_columns = member_data_session.selected_columns.split("|")
     new_csv_path = None
     try:
-        file_path = Path() / settings.MEDIA_ROOT / "data" / f'{data_file.data_file_path}'
+        file_path = Path() / settings.MEDIA_ROOT / "data" / f'{member_data_session.data_file_path}'
         response = None
         # first check if the file is csv or xlsx file, to converted to csv file
         if file_path.suffix == ".xlsx":
@@ -105,7 +111,7 @@ def download_data_file_csv(request):
             new_csv_path.unlink()
             cprint("Deleting csv file...", 'red')
 
-
+@login_required
 def download_dashboard_pdf(request):
     try:
         from django.core.files.storage import FileSystemStorage

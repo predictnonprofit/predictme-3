@@ -15,7 +15,7 @@ urlpatterns = [
     ]), name="data-list"),
 
     path("download", download_instructions_template, name='data-handler-temp-download'),
-    path("download-excel", download_data_file_xlsx, name='data-handler-excel-download'),
-    path("download-csv", download_data_file_csv, name='data-handler-csv-download'),
+    path("download-excel/<int:id>", download_data_file_xlsx, name='data-handler-excel-download'),
+    path("download-csv/<int:id>", download_data_file_csv, name='data-handler-csv-download'),
     path("download-dashboard", download_dashboard_pdf, name='profile-dashboard-download'),
 ]
