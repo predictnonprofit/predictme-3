@@ -371,11 +371,11 @@ function setColumnNamesHeader(columnsList) {
         let row = "";
         if (col['isUnique'] === true) {
             row = `
-            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
+            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="1" onclick='sortHeader(this);' class='dataTableHeader'>${col["headerName"]}<i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         } else {
             row = `
-            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader text-center'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
+            <th style="cursor: default !important;" data-col-name='${col["headerName"]}' data-is-unique-col="0" onclick='sortHeader(this);' class='dataTableHeader'>${col["headerName"]} <i style="top: 2px" class="icon-md d-none position-relative text-danger la la-sort"></i></th>
         `;
         }
         tableHeaderElement.append(row);
@@ -386,9 +386,14 @@ function setColumnNamesHeader(columnsList) {
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
     // console.log(rowsData);
+    // console.log(rowsData.total_rows);
     // console.log(currentRowData.length, "records");
-    // first check if there is no records left to display
-    if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
+    // check the length of total rows came from excel file, in case one row, or less than 50 rows
+    if(rowsData.total_rows < 50){
+        $(".data-table-nav-btns").addClass('disabled').attr('disabled', 'disabled');
+    }
+
+     if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
         $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
@@ -432,16 +437,16 @@ function drawDataTableRows(rowsData, isValidate) {
                             if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
                                 var cellMarkup = `
     
-                    <td class='text-center'>
-                        <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
+                    <td class=''>
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
                             } else {
                                 var cellMarkup = `
     
-                    <td class='text-center'>
-                        <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                    <td class=''>
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -473,7 +478,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class='text-center'>
-                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -481,7 +486,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class='text-center'>
-                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -577,6 +582,7 @@ function drawDataTableRows(rowsData, isValidate) {
 
         }
     }
+
 
     $("#dataListTable").css("opacity", "1");
     $("#loadingDataSpinner").fadeOut('fast');
@@ -739,7 +745,7 @@ function uploadProgressModal(isOk, data) {
         // console.log(progressPercentage);
         //set the labels and width to progressbar
 
-        if(progressPercentage <= 100){
+        if (progressPercentage <= 100) {
             recordsCounterProgressBar.children().text(progressPercentage.toFixed() + " %");
             recordsCounterProgressBar.css('width', progressPercentage + '%');
             recordsCounterProgressBar.attr("aria-valuenow", recordNowValue + 1);
@@ -801,8 +807,6 @@ function uploadProgressModal(isOk, data) {
                 nextProgressBtnModal.fadeIn();
                 $("#useSubPlanBtn").fadeIn();
                 progressWarnText.fadeIn();
-
-
 
 
             }

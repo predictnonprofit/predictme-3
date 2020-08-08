@@ -6,9 +6,9 @@ var isAjaxRequestDone = {  // this object will be in the success(), method of aj
 
 
 // this function will fetch the rows of the saved file
-function fetchDataFileRows(recordsCount){
+function fetchDataFileRows(recordsCount) {
     const parameters = window.location.pathname;
-    if(typeof recordsCount === 'undefined'){
+    if (typeof recordsCount === 'undefined') {
         recordsCount = 50;
     }
     return $.ajax({
@@ -25,14 +25,14 @@ function fetchDataFileRows(recordsCount){
             //called when there is an error
             swAlert("Error", `${error.statusText}:-> ${error.message}`, "error");
         },
-        complete: function (jqXHR, textStatus){
-          /*  console.log(textStatus);
-            console.log(jqXHR.status);
-            console.log(jqXHR);*/
+        complete: function (jqXHR, textStatus) {
+            /*  console.log(textStatus);
+              console.log(jqXHR.status);
+              console.log(jqXHR);*/
             // check if the request complete successfully
-           /* if(textStatus === 'success' && jqXHR.status === 200){
+            /* if(textStatus === 'success' && jqXHR.status === 200){
 
-            }*/
+             }*/
 
         },
         statusCode: {
@@ -59,12 +59,12 @@ function fetchDataFileRows(recordsCount){
             },
 
         }
-        
-    }); 
+
+    });
 }
 
 // this function will fetch rows with not validate data
-function fetchNotValidateRows(colName){
+function fetchNotValidateRows(colName) {
     const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/filter-rows",
@@ -106,51 +106,56 @@ function fetchNotValidateRows(colName){
             },
 
         }
-        
-    }); 
+
+    });
 }
 
 // function will sort the rows based on the errors...
-function sortHeader(colObj){
-    $("#resetSortTableBtn").removeClass("disabled");
-    $("#resetSortTableBtn").removeAttr("disabled style");
-    isClickedFilterCol = true;
-    const colJqObj = $(colObj);
-    const colName = colJqObj.data("col-name");
-    clickedFilteredColName = colName;
-    //console.log(colJqObj[0].attributes);
-    // check if the clicked column has error in validation of his cell(s)
-    if(colJqObj.data('is-error') === 1){
-        //data_handler_table
-        const dataTable = $("#data_handler_table");
-        $("#loadingDataSpinner").fadeIn();
-        // $("#data_handler_table tbody tr").detach();
-        document.getElementById("data_handler_body").innerHTML = "";
+function sortHeader(colObj) {
+    // check if there is no search query, to run the validate
+    if ($("#searchQuery").val() === "") {
+        $("#resetSortTableBtn").removeClass("disabled");
+        $("#resetSortTableBtn").removeAttr("disabled style");
+        isClickedFilterCol = true;
+        const colJqObj = $(colObj);
+        const colName = colJqObj.data("col-name");
+        clickedFilteredColName = colName;
+        //console.log(colJqObj[0].attributes);
+        // check if the clicked column has error in validation of his cell(s)
+        if (colJqObj.data('is-error') === 1) {
+            //data_handler_table
+            const dataTable = $("#data_handler_table");
+            $("#loadingDataSpinner").fadeIn();
+            // $("#data_handler_table tbody tr").detach();
+            document.getElementById("data_handler_body").innerHTML = "";
 
-        let fetchNotValidateRowsResponse = fetchNotValidateRows(colName);
-        $.when(fetchNotValidateRowsResponse).done(function (rowData, rowTextStatus, rowJqXHR) {
-            /* console.log(rowData);
-            console.log(rowTextStatus);
-            console.log(rowJqXHR); */
-            // console.log(rowData);
-            drawDataTableRows(rowData, true);
-        });
+            let fetchNotValidateRowsResponse = fetchNotValidateRows(colName);
+            $.when(fetchNotValidateRowsResponse).done(function (rowData, rowTextStatus, rowJqXHR) {
+                /* console.log(rowData);
+                console.log(rowTextStatus);
+                console.log(rowJqXHR); */
+                // console.log(rowData);
+                drawDataTableRows(rowData, true);
+            });
+        }
+    }else{
+        return false;
     }
 }
 
 
 // function will call when user change the select menu of how many records will dispaly
-function fetchRecordsByCount(recordsCount){
+function fetchRecordsByCount(recordsCount) {
     const recCount = parseInt(recordsCount);
     $("#data_handler_table > tbody tr").empty();
     $("#loadingDataSpinner").fadeIn('fast');
     // let tableBody = document.getElementById("data_handler_body");
     // tableBody.innerHTML = "";
     let resetFetchRecoredsResponse = fetchDataFileRows(recCount);
-    $.when(resetFetchRecoredsResponse).done(function (data, textStatus, jqXHR){
-        if(textStatus == "success"){
+    $.when(resetFetchRecoredsResponse).done(function (data, textStatus, jqXHR) {
+        if (textStatus == "success") {
             drawDataTableRows(data, false);
-        }else{
+        } else {
             swAlert("Error", data, 'error');
         }
     });
@@ -158,7 +163,7 @@ function fetchRecordsByCount(recordsCount){
 
 
 // this function will fetch the rows which contain search query
-function fetchDataFileRowsBySearchQuery(searchQuery){
+function fetchDataFileRowsBySearchQuery(searchQuery) {
     const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/search-query-records",
@@ -198,12 +203,12 @@ function fetchDataFileRowsBySearchQuery(searchQuery){
             },
 
         }
-        
-    }); 
+
+    });
 }
 
 // function will call when user change the select menu of how many records will dispaly
-function fetchRecordsBySearchQuery(searchQuery){
+function fetchRecordsBySearchQuery(searchQuery) {
     $("#data_handler_table > tbody tr").empty();
     $("#loadingDataSpinner").fadeIn();
     $("#resetSortTableBtn").removeClass("disabled");
@@ -211,11 +216,11 @@ function fetchRecordsBySearchQuery(searchQuery){
     // let tableBody = document.getElementById("data_handler_body");
     // tableBody.innerHTML = "";
     let searchQureyResponse = fetchDataFileRowsBySearchQuery(searchQuery);
-    $.when(searchQureyResponse).done(function (data, textStatus, jqXHR){
-        if((textStatus == "success") && (jqXHR.status === 200)){
+    $.when(searchQureyResponse).done(function (data, textStatus, jqXHR) {
+        if ((textStatus == "success") && (jqXHR.status === 200)) {
             // console.log(data);
             drawDataTableRows(data, false);
-        }else{
+        } else {
             swAlert("Error", data, 'error');
         }
     });
@@ -316,7 +321,7 @@ function checkIfMemberUploadDataFile() {
 function checkIfMemberProcessStatus(choice) {
     const parameters = window.location.pathname;
     let data = "";
-    if(typeof choice !== "undefined") data = {"choice": choice, 'parameters': parameters}
+    if (typeof choice !== "undefined") data = {"choice": choice, 'parameters': parameters}
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/check-process-status",
         beforeSend: function (xhr, settings) {
@@ -447,7 +452,7 @@ function setSessionLastName(sessionName) {
     });
 }
 
-function checkSessionLabelRequest(){
+function checkSessionLabelRequest() {
     const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/set-session-label",
@@ -489,7 +494,7 @@ function checkSessionLabelRequest(){
     });
 }
 
-function setSessionLabelRequest(sessionLabel, sessionTask){
+function setSessionLabelRequest(sessionLabel, sessionTask) {
     const parameters = window.location.pathname;
     return $.ajax({
         url: webSiteUrl + "/dashboard/data/api/set-session-label",

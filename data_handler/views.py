@@ -372,7 +372,7 @@ class GetRowsView(APIView):
                     data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count,
                                                               columns_with_dtypes,
                                                               unique_column)
-                    return Response({"data": data_file_rows}, status=200, content_type='application/json')
+                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
                     # return Response('{"data": ''}', content_type='application/json')
                 else:
                     delete_data_file(file_path)
@@ -421,7 +421,7 @@ class GetRowsBySearchQueryView(APIView):
                     # row_count = member_data_file.allowed_records_count
                     data_file_rows = get_rows_data_by_search_query(file_path, file_columns, search_query,
                                                                    columns_with_dtypes)
-                    return Response({"data": data_file_rows}, status=200, content_type='application/json')
+                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
                 else:
                     # delete_data_file(file_path)
                     # delete_all_member_data_file_info(member_data_file)
@@ -464,7 +464,7 @@ class NotValidateRowsView(APIView):
                 row_count = member_data_file.allowed_records_count
                 data_file_rows = get_not_validate_rows(file_path, file_columns, col_name)
                 data_file_rows_json = json.dumps(data_file_rows)
-                return Response({"data": data_file_rows}, status=200, content_type='application/json')
+                return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
             else:
                 delete_data_file(file_path)
                 delete_all_member_data_file_info(member_data_file)
@@ -661,7 +661,7 @@ class FilterRowsView(APIView):
                                                               columns_with_dtypes, clicked_row_count)
                 # return Response("Please wait while validate the date type...", status=200)
                 # print(all_validate_columns[0])
-                return Response({"data": all_validate_columns}, status=200, content_type='application/json')
+                return Response({"data": all_validate_columns, "total_rows": len(all_validate_columns)}, status=200, content_type='application/json')
 
 
         except Exception as ex:
