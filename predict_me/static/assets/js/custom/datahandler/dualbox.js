@@ -544,9 +544,9 @@ function columnOptionsChangeSaved(ele, option) {
             element.addClass("disabled");
             element.attr('data-toggle', 'tooltip');
             if (element.data('value') === 'Numbers') {
-                element.attr('title', `Default data format NUMERIC\nCurrent data format UID`);
+                element.attr('title', `Data format NUMERIC`);
             } else {
-                element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format UID`);
+                element.attr('title', `Data format ${element.data('value').toUpperCase()}`);
             }
 
             // when member click on the reset unique button
@@ -660,7 +660,7 @@ function setCriterias() {
             // console.log('this is the uid select')
         } else {
             // here if the element is empty
-            // console.error('empty', currTmpEle.val())
+
             currTmpEle.addClass("border border-danger");
             $("#isValidateData").html(timesMark).removeClass("text-success").addClass("text-danger");
             cirStatus = true;
