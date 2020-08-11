@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from users.models import Member
 from django.shortcuts import render, redirect, reverse
 from data_handler.helpers import download_data_file_converter
@@ -12,12 +13,25 @@ from django.conf import settings
 from datetime import date
 from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
-from django.template.loader import get_template
 from xhtml2pdf import pisa
-from io import BytesIO
 from django.http import HttpResponse
 import traceback
 from predict_me.my_logger import (log_info, log_exception)
+from django.contrib import messages
+
+ANNUAL_REVENUE = (
+    '$5,000 - $50,000', '$50,000 - $100,000',
+    '$100,000 - $250,000', '$250,000 - $500,000',
+    '$500,000 - $1 million', '$1 million - $5 million',
+    '$5 million - $10 million', '$10 million or more'
+)
+
+ORGANIZATION_TYPES = (
+    'Higher Education', 'Other Education', 'Health related',
+    'Hospitals and Primary Care', 'Human and Social Services',
+    'Environment', 'Animal', 'International', 'Religion related',
+    'Other'
+)
 
 
 @login_required
@@ -29,6 +43,7 @@ def download_instructions_template(request):
                                     content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
+
 
 @login_required
 def download_data_file_xlsx(request, id):
@@ -73,6 +88,7 @@ def download_data_file_xlsx(request, id):
             new_xlsx_path.unlink()
             cprint("Deleting xlsx file...", 'red')
 
+
 @login_required
 def download_data_file_csv(request, id):
     session_id = int(id)
@@ -111,6 +127,7 @@ def download_data_file_csv(request, id):
             new_csv_path.unlink()
             cprint("Deleting csv file...", 'red')
 
+
 @login_required
 def download_dashboard_pdf(request):
     try:
@@ -148,28 +165,117 @@ class ProfileDashboard(LoginRequiredMixin, View):
         return render(request, "members_app/profile/dashboard.html", context={"member": member})
 
 
-class ProfilePersonal(LoginRequiredMixin, View):
+class ProfilePersonal(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
+    def test_func(self):
+        # cprint(self.request.user, 'blue')
+        return True
+
     def get(self, request):
-        member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/personal.html", context={"member": member})
+        try:
+            member = Member.objects.get(email=request.user.email)
+            return render(request, "members_app/profile/personal.html", context={"member": member})
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+
+    def post(self, request):
+        try:
+            member = Member.objects.get(email=request.user.email)
+            member.first_name = request.POST.get("first-name").strip()
+            member.last_name = request.POST.get("last-name").strip()
+            member.full_name = f'{request.POST.get("first-name").strip()} {request.POST.get("last-name").strip()}'
+            member.email = request.POST.get("email").strip()
+            member.phone = request.POST.get("phone").strip()
+            member.save()
+            messages.success(request, 'your info have been updated successfully!')
+            return redirect(reverse('profile-personal'))
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+            messages.error(request, 'There is errors!, try again latter')
 
 
 class ProfileInformation(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
-        member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/information.html", context={"member": member})
+        try:
+            member = Member.objects.get(email=request.user.email)
+            return render(request, "members_app/profile/information.html",
+                          context={"member": member, 'annual_revenue': ANNUAL_REVENUE, 'org_types': ORGANIZATION_TYPES})
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+
+    def post(self, request):
+        try:
+            member = Member.objects.get(email=request.user.email)
+            # ['csrfmiddlewaretoken', 'org_name', 'org_website', 'organizationType', 'annualRevenue', 'job_title', 'total_staff', 'num_of_volunteer']
+            member.org_name = request.POST.get("org_name").strip()
+            member.org_website = request.POST.get("org_website").strip()
+            if request.POST.get("org_type") != "Other":
+                member.org_type = request.POST.get("org_type").strip()
+            else:
+                member.org_type = request.POST.get("other-org-type").strip()
+            member.annual_revenue = request.POST.get("annualRevenue").strip()
+            member.job_title = request.POST.get("job_title").strip()
+            member.total_staff = request.POST.get("total_staff").strip()
+            member.num_of_volunteer = request.POST.get("num_of_volunteer").strip()
+            member.num_of_board_members = request.POST.get("num_of_board_members").strip()
+            member.save()
+
+            messages.success(request, 'your info have been updated successfully!')
+            return redirect(reverse('profile-info'))
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+            messages.error(request, 'There is errors!, try again latter')
 
 
 class ProfileChangePassword(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
-        member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/change-password.html", context={"member": member})
+        try:
+            member = Member.objects.get(email=request.user.email)
+            return render(request, "members_app/profile/change-password.html", context={"member": member})
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+
+    def post(self, request):
+        try:
+            # ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$
+            member = Member.objects.get(email=request.user.email)
+            # 'password', 'new-password', 'verify-new-password'
+            if request.POST.get('password') == '':
+                messages.error(request, 'Password is empty!!')
+            elif request.POST.get("new-password") == "":
+                messages.error(request, 'New Password is empty!!')
+            elif request.POST.get("verify-new-password") == "":
+                messages.error(request, 'You have to verify new password is empty!!')
+            elif request.POST.get("verify-new-password") != request.POST.get("new-password"):
+                messages.error(request, 'Password not verified or matched!!')
+            else:
+                if member.check_password(request.POST.get("password")) is True:
+                    member.set_password(request.POST.get("new-password"))
+                    member.save()
+                    update_session_auth_hash(request, member)
+                    messages.success(request, 'Your password has been updated!')
+                else:
+                    messages.error(request, 'Your old password is not correct!')
+            return redirect(reverse('profile-change-password'))
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+            messages.error(request, 'There is errors!, try again latter')
+
+
 
 
 class ProfileEmail(LoginRequiredMixin, View):

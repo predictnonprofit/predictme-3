@@ -262,6 +262,14 @@
                         <!--begin::Toolbar-->
                         <div class="d-flex align-items-center">
                             <!--begin::Button-->
+                            <!-- Temp button -->
+                            {% if request.resolver_match.url_name == 'profile-dashboard' %}
+                                <button id="download-dashboard-pdf-btn" type="button"
+                                   class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+                                    Download as PDF
+                                </button>
+                            {% endif %}
+                            <!-- ./Temp button -->
                             {% if request.resolver_match.url_name != "data-handler-default" %}
                                 {% if  request.resolver_match.url_name == "data-handler-session-details" %}
                                     <a href="{% url 'data-handler-default' %}"
@@ -780,11 +788,52 @@
 <script src="{% static 'assets/js/pages/widgets.js' %}"></script>
 <script src="{% static 'assets/js/lodash.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/js/axios.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/js/custom/library/jspdf.min.js' %}"></script>
+<script src="{% static 'assets/js/custom/library/html2canvas.js' %}"></script>
 <script>
     $(document).ready(function () {
         // Autosize the textarea
         autosize(document.querySelectorAll('textarea'));
         $('[data-toggle="tooltip"]').tooltip();
+
+        // download dashboard as pdf
+        $("#download-dashboard-pdf-btn").on("click", function (evt) {
+            htmlToPdfMake("#kt_content");
+
+        });
+
+        function htmlToPdfMake(elementID) {
+            html2canvas(document.querySelector(elementID)).then(function (canvas) {
+                saveAs(canvas.toDataURL(), 'dashboard.png');
+            });
+
+
+        }
+
+        function saveAs(uri, filename) {
+
+            const link = document.createElement('a');
+
+            if (typeof link.download === 'string') {
+
+                link.href = uri;
+                link.download = filename;
+
+                //Firefox requires the link to be in the body
+                document.body.appendChild(link);
+
+                //simulate click
+                link.click();
+
+                //remove the link when done
+                document.body.removeChild(link);
+
+            } else {
+
+                window.open(uri);
+
+            }
+        }
 
     });
 </script>
