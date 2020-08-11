@@ -250,6 +250,7 @@ class ProfileChangePassword(LoginRequiredMixin, View):
     def post(self, request):
         try:
             # ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$
+            import re
             member = Member.objects.get(email=request.user.email)
             # 'password', 'new-password', 'verify-new-password'
             if request.POST.get('password') == '':
@@ -262,10 +263,16 @@ class ProfileChangePassword(LoginRequiredMixin, View):
                 messages.error(request, 'Password not verified or matched!!')
             else:
                 if member.check_password(request.POST.get("password")) is True:
-                    member.set_password(request.POST.get("new-password"))
-                    member.save()
-                    update_session_auth_hash(request, member)
-                    messages.success(request, 'Your password has been updated!')
+
+                    pattern = re.compile(r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")
+                    if pattern.match(request.POST.get('new-password')):
+                        member.set_password(request.POST.get("new-password"))
+                        member.save()
+                        update_session_auth_hash(request, member)
+                        messages.success(request, 'Your password has been updated!')
+                    else:
+                        messages.error(request, 'Your password not match password requirements!')
+
                 else:
                     messages.error(request, 'Your old password is not correct!')
             return redirect(reverse('profile-change-password'))
