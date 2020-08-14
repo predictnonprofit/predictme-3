@@ -457,14 +457,14 @@ function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
     if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
+
     if (element.data('value').toUpperCase() === "NUMBERS") {
         element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
-    } else {
-        // check if it is not the unique id
-        if (element.val().split(" ")[0].toUpperCase() !== 'UNIQUE') {
-            element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
-        }
-
+    }
+    if (element.val().split(" ")[0] === 'Donation') {
+        element.attr('title', `Data format ${element.data('value').toUpperCase()}`);
+    }else if(element.val().split(" ")[0].toUpperCase() !== "UNIQUE"){
+        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     }
 
 
@@ -520,7 +520,7 @@ function columnOptionsChangeSaved(ele, option) {
             tmpSpan.show();
             element.addClass('border border-danger');
             element.attr("data-toggle", 'tooltip');
-            element.attr('title', `Default data format TEXT\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
+            //element.attr('title', `Default data format TEXT\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
             // check if the donation field selected to make it visible with check mark
             if (element.val().toLowerCase().includes('donation') === true) {
                 $("#donationFieldLi").removeClass("d-none");
