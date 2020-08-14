@@ -461,7 +461,7 @@ function columnOptionsChangeSaved(ele, option) {
         element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     } else {
         // check if it is not the unique id
-        if (element.val().split(" ")[0].toUpperCase() != 'UNIQUE') {
+        if (element.val().split(" ")[0].toUpperCase() !== 'UNIQUE') {
             element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
         }
 
