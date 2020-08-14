@@ -36,7 +36,7 @@ function swConfrim(title, msg) {
 }
 
 // sweetalert2 confirm custom dialogbox only show when the memeber change the data type of the column
-function swConfirmDtype(elem, msg, tmpSpan) {
+function swConfirmDtype(elem, msg, tmpSpan, dataIX) {
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -71,6 +71,8 @@ function swConfirmDtype(elem, msg, tmpSpan) {
         ) {
             elem.val("");
             tmpSpan.hide();
+            delete optionsSelected[dataIX];
+            setCriterias();  // to fix criterias
 
         }
     });
@@ -895,7 +897,7 @@ function fetchDataFileAllColumns(withDtypes) {
 function getDataType(dt) {
     // const dataTypeArray = ["", "object", "int64", "float64", 'bool', 'datetime64', 'category', 'timedelta'];
     if (dt === "int64" || dt === "float64") {
-        return "Numbers";
+        return "Numeric";
     } else if ((dt === "object") || (dt === "category") || (dt === "bool")) {
         return "Text";
     } else {

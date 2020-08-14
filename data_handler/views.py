@@ -45,6 +45,7 @@ class SessionDetailsView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
+            # cprint(reverse('data-handler-temp-download'), 'blue')
             session_id = int(kwargs.get('id', None))
             # cprint(session_id, 'yellow')
             from data_handler.models import (DataFile, DataHandlerSession)
@@ -89,7 +90,8 @@ class DataListView(LoginRequiredMixin, View):
             # if (not bool(unique_column) and not bool(columns_with_dtypes)) and file_path != "None":
             #     delete_data_file(member_data_file.data_file_path)
             #     delete_all_member_data_file_info(member_data_file)
-            cprint(context, 'blue')
+            # cprint(context, 'blue')
+
             return render(request, "data_handler/list.html", context=context)
 
 

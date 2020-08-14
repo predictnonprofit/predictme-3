@@ -58,6 +58,14 @@ $(function () {
         } else {
             validateObj[checkedDataVal] = false;
         }
+        // if two checked enable download button
+        if ((validateObj['agree'] === true) && (validateObj['download'] === true)) {
+            $("#downloadTemplateLink").removeClass('disabled not-allowed-cursor');
+            $("#downloadTemplateLink").attr('href', "/profile/download");
+        } else {
+            $("#downloadTemplateLink").addClass('disabled not-allowed-cursor');
+            $("#downloadTemplateLink").removeAttr('href');
+        }
 
     });
 
@@ -69,17 +77,14 @@ $(function () {
     downloadTemplateLink.on('click', function (evt) {
         isDownloaded = true;
         // check if the two options checked enable the check button in the modal
-        if ((validateObj['agree'] === true && validateObj['download'] === true) && (isDownloaded === true)) {
-            $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
-            $("#uploadDataFileBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
-            $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-success la la-check-double" id="acceptsCheckMark"></i>');
-        } else {
-            dataUploadBtn.attr("disabled", "disabled");
-            $("#semitransparent").removeClass("d-none");
-            $("#donerFile").attr("disabled", "disabled");
-            $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
-            $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');
-        }
+        $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+        $("#uploadDataFileBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+        $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-success la la-check-double" id="acceptsCheckMark"></i>');
+        /*dataUploadBtn.attr("disabled", "disabled");
+        $("#semitransparent").removeClass("d-none");
+        $("#donerFile").attr("disabled", "disabled");
+        $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
+        $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');*/
 
     });
 
@@ -99,17 +104,17 @@ $(function () {
         $(".instruction-check-btn").each(function (index, item) {
             const elem = $(item);
             // elem.is(":checked")
-            if (elem.data('action') == "agree") {
+            if (elem.data('action') === "agree") {
                 acceptDownloadObj['is_accept_terms'] = true;
             }
-            if (elem.data('action') == "download") {
+            if (elem.data('action') === "download") {
                 acceptDownloadObj['is_accept_download_template'] = true;
             }
         });
         acceptDownloadObj['is_download_template'] = isDownloaded;
         const acceptDownloadResponse = saveMemberAccepts(acceptDownloadObj);
         $.when(acceptDownloadResponse).done(function (data, textStatus, jqXHR) {
-            if ((textStatus == "success") && (jqXHR.status === 200)) {
+            if ((textStatus === "success") && (jqXHR.status === 200)) {
                 // console.log(data);
 
             } else {
@@ -121,11 +126,13 @@ $(function () {
     // not accept upload instruction terms button
     closeUploadInstBtn.click(function (e) {
         // check if agree upload terms checkbox checked or not
-        if (agreeDataHandlerCheckBox.prop("checked") === false || agreeDataHandlerCheckBox.prop("checked") === true) {
+        if ((agreeDataHandlerCheckBox.prop("checked") === false) || (agreeDataHandlerCheckBox.prop("checked") === true)) {
             agreeDataHandlerCheckBox.prop("checked", false);
             dataUploadBtn.prop("disabled", true);
 
         }
+        $("#downloadTemplateLink").addClass('disabled not-allowed-cursor');
+        $("#downloadTemplateLink").removeAttr('href');
 
     });
 
@@ -668,6 +675,8 @@ $(document).ready(function () {
             const inputJQ = $(input);
             inputJQ.prop("checked", false);
         }
+        $("#downloadTemplateLink").addClass('disabled not-allowed-cursor');
+        $("#downloadTemplateLink").removeAttr('href');
 
         $(this).find('.modal-body').css({
             'max-height': '100%'

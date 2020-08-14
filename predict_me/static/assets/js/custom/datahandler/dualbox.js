@@ -515,7 +515,7 @@ function columnOptionsChangeSaved(ele, option) {
         // check if member click no set the select option to null, else select the option
         // console.log(elementLiParent.text());
         if ((typeof option === undefined) || (typeof option === 'undefined')) {
-            swConfirmDtype(element, confirmMsg, tmpSpan);
+            swConfirmDtype(element, confirmMsg, tmpSpan, dataIX);
         } else if (option === 'reselect') {
             tmpSpan.show();
             element.addClass('border border-danger');
@@ -588,6 +588,7 @@ function columnOptionsChangeSaved(ele, option) {
 
 // this function will set the criterias if the user delete, ...etc
 function setCriterias() {
+
     let cirStatus = false;
     let cirMsg = "";
     // check if the member select unique id option, check mark criteria of it

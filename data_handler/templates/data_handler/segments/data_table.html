@@ -123,7 +123,7 @@
         </div>
         <div class="card-body p-0">
             <!--begin: Datatable-->
-            <section id="donorDataTable">
+            <section id="donorDataTable" style="overflow:auto; height:auto;" >
                 <div id="save-row-loader" class="position-relative text-center mx-auto"
                      style="z-index: 1; display: none;">
                     <div class=" w-25  position-absolute" style="left: 38%;">
@@ -155,7 +155,7 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="col">
-                                <div style="overflow:auto; height:700px;" id="dataTableWrapper"
+                                <div id="dataTableWrapper"
                                      class="position-relative tableFixHead">
                                     <table id="data_handler_table" class="table">
 
@@ -183,46 +183,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card card-custom gutter-b m-auto">
 
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm col-md col-lg text-center">
-                                            <div class="form-group">
-                                                <div class="btn-group" role="group" aria-label="Data Table Navigation">
-                                                    <button type="button" data-action="first" disabled
-                                                            class="btn btn-secondary data-table-nav-btns"
-                                                            data-toggle="tooltip"
-                                                            title="First Page">
-                                                        <i class="icon-lg la la-angle-double-left"></i>
-                                                    </button>
-                                                    <button type="button" data-action="previous" disabled
-                                                            class="btn btn-secondary data-table-nav-btns"
-                                                            data-toggle="tooltip"
-                                                            title="Previous 50 records">
-                                                        <i class="icon-lg la la-angle-left"></i>
-                                                    </button>
-
-                                                    <button data-action="next" type="button"
-                                                            class="btn btn btn-secondary data-table-nav-btns"
-                                                            data-toggle="tooltip"
-                                                            title="Next 50 records">
-                                                        <i class="la la-angle-right"></i>
-                                                    </button>
-                                                    <button type="button" data-action="last"
-                                                            class="btn btn-secondary data-table-nav-btns"
-                                                            data-toggle="tooltip"
-                                                            title="Last Page">
-                                                        <i class="icon-lg la la-angle-double-right"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </section>
                 <!--end: Datatable-->
