@@ -17,6 +17,7 @@ def clean_currency(x: str):
     otherwise, the value is numeric and can be converted
     """
     try:
+        # x = str(x)
         if isinstance(x, str) or x.startswith("$"):
             return (x.replace('$', '').replace(',', ''))
         return (float(x))
@@ -52,12 +53,16 @@ def save_data_file_rounded(file_path):
         # d = {True: 'TRUE', False: 'FALSE'}
         # df_copy = df_copy.where(mask, df_copy.replace(d))
         # cprint(df_copy['Volunteered in the past'].dtype, 'green')
+
         for col in df_copy.columns.tolist():
             new_cleand_cols.append(col.strip())
             saved_logged_cols_base.append(f"{col}: {df_copy[col].dtype}")
             if df_copy[col].dtype == "float64":
-                df_copy[col] = df_copy[col].round().astype(int)
-            if df_copy[col].dtype == "object":
+                df_copy[col] = df_copy[col].astype('object')
+                df_copy[col] = df_copy[col].apply(clean_currency)
+                df_copy[col] = df_copy[col].astype('int64')
+                df_copy[col] = df_copy[col].round().astype('int64')
+            elif df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
             # if df_copy[col].dtype == "bool":
@@ -76,7 +81,6 @@ def save_data_file_rounded(file_path):
             msg_str_before, msg_str_after)
         log_info(saved_logged_msg)
         delete_data_file(file_path)
-
         if data_file.suffix == ".xlsx":
             df_copy.to_excel(data_file.as_posix(), header=new_cleand_cols, index=False)
         elif data_file.suffix == ".csv":
@@ -596,6 +600,11 @@ def get_df_from_data_file(file_path):
                 # cprint(df_clone[co].dtype, 'blue')
                 df_clone[co] = df_clone[co].apply(str)
                 # cprint(df_clone[co].dtype, 'green')
+            elif df_clone[co].dtype == 'float64':
+                df_clone[co] = df_clone[co].astype(str)
+                df_clone[co] = df_clone[co].apply(clean_currency)
+                df_clone[co] = df_clone[co].astype(float)
+                df_clone[co] = df_clone[co].round().astype('int64')
 
         return df_clone
 

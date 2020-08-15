@@ -265,7 +265,7 @@
                             <!-- Temp button -->
                             {% if request.resolver_match.url_name == 'profile-dashboard' %}
                                 <button id="download-dashboard-pdf-btn" type="button"
-                                   class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+                                        class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                     Download as PDF
                                 </button>
                             {% endif %}
@@ -790,8 +790,10 @@
 <script src="{% static 'assets/js/axios.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/js/custom/library/jspdf.min.js' %}"></script>
 <script src="{% static 'assets/js/custom/library/html2canvas.js' %}"></script>
+<script src="{% static 'assets/js/custom/library/flowtype.js' %}"></script>
 <script>
     $(document).ready(function () {
+
         // Autosize the textarea
         autosize(document.querySelectorAll('textarea'));
         $('[data-toggle="tooltip"]').tooltip();
@@ -836,6 +838,7 @@
         }
 
     });
+
 </script>
 {% block customjs %} {% endblock customjs %}
 <!--end::Page Scripts-->

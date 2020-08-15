@@ -1117,7 +1117,6 @@ function saveNewUpdatedData() {
         // throw new Error("Something went badly wrong!");
         // Save current value of element
         elem.data('oldVal', elem.val());
-        //focusin
         // console.log(elem.data(), elem.val());
         // console.log(elem.val());
 
@@ -1164,9 +1163,9 @@ function saveUndo() {
     }).on('change', '.data-table-col', function () {
         let prev = $(this).data('undo-val');
         let current = $(this).val();
-        // console.log("this is change event");
-        // console.log("Prev value " + prev);
-        // console.log("New value " + current);
+        /*console.log("this is change event");
+        console.log("Prev value " + prev);
+        console.log("New value " + current);*/
     });
     // 
 
@@ -1240,9 +1239,7 @@ function saveTheUpdates(allUpdatedRows, elem) {
             $("#dataListTable").css("opacity", "1");
             $(".data-table-col").removeAttr("disabled");
             $("#save-row-loader").fadeOut();
-            $("#saveDataFileBtn").addClass("disabled");
-            $("#saveDataFileBtn").attr("disabled", "disabled");
-            $("#saveDataFileBtn").attr("style", "cursor: not-allowed;");
+
             // currInput.focus();
 
 
@@ -1565,3 +1562,5 @@ function renameSessionFunc() {
 
     });
 }
+
+

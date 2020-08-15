@@ -443,7 +443,7 @@ $(document).ready(function () {
             // console.log(jqXHR);
             console.log(data);
 
-            if (textStatus === "success" && jqXHR.status == 200) {
+            if ((textStatus === "success") && (jqXHR.status === 200)) {
                 showToastrNotification('Saved successfully');
                 $("#save-row-loader").fadeOut();
                 $("#dataListTable").css("opacity", "1");
@@ -451,6 +451,7 @@ $(document).ready(function () {
                 saveDataFileBtn.addClass("disabled").tooltip('hide');
                 saveDataFileBtn.attr("disabled", "disabled");
                 saveDataFileBtn.attr("style", "cursor: not-allowed");
+                $("#undoBtn").addClass("disabled").tooltip("hide").attr('disabled', 'disabled');
 
 
                 // window.location.reload();
@@ -476,7 +477,8 @@ $(document).ready(function () {
 
                 if (textStatus === "success") {
                     swAlert("Success", "Your data file has been deleted successfully!", "success");
-                    window.location.reload();
+                    // window.location.reload();
+                    window.location.href = window.location.origin + "/profile/data/";
                 } else {
                     swAlert("Error", "Error when delete the data file!", "error");
                 }
@@ -617,6 +619,7 @@ $(document).ready(function () {
             fetchRecordsBySearchQuery(searchQuery);
             $("#loadingDataSpinner").fadeOut();
             $('.data-table-nav-btns').attr("disabled", 'disabled').addClass('disabled');
+            $("#undoBtn").addClass("disabled").tooltip("hide").attr('disabled', 'disabled');
         }
     });
 
@@ -642,9 +645,6 @@ $(document).ready(function () {
     });
     // save the old value to make undo
     saveUndo();
-    /*$(".data-table-input").inputFilter(function(value) {
-        return /^\d*$/.test(value);    // Allow digits only, using a RegExp
-      });*/
 
 
     // here when member click on run modal btn to run the modal

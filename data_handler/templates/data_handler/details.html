@@ -11,6 +11,11 @@
     <link href="{% static 'assets/css/pages/wizard/wizard-4.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/protip.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
+        html {
+            line-height: 1.15;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
 
         .myText {
             text-decoration: line-through;
@@ -40,7 +45,7 @@
 
         #semitransparent {
             width: auto;
-            height: 250px;
+            height: auto;
             position: absolute;
             top: 70px;
             left: 0;
@@ -94,6 +99,17 @@
                 text-align: center;
             }
 
+            .tableFixHead table thead th {
+                width: 20vw;
+
+            }
+
+            #semitransparent {
+                width: auto;
+                height: 100%;
+
+            }
+
         }
 
 
@@ -106,12 +122,13 @@
 
         }
 
+
         .tableFixHead table {
-            white-space: nowrap;
-            table-layout: fixed;
+        {#white-space: nowrap;#} table-layout: fixed;
             width: 100%;
             border-collapse: collapse !important;
         }
+
 
         .tableFixHead table thead th {
             position: -webkit-sticky;
@@ -120,18 +137,11 @@
             position: -o-sticky;
             position: sticky;
             top: 0px;
-            max-width: 180px;
-            width: 180px;
-
-
-        {#z-index: 97 !important;#}
-        }
-
-        td {
-            max-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        {#max-width: 250px;#}
+            width: 200px;
+            font-size: 1rem;
+            text-align: center;
+        {#word-wrap: break-spaces;#}{#z-index: 97 !important;#}
         }
 
 
@@ -166,7 +176,7 @@
     <!-- ./Records Counter Box  -->
 
     <!-- Columns Dual Box   -->
-{#    {% include "data_handler/inc/columns_dualbox.html" %}#}
+    {#    {% include "data_handler/inc/columns_dualbox.html" %}#}
     <!-- ./Columns Dual Box   -->
     <!-- Start Tabs Wrapper -->
     <section id="data-handler-tabs-wrapper">
@@ -223,11 +233,19 @@
     <script src="{% static 'assets/js/custom/datahandler/datahandlerlist.js' %}"></script>
 
     <script>
+
+
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $.protip();
+            {% comment %} $('#tableFixHead table thead th').flowtype({
+                 fontRatio: 10,
+                 minFont: 12,
+                 maxFont: 40,
+                 minimum: 1000,
+                 maximum: 1200,
 
-
+             });{% endcomment %}
         });
 
     </script>
