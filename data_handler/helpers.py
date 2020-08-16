@@ -312,13 +312,13 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
         current_record_data = {}
         rows_count = df.shape[0]
         x_total = int(int(rows_count / 50) * 50)
-        # cprint(x_total, 'blue')
+        cprint(x_total, 'blue')
         # rows_list = (x for x in range(0, rows_count))
         rows_array = np.arange(0, rows_count)
         rows_array2 = ""
         # rows_array = np.delete(rows_array, 5)
         # cprint(len(rows_array), "green")
-        # pprint(df_error.head())
+        # pprint(df_error.tail())
         previous_50_count = records_count - 50
         print(previous_50_count, records_count)
         for index, row in islice(df_error.iterrows(), previous_50_count, records_count):
@@ -338,7 +338,7 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
         valide_df = df.loc[tmm, all_columns]
         all_rows2 = []
         # check if it is the last page
-        if x_total == records_count:
+        if x_total == records_count or x_total == 0:
             for idx, row in valide_df.iterrows():
                 for col in valide_df.columns:
                     tmp_dtype = columns_with_dtypes[col]
@@ -348,15 +348,20 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
                     current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
                 all_rows2.append(current_record_data)
                 current_record_data = {}
-        # cprint(all_rows[-1], 'green')
-        all_rows = all_rows + all_rows2[::-1]
+
+        all_rows = all_rows + all_rows2
+        all_rows.reverse()  # to reverse list make valid rows in the last
         # del results, df_copy_error_data, df_copy_correct_data, frames
         print(len(all_rows))
         # print(all_rows2[::-1])
+        # pprint(all_rows2)
         if len(all_rows) <= 0:
             return 0
         else:
-            return all_rows[::-1]
+            if x_total <= 50:
+                return all_rows[::-1]
+            else:
+                return all_rows
 
     except Exception as ex:
         cprint(str(ex), 'red')
