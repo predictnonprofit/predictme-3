@@ -11,7 +11,7 @@ defusedxml==0.6.0
 Django==3.1
 django-allauth==0.42.0
 django-countries==6.1.2
-django-extensions==3.0.4
+django-extensions==3.0.5
 django-ipware==3.0.1
 django-maintenance-mode==0.14.0
 django-session-timeout==0.1.0
@@ -20,7 +20,7 @@ django-widget-tweaks==1.4.8
 djangorestframework==3.11.1
 et-xmlfile==1.0.1
 Faker==4.1.1
-google-api-core==1.22.0
+google-api-core==1.22.1
 google-api-python-client==1.10.0
 google-auth==1.20.1
 google-auth-httplib2==0.0.4
