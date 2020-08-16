@@ -538,6 +538,7 @@ $(document).ready(function () {
         $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
         $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        $("#undoBtn").attr("disabled", 'disabled').addClass("disabled").tooltip('hide');
     });
 
 
