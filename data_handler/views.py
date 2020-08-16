@@ -45,9 +45,7 @@ class SessionDetailsView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            # cprint(reverse('data-handler-temp-download'), 'blue')
             session_id = int(kwargs.get('id', None))
-            # cprint(session_id, 'yellow')
             from data_handler.models import (DataFile, DataHandlerSession)
             member_data_file = DataFile.objects.get(member=request.user)
             member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file,
@@ -77,7 +75,6 @@ class DataListView(LoginRequiredMixin, View):
             # member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file).count()
             member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
             context['member_sessions'] = member_data_session
-            cprint(member_data_session, 'blue')
             if member_data_file.data_sessions_set.count() > 0:
                 context['has_session'] = True
             else:
@@ -124,7 +121,6 @@ class DataHandlerFileUpload(APIView):
         try:
             from data_handler.models import (DataFile, DataHandlerSession)
             data_file = DataFile.objects.get(member=request.user)
-            cprint(data_file.data_sessions_set.count(), 'green')
             dfile = request.FILES['donor_file']
             path = default_storage.save(f"data/{dfile.name}", ContentFile(dfile.read()))
             tmp_file = os.path.join(settings.MEDIA_ROOT, path)
@@ -318,7 +314,6 @@ class GetAllColumnsView(APIView):
         try:
             params = request.POST.get('parameters')
             data_or_num = check_data_or_num(params)
-            cprint(request.POST, 'green')
             if isinstance(data_or_num, int) is True:
                 member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
                                                                      pk=data_or_num)
@@ -326,7 +321,6 @@ class GetAllColumnsView(APIView):
                 all_columns = extract_all_columns_with_dtypes(data_file_path)
                 selected_columns = member_data_session.get_selected_columns_with_dtypes
                 unique_column = member_data_session.unique_id_column
-                cprint(member_data_session, 'red')
                 return Response(
                     {"all_columns": all_columns, "selected_columns": selected_columns, "unique_column": unique_column},
                     status=200, content_type='application/json')
@@ -730,7 +724,7 @@ class CheckMemberUpload(APIView):
             if isinstance(data_or_num, int) is True:
                 member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file,
                                                                         pk=data_or_num).first()
-                cprint(request.POST, 'blue')
+                # cprint(request.POST, 'blue')
                 return Response(member_data_session.file_upload_procedure, status=200)
             else:
                 return Response("", status=200)
@@ -757,7 +751,6 @@ class CheckMemberProcessStatus(APIView):
         choice = request.POST.get("choice", "")
         params = request.POST.get('parameters')
         data_or_num = check_data_or_num(params)
-        cprint(data_or_num, 'blue')
         # check if it is session number
         if isinstance(data_or_num, int) is True:
 
@@ -800,16 +793,13 @@ class FetchLastSessionNameView(APIView):
             member_data_file = DataFile.objects.get(member=request.user)
             params = request.POST.get('parameters')
             data_or_num = check_data_or_num(params)
-            cprint(data_or_num, 'blue')
             # check if it is session number
             if isinstance(data_or_num, int) is True:
                 member_session_file = DataHandlerSession.objects.filter(data_handler_id=member_data_file,
                                                                         pk=data_or_num)
             else:
                 member_session_file = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
-            cprint(member_session_file, 'blue')
             session_name = member_session_file.is_process_complete
-            cprint(member_data_file.data_sessions_set.all(), 'green')
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             log_exception(ex)
@@ -908,7 +898,6 @@ class DeleteSessionView(APIView):
             from data_handler.models import DataFile, DataHandlerSession
             member_data_file = DataFile.objects.get(member=request.user)
             session_id = request.POST.get('method')
-            cprint(session_id, 'green')
             if session_id.isdigit():
                 member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file, pk=session_id)
                 member_session.delete()
@@ -941,10 +930,8 @@ class RenameSessionView(APIView):
             from data_handler.models import DataFile, DataHandlerSession
             member_data_file = DataFile.objects.get(member=request.user)
             session_name = request.POST.get('session_name')
-            cprint(request.POST, 'green')
             params = request.POST.get('parameters')
             data_or_num = check_data_or_num(params)
-            cprint(data_or_num, 'blue')
             # check if it is session number
             if isinstance(data_or_num, int) is True:
                 member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file, pk=data_or_num)
