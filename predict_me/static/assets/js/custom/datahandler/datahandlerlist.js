@@ -524,6 +524,7 @@ $(document).ready(function () {
 
     const resetSortTableBtn = $("#resetSortTableBtn");
     resetSortTableBtn.on("click", function () {
+
         $("#data_handler_table > tbody tr").empty();
         resetSorting();
         $("#searchQuery").val(""); // empty search query
@@ -536,8 +537,15 @@ $(document).ready(function () {
         $("#no-data-watermark").hide();
         $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-        $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
-        $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        // check the length of the used rows if less than 50 disable all pagination buttons by default
+        if ($('#records-count-alert').find('b').first().text() <= 50) {
+            $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+            $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        } else {
+            $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+            $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+        }
+
         $("#undoBtn").attr("disabled", 'disabled').addClass("disabled").tooltip('hide');
     });
 
