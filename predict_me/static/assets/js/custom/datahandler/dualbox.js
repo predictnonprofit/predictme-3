@@ -32,7 +32,7 @@ function createNewItemRightColumn(colIdx, colName, colDataType, optionsList) {
                 class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                 ${colName}
                 <span class="nav-label mx-10">
-                    <select data-value='${colDataType}' class="form-control form-control-sm column-option-dtype w-130px">
+                    <select data-value='${colDataType}' class="form-control form-control-sm column-option-dtype w-110px">
                             ${optionsList}
                     </select>
                 </span>
@@ -455,15 +455,16 @@ function sendRequestValidate() {
 
 function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
-    if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
+    // console.log(element.hasClass('border border-danger'));
+    // if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
 
     if (element.data('value').toUpperCase() === "NUMBERS") {
         element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     }
     if (element.val().split(" ")[0] === 'Donation') {
-        element.attr('title', `Data format ${element.data('value').toUpperCase()}`);
-    }else if(element.val().split(" ")[0].toUpperCase() !== "UNIQUE"){
+        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
+    } else if (element.val().split(" ")[0].toUpperCase() !== "UNIQUE") {
         element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     }
 
@@ -518,7 +519,9 @@ function columnOptionsChangeSaved(ele, option) {
             swConfirmDtype(element, confirmMsg, tmpSpan, dataIX);
         } else if (option === 'reselect') {
             tmpSpan.show();
+            // console.log(element.prop('tagName'))
             element.addClass('border border-danger');
+            element.data("reselected", "1");
             element.attr("data-toggle", 'tooltip');
             //element.attr('title', `Default data format TEXT\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
             // check if the donation field selected to make it visible with check mark
@@ -544,9 +547,9 @@ function columnOptionsChangeSaved(ele, option) {
             element.addClass("disabled");
             element.attr('data-toggle', 'tooltip');
             if (element.data('value') === 'Numbers') {
-                element.attr('title', `Data format NUMERIC`);
+                element.attr('title', `Default data format NUMERIC\nCurrent data format NUMERIC`);
             } else {
-                element.attr('title', `Data format ${element.data('value').toUpperCase()}`);
+                element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
             }
 
             // when member click on the reset unique button
@@ -588,7 +591,6 @@ function columnOptionsChangeSaved(ele, option) {
 
 // this function will set the criterias if the user delete, ...etc
 function setCriterias() {
-
     let cirStatus = false;
     let cirMsg = "";
     // check if the member select unique id option, check mark criteria of it
@@ -603,11 +605,12 @@ function setCriterias() {
     }
     // console.log(checkValueExists(optionsSelected, "Donation Field".toLowerCase()));
     // check if donation field selected
+
     if (checkValueExists(optionsSelected, "Donation Field".toLowerCase()) === true) {
         $("#donationFieldLi").removeClass("d-none");
         $("#donationField").html(checkMark).removeClass('text-danger').addClass("text-success");
     } else {
-        if ($("#donationFieldLi").is(":hidden") === true) {
+        if ($("#donationFieldLi").is(":visible") === true) {
             $("#donationField").html(timesMark).removeClass('text-success').addClass("text-danger");
 
         } else {
@@ -616,6 +619,7 @@ function setCriterias() {
         }
 
     }
+
 
     // check if the length more than 3 options mean select 3 columns, check its criteria
     if (Object.keys(optionsSelected).length <= 2) {
@@ -652,16 +656,18 @@ function setCriterias() {
 
         if ((currTmpEle.val() !== '') && (currTmpEle.val() !== null)) {
             // here if the element is not uid
-            // console.log(currTmpEle.data());
-            // console.log('value not uid and not empty');
+            // check if the it is reselect data attribute exists to keep the red border
+
             currTmpEle.removeClass("border border-danger");
+            if (currTmpEle.data('reselected') === '1') {
+                currTmpEle.addClass("border border-danger");
+            }
 
         } else if ((currTmpEle.data('is-uid') === '1') && (currTmpEle.val() === null)) {
             // here if the element is uid
             // console.log('this is the uid select')
         } else {
             // here if the element is empty
-
             currTmpEle.addClass("border border-danger");
             $("#isValidateData").html(timesMark).removeClass("text-success").addClass("text-danger");
             cirStatus = true;

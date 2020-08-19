@@ -58,7 +58,10 @@ function swConfirmDtype(elem, msg, tmpSpan, dataIX) {
         allowEscapeKey: false,
         allowEnterKey: false,
         showLoaderOnConfirm: true,
-        reverseButtons: true
+        reverseButtons: true,
+        stopKeydownPropagation: false,
+        focusCancel: true,
+
     }).then((result) => {
         if (result.value) {
 
@@ -1013,7 +1016,7 @@ function reselectColumnsFunc(openDialog) {
                         class='pickedItem list-group-item d-flex justify-content-between align-items-center cursor-pointer list-group-item-action'>
                         ${name}
                         <span class="nav-label mx-10" >
-                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm column-option-dtype w-130px">
+                            <select data-value='${getDataType(dType)}' class="form-control form-control-sm column-option-dtype w-110px">
                                     ${dataTypeOptions(data['selected_columns'][name], true, data['unique_column'], name)}
                             </select>
                         </span>
