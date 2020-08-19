@@ -3393,7 +3393,6 @@ var KTWidgets = function () {
 
     var _initMixedWidget18 = function () {
         var element = document.getElementById("kt_mixed_widget_18_chart");
-        element.innerText = "";
         var height = parseInt(KTUtil.css(element, 'height'));
 
         if (!element) {
@@ -4674,6 +4673,7 @@ var KTWidgets = function () {
 
             // Form Widgets
             _initPriceSlider('kt_price_slider');
+
             // Forms widgets
             _initFormsWidget1();
             _initFormsWidget2();

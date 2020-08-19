@@ -4673,6 +4673,7 @@ var KTWidgets = function () {
 
             // Form Widgets
             _initPriceSlider('kt_price_slider');
+
             // Forms widgets
             _initFormsWidget1();
             _initFormsWidget2();
