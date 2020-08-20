@@ -455,19 +455,23 @@ function sendRequestValidate() {
 
 function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
+    // get the span of tooltip
+    const tmpSpan = $(element.parent().parent().find("span")[1]);
+    const tmpIDSpan = $(element.parent().parent().find("span")[2]);
+
     // console.log(element.hasClass('border border-danger'));
     // if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
-
     if (element.data('value').toUpperCase() === "NUMBERS") {
         element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     }
-    if (element.val().split(" ")[0] === 'Donation') {
-        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
+    if (element.val().split(" ")[0].toUpperCase() === 'DONATION') {
+        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+
     } else if (element.val().split(" ")[0].toUpperCase() !== "UNIQUE") {
         element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
     }
-
+    tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
 
     // element.removeAttr('title');  // to remove current tooltip if exists, avoid tooltip bug
     const elementLiParent = $(element.parent().parent());
@@ -505,9 +509,7 @@ function columnOptionsChangeSaved(ele, option) {
     }
     // console.log(optionsSelected, Object.keys(optionsSelected).length);
     const selectOpVal = element.find("option:selected");
-    // get the span of tooltip
-    const tmpSpan = $(element.parent().parent().find("span")[1]);
-    const tmpIDSpan = $(element.parent().parent().find("span")[2]);
+
     // check the data type if convert from number to text and otherwise
     if ((element.data("value").toLowerCase().includes("text".toLowerCase()) === true && selectOpVal.text().toLowerCase().includes('numeric') === true) || (element.data("value").toLowerCase().includes('text') === true && selectOpVal.text().toLowerCase().includes("Donation Field".toLowerCase()) === true)) {
         let confirmMsg = `Warning. You are converting a default '${element.data("value").toUpperCase()}' data type to a '${selectOpVal.text().replace(" Field", "")}' data type!`;
@@ -517,8 +519,10 @@ function columnOptionsChangeSaved(ele, option) {
         // console.log(elementLiParent.text());
         if ((typeof option === undefined) || (typeof option === 'undefined')) {
             swConfirmDtype(element, confirmMsg, tmpSpan, dataIX);
+
         } else if (option === 'reselect') {
             tmpSpan.show();
+            tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
             // console.log(element.prop('tagName'))
             element.addClass('border border-danger');
             element.data("reselected", "1");

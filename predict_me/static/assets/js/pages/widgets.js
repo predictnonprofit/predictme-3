@@ -3393,6 +3393,7 @@ var KTWidgets = function () {
 
     var _initMixedWidget18 = function () {
         var element = document.getElementById("kt_mixed_widget_18_chart");
+        element.innerText = "";
         var height = parseInt(KTUtil.css(element, 'height'));
 
         if (!element) {
