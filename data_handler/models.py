@@ -2,7 +2,7 @@ from django.db import models
 # from membership.models import UserMembership
 # Create your models here.
 from django.contrib.auth import get_user_model
-from django.utils import timezone
+import pandas as pd
 
 UPLOAD_PROCEDURES = (
     ("local_file", "Local File"),
@@ -101,9 +101,25 @@ class DataHandlerSession(models.Model):
         finally:
             return columns_with_dtypes
 
+    @property
+    def get_selected_columns_casting(self):
+        columns_casting_dtypes = {}
+        try:
+            all_cols = self.selected_columns_dtypes.split("|")
+            for col in all_cols:
+                col_name, col_dtype = col.split(":")
+                col_name = col_name.strip()
+                # check what the kind of selected column, to place the convenient data type for casting
+                if col_dtype.startswith('numeric') or col_dtype.startswith('donation'):
+                    # columns_casting_dtypes[col_name] = lambda x: round(int(x)) if isinstance(x, int) else str(x) or round(int(x)) if isinstance(x, float) else str(x)
+                    columns_casting_dtypes[col_name] = pd.to_numeric()
+                elif col_dtype.startswith('text'):
+                    columns_casting_dtypes[col_name] = str
 
-
-
+        except ValueError:
+            pass
+        finally:
+            return columns_casting_dtypes
 
 
 class MemberDownloadCounter(models.Model):

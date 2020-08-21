@@ -18,9 +18,11 @@ def clean_currency(x: str):
     """
     try:
         # x = str(x)
-        if isinstance(x, str) or x.startswith("$"):
-            return (x.replace('$', '').replace(',', ''))
-        return (float(x))
+        if isinstance(x, str):
+            if x.startswith("$"):
+                return x.replace('$', '').replace(',', '')
+        # return float(x)
+        return x
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         log_exception(traceback.format_exc())
@@ -47,33 +49,21 @@ def save_data_file_rounded(file_path):
     saved_logged_cols_after = []  # the columns with converted dtype
     new_cleand_cols = []  # this list all hold all columns without any spaces or whitespaces
     # Volunteered in the past
-
+    # cprint(df.dtypes, 'green')
     try:
-        # mask = df_copy.applymap(type) != bool
-        # d = {True: 'TRUE', False: 'FALSE'}
-        # df_copy = df_copy.where(mask, df_copy.replace(d))
-        # cprint(df_copy['Volunteered in the past'].dtype, 'green')
 
         for col in df_copy.columns.tolist():
             new_cleand_cols.append(col.strip())
             saved_logged_cols_base.append(f"{col}: {df_copy[col].dtype}")
             if df_copy[col].dtype == "float64":
-                df_copy[col] = df_copy[col].astype('object')
-                df_copy[col] = df_copy[col].apply(clean_currency)
-                df_copy[col] = df_copy[col].astype('int64')
                 df_copy[col] = df_copy[col].round().astype('int64')
             elif df_copy[col].dtype == "object":
                 df_copy[col] = df_copy[col].str.strip()
                 df_copy[col] = df_copy[col].apply(clean_currency)
-            # if df_copy[col].dtype == "bool":
-            #     # df_copy[col] = df_copy[col].apply(lambda x: str(x)).astype(str)
-            #     cprint(df_copy[col].dtype, 'green')
-            #     df_copy[col] = df_copy[col].apply(str)
-            #     cprint(df_copy[col].dtype, 'blue')
+            if df_copy[col].dtype == "bool":
+                df_copy[col] = df_copy[col].astype(str)
             saved_logged_cols_after.append(f"{col}: {df_copy[col].dtype}")
 
-        # print(df.columns)
-        # df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
         # the messages will save the logs of data file columns
         msg_str_before = '\n'.join(saved_logged_cols_base)
         msg_str_after = '\n'.join(saved_logged_cols_after)
@@ -398,23 +388,35 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
 
         # df2 = copy.deepcopy(df[column_names])
         # df2 = copy.deepcopy(df)
-        df2 = df.copy(deep=True)
+        df2 = df.copy()
         current_value = ""
         for key, value in rows_and_values.items():
             # {"0": [{"colName", "colValue"}, {"colName", "colValue"}]
             # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
             # print(key, value)
             for val in value:
+                # cprint(df2[val['colName']].dtype, 'yellow')
                 current_value = val['colValue']
-                df2.at[int(key), val['colName']] = val['colValue']
+                if df2[val['colName']].dtype == 'int64':
+                    if current_value.isdigit():
+                        df2.at[int(key), val['colName']] = current_value
+                    else:
+                        df2[val['colName']] = df2[val['colName']].astype(str)
+                        df2.at[int(key), val['colName']] = current_value
+                        # df2[val['colName']] = df2[val['colName']].astype(int)
+                        # df2[val['colName']] = pd.to_numeric(df2[val['colName']], errors='ignore', downcast='float')
+                        df2[val['colName']] = pd.to_numeric(df2[val['colName']])
+                else:
+                    df2.at[int(key), val['colName']] = current_value
+
+                # cprint(df2[val['colName']].dtype, 'blue')
 
         # save all changes to the file
-
         if data_file.suffix == ".xlsx":
             df2.to_excel(data_file.as_posix(), header=True, index=False)
         elif data_file.suffix == ".csv":
             df2.to_csv(data_file.as_posix(), header=True, index=False)
-
+        cprint(df2.dtypes, 'magenta')
         # return "Data saved successfully"
         return current_value, "Data saved successfully"
 
@@ -582,14 +584,25 @@ def convert_dfile_with_selected_columns(df: pd.DataFrame, selected_columns: list
 
 def get_df_from_data_file(file_path):
     try:
+        from data_handler.models import DataHandlerSession
         data_file = Path(file_path)
+        file_object = DataHandlerSession.objects.filter(data_file_path=data_file.as_posix()).first()
         df = None
-        if data_file.exists():
-            if data_file.suffix == ".xlsx":
-                df = pd.read_excel(data_file.as_posix())
-            elif data_file.suffix == ".csv":
-                df = pd.read_csv(data_file.as_posix(), sep=',')
+        if file_object:
+            if data_file.exists():
+                if data_file.suffix == ".xlsx":
+                    df = pd.read_excel(data_file.as_posix(), dtype=file_object.get_selected_columns_casting)
+                elif data_file.suffix == ".csv":
+                    df = pd.read_csv(data_file.as_posix(), sep=',', dtype=file_object.get_selected_columns_casting,
+                                     skipinitialspace=True)
+        else:
+            if data_file.exists():
+                if data_file.suffix == ".xlsx":
+                    df = pd.read_excel(data_file.as_posix())
+                elif data_file.suffix == ".csv":
+                    df = pd.read_csv(data_file.as_posix(), sep=',')
 
+        # cprint(df.dtypes, 'red')
         # this for fill the empty cells with its own empty values
         float_cols = df.select_dtypes(include=['float64']).columns
         str_cols = df.select_dtypes(include=['object']).columns
@@ -606,10 +619,9 @@ def get_df_from_data_file(file_path):
                 df_clone[co] = df_clone[co].apply(str)
                 # cprint(df_clone[co].dtype, 'green')
             elif df_clone[co].dtype == 'float64':
-                df_clone[co] = df_clone[co].astype(str)
-                df_clone[co] = df_clone[co].apply(clean_currency)
-                df_clone[co] = df_clone[co].astype(float)
-                df_clone[co] = df_clone[co].round().astype('int64')
+                df_clone[co] = df_clone[co].round().astype(int)
+
+        # cprint(df_clone.dtypes, 'green')
 
         return df_clone
 

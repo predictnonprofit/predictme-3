@@ -119,14 +119,17 @@ class DataHandlerFileUpload(APIView):
 
     def post(self, request, filename, format=None):
         try:
+            import uuid
             from data_handler.models import (DataFile, DataHandlerSession)
             data_file = DataFile.objects.get(member=request.user)
             dfile = request.FILES['donor_file']
-            path = default_storage.save(f"data/{dfile.name}", ContentFile(dfile.read()))
+            # this to make file name unique
+            file_id = uuid.uuid4()
+            new_file_name_id = f"{file_id.time_hi_version}_{dfile.name}"
+            path = default_storage.save(f"data/{new_file_name_id}", ContentFile(dfile.read()))
             tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-            save_data_file_rounded(tmp_file)
             row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
-            columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
+
             # first check if the file empty or not
             if check_empty_df(tmp_file) is True:
                 resp = {"is_allowed": False, "row_count": row_count,
@@ -136,6 +139,8 @@ class DataHandlerFileUpload(APIView):
                 return Response(resp, status=200)
             else:
                 # here the file not empty
+                save_data_file_rounded(tmp_file)
+                columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
                 params = request.POST.get('parameters')
                 session_label = request.POST.get('session-label')
                 file_name = request.POST.get('file_name')
@@ -517,7 +522,6 @@ class SaveNewRowsUpdateView(APIView):
                 column_names = member_data_session.get_selected_columns_as_list
                 updated_data = update_rows_data(file_path, only_used_rows_data, column_names, columns_with_dtypes)
                 # print(only_used_rows_data)
-
                 if validate['is_error'] is False and "invalid literal for int()" not in updated_data:
                     response = Response({"is_error": False, "msg": updated_data}, status=200,
                                         content_type='application/json')
