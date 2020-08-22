@@ -153,12 +153,17 @@ class DataHandlerFileUpload(APIView):
                     member_data_session.data_handler_session_label = session_label
                     member_data_session.save()
                 else:
+                    all_main_columns_dtypes = extract_all_columns_with_dtypes(tmp_file)
+                    all_main_cols_str = ""
+                    for key, value in all_main_columns_dtypes.items():
+                        all_main_cols_str += f"{key}:{value}|"
                     member_data_session = DataHandlerSession.objects.create(data_handler_id=data_file,
                                                                             data_file_path=tmp_file,
                                                                             file_upload_procedure="local_file",
                                                                             all_records_count=row_count,
                                                                             data_handler_session_label=session_label,
-                                                                            file_name=file_name)
+                                                                            file_name=file_name,
+                                                                            all_columns_with_dtypes=all_main_cols_str)
                     data_file.last_uploaded_session = member_data_session.pk
                     data_file.save()
 
@@ -234,7 +239,6 @@ class SaveColumnsView(APIView):
                     # save the column with data type in string
                     col_with_dtype = f"{col_name}:{col_dtype}"
                     all_columns_with_dtypes.append(col_with_dtype)
-
                 reordered_columns = reorder_columns(all_columns_with_dtypes)
                 member_data_session.selected_columns_dtypes = "|".join(reordered_columns)
                 member_data_session.save()
@@ -323,7 +327,8 @@ class GetAllColumnsView(APIView):
                 member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
                                                                      pk=data_or_num)
                 data_file_path = member_data_session.data_file_path
-                all_columns = extract_all_columns_with_dtypes(data_file_path)
+                # all_columns = extract_all_columns_with_dtypes(data_file_path)
+                all_columns = member_data_session.get_all_data_file_columns
                 selected_columns = member_data_session.get_selected_columns_with_dtypes
                 unique_column = member_data_session.unique_id_column
                 return Response(
@@ -373,7 +378,8 @@ class GetRowsView(APIView):
                     data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count,
                                                               columns_with_dtypes,
                                                               unique_column)
-                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
+                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
+                                    content_type='application/json')
                     # return Response('{"data": ''}', content_type='application/json')
                 else:
                     delete_data_file(file_path)
@@ -422,7 +428,8 @@ class GetRowsBySearchQueryView(APIView):
                     # row_count = member_data_file.allowed_records_count
                     data_file_rows = get_rows_data_by_search_query(file_path, file_columns, search_query,
                                                                    columns_with_dtypes)
-                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
+                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
+                                    content_type='application/json')
                 else:
                     # delete_data_file(file_path)
                     # delete_all_member_data_file_info(member_data_file)
@@ -465,7 +472,8 @@ class NotValidateRowsView(APIView):
                 row_count = member_data_file.allowed_records_count
                 data_file_rows = get_not_validate_rows(file_path, file_columns, col_name)
                 data_file_rows_json = json.dumps(data_file_rows)
-                return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200, content_type='application/json')
+                return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
+                                content_type='application/json')
             else:
                 delete_data_file(file_path)
                 delete_all_member_data_file_info(member_data_file)
@@ -661,7 +669,8 @@ class FilterRowsView(APIView):
                                                               columns_with_dtypes, clicked_row_count)
                 # return Response("Please wait while validate the date type...", status=200)
                 # print(all_validate_columns[0])
-                return Response({"data": all_validate_columns, "total_rows": len(all_validate_columns)}, status=200, content_type='application/json')
+                return Response({"data": all_validate_columns, "total_rows": len(all_validate_columns)}, status=200,
+                                content_type='application/json')
 
 
         except Exception as ex:

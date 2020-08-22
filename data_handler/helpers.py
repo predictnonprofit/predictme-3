@@ -173,7 +173,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
                 current_record_data["ID"] = idx
                 tmp_cell_val = replace_nan_value(tmp_cell_val)
                 # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
-                # print(columns_with_types[col])
+                # print(columns_with_types[col], tmp_cell_val)
                 current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
                                                                             dtype=columns_with_types[col])
                 # print(idx, "--> ", current_record_data[col])
@@ -181,7 +181,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
             current_record_data = {}
 
         # print(len(all_rows))
-        # pprint(all_rows[records_count])
+        # pprint(all_rows)
         # check if the length of all_rows < 0 means no records to show
         if len(all_rows) <= 0:
             return 0
@@ -395,7 +395,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
             # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
             # print(key, value)
             for val in value:
-                # cprint(df2[val['colName']].dtype, 'yellow')
+                cprint(df2[val['colName']].dtype, 'yellow')
                 current_value = val['colValue']
                 if df2[val['colName']].dtype == 'int64':
                     if current_value.isdigit():
@@ -405,11 +405,12 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
                         df2.at[int(key), val['colName']] = current_value
                         # df2[val['colName']] = df2[val['colName']].astype(int)
                         # df2[val['colName']] = pd.to_numeric(df2[val['colName']], errors='ignore', downcast='float')
-                        df2[val['colName']] = pd.to_numeric(df2[val['colName']])
+                        # df2[val['colName']] = pd.to_numeric(df2[val['colName']])
+                        # df2[val['colName']] = df2[val['colName']].astype('int64')
                 else:
                     df2.at[int(key), val['colName']] = current_value
 
-                # cprint(df2[val['colName']].dtype, 'blue')
+                cprint(df2[val['colName']].dtype, 'blue')
 
         # save all changes to the file
         if data_file.suffix == ".xlsx":
@@ -591,9 +592,9 @@ def get_df_from_data_file(file_path):
         if file_object:
             if data_file.exists():
                 if data_file.suffix == ".xlsx":
-                    df = pd.read_excel(data_file.as_posix(), dtype=file_object.get_selected_columns_casting)
+                    df = pd.read_excel(data_file.as_posix())
                 elif data_file.suffix == ".csv":
-                    df = pd.read_csv(data_file.as_posix(), sep=',', dtype=file_object.get_selected_columns_casting,
+                    df = pd.read_csv(data_file.as_posix(), sep=',',
                                      skipinitialspace=True)
         else:
             if data_file.exists():
@@ -622,6 +623,7 @@ def get_df_from_data_file(file_path):
                 df_clone[co] = df_clone[co].round().astype(int)
 
         # cprint(df_clone.dtypes, 'green')
+
 
         return df_clone
 

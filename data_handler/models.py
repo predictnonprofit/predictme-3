@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth import get_user_model
 import pandas as pd
+import json
 
 UPLOAD_PROCEDURES = (
     ("local_file", "Local File"),
@@ -120,6 +121,19 @@ class DataHandlerSession(models.Model):
             pass
         finally:
             return columns_casting_dtypes
+
+    @property
+    def get_all_data_file_columns(self):
+        cols_all_dtype = {}
+        try:
+            all_cols_str = self.all_columns_with_dtypes.split("|")
+            for col in all_cols_str:
+                col_nm, col_tp = col.split(":")
+                cols_all_dtype[col_nm] = col_tp
+        except Exception as ex:
+            print(ex)
+        finally:
+            return cols_all_dtype
 
 
 class MemberDownloadCounter(models.Model):

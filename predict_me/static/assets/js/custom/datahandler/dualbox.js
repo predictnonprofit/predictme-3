@@ -455,23 +455,24 @@ function sendRequestValidate() {
 
 function columnOptionsChangeSaved(ele, option) {
     const element = $(ele);
+    element.removeAttr('title');
     // get the span of tooltip
     const tmpSpan = $(element.parent().parent().find("span")[1]);
     const tmpIDSpan = $(element.parent().parent().find("span")[2]);
-
     // console.log(element.hasClass('border border-danger'));
     // if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
-    if (element.data('value').toUpperCase() === "NUMBERS") {
-        element.attr('title', `Default data format NUMERIC\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
-    }
-    if (element.val().split(" ")[0].toUpperCase() === 'DONATION') {
-        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
-
-    } else if (element.val().split(" ")[0].toUpperCase() !== "UNIQUE") {
-        element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
-    }
+    const tmpCurrSelVal = element.val().split(" ")[0];
     tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+    if (tmpCurrSelVal === 'Donation') {
+        element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+    } else if (tmpCurrSelVal === "Unique") {
+        element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+    } else if (tmpCurrSelVal === "Text") {
+        element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format TEXT`);
+    } else if (tmpCurrSelVal === "Numeric") {
+        element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+    }
 
     // element.removeAttr('title');  // to remove current tooltip if exists, avoid tooltip bug
     const elementLiParent = $(element.parent().parent());
@@ -522,12 +523,20 @@ function columnOptionsChangeSaved(ele, option) {
 
         } else if (option === 'reselect') {
             tmpSpan.show();
-            tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
+            // tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
+            if (tmpCurrSelVal === 'Donation') {
+                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+            } else if (tmpCurrSelVal === "Unique") {
+                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+            } else if (tmpCurrSelVal === "Text") {
+                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format TEXT`);
+            } else if (tmpCurrSelVal === "Numeric") {
+                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+            }
             // console.log(element.prop('tagName'))
             element.addClass('border border-danger');
             element.data("reselected", "1");
             element.attr("data-toggle", 'tooltip');
-            //element.attr('title', `Default data format TEXT\nCurrent data format ${element.val().split(" ")[0].toUpperCase()}`);
             // check if the donation field selected to make it visible with check mark
             if (element.val().toLowerCase().includes('donation') === true) {
                 $("#donationFieldLi").removeClass("d-none");
@@ -550,11 +559,7 @@ function columnOptionsChangeSaved(ele, option) {
             element.attr("disabled", "disabled");
             element.addClass("disabled");
             element.attr('data-toggle', 'tooltip');
-            if (element.data('value') === 'Numbers') {
-                element.attr('title', `Default data format NUMERIC\nCurrent data format NUMERIC`);
-            } else {
-                element.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
-            }
+
 
             // when member click on the reset unique button
             tmpIDSpan.on("click", function (e) {

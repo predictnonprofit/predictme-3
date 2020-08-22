@@ -377,7 +377,7 @@ $(document).ready(function () {
 
         // check if the data not equal "", this mean no columns
 
-        if (textStatus === 'success' && jqXHR.status === 200) {
+        if ((textStatus === 'success') && (jqXHR.status === 200)) {
 
             if (data !== "") {
                 let sortedColumns = Array();
@@ -403,7 +403,7 @@ $(document).ready(function () {
                     // console.log(rowJqXHR);
 
                     // check if there is any returned data
-                    if (rowTextStatus === 'success' && rowJqXHR.status === 200) {
+                    if ((rowTextStatus === 'success') && (rowJqXHR.status === 200)) {
                         // first hide the spinner loding div
                         $("#loadingDataSpinner").hide();
                         let rowsObject = rowData;

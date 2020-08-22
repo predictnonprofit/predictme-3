@@ -66,7 +66,6 @@ function swConfirmDtype(elem, msg, tmpSpan, dataIX) {
         if (result.value) {
 
             tmpSpan.show();
-            elem.attr("title", `Default data format: TEXT\nCurrent data format: ${elem.val().split(" ")[0].toUpperCase()}`);
 
         } else if (
             /* Read more about handling dismissals below */
@@ -372,7 +371,6 @@ function fetchDataFileColumns(fetchedColumns) {
 function setColumnNamesHeader(columnsList) {
     let tableHeaderElement = $("#data_handler_table > thead > tr:last");
     for (let col of columnsList) {
-
         let row = "";
         if (col['isUnique'] === true) {
             row = `
@@ -387,6 +385,42 @@ function setColumnNamesHeader(columnsList) {
     }
 }
 
+function sortHeaderColumns() {
+    let fetchedColumns = fetchDataFileColumns();
+
+    $.when(fetchedColumns).done(function (data, textStatus, jqXHR) {
+        // console.log(Object.keys(data));
+        /* console.log(data);
+         console.log(textStatus);
+         console.log(jqXHR);*/
+        // console.log(jqXHR.status);
+
+        // check if the data not equal "", this mean no columns
+
+        if ((textStatus === 'success') && (jqXHR.status === 200)) {
+
+            if (data !== "") {
+                let sortedColumns = Array();
+                let columnsLabels = data;
+                for (let cl in data) {
+                    //unique identifier (id)
+                    if (data[cl] === "unique identifier (id)") {
+                        sortedColumns.push({"isUnique": true, "headerName": cl});
+                    } else {
+                        sortedColumns.push({"isUnique": false, "headerName": cl});
+                    }
+
+                }
+                // sortedColumns = sortedColumns.sort();
+                //initialise columns for the data table
+                setColumnNamesHeader(sortedColumns);
+
+            }
+        }
+
+    });
+}
+
 // this function return markup oject of every table cell will append to every row in the datatable
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
@@ -394,11 +428,11 @@ function drawDataTableRows(rowsData, isValidate) {
     // console.log(rowsData.total_rows);
     // console.log(currentRowData.length, "records");
     // check the length of total rows came from excel file, in case one row, or less than 50 rows
-    if(rowsData.total_rows < 50){
+    if (rowsData.total_rows < 50) {
         $(".data-table-nav-btns").addClass('disabled').attr('disabled', 'disabled');
     }
 
-     if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
+    if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
         $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
@@ -437,6 +471,15 @@ function drawDataTableRows(rowsData, isValidate) {
                     // console.log(key, value);
 
                     if (key !== "ID") {
+                        const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
+                        // the below to mark the column header it has error
+                        tableColHeader.addClass('protip');
+                        tableColHeader.attr('data-pt-classes', 'bg-secondary text-dark');
+                        tableColHeader.attr('data-pt-title', `Default data format: ${value['original_dtype'].toUpperCase()} <br /> Current data format: ${value['data_type'].split(" ")[0].toUpperCase()}`);
+                        tableColHeader.attr('data-pt-gravity', 'top');
+                        tableColHeader.attr('data-pt-animate', 'animate__animated animate__fade');
+                        tableColHeader.attr('data-pt-delay-in', '500');
+
                         if (value.is_error === false) {
                             // check if the data type is numeric or donation will restric the member from enter numeric data
                             if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
@@ -457,19 +500,11 @@ function drawDataTableRows(rowsData, isValidate) {
                 `;
                             }
                         } else if (value.is_error === true) {
-
-                            const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
                             // the below to mark the column header it has error
                             tableColHeader.attr("data-is-error", '1');
                             tableColHeader.css('cursor', "pointer");
-                            tableColHeader.addClass('protip');
-                            // tableColHeader.attr('data-toggle', 'tooltip');
-                            // tableColHeader.attr('title', 'Error data not match the required data type!');
-                            tableColHeader.attr('data-pt-title', `Default data format: ${value['original_dtype'].toUpperCase()} <br /> Current data format: ${value['data_type'].split(" ")[0].toUpperCase()}`);
-                            tableColHeader.attr('data-pt-gravity', 'top');
                             tableColHeader.attr('data-pt-classes', 'bg-danger text-white');
-                            tableColHeader.attr('data-pt-animate', 'animate__animated animate__tada');
-                            tableColHeader.attr('data-pt-delay-in', '500');
+
                             const colText = tableColHeader.text().trim();
                             // check if the current table td value has error, highlighted the column name header
                             if (key.trim() === colText) {
@@ -1237,6 +1272,7 @@ function saveTheUpdates(allUpdatedRows, elem) {
                 showToastrNotification(data['msg'][1]);
 
             }
+
             allNewRowsUpdates = {};
             // console.log(currInput.data());
             $("#dataListTable").css("opacity", "1");
