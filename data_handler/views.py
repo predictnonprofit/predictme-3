@@ -372,12 +372,13 @@ class GetRowsView(APIView):
                 file_columns = member_data_session.get_selected_columns_as_list
                 columns_with_dtypes = member_data_session.get_selected_columns_with_dtypes
                 unique_column = member_data_session.unique_id_column
+                all_original_columns = member_data_session.get_all_data_file_columns
                 # check if there is no columns picked from the user, delete and re-upload the data file
                 if len(file_columns) > 1:
                     row_count = member_data_file.allowed_records_count
                     data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count,
                                                               columns_with_dtypes,
-                                                              unique_column)
+                                                              all_original_columns)
                     return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
                                     content_type='application/json')
                     # return Response('{"data": ''}', content_type='application/json')
@@ -390,8 +391,7 @@ class GetRowsView(APIView):
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
-            cprint(str(ex), "red")
-            log_exception(ex)
+            log_exception(traceback.format_exc())
             return Response("No Data file uploaded Yet!", status=200)
 
 

@@ -462,8 +462,8 @@ function columnOptionsChangeSaved(ele, option) {
     // console.log(element.hasClass('border border-danger'));
     // if (element.hasClass('border border-danger')) element.removeClass('border border-danger');
     element.attr("data-toggle", 'tooltip');
-    const tmpCurrSelVal = element.val().split(" ")[0];
     tmpSpan.attr('title', `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+    const tmpCurrSelVal = element.val().split(" ")[0];
     if (tmpCurrSelVal === 'Donation') {
         element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
     } else if (tmpCurrSelVal === "Unique") {

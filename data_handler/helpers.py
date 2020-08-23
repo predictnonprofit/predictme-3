@@ -150,7 +150,7 @@ def get_row_count(file_path):
     return row_counts
 
 
-def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, unique_column):
+def get_rows_data_by_columns(file_path, columns, records_count, columns_with_types, all_original_columns):
     try:
         all_rows = []
         # print(columns)
@@ -168,14 +168,14 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
             idx = index
             for col in columns:
                 # print(row[col])
-                # print(idx, "----> ", col, "--->", row_as_dict, end='\n')
+                # print(idx, col)
                 tmp_cell_val = row[col]
                 current_record_data["ID"] = idx
                 tmp_cell_val = replace_nan_value(tmp_cell_val)
                 # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
                 # print(columns_with_types[col], tmp_cell_val)
                 current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
-                                                                            dtype=columns_with_types[col])
+                                                                            dtype=columns_with_types[col], original_dtype=all_original_columns[col])
                 # print(idx, "--> ", current_record_data[col])
             all_rows.insert(0, current_record_data)
             current_record_data = {}
@@ -589,6 +589,7 @@ def get_df_from_data_file(file_path):
         data_file = Path(file_path)
         file_object = DataHandlerSession.objects.filter(data_file_path=data_file.as_posix()).first()
         df = None
+        # cprint(file_object.get_all_data_file_columns, 'yellow')
         if file_object:
             if data_file.exists():
                 if data_file.suffix == ".xlsx":
@@ -622,7 +623,7 @@ def get_df_from_data_file(file_path):
             elif df_clone[co].dtype == 'float64':
                 df_clone[co] = df_clone[co].round().astype(int)
 
-        # cprint(df_clone.dtypes, 'green')
+        cprint(df_clone.dtypes, 'green')
 
 
         return df_clone

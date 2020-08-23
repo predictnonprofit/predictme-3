@@ -455,10 +455,10 @@ function drawDataTableRows(rowsData, isValidate) {
         // check if this data not validate
         if (isValidate === false) {
             let tableBodyElement = $("#data_handler_table > tbody tr:last");
-            // console.log(rowsData.data);
 
             for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
                 let currentDataObj = currentRowData[colIdx];
+
                 if (currentDataObj["ID"] === 4) {
                     // console.log(currentDataObj);
                 }
@@ -475,18 +475,37 @@ function drawDataTableRows(rowsData, isValidate) {
                         // the below to mark the column header it has error
                         tableColHeader.addClass('protip');
                         tableColHeader.attr('data-pt-classes', 'bg-secondary text-dark');
-                        tableColHeader.attr('data-pt-title', `Default data format: ${value['original_dtype'].toUpperCase()} <br /> Current data format: ${value['data_type'].split(" ")[0].toUpperCase()}`);
                         tableColHeader.attr('data-pt-gravity', 'top');
                         tableColHeader.attr('data-pt-animate', 'animate__animated animate__fade');
                         tableColHeader.attr('data-pt-delay-in', '500');
+                        const defaultDtype = '';
+                        // console.log(value)
+                        const tmpCurrSelVal = value['data_type'].split(" ")[0];
+                        if (tmpCurrSelVal === 'donation') {
+                            tableColHeader.attr("data-pt-title", `Default data format ${defaultDtype} <br /> Current data format NUMERIC`);
+                        } else if (tmpCurrSelVal === "unique") {
+                            tableColHeader.attr("data-pt-title", `Default data format ${value['original_dtype'].toUpperCase()} <br /> Current data format NUMERIC`);
+                        } else if (tmpCurrSelVal === "text") {
+                            tableColHeader.attr("data-pt-title", `Default data format ${value['original_dtype'].toUpperCase()} <br /> Current data format TEXT`);
+                        } else if (tmpCurrSelVal === "numeric") {
+                            tableColHeader.attr("data-pt-title", `Default data format ${value['original_dtype'].toUpperCase()} <br /> Current data format NUMERIC`);
+                        }
 
                         if (value.is_error === false) {
                             // check if the data type is numeric or donation will restric the member from enter numeric data
-                            if (value.data_type === "donation field" || value.data_type === "numeric field" || value.data_type === "unique identifier (id)") {
+                            if (value.data_type === "donation field" || value.data_type === "numeric field") {
                                 var cellMarkup = `
     
                     <td class=''>
                         <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
+                    </td>
+    
+                `;
+                            } else if (value.data_type === "unique identifier (id)") {
+                                var cellMarkup = `
+    
+                    <td class=''>
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" readonly="readonly" type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;

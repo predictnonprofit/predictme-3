@@ -23,7 +23,7 @@ class DataValidator:
 
         # call this method will call the validation steps
 
-    def detect_and_validate(self, val="", dtype=None):
+    def detect_and_validate(self, val="", dtype=None, original_dtype=None):
         """
         this method will call all validation methods in this class
         Returns:
@@ -44,10 +44,11 @@ class DataValidator:
             if san.status:
                 # check if the value contain any error or not valid data
                 the_validate_dict_values = self.return_the_error_msg(True, san.value, "data not valid",
-                                                                     data_type=f"{dtype}")
+                                                                     data_type=f"{dtype}", org_dtype=original_dtype)
+                # cprint(the_validate_dict_values, 'blue')
             else:
                 the_validate_dict_values = self.return_the_error_msg(False, san.value, "valid data",
-                                                                     data_type=f"{dtype}")
+                                                                     data_type=f"{dtype}", org_dtype=original_dtype)
             # print(the_validate_dict_values)
             # print(dtype)
             return the_validate_dict_values
@@ -135,14 +136,16 @@ class DataValidator:
             cprint(str(ex), 'red')
             log_exception(traceback.format_exc())
 
-    def return_the_error_msg(self, is_error: bool, val: str, msg="", data_type=""):
+    def return_the_error_msg(self, is_error: bool, val: str, msg="", data_type="", org_dtype=""):
         try:
+            dtype_dict = {"int64": "Numeric", 'object': "Text", "bool": "Text", "float64": 'Numeric'}
             val = val.strip() or val
-            if msg and data_type:
+            if msg and data_type and org_dtype:
                 return {"is_error": is_error, "value": val, "msg": msg, "data_type": data_type,
-                        "original_dtype": "Textual"}
+                        "original_dtype": dtype_dict.get(org_dtype, "Unknown Dtype!")}
             else:
-                return {"is_error": is_error, "value": val}
+                return {"is_error": is_error, "value": val, "data_type": data_type,
+                        "original_dtype": dtype_dict.get(org_dtype, "Unknown Dtype!")}
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')

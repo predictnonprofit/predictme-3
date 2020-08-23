@@ -4,6 +4,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 import pandas as pd
 import json
+import traceback
+from termcolor import cprint
+from predict_me.my_logger import log_exception
 
 UPLOAD_PROCEDURES = (
     ("local_file", "Local File"),
@@ -71,6 +74,9 @@ class DataHandlerSession(models.Model):
             return self.selected_columns.split("|")
         except AttributeError as aex:
             pass
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
 
     @property
     def get_selected_columns_with_dtypes(self):
@@ -84,6 +90,9 @@ class DataHandlerSession(models.Model):
 
         except ValueError:
             pass
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
         finally:
             return columns_with_dtypes
 
@@ -99,6 +108,9 @@ class DataHandlerSession(models.Model):
 
         except ValueError:
             pass
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
         finally:
             return columns_with_dtypes
 
@@ -107,6 +119,7 @@ class DataHandlerSession(models.Model):
         columns_casting_dtypes = {}
         try:
             all_cols = self.selected_columns_dtypes.split("|")
+
             for col in all_cols:
                 col_name, col_dtype = col.split(":")
                 col_name = col_name.strip()
@@ -119,6 +132,9 @@ class DataHandlerSession(models.Model):
 
         except ValueError:
             pass
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
         finally:
             return columns_casting_dtypes
 
@@ -128,10 +144,15 @@ class DataHandlerSession(models.Model):
         try:
             all_cols_str = self.all_columns_with_dtypes.split("|")
             for col in all_cols_str:
-                col_nm, col_tp = col.split(":")
-                cols_all_dtype[col_nm] = col_tp
+                if col != "":
+                    col_nm, col_tp = col.split(":")
+                    cols_all_dtype[col_nm] = col_tp
+
         except Exception as ex:
-            print(ex)
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+        except Exception as ex:
+            log_exception(traceback.format_exc())
         finally:
             return cols_all_dtype
 
