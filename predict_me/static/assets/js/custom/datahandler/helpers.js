@@ -478,11 +478,10 @@ function drawDataTableRows(rowsData, isValidate) {
                         tableColHeader.attr('data-pt-gravity', 'top');
                         tableColHeader.attr('data-pt-animate', 'animate__animated animate__fade');
                         tableColHeader.attr('data-pt-delay-in', '500');
-                        const defaultDtype = '';
                         // console.log(value)
                         const tmpCurrSelVal = value['data_type'].split(" ")[0];
                         if (tmpCurrSelVal === 'donation') {
-                            tableColHeader.attr("data-pt-title", `Default data format ${defaultDtype} <br /> Current data format NUMERIC`);
+                            tableColHeader.attr("data-pt-title", `Default data format ${value['original_dtype'].toUpperCase()} <br /> Current data format NUMERIC`);
                         } else if (tmpCurrSelVal === "unique") {
                             tableColHeader.attr("data-pt-title", `Default data format ${value['original_dtype'].toUpperCase()} <br /> Current data format NUMERIC`);
                         } else if (tmpCurrSelVal === "text") {
