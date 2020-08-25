@@ -175,7 +175,8 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
                 # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
                 # print(columns_with_types[col], tmp_cell_val)
                 current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val,
-                                                                            dtype=columns_with_types[col], original_dtype=all_original_columns[col])
+                                                                            dtype=columns_with_types[col],
+                                                                            original_dtype=all_original_columns[col])
                 # print(idx, "--> ", current_record_data[col])
             all_rows.insert(0, current_record_data)
             current_record_data = {}
@@ -395,7 +396,7 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
             # 0 [{'colName': 'Cand_Name', 'colValue': '858fx'}]
             # print(key, value)
             for val in value:
-                cprint(df2[val['colName']].dtype, 'yellow')
+                # cprint(df2[val['colName']].dtype, 'yellow')
                 current_value = val['colValue']
                 if df2[val['colName']].dtype == 'int64':
                     if current_value.isdigit():
@@ -410,14 +411,14 @@ def update_rows_data(file_path, data_json, column_names, columns_with_dtypes):
                 else:
                     df2.at[int(key), val['colName']] = current_value
 
-                cprint(df2[val['colName']].dtype, 'blue')
+                # cprint(df2[val['colName']].dtype, 'blue')
 
         # save all changes to the file
         if data_file.suffix == ".xlsx":
             df2.to_excel(data_file.as_posix(), header=True, index=False)
         elif data_file.suffix == ".csv":
             df2.to_csv(data_file.as_posix(), header=True, index=False)
-        cprint(df2.dtypes, 'magenta')
+        # cprint(df2.dtypes, 'magenta')
         # return "Data saved successfully"
         return current_value, "Data saved successfully"
 
@@ -623,8 +624,7 @@ def get_df_from_data_file(file_path):
             elif df_clone[co].dtype == 'float64':
                 df_clone[co] = df_clone[co].round().astype(int)
 
-        cprint(df_clone.dtypes, 'green')
-
+        # cprint(df_clone.dtypes, 'green')
 
         return df_clone
 
