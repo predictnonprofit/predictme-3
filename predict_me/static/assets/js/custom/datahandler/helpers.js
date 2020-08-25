@@ -1163,8 +1163,7 @@ var allNewRowsUpdates = {};
 // var allNewRowsUpdates = [];
 //setup before functions
 var typingTimer;                //timer identifier
-// var doneTypingInterval = 30000;  //time in ms, 2 second for example
-var doneTypingInterval = 5000;  //time in ms, 2 second for example
+var doneTypingInterval = 30000;  //time in ms, 30 second for example
 var allEditedValues = new Array(); // this array will hold all inputs changed from the data handler table
 // this function will run on change the input of the data file
 function saveNewUpdatedData() {
