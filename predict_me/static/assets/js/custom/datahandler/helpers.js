@@ -1161,7 +1161,7 @@ var allNewRowsUpdates = {};
 // var allNewRowsUpdates = [];
 //setup before functions
 var typingTimer;                //timer identifier
-var doneTypingInterval = 2000;  //time in ms, 2 second for example
+var doneTypingInterval = 30000;  //time in ms, 2 second for example
 // this function will run on change the input of the data file
 function saveNewUpdatedData() {
 
