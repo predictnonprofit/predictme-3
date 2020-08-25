@@ -560,7 +560,7 @@ function drawDataTableRows(rowsData, isValidate) {
             $("#dataListTable").css("opacity", "1");
 
             // to run the function of save the new updates of data table cells
-            saveNewUpdatedData();
+            // saveNewUpdatedData();
         } else {
             // console.log(currentRowData);
             // this else if the data are not valid
@@ -635,7 +635,7 @@ function drawDataTableRows(rowsData, isValidate) {
             }
 
             // to run the function of save the new updates of data table cells
-            saveNewUpdatedData();
+            // saveNewUpdatedData();
 
 
         }
@@ -644,6 +644,8 @@ function drawDataTableRows(rowsData, isValidate) {
 
     $("#dataListTable").css("opacity", "1");
     $("#loadingDataSpinner").fadeOut('fast');
+
+    saveNewUpdatedData();
 
 }
 
@@ -1161,7 +1163,9 @@ var allNewRowsUpdates = {};
 // var allNewRowsUpdates = [];
 //setup before functions
 var typingTimer;                //timer identifier
-var doneTypingInterval = 30000;  //time in ms, 2 second for example
+// var doneTypingInterval = 30000;  //time in ms, 2 second for example
+var doneTypingInterval = 5000;  //time in ms, 2 second for example
+var allEditedValues = new Array(); // this array will hold all inputs changed from the data handler table
 // this function will run on change the input of the data file
 function saveNewUpdatedData() {
 
@@ -1182,12 +1186,12 @@ function saveNewUpdatedData() {
             // console.log("propertychange event fire");
             // If value has changed...
             if (elem.data('oldVal') !== elem.val()) {
-
                 // Updated stored value
                 elem.data('oldVal', elem.val());
                 // console.log(elem.data())
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(function () {
+                    allEditedValues.push(elem);
                     runSaveFunc(elem);
                 }, doneTypingInterval);
 
@@ -1198,13 +1202,111 @@ function saveNewUpdatedData() {
 
         elem.bind("keypress", function () {
             // console.log('keydown run')
-
             clearTimeout(typingTimer);
-        })
+        });
+
+
+    });
+
+    $('.data-table-col').on("blur", function (event) {
+        // console.log('keydown run')
+        const currentInput = $(event.currentTarget);
+        allEditedValues.push(currentInput);
+        //console.log(currentInput);
+        // console.log('blur event, focusout event fire on this input');
     });
 
 
 }
+
+// this variables if there is any error when update cell in the table
+var isErrorSave = false;
+var errorMsgSave = "";
+
+// this function will fire when timer run
+function runSaveFunc(elem) {
+    $("#undoBtn").removeClass("disabled");
+    $("#undoBtn").removeAttr("disabled style");
+    for (let curElem of allEditedValues) {
+        let rowNumTmp = "ROW_" + curElem.data('row-id');
+        allNewRowsUpdates[rowNumTmp] = Array();
+        let currentRowIdx = curElem.data('row-id');
+        let currentColumnName = curElem.attr("name");
+        let currentTableCellVal = curElem.val().trim();
+        // check if the column exists or not
+        let tmpData = {
+            "colName": currentColumnName,
+            "colValue": currentTableCellVal
+        };
+        allNewRowsUpdates[rowNumTmp].push(tmpData);
+        // to remove duplicate column name
+        let nonDuplicateValues = removeDuplicates(allNewRowsUpdates[rowNumTmp], 'colName');
+        // console.log(nonDuplicateValues);
+        allNewRowsUpdates[rowNumTmp] = nonDuplicateValues;
+        // allNewRowsUpdates[rowNumTmp].push(nonDuplicateValues);
+        // console.log(allNewRowsUpdates[rowNumTmp]);
+        // console.log(allNewRowsUpdates);
+        saveTheUpdates(allNewRowsUpdates, curElem);
+    }
+    if (isErrorSave === true) {
+        showToastrNotification('Error while saving the data, please try again later!', "danger");
+    } else {
+        showToastrNotification('Data saved successfully!');
+    }
+
+}
+
+// this function will run every 1s in set time out when member update his data
+function saveTheUpdates(allUpdatedRows, elem) {
+    let currInput = $(elem);
+    // console.log(allUpdatedRows);
+    $("#dataListTable").css("opacity", "0.3");
+    $(".data-table-col").attr("disabled", "disabled");
+    $("#save-row-loader").fadeIn();
+    let saveDataRespone = updateMemberDataFile(allUpdatedRows);
+    $.when(saveDataRespone).done(function (data, textStatus, jqXHR) {
+        if ((textStatus === "success") && (jqXHR.status === 200)) {
+            undoValue = "";
+            undoValue2 = "";
+            // console.log(currInput.data());
+            // console.log(data['msg']);
+            if (data['is_error'] === true || data['msg'].includes("could not")) {
+                currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
+                isErrorSave = true;
+                errorMsgSave = "Error while saving the data, check the data type or try later!";
+                // showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
+
+            } else {
+                currInput.removeClass("is-invalid bg-light-danger", {duration: 1000}).addClass("bg-success-o-40", {duration: 1000});
+                setTimeout(function () {
+                    currInput.removeClass("bg-success-o-40", {duration: 1500});
+                }, 1500);
+                // showToastrNotification(data['msg'][1]);
+                isErrorSave = false;
+                // console.log(errorMsgSave);
+            }
+
+            // allNewRowsUpdates = {};
+            // console.log(currInput.data());
+            $("#dataListTable").css("opacity", "1");
+            $(".data-table-col").removeAttr("disabled");
+            $("#save-row-loader").fadeOut();
+
+            // currInput.focus();
+
+        } else {
+            swAlert("Error", "Error when save the data!", "error");
+            showToastrNotification("Error when save the data!", "danger");
+
+        }
+
+
+    });
+    // empty the newrowsupdate, and the updated inputs
+    allNewRowsUpdates = {};
+    allEditedValues = [];
+}
+
 
 // this function to save the old data to undo action
 function saveUndo() {
@@ -1223,94 +1325,9 @@ function saveUndo() {
         console.log("Prev value " + prev);
         console.log("New value " + current);*/
     });
-    // 
+    //
 
 }
-
-// this function will fire when timer run
-function runSaveFunc(elem) {
-    $("#undoBtn").removeClass("disabled");
-    $("#undoBtn").removeAttr("disabled style");
-    let rowNumTmp = "ROW_" + elem.data('row-id');
-    allNewRowsUpdates[rowNumTmp] = Array();
-    let currentRowIdx = elem.data('row-id');
-    let currentColumnName = elem.attr("name");
-    let currentTableCellVal = elem.val().trim();
-    // check if the column exists or not
-
-    let tmpData = {
-        "colName": currentColumnName,
-        "colValue": currentTableCellVal
-    };
-    allNewRowsUpdates[rowNumTmp].push(tmpData);
-    // to remove duplicate column name
-    let nonDuplicateValues = removeDuplicates(allNewRowsUpdates[rowNumTmp], 'colName');
-    // console.log(nonDuplicateValues);
-    allNewRowsUpdates[rowNumTmp] = nonDuplicateValues;
-    // allNewRowsUpdates[rowNumTmp].push(nonDuplicateValues);
-    // console.log(allNewRowsUpdates[rowNumTmp]);
-    console.log(allNewRowsUpdates);
-    saveTheUpdates(allNewRowsUpdates, elem);
-
-
-}
-
-// this function will run every 1s in set time out when member update his data
-function saveTheUpdates(allUpdatedRows, elem) {
-    let currInput = $(elem);
-
-    // console.log(currInput);
-    $("#dataListTable").css("opacity", "0.3");
-    $(".data-table-col").attr("disabled", "disabled");
-    $("#save-row-loader").fadeIn();
-    let saveDataRespone = updateMemberDataFile(allUpdatedRows);
-    $.when(saveDataRespone).done(function (data, textStatus, jqXHR) {
-        // console.log(textStatus);
-        // console.log(jqXHR);
-        // console.log(data);
-
-        if ((textStatus === "success") && (jqXHR.status === 200)) {
-            // console.log(undoElement);
-            // console.log(undoValue2);
-            // window.location.reload();
-            undoValue = "";
-            undoValue2 = "";
-            // console.log(currInput.data());
-            // console.log(data);
-            if (data['is_error'] === true || data['msg'].includes("could not")) {
-                currInput.addClass("is-invalid bg-light-danger", {duration: 1000});
-                showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
-
-            } else {
-                // currInput.removeClass("is-invalid bg-light-danger").delay(1000).addClass("bg-light-success").delay(1000).removeClass("bg-light-success");
-                currInput.removeClass("is-invalid bg-light-danger", {duration: 1000}).addClass("bg-success-o-40", {duration: 1000});
-                setTimeout(function () {
-                    currInput.removeClass("bg-success-o-40", {duration: 1500});
-                }, 1500);
-                showToastrNotification(data['msg'][1]);
-
-            }
-
-            allNewRowsUpdates = {};
-            // console.log(currInput.data());
-            $("#dataListTable").css("opacity", "1");
-            $(".data-table-col").removeAttr("disabled");
-            $("#save-row-loader").fadeOut();
-
-            // currInput.focus();
-
-
-            // $(".data-table-input").on("change");
-
-        } else {
-            swAlert("Error", "Error when save the data!", "error");
-            showToastrNotification("Error when save the data!", "danger");
-
-        }
-
-    });
-}
-
 
 // function to display Toastr Notifications
 function showToastrNotification(msg, msgType = "success") {
@@ -1324,6 +1341,7 @@ function showToastrNotification(msg, msgType = "success") {
         // options
         message: msg,
         icon: icon,
+        showProgressbar: true,
     }, {
         // settings
         type: msgType,

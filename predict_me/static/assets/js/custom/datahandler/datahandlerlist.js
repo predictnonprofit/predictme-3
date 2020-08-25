@@ -719,6 +719,9 @@ $(document).ready(function () {
 
     // when member click on rename session button in details page
     renameSessionFunc();
+    // to run the function of save the new updates of data table cells
+    // saveNewUpdatedData();
+
 
 });  // end of $(document).ready() event
 
