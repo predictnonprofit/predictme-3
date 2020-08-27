@@ -632,26 +632,15 @@ $(document).ready(function () {
         }
     });
 
+    const searchQueryInput = $("#searchQuery");
+    searchQueryInput.on("input", function (){
+        searchQueryResetView(this);
+    });
+
 
     // the undo button
     const undoBtn = $("#undoBtn");
-    undoBtn.on("click", function (evt) {
-        // $(".data-table-input").off("change");
-        undoElement.focus();
-        // console.log(undoValue);
-        // console.log(undoValue2);
-        // trigger when member clicked on undo to save the old value instead of the new value
-        undoElement.val(undoValue).trigger('propertychange');
-
-        $("#saveDataFileBtn").removeClass("disabled");
-        $("#saveDataFileBtn").removeAttr("disabled style");
-        // undoValue = "";
-        $("#undoBtn").addClass("disabled").tooltip('hide');
-        $("#undoBtn").attr("disabled", "disabled");
-        $("#undoBtn").attr("style", "cursor: not-allowed;");
-        // $(".data-table-input").on("change");
-        // undoElement = null;
-    });
+    undoBtn.on("click", undoFunc);
     // save the old value to make undo
     saveUndo();
 

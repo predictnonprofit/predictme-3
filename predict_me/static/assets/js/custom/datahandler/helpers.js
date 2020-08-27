@@ -19,6 +19,8 @@ var allRowsUpdated = {};  // object of new updated rows
 var clickedRecordsCount = 50;   // the current records number that appear to the member
 var clickedFilteredColName = "";   // the clicked column to filter, "" -> means no column has been clicked
 var isClickedFilterCol = false;   // true means the member clicked on the column header to sort the columns
+var undoValuesObj = []; // this object will contain all values that changed with old values
+var lastResultsLayout = {}; // this will hold the current layout position, and display the data based on it
 
 
 function swAlert(alertTitle, alertMsg, alertType) {
@@ -1161,9 +1163,11 @@ function removeDuplicates(originalArray, prop) {
 var allNewRowsUpdates = {};
 // var allNewRowsUpdates = [];
 //setup before functions
-var typingTimer;                //timer identifier
-var doneTypingInterval = 30000;  //time in ms, 30 second for example
+var typingTimer, undoTimer;                //timer identifier
+// var doneTypingInterval = 30000;  //time in ms, 30 second for example
+var doneTypingInterval = 5000;  //time in ms, 30 second for example
 var allEditedValues = new Array(); // this array will hold all inputs changed from the data handler table
+
 // this function will run on change the input of the data file
 function saveNewUpdatedData() {
 
@@ -1175,19 +1179,29 @@ function saveNewUpdatedData() {
         // throw new Error("Something went badly wrong!");
         // Save current value of element
         elem.data('oldVal', elem.val());
-        // console.log(elem.data(), elem.val());
-        // console.log(elem.val());
 
         // Look for changes in the value
-        // elem.bind("propertychange change click keyup input paste", function(event){  // with click event
         elem.bind("propertychange keyup input paste", function (event) {
             // console.log("propertychange event fire");
             // If value has changed...
             if (elem.data('oldVal') !== elem.val()) {
                 // Updated stored value
                 elem.data('oldVal', elem.val());
-                // console.log(elem.data())
+                // console.log(elem.data());
                 clearTimeout(typingTimer);
+                clearTimeout(undoTimer);
+                undoTimer = setTimeout(function () {
+                    let prev = elem.data('undo-val');
+                    let current = elem.val();
+                    let rowItem = {};
+                    const rowID = "ROW_" + elem.data('row-id');
+                    rowItem[rowID] = {
+                        'oldValue': prev,
+                        'newValue': current,
+                        "rowElement": elem,
+                    };
+                    undoValuesObj.push(rowItem);
+                }, 1000);
                 typingTimer = setTimeout(function () {
                     allEditedValues.push(elem);
                     runSaveFunc(elem);
@@ -1198,9 +1212,13 @@ function saveNewUpdatedData() {
 
         });
 
-        elem.bind("keypress", function () {
+        elem.bind("keypress", function (event) {
             // console.log('keydown run')
             clearTimeout(typingTimer);
+        });
+
+        elem.bind("SaveUndoValueEvent", function (evt) {
+            runSaveFunc($(this));
         });
 
 
@@ -1226,7 +1244,6 @@ function runSaveFunc(elem) {
     $("#undoBtn").removeClass("disabled");
     $("#undoBtn").removeAttr("disabled style");
     for (let curElem of allEditedValues) {
-        console.log(curElem.data());
         let rowNumTmp = "ROW_" + curElem.data('row-id');
         allNewRowsUpdates[rowNumTmp] = Array();
         let currentRowIdx = curElem.data('row-id');
@@ -1274,12 +1291,14 @@ function saveTheUpdates(allUpdatedRows, elem) {
                 isErrorSave = true;
                 errorMsgSave = "Error while saving the data, check the data type or try later!";
                 // showToastrNotification("Error while saving the data, check the data type or try later!", "danger");
+                // currInput.focus();
 
             } else {
                 currInput.removeClass("is-invalid bg-light-danger", {duration: 1000}).addClass("bg-success-o-40", {duration: 1000});
                 setTimeout(function () {
-                    currInput.removeClass("bg-success-o-40", {duration: 1500});
+                    currInput.removeClass("bg-success-o-40", {duration: 1000});
                 }, 1500);
+                // currInput.focus();
                 // showToastrNotification(data['msg'][1]);
                 isErrorSave = false;
                 // console.log(errorMsgSave);
@@ -1310,22 +1329,49 @@ function saveTheUpdates(allUpdatedRows, elem) {
 // this function to save the old data to undo action
 function saveUndo() {
 
-    $(document).on('focusin', '.data-table-col', function () {
+    $(document).on('focusin', '.data-table-col', function (event) {
         // console.log("Saving value " + $(this).val());
         // undoValue = $(this).val();
         // console.log($(this).data());
         undoValue = undoValue2 = $(this).data('undo-val');
         undoElement = $(this);
         $(this).data('undo-val', $(this).val());
-    }).on('change', '.data-table-col', function () {
+    }).on('change', '.data-table-col', function (event) {
         let prev = $(this).data('undo-val');
         let current = $(this).val();
+
         /*console.log("this is change event");
         console.log("Prev value " + prev);
         console.log("New value " + current);*/
+
     });
     //
 
+}
+
+// undo function
+function undoFunc() {
+    // undoElement.val(undoValue).trigger('propertychange');
+    // check if the length of the undo array elements greater than 0
+    if ((undoValuesObj === undefined) || (undoValuesObj.length === 0)) {
+        $("#undoBtn").addClass("disabled").tooltip('hide').attr("disabled", "disabled").attr("style", "cursor: not-allowed;");
+
+    } else {
+        let lastUndoItem = undoValuesObj.pop();
+        let lastUndoName = Object.keys(lastUndoItem)[0];
+        let tmpLastJQ = $(lastUndoItem[lastUndoName]['rowElement']);
+        tmpLastJQ.val(tmpLastJQ.data('undo-val'));
+        // trigger when member clicked on undo to save the old value instead of the new value
+        tmpLastJQ.trigger('SaveUndoValueEvent');
+
+    }
+
+
+    $("#saveDataFileBtn").removeClass("disabled").removeAttr("disabled style");
+    // undoValue = "";
+
+    // $(".data-table-input").on("change");
+    // undoElement = null;
 }
 
 // function to display Toastr Notifications
@@ -1635,6 +1681,12 @@ function renameSessionFunc() {
 
 
     });
+}
+
+// this function will run when member clear the search input and reset the previous results
+function searchQueryResetView(elem){
+    const searchInput = $(elem);
+    console.log(searchInput.val());
 }
 
 
