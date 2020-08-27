@@ -495,7 +495,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class=''>
-                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' onkeypress="return isNumber(event)" type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -503,7 +503,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class=''>
-                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' onkeypress="return isNumber(event)" readonly="readonly" type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' onkeypress="return isNumber(event)" readonly="readonly" type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -511,7 +511,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class=''>
-                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control-sm form-control w-auto data-table-col data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -535,7 +535,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class='text-center'>
-                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -543,7 +543,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td class='text-center'>
-                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger data-table-col w-auto form-control-sm data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -584,7 +584,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                             <td>
-                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                             </td>
             
                         `;
@@ -592,7 +592,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                             <td>
-                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                                <input class='form-control form-control-solid w-auto data-table-col data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                             </td>
             
                         `;
@@ -605,7 +605,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td>
-                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' onkeypress="return isNumber(event)" data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -613,7 +613,7 @@ function drawDataTableRows(rowsData, isValidate) {
                                 var cellMarkup = `
     
                     <td>
-                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["ID"]}' type='text' name='${key}' value='${value.value}' />
+                        <input class='form-control bg-light-danger is-invalid data-table-col w-auto form-control-solid form-control-sm data-table-input' data-row-id='${currentDataObj["PANDAS_ID"]}' type='text' name='${key}' value='${value.value}' />
                     </td>
     
                 `;
@@ -1226,6 +1226,7 @@ function runSaveFunc(elem) {
     $("#undoBtn").removeClass("disabled");
     $("#undoBtn").removeAttr("disabled style");
     for (let curElem of allEditedValues) {
+        console.log(curElem.data());
         let rowNumTmp = "ROW_" + curElem.data('row-id');
         allNewRowsUpdates[rowNumTmp] = Array();
         let currentRowIdx = curElem.data('row-id');
