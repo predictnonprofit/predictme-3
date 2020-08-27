@@ -170,7 +170,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
                 # print(row[col])
                 # print(idx, col)
                 tmp_cell_val = row[col]
-                current_record_data["ID"] = idx
+                current_record_data["PANDAS_ID"] = idx
                 tmp_cell_val = replace_nan_value(tmp_cell_val)
                 # tmp_cell_val = tmp_cell_val.rstrip('0').rstrip('.') if '.' in tmp_cell_val else tmp_cell_val
                 # print(columns_with_types[col], tmp_cell_val)
@@ -182,7 +182,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
             current_record_data = {}
 
         # print(len(all_rows))
-        # pprint(all_rows)
+        pprint(all_rows[0])
         # check if the length of all_rows < 0 means no records to show
         if len(all_rows) <= 0:
             return 0
@@ -212,7 +212,7 @@ def get_rows_data_by_search_query(file_path, columns, search_query, columns_with
                     # print(row.str.contains(search_query, case=False).any())
                     tmp_dtype = columns_with_dtypes[col]
                     tmp_cell_val = row[col]
-                    current_record_data["ID"] = index
+                    current_record_data["PANDAS_ID"] = index
                     tmp_cell_val = replace_nan_value(tmp_cell_val)
                     current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
 
@@ -252,7 +252,7 @@ def get_not_validate_rows(file_path, all_columns, column_name):
         for col in all_columns:
             # print(index, "----> ", col, "--->", row[col], end='\n')
             tmp_cell_val = row[col]
-            current_record_data["ID"] = index
+            current_record_data["PANDAS_ID"] = index
             current_record_data[col] = validate_obj.detect_and_validate(replace_nan_value(tmp_cell_val))
         all_rows.insert(0, current_record_data)
         current_record_data = {}
@@ -320,7 +320,7 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
                 tmp_dtype = columns_with_dtypes[col]
                 tmp_cell_val = row[col]
                 tmp_cell_val = replace_nan_value(tmp_cell_val)
-                current_record_data["ID"] = index
+                current_record_data["PANDAS_ID"] = index
                 current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
             # all_rows.insert(0, current_record_data)
             all_rows.append(current_record_data)
@@ -335,7 +335,7 @@ def get_not_validate_rows2(file_path, column_name, all_columns, columns_with_dty
                     tmp_dtype = columns_with_dtypes[col]
                     tmp_cell_val = row[col]
                     tmp_cell_val = replace_nan_value(tmp_cell_val)
-                    current_record_data["ID"] = idx
+                    current_record_data["PANDAS_ID"] = idx
                     current_record_data[col] = validate_obj.detect_and_validate(tmp_cell_val, dtype=tmp_dtype)
                 all_rows2.append(current_record_data)
                 current_record_data = {}

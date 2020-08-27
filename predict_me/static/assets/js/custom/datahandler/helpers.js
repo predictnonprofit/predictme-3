@@ -431,7 +431,7 @@ function drawDataTableRows(rowsData, isValidate) {
     if (rowsData.total_rows < 50) {
         $(".data-table-nav-btns").addClass('disabled').attr('disabled', 'disabled');
     }
-
+    // console.log(currentRowData[0]);
     if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
@@ -459,7 +459,7 @@ function drawDataTableRows(rowsData, isValidate) {
             for (let colIdx = 0; colIdx < currentRowData.length; colIdx++) {
                 let currentDataObj = currentRowData[colIdx];
 
-                if (currentDataObj["ID"] === 4) {
+                if (currentDataObj["PANDAS_ID"] === 4) {
                     // console.log(currentDataObj);
                 }
                 // console.log(currentDataObj);
@@ -469,8 +469,7 @@ function drawDataTableRows(rowsData, isValidate) {
                 // loop through key and value in the json object of the row
                 for (let [key, value] of Object.entries(currentDataObj)) {
                     // console.log(key, value);
-
-                    if (key !== "ID") {
+                    if (key !== "PANDAS_ID") {
                         const tableColHeader = $(`#data_handler_table > thead tr > th[data-col-name='${key}']`);
                         // the below to mark the column header it has error
                         tableColHeader.addClass('protip');

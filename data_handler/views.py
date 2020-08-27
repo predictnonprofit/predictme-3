@@ -379,6 +379,7 @@ class GetRowsView(APIView):
                     data_file_rows = get_rows_data_by_columns(file_path, file_columns, records_count,
                                                               columns_with_dtypes,
                                                               all_original_columns)
+                    # pprint(data_file_rows[0])
                     return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
                                     content_type='application/json')
                     # return Response('{"data": ''}', content_type='application/json')
