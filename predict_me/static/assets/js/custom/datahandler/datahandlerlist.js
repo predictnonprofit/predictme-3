@@ -616,6 +616,8 @@ $(document).ready(function () {
             fetchRecordsByCount(clickedRecordsCount);
         }
 
+        
+
 
     });
 
@@ -633,8 +635,9 @@ $(document).ready(function () {
     });
 
     const searchQueryInput = $("#searchQuery");
-    searchQueryInput.on("input", function (){
+    searchQueryInput.on("search", function (event){
         searchQueryResetView(this);
+        return false;
     });
 
 

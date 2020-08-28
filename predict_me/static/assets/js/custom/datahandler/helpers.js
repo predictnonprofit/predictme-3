@@ -426,7 +426,7 @@ function sortHeaderColumns() {
 // this function return markup oject of every table cell will append to every row in the datatable
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
-    // console.log(rowsData);
+    console.log(clickedRecordsCount);
     // console.log(rowsData.total_rows);
     // console.log(currentRowData.length, "records");
     // check the length of total rows came from excel file, in case one row, or less than 50 rows
@@ -576,7 +576,7 @@ function drawDataTableRows(rowsData, isValidate) {
                 // console.log(currentDataObj);
                 for (let [key, value] of Object.entries(currentDataObj)) {
 
-                    if (key !== "ID") {
+                    if (key !== "PANDAS_ID") {
                         // console.log(currentDataObj["ID"], "|", key, "|", value.value);
                         //console.log(key, '---', value);
 
@@ -1684,9 +1684,31 @@ function renameSessionFunc() {
 }
 
 // this function will run when member clear the search input and reset the previous results
-function searchQueryResetView(elem){
+function searchQueryResetView(elem) {
     const searchInput = $(elem);
-    console.log(searchInput.val());
+    // clickedFilteredColName
+    // isClickedFilterCol
+    // check if search input is empty or cleared
+    if (searchInput.val() === "") {
+        // check if the user was in not filtered columns or filtered column
+        if ((isClickedFilterCol === true) && (clickedFilteredColName !== "")) {
+             $("#loadingDataSpinner").fadeOut('fast');
+            let notValidateRowsResponse = fetchNotValidateRows(clickedFilteredColName);
+            $.when(notValidateRowsResponse).done(function (data, textStatus, jqXHR) {
+                if ((textStatus == "success") && (jqXHR.status == 200)) {
+                    $("#loadingDataSpinner").fadeOut();
+                    drawDataTableRows(data, false);
+                } else {
+                    swAlert("Error", data, 'error');
+                }
+            });
+        } else {
+            // clickedRecordsCount = clickedRecordsCount - 50;
+            $("#loadingDataSpinner").fadeOut('fast');
+            fetchRecordsByCount(clickedRecordsCount);
+        }
+
+    }
 }
 
 
