@@ -532,6 +532,7 @@ $(document).ready(function () {
         $(this).attr("disabled", 'disabled');
         $(this).attr("style", 'cursor: not-allowed;');
         isClickedFilterCol = false;
+        isSearchMode = false;
         clickedRecordsCount = 50;
         clickedFilteredColName = "";
         $("#no-data-watermark").hide();
@@ -547,6 +548,7 @@ $(document).ready(function () {
         }
 
         $("#undoBtn").attr("disabled", 'disabled').addClass("disabled").tooltip('hide');
+
     });
 
 
@@ -565,11 +567,13 @@ $(document).ready(function () {
             clickedRecordsCount += 50;
             let checkLastPageResponse = fetchDataFileRows(clickedRecordsCount + 50);
             $.when(checkLastPageResponse).done(function (data, textStatus, jqXHR) {
-                // console.log(data['data'].length);
-                if (data['data'].length < 50) {
-                    $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-                    $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-                    $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+
+                if ((textStatus === 'success') && (jqXHR.status === 200)) {
+                    if ((typeof data['data'] === undefined) || (typeof data['data'] === 'undefined')) {
+                        $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                        $("[data-action='last']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                        $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                    }
                 }
             });
         } else if (theAction === "previous") {
@@ -579,7 +583,6 @@ $(document).ready(function () {
                 if ($("[data-action='next']").is(":disabled") === true) {
                     $("[data-action='next']").removeAttr("disabled").removeClass("disabled").tooltip('update');
                     $("[data-action='last']").removeAttr("disabled").removeClass("disabled").tooltip('update');
-                    $("#no-data-watermark").hide();
                 }
             }
 
@@ -597,6 +600,7 @@ $(document).ready(function () {
             const tmpDiv = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
             let lastRecordsTotal = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
             clickedRecordsCount = parseInt(lastRecordsTotal);
+            console.log(clickedRecordsCount);
             $(".data-table-nav-btns[data-action='last']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
             $(".data-table-nav-btns[data-action='next']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
         }
@@ -616,8 +620,6 @@ $(document).ready(function () {
             fetchRecordsByCount(clickedRecordsCount);
         }
 
-        
-
 
     });
 
@@ -627,6 +629,7 @@ $(document).ready(function () {
         const searchQueryValue = $("#searchQuery");
         let searchQuery = searchQueryValue.val().trim();
         if (searchQuery !== "") {
+            isSearchMode = true;
             fetchRecordsBySearchQuery(searchQuery);
             $("#loadingDataSpinner").fadeOut();
             $('.data-table-nav-btns').attr("disabled", 'disabled').addClass('disabled');
@@ -635,7 +638,7 @@ $(document).ready(function () {
     });
 
     const searchQueryInput = $("#searchQuery");
-    searchQueryInput.on("search", function (event){
+    searchQueryInput.on("search", function (event) {
         searchQueryResetView(this);
         return false;
     });

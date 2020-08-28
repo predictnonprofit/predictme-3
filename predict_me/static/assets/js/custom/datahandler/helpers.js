@@ -21,6 +21,7 @@ var clickedFilteredColName = "";   // the clicked column to filter, "" -> means 
 var isClickedFilterCol = false;   // true means the member clicked on the column header to sort the columns
 var undoValuesObj = []; // this object will contain all values that changed with old values
 var lastResultsLayout = {}; // this will hold the current layout position, and display the data based on it
+var isSearchMode = false;  // when this is true the user search in data table
 
 
 function swAlert(alertTitle, alertMsg, alertType) {
@@ -423,37 +424,37 @@ function sortHeaderColumns() {
     });
 }
 
+
 // this function return markup oject of every table cell will append to every row in the datatable
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
-    console.log(clickedRecordsCount);
+    // console.log(clickedRecordsCount);
     // console.log(rowsData.total_rows);
     // console.log(currentRowData.length, "records");
     // check the length of total rows came from excel file, in case one row, or less than 50 rows
-    if (rowsData.total_rows < 50) {
+    /*if (rowsData.total_rows < 50) {
         $(".data-table-nav-btns").addClass('disabled').attr('disabled', 'disabled');
-    }
+    }*/
     // console.log(currentRowData[0]);
-    if ((typeof currentRowData.length === undefined) || (typeof currentRowData.length === 'undefined')) {
+
+    if ((typeof currentRowData === undefined) || (typeof currentRowData === 'undefined')) {
         // here when no rows, 0
         console.error("No records to display!!");
         $("[data-action='next']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-        $("#no-data-watermark").show();
     } else {
-        // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
-        if (clickedRecordsCount === 50) {
-            $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
-            $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+        if (isSearchMode === true) {
+            $('.data-table-nav-btns').attr("disabled", 'disabled').addClass('disabled');
         } else {
-            $("[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
-            $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+            // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
+            if (clickedRecordsCount === 50) {
+                // $('.data-table-nav-btns').removeAttr("disabled").removeClass("disabled").tooltip('update');
+                $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+                $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
+            } else {
+                $("[data-action='previous']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+                $("[data-action='first']").removeAttr("disabled").removeClass("disabled").tooltip('update');
+            }
         }
-
-        // check if the no data watermark exists remove it before display if there is new data
-        if ($("#no-data-watermark").is(":visible") === true) {
-            $("#no-data-watermark").hide();
-        }
-
         // check if this data not validate
         if (isValidate === false) {
             let tableBodyElement = $("#data_handler_table > tbody tr:last");
@@ -1690,13 +1691,14 @@ function searchQueryResetView(elem) {
     // isClickedFilterCol
     // check if search input is empty or cleared
     if (searchInput.val() === "") {
+        isSearchMode = false;  // to enable pagination nav btns
         // check if the user was in not filtered columns or filtered column
         if ((isClickedFilterCol === true) && (clickedFilteredColName !== "")) {
-             $("#loadingDataSpinner").fadeOut('fast');
+            $("#loadingDataSpinner").fadeOut('fast');
             let notValidateRowsResponse = fetchNotValidateRows(clickedFilteredColName);
             $.when(notValidateRowsResponse).done(function (data, textStatus, jqXHR) {
                 if ((textStatus == "success") && (jqXHR.status == 200)) {
-                    $("#loadingDataSpinner").fadeOut();
+                    $("#data_handler_table > tbody tr").empty();
                     drawDataTableRows(data, false);
                 } else {
                     swAlert("Error", data, 'error');

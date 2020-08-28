@@ -181,7 +181,7 @@ def get_rows_data_by_columns(file_path, columns, records_count, columns_with_typ
             all_rows.insert(0, current_record_data)
             current_record_data = {}
 
-        # print(len(all_rows))
+        # cprint(len(all_rows), 'yellow')
         # pprint(all_rows[0])
         # check if the length of all_rows < 0 means no records to show
         if len(all_rows) <= 0:

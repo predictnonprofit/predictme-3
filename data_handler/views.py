@@ -429,7 +429,8 @@ class GetRowsBySearchQueryView(APIView):
                     # row_count = member_data_file.allowed_records_count
                     data_file_rows = get_rows_data_by_search_query(file_path, file_columns, search_query,
                                                                    columns_with_dtypes)
-                    return Response({"data": data_file_rows, "total_rows": len(data_file_rows)}, status=200,
+                    # pprint(type(data_file_rows))
+                    return Response({"data": data_file_rows, "total_rows": data_file_rows}, status=200,
                                     content_type='application/json')
                 else:
                     # delete_data_file(file_path)
