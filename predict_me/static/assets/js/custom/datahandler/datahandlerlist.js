@@ -534,7 +534,9 @@ $(document).ready(function () {
         isClickedFilterCol = false;
         isSearchMode = false;
         clickedRecordsCount = 50;
+        lastRowCountTotal = 0;
         clickedFilteredColName = "";
+        clonedNavBtns = "";
         $("#no-data-watermark").hide();
         $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
         $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
@@ -600,7 +602,7 @@ $(document).ready(function () {
             const tmpDiv = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
             let lastRecordsTotal = parseInt(parseInt(parseInt(allRecords.text()) / 50) * 50);
             clickedRecordsCount = parseInt(lastRecordsTotal);
-            console.log(clickedRecordsCount);
+            // console.log(clickedRecordsCount);
             $(".data-table-nav-btns[data-action='last']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
             $(".data-table-nav-btns[data-action='next']").tooltip('hide').attr("disabled", 'disabled').addClass("disabled");
         }
@@ -629,6 +631,8 @@ $(document).ready(function () {
         const searchQueryValue = $("#searchQuery");
         let searchQuery = searchQueryValue.val().trim();
         if (searchQuery !== "") {
+            // clone the nav btns to detch them and re-insert them after clean search query with the same previous settings
+            clonedNavBtns = $("#data-table-nav-parent").clone(true, true);
             isSearchMode = true;
             fetchRecordsBySearchQuery(searchQuery);
             $("#loadingDataSpinner").fadeOut();

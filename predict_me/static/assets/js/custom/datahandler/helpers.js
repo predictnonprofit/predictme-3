@@ -22,6 +22,8 @@ var isClickedFilterCol = false;   // true means the member clicked on the column
 var undoValuesObj = []; // this object will contain all values that changed with old values
 var lastResultsLayout = {}; // this will hold the current layout position, and display the data based on it
 var isSearchMode = false;  // when this is true the user search in data table
+var lastRowCountTotal = 0; // this will equal the sum of last row total
+var clonedNavBtns = "";  // this is the clone of nav btns will reset after clen search query
 
 
 function swAlert(alertTitle, alertMsg, alertType) {
@@ -429,6 +431,8 @@ function sortHeaderColumns() {
 function drawDataTableRows(rowsData, isValidate) {
     let currentRowData = rowsData.data;
     // console.log(clickedRecordsCount);
+    lastRowCountTotal = clickedRecordsCount;
+    // console.log(clickedRecordsCount);
     // console.log(rowsData.total_rows);
     // console.log(currentRowData.length, "records");
     // check the length of total rows came from excel file, in case one row, or less than 50 rows
@@ -447,7 +451,6 @@ function drawDataTableRows(rowsData, isValidate) {
         } else {
             // check if the (clickedRecordsCount) = 50 this mean the user in the first page, then disable the previous (<) indicator of pagination
             if (clickedRecordsCount === 50) {
-                // $('.data-table-nav-btns').removeAttr("disabled").removeClass("disabled").tooltip('update');
                 $("[data-action='previous']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
                 $("[data-action='first']").attr("disabled", "disabled").addClass("disabled").tooltip('hide');
             } else {
@@ -1692,6 +1695,9 @@ function searchQueryResetView(elem) {
     // check if search input is empty or cleared
     if (searchInput.val() === "") {
         isSearchMode = false;  // to enable pagination nav btns
+        $("#data-table-nav-parent").detach();
+        $("#data-table-nav-wrapper").append(clonedNavBtns);
+        clonedNavBtns = "";
         // check if the user was in not filtered columns or filtered column
         if ((isClickedFilterCol === true) && (clickedFilteredColName !== "")) {
             $("#loadingDataSpinner").fadeOut('fast');
