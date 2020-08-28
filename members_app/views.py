@@ -73,7 +73,12 @@ def download_data_file_xlsx(request, id):
                 response['Content-Disposition'] = 'inline; filename=' + f"PredictME_{date.today()}.xlsx"
 
         elif file_path.suffix == ".xlsx":
-            with open(file_path.as_posix(), 'rb') as fh:
+            import random
+            new_tmp_xlsx_path = file_path.parent / f"{random.randint(0, 100)}_{os.path.splitext(file_path.name)[0]}.xlsx"
+            read_tmp_xlsx_file = pd.read_excel(file_path.as_posix(),
+                                               usecols=selected_columns)  # file with selected columns
+            read_tmp_xlsx_file.to_excel(new_tmp_xlsx_path, header=True, index=False)
+            with open(new_tmp_xlsx_path.as_posix(), 'rb') as fh:
                 response = HttpResponse(fh.read(),
                                         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 response['Content-Disposition'] = 'inline; filename=' + f"PredictME_{date.today()}.xlsx"
@@ -87,6 +92,9 @@ def download_data_file_xlsx(request, id):
         if new_xlsx_path:
             new_xlsx_path.unlink()
             cprint("Deleting xlsx file...", 'red')
+        elif new_tmp_xlsx_path:
+            new_tmp_xlsx_path.unlink()
+            cprint("Deleting Temp xlsx file...", 'red')
 
 
 @login_required
@@ -112,7 +120,12 @@ def download_data_file_csv(request, id):
                 response['Content-Disposition'] = 'inline; filename=' + f"PredictME_{date.today()}.csv"
 
         elif file_path.suffix == ".csv":
-            with open(file_path.as_posix(), 'rb') as fh:
+            import random
+            new_tmp_csv_path = file_path.parent / f"{random.randint(0, 100)}_{os.path.splitext(file_path.name)[0]}.xlsx"
+            read_tmp_csv_file = pd.read_csv(file_path.as_posix(), usecols=selected_columns,
+                                            skipinitialspace=True)  # file with selected columns
+            read_tmp_csv_file.to_csv(new_tmp_csv_path, header=True, index=False)
+            with open(new_tmp_csv_path.as_posix(), 'rb') as fh:
                 response = HttpResponse(fh.read(), content_type="text/csv")
                 response['Content-Disposition'] = 'inline; filename=' + f"PredictME_{date.today()}.csv"
 
@@ -126,6 +139,9 @@ def download_data_file_csv(request, id):
         if new_csv_path:
             new_csv_path.unlink()
             cprint("Deleting csv file...", 'red')
+        elif new_tmp_csv_path:
+            new_tmp_csv_path.unlink()
+            cprint("Deleting Tmp csv file...", 'red')
 
 
 @login_required
@@ -281,8 +297,6 @@ class ProfileChangePassword(LoginRequiredMixin, View):
             cprint(traceback.format_exc(), 'red')
             log_exception(traceback.format_exc())
             messages.error(request, 'There is errors!, try again latter')
-
-
 
 
 class ProfileEmail(LoginRequiredMixin, View):
