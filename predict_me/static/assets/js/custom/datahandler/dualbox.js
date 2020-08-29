@@ -527,7 +527,7 @@ function columnOptionsChangeSaved(ele, option) {
             if (tmpCurrSelVal === 'Donation') {
                 tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
             } else if (tmpCurrSelVal === "Unique") {
-                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format NUMERIC`);
+                tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
             } else if (tmpCurrSelVal === "Text") {
                 tmpSpan.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format TEXT`);
             } else if (tmpCurrSelVal === "Numeric") {
@@ -559,7 +559,7 @@ function columnOptionsChangeSaved(ele, option) {
             element.attr("disabled", "disabled");
             element.addClass("disabled");
             element.attr('data-toggle', 'tooltip');
-
+            element.attr("title", `Default data format ${element.data('value').toUpperCase()}\nCurrent data format ${element.data('value').toUpperCase()}`);
 
             // when member click on the reset unique button
             tmpIDSpan.on("click", function (e) {
