@@ -3,7 +3,7 @@ cachetools==4.1.1
 cairocffi==1.1.0
 CairoSVG==2.4.2
 certifi==2020.6.20
-cffi==1.14.1
+cffi==1.14.2
 chardet==3.0.4
 colorful==0.5.4
 cssselect2==0.3.0
@@ -21,8 +21,8 @@ djangorestframework==3.11.1
 et-xmlfile==1.0.1
 Faker==4.1.2
 google-api-core==1.22.1
-google-api-python-client==1.10.0
-google-auth==1.20.1
+google-api-python-client==1.11.0
+google-auth==1.21.0
 google-auth-httplib2==0.0.4
 google-auth-oauthlib==0.4.1
 googleapis-common-protos==1.52.0
@@ -40,7 +40,7 @@ pandas-datareader==0.9.0
 pathtools==0.1.2
 Pillow==7.2.0
 prettyprinter==0.18.0
-protobuf==3.12.4
+protobuf==3.13.0
 psycopg2-binary==2.8.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
