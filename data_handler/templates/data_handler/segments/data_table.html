@@ -4,12 +4,13 @@
 <section id="tab-data-table-section">
     <div class="card card-custom">
         <div class="card-header ribbon ribbon-clip ribbon-right px-3">
-            <div class="ribbon-target" data-toggle="tooltip" title="options" style="top: 12px;">
+            <div class="ribbon-target" style="top: 12px;">
                 <span class="ribbon-inner"></span>
-                <div class="dropdown dropleft dropdown-inline" id="data-table-options-dropdown">
+
+                <div class="dropdown dropleft dropdown-inline" id="data-table-options-dropdown" data-toggle="tooltip" title="options">
                     <button type="button" class="btn btn-outline-primary btn-icon"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="ki ki-bold-more-hor text-white"></i>
+                        <i class="ki ki-bold-more-hor text-white icon-md"></i>
                     </button>
                     <div class="dropdown-menu" style="z-index: auto !important;" aria-labelledby="dataHandlerActions">
                         <div class="dropdown-header">
@@ -26,7 +27,7 @@
                             <i class="fas fa-file-csv text-dark d-inline-block position-relative" style="top: 1px"></i>
                             CSV
                         </a>
-                       {% comment %} <a id='reselectColumnsBtn' href="#" data-toggle="tooltip"
+                        {% comment %} <a id='reselectColumnsBtn' href="#" data-toggle="tooltip"
                            data-placement="left" title="Reselect the columns"
                            class="btn font-weight-bolder border-0 dropdown-item data-table-action-item">
                             <i class="text-dark-50 flaticon-list d-inline-block icon-lg position-relative"
@@ -52,26 +53,31 @@
                         </a>
                     </div>
                 </div>
-
+                <div class="card-toolbar">
+                    <button type="button" class="btn btn-icon" data-toggle="tooltip" title="Save changes" id="save-data-table-changes-btn">
+                        <i class="icon-lg la la-save text-white font-weight-bold"></i>
+                    </button>
+                </div>
 
             </div>
+
             <div class="container">
                 <h3 class="card-title w-100 row" id="top-data-table-toolbar">
                     <div class="col-sm-12 col-md-12 col-lg-3">
                         <form method="POST" id="data-table-search-form">
                             {% csrf_token %}
                             <div class="form-group">
-                            <div class="input-group">
-                                <input type="search" id="searchQuery" class="form-control"
-                                       placeholder="Search for...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary btn-icon" type="button"
-                                            id="searchDataTableBtn">
-                                        <i class="flaticon2-search-1 icon-md"></i>
-                                    </button>
+                                <div class="input-group">
+                                    <input type="search" id="searchQuery" class="form-control"
+                                           placeholder="Search for...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-icon" type="button"
+                                                id="searchDataTableBtn">
+                                            <i class="flaticon2-search-1 icon-md"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </form>
                     </div>
                     <div class="col-sm-4 col-md-4 col-lg-3">
@@ -126,7 +132,7 @@
         </div>
         <div class="card-body p-0">
             <!--begin: Datatable-->
-            <section id="donorDataTable" style="overflow:auto; height:auto;" >
+            <section id="donorDataTable" style="overflow:auto; height:auto;">
                 <div id="save-row-loader" class="position-relative text-center mx-auto"
                      style="z-index: 1; display: none;">
                     <div class=" w-25  position-absolute" style="left: 38%;">

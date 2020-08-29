@@ -1208,7 +1208,7 @@ function saveNewUpdatedData() {
                 }, 1000);
                 typingTimer = setTimeout(function () {
                     allEditedValues.push(elem);
-                    runSaveFunc(elem);
+                    runSaveFunc();
                 }, doneTypingInterval);
 
 
@@ -1229,11 +1229,9 @@ function saveNewUpdatedData() {
     });
 
     $('.data-table-col').on("blur", function (event) {
-        // console.log('keydown run')
         const currentInput = $(event.currentTarget);
         allEditedValues.push(currentInput);
-        //console.log(currentInput);
-        // console.log('blur event, focusout event fire on this input');
+
     });
 
 
@@ -1244,7 +1242,7 @@ var isErrorSave = false;
 var errorMsgSave = "";
 
 // this function will fire when timer run
-function runSaveFunc(elem) {
+function runSaveFunc() {
     $("#undoBtn").removeClass("disabled");
     $("#undoBtn").removeAttr("disabled style");
     for (let curElem of allEditedValues) {
@@ -1327,6 +1325,11 @@ function saveTheUpdates(allUpdatedRows, elem) {
     // empty the newrowsupdate, and the updated inputs
     allNewRowsUpdates = {};
     allEditedValues = [];
+}
+
+// this function will run when member click on save button
+function saveChangesFunc(){
+    runSaveFunc();
 }
 
 

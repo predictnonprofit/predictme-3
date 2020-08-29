@@ -654,6 +654,11 @@ $(document).ready(function () {
         return false;
     });
 
+    // save changes btn
+    const saveChangesBtn = $("#save-data-table-changes-btn");
+    saveChangesBtn.on("click", function (event){
+        saveChangesFunc();
+    });
 
     // the undo button
     const undoBtn = $("#undoBtn");
