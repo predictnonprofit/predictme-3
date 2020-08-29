@@ -647,6 +647,13 @@ $(document).ready(function () {
         return false;
     });
 
+    // data table search form onsubmit
+    const searchForm = $("#data-table-search-form");
+    searchForm.on("submit", function (event){
+        $("#searchDataTableBtn").trigger('click');
+        return false;
+    });
+
 
     // the undo button
     const undoBtn = $("#undoBtn");
