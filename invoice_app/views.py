@@ -1,13 +1,10 @@
-from django.views.generic import TemplateView
+from django.views.generic import (TemplateView, View)
 from django.http import HttpResponse
 from django.template.loader import get_template
-from django.views import View
 from xhtml2pdf import pisa
 from weasyprint import HTML, CSS
-from django.shortcuts import (reverse, redirect)
+from django.shortcuts import (reverse, redirect, render)
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
-
-
 
 
 class InvoiceDetailsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -23,7 +20,7 @@ class InvoiceDetailsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return redirect(reverse('profile-overview'))
 
 
-class InvliceListView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class InvoiceListView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "invoice_app/list.html"
     login_url = "login"
 
@@ -36,8 +33,7 @@ class InvliceListView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return redirect(reverse('profile-overview'))
 
 
-class InvCreateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    template_name = "invoice_app/create.html"
+class InvCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
     def test_func(self):
@@ -48,6 +44,12 @@ class InvCreateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def handle_no_permission(self):
         return redirect(reverse('profile-overview'))
 
+    def get(self, request):
+        return render(request, "invoice_app/create.html")
+
+    def post(self, request):
+        print(request.POST)
+        return render(request, "invoice_app/create.html")
 
 
 # def generate_printable_pdf(template_src, invoice_context_data={}):
