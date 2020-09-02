@@ -166,3 +166,23 @@ function setReportTableColumns() {
         }
     });
 }
+
+
+// this function will run when filter submit button clicked
+function filterReportSubmitBtn() {
+    $("#members-submit-filter-btn").on("click", function (event) {
+        const reportsWrapper = $("#reports-content-wrapper");
+        // first get the children of the reportsWrapper [revenue-reports-wrapper, data-usage-reports-wrapper, extra-records-reports-wrapper, profit-share-reports-wrapper]
+        const firstReportSection = reportsWrapper.find('section').first();
+        if(firstReportSection.attr('id') === "revenue-reports-wrapper"){
+            revenueGenerator();
+
+        }else if(firstReportSection.attr('id') === "data-usage-reports-wrapper"){
+            dataUsageGenerator();
+        }else if(firstReportSection.attr('id') === "extra-records-reports-wrapper"){
+            extraRecordsGenerator();
+        }else if(firstReportSection.attr('id') === "profit-share-reports-wrapper"){
+            profitShareGenerator();
+        }
+    });
+}

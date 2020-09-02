@@ -27,5 +27,8 @@ $(document).ready(function () {
     // set displayed columns of reports table
     setReportTableColumns();
 
+    // this function will take care of filter submit button when clicked
+    filterReportSubmitBtn();
+
 });
 

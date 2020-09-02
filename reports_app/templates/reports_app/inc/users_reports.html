@@ -2,7 +2,7 @@
 
 <section id="users-reports-wrapper">
     <!-- Start Generic Filters -->
-        {% include 'reports_app/segments/generic_filters.html' %}
+    {% include 'reports_app/segments/generic_filters.html' %}
     <!-- End Generic Filters -->
 
     <!-- Start filter output area -->
@@ -99,37 +99,37 @@
 
 
                                         <td>
-                                            {{trow.name}}
+                                            {{ trow.name }}
                                         </td>
                                         <td>
-                                            {{trow.email}}
+                                            {{ trow.email }}
                                         </td>
                                         <td>
-                                            {{trow.reg_date}}
+                                            {{ trow.reg_date }}
                                         </td>
-                                            <td>
+                                        <td>
                                             {% if trow.status == 'Active' %}
 
-                                                    <span class="label label-inline label-light-success font-weight-bold">
-                                                        {{trow.status}}
+                                                <span class="label label-inline label-light-success font-weight-bold">
+                                                        {{ trow.status }}
                                                     </span>
 
                                             {% elif trow.status == 'Cancel' %}
 
                                                 <span class="label label-inline label-light-danger font-weight-bold">
-                                                    {{trow.status}}
+                                                    {{ trow.status }}
                                                 </span>
 
                                             {% else %}
 
                                                 <span class="label label-inline label-light-info font-weight-bold">
-                                                    {{trow.status}}
+                                                    {{ trow.status }}
                                                 </span>
 
                                             {% endif %}
-                                            </td>
+                                        </td>
                                         <td>
-                                            {{trow.sub_plan}}
+                                            {{ trow.sub_plan }}
                                         </td>
 
                                     </tr>
