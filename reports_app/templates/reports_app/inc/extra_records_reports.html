@@ -1,6 +1,6 @@
 {% load reports_tags %}
 
-<section id="users-reports-wrapper">
+<section id="extra-records-reports-wrapper">
     <!-- Start Generic Filters -->
     {% include 'reports_app/segments/generic_filters.html' %}
     <!-- End Generic Filters -->
@@ -79,7 +79,9 @@
                     <div class="card-body">
                         <!-- Start Report Table -->
                         <section id="data-usage-reports-section" class="table-responsive-lg">
-
+                            <!-- Spinner -->
+                            {% include 'reports_app/segments/reports_spinner.html' %}
+                            <!-- Spinner -->
                            <table class="table table-bordered table-hover">
                                 <caption>Report of users</caption>
                                 <thead class="bg-primary-o-20">

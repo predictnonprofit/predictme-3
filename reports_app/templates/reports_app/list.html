@@ -112,6 +112,7 @@
 
         <div class="row">
             <div class="col">
+
                 <!--Start Reports content wrapper-->
                 <section id="reports-content-wrapper">
                     {% if request.path|slice_url_path == 'users' %}
@@ -186,10 +187,11 @@
         });
     </script>
     <!--begin::Page Scripts(used by this page)-->
-    <script src="{% static 'dashboard/assets/js/apps/reports_app/reports_generators.js' %}"></script>
+    <script src="{% static 'assets/js/custom/djangocookie.js' %}" type="text/javascript"></script>
     <script src="{% static 'dashboard/assets/js/apps/reports_app/helpers.js' %}"></script>
     <script src="{% static 'dashboard/assets/js/apps/reports_app/apis.js' %}"></script>
     <script src="{% static 'dashboard/assets/js/apps/reports_app/reports.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/apps/reports_app/reports_generators.js' %}"></script>
     <!--end::Page Scripts-->
 
 

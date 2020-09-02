@@ -1,11 +1,14 @@
 'use strict';
 
 let currentFilterOptionSelected = '';  // this will change dynamically when user change filter option
-
 let typingTimer;                //timer identifier
 let doneTypingInterval = 1000;  //time in ms, 5 second for example
-
 let displayedColumnsArray = [];  // this array will hold any columns checked by label to display it in the report table
+let webSiteUrl = window.location.origin;
+
+function swAlert(alertTitle, alertMsg, alertType) {
+    swal.fire(`${alertTitle}`, `${alertMsg}`, `${alertType}`);
+}
 
 // this function to build or set the query in url
 function setURLQuery(reportFilterOption) {
@@ -152,6 +155,22 @@ function resetButton() {
 
 }
 
+// this function will return all cookies {name: value}
+function getAllCookies(){
+    let allCookies = {};
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookieName = cookies[i].split("=")[0].trim();
+        const jqSelector = `#${cookieName}`;
+        // first check if the cookie not the csrftoken (django cookie)
+        if (cookieName !== 'csrftoken') {
+            allCookies[cookieName] = getCookieValue(cookieName);
+        }
+    }
+
+    return allCookies;
+}
+
 
 // this function will set the checked label to display the checked columns in the data table
 function setReportTableColumns() {
@@ -172,11 +191,10 @@ function setReportTableColumns() {
 function filterReportSubmitBtn() {
     $("#members-submit-filter-btn").on("click", function (event) {
         const reportsWrapper = $("#reports-content-wrapper");
-        // first get the children of the reportsWrapper [revenue-reports-wrapper, data-usage-reports-wrapper, extra-records-reports-wrapper, profit-share-reports-wrapper]
+        // first, get the children of the reportsWrapper [revenue-reports-wrapper, data-usage-reports-wrapper, extra-records-reports-wrapper, profit-share-reports-wrapper]
         const firstReportSection = reportsWrapper.find('section').first();
         if(firstReportSection.attr('id') === "revenue-reports-wrapper"){
-            revenueGenerator();
-
+            revenueGenerator(displayedColumnsArray);
         }else if(firstReportSection.attr('id') === "data-usage-reports-wrapper"){
             dataUsageGenerator();
         }else if(firstReportSection.attr('id') === "extra-records-reports-wrapper"){

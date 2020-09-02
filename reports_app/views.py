@@ -2,10 +2,15 @@ from django.views.generic import TemplateView, View
 from django.shortcuts import (reverse, redirect, render)
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 from urllib.parse import quote_plus
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 from faker import Faker
 from prettyprinter import pprint
 from termcolor import cprint
 import random
+import os, sys, traceback
+from predict_me.my_logger import log_exception
 
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
@@ -82,7 +87,6 @@ class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         return render(request, "reports_app/list.html",
                       context={"dummy_data": faker_holder, 'title': "Data Records Using"})
-
 
 
 class ReportsExtraUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -177,3 +181,27 @@ class ProfitShareView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         return render(request, "reports_app/list.html",
                       context={"dummy_data": faker_holder, 'title': 'Profit Share'})
+
+
+class FetchReports(APIView):
+    """
+    API View to fetch required reports with its own filters and displayed columns
+    the data from the member uploaded file
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = (IsAuthenticated, IsAdminUser,)
+
+    def post(self, request, format=None):
+        try:
+            post_data = request.POST
+            cprint(post_data, 'blue')
+
+            return Response("Reports results", status=200)
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
