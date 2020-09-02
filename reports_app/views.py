@@ -83,7 +83,6 @@ class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
         return render(request, "reports_app/list.html",
                       context={"dummy_data": faker_holder, 'title': "Data Records Using"})
 
-        return render(request, "reports_app/list.html")
 
 
 class ReportsExtraUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -167,10 +166,12 @@ class ProfitShareView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "id": _,
                 "name": faker_obj.name(),
                 "pay_date": faker_obj.date_this_year(),
+                "email": faker_obj.email(),
                 "sub_plan": faker_obj.word(SUB_PLANS),
                 # "fee": random.choice([200, 400, 600]),
-                'fee': faker_obj.pyfloat(left_digits=None, right_digits=2, positive=False, min_value=10,
-                                         max_value=1500),
+                # 'fee': faker_obj.pyfloat(left_digits=None, right_digits=2, positive=False, min_value=10,
+                #                          max_value=1500),
+                "fee": faker_obj.random_int(0, 200),
                 'product': faker_obj.word(("Extra Records", 'Renewal Fee')),
             })
 

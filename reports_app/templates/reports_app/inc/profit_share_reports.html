@@ -80,7 +80,7 @@
                         <!-- Start Report Table -->
                         <section id="data-usage-reports-section" class="table-responsive-lg">
 
-                           <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover">
                                 <caption>Report of users</caption>
                                 <thead class="bg-primary-o-20">
                                 <tr>
@@ -99,22 +99,22 @@
                                 {% for trow in dummy_data %}
 
                                     <tr>
-                                         <th scope="row">{{trow.id}}</th>
-                                         <td>{{trow.name}}</td>
+                                        <th scope="row">{{ trow.id }}</th>
+                                        <td>{{ trow.name }}</td>
                                         <td>
-                                            {{trow.email}}
+                                            {{ trow.email }}
                                         </td>
                                         <td>
-                                            {{trow.last_run}}
+                                            {{ trow.pay_date }}
                                         </td>
                                         <td>
-                                            {{trow.sub_plan}}
+                                            {{ trow.sub_plan }}
                                         </td>
                                         <td>
-                                            {{trow.total_rec_used}}
+                                            {{ trow.fee }}
                                         </td>
                                         <td>
-                                            <b>${{trow.money}}</b>
+                                            <b>${{ trow.fee }}</b>
                                         </td>
 
                                     </tr>
