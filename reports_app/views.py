@@ -9,7 +9,7 @@ from faker import Faker
 from prettyprinter import pprint
 from termcolor import cprint
 import random
-import os, sys, traceback
+import os, sys, traceback, json
 from predict_me.my_logger import log_exception
 
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
@@ -198,7 +198,11 @@ class FetchReports(APIView):
     def post(self, request, format=None):
         try:
             post_data = request.POST
-            cprint(post_data, 'blue')
+            reports_section_name = request.POST.get("reports_section_name")
+            all_filter_cookies = request.POST.get("all_filter_cookies")
+            all_filter_cookies = json.loads(all_filter_cookies)
+            displayed_columns = request.POST.get("displayed_columns")
+            displayed_columns = json.loads(displayed_columns)
 
             return Response("Reports results", status=200)
 

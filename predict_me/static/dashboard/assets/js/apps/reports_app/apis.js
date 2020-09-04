@@ -10,8 +10,8 @@ function fetchReportRequest(reportSectionName, displayedColumns, allFilterCookie
         method: "POST",
         data: {
             "reports_section_name": reportSectionName,
-            'displayed_columns': displayedColumns,
-            'all_filter_cookies': allFilterCookies,
+            'displayed_columns': JSON.stringify(displayedColumns),
+            'all_filter_cookies': JSON.stringify(allFilterCookies),
         },
         dataSrc: '',
         error: function (error) {
