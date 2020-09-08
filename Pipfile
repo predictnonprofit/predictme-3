@@ -43,6 +43,7 @@ cffi = "*"
 setuptools = "*"
 protobuf = "*"
 wheel = "*"
+google-api-core = "*"
 
 [requires]
 python_version = "3.8"
