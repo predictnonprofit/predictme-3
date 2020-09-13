@@ -2,17 +2,18 @@
 
 // this function will send request with
 function fetchReportRequest(reportSectionName, displayedColumns, allFilterCookies) {
+    let sendData = {
+        "reports_section_name": reportSectionName,
+        'displayed_columns': JSON.stringify(displayedColumns),
+        'all_filter_cookies': JSON.stringify(allFilterCookies),
+    };
     return $.ajax({
         url: webSiteUrl + "/dashboard/reports/api/fetch",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         },
         method: "POST",
-        data: {
-            "reports_section_name": reportSectionName,
-            'displayed_columns': JSON.stringify(displayedColumns),
-            'all_filter_cookies': JSON.stringify(allFilterCookies),
-        },
+        data: sendData,
         dataSrc: '',
         error: function (error) {
             //called when there is an error

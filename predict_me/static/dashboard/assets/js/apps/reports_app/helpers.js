@@ -2,7 +2,7 @@
 
 let currentFilterOptionSelected = '';  // this will change dynamically when user change filter option
 let typingTimer;                //timer identifier
-let doneTypingInterval = 1000;  //time in ms, 5 second for example
+let doneTypingInterval = 100;  //time in ms, 5 second for example
 let displayedColumnsArray = [];  // this array will hold any columns checked by label to display it in the report table
 let webSiteUrl = window.location.origin;
 
@@ -74,7 +74,7 @@ function testCookies() {
 
 // this function will watch any change on the filters to save it in cookies
 function watchFilters() {
-    $(".reports-filter-input").on('keyup change', function (evt) {
+    $(".reports-filter-input").on('keyup change paste propertychange input', function (evt) {
         clearTimeout(typingTimer);
         const filterInputField = () => {
             setCookieFilterFunc(this);
@@ -148,7 +148,7 @@ function setFilterInputCookieValue() {
 // this method will run when member click on reset button in report
 function resetButton() {
     $("#members-table-reset-btn").on('click', function (evt) {
-        console.log('delete all cookies...');
+        console.error('delete all cookies...');
         deleteCookie("", true);
         $(".reports-filter-input").val("");
     });
@@ -196,11 +196,13 @@ function filterReportSubmitBtn() {
         if(firstReportSection.attr('id') === "revenue-reports-wrapper"){
             revenueGenerator(displayedColumnsArray);
         }else if(firstReportSection.attr('id') === "data-usage-reports-wrapper"){
-            dataUsageGenerator();
+            dataUsageGenerator(displayedColumnsArray);
         }else if(firstReportSection.attr('id') === "extra-records-reports-wrapper"){
-            extraRecordsGenerator();
+            extraRecordsGenerator(displayedColumnsArray);
         }else if(firstReportSection.attr('id') === "profit-share-reports-wrapper"){
-            profitShareGenerator();
+            profitShareGenerator(displayedColumnsArray);
+        }else if(firstReportSection.attr('id') === "users-reports-wrapper"){
+            usersReportsGenerator(displayedColumnsArray);
         }
     });
 }

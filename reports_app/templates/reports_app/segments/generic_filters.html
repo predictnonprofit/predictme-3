@@ -501,7 +501,7 @@
                                     </label>
                                     <div class="input-daterange input-group" id="kt_datepicker_5">
                                         <input type="text" class="form-control reports-filter-input"
-                                               name="gen-filter-start"
+                                               name="gen-filter-start" placeholder='Start Date'
                                                id="gen-filter-start">
                                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -509,7 +509,7 @@
                             </span>
                                         </div>
                                         <input type="text" class="form-control reports-filter-input"
-                                               name="gen-filter-end"
+                                               name="gen-filter-end" placeholder='End Date'
                                                id="gen-filter-end">
                                     </div>
                                 </div>
@@ -561,15 +561,19 @@
                             {% include 'reports_app/segments/all_users_reports_filters.html' %}
                             <!-- End All users Report filters -->
 
-                        {% elif request.path|slice_url_path == 'data_usage' %}
+                        {% elif request.path|slice_url_path == 'data-usage' %}
                             <!-- Start Data Usage Report filters -->
                             {% include 'reports_app/segments/data_usage_filters.html' %}
                             <!-- End Data Usage Report filters -->
 
-                        {% elif request.path|slice_url_path == 'extra_records' %}
+                        {% elif request.path|slice_url_path == 'extra-records' %}
                             <!-- Start Extra Records Report filters -->
                             {% include 'reports_app/segments/extra_records_usage_filters.html' %}
                             <!-- End Extra RecordsReport filters -->
+                        {% elif request.path|slice_url_path == 'revenues' %}
+                        <!-- Start Extra Records Report filters -->
+                        {% include 'reports_app/segments/revenues_filters.html' %}
+                        <!-- End Extra RecordsReport filters -->
                         {% endif %}
                     </section>
                     <!-- End Custom Filter Form-->

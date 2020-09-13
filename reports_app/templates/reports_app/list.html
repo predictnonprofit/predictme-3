@@ -62,16 +62,15 @@
                                                         <option value="users">Report on all users</option>
                                                     </optgroup>
                                                     <optgroup label="Sales/Revenue">
-                                                        <option value="profit-share">Profit share by subscription
-                                                            plan
-                                                        </option>
+                                                        <!-- <option value="profit-share">
+                                                            Profit share by subscription plan
+                                                        </option> -->
                                                         <option value="revenues">Report on revenue change</option>
                                                     </optgroup>
                                                     <optgroup label="Data Usage">
                                                         <option value="data-usage">Data Limit/Records usage</option>
-                                                        <option value="extra-records">Additional Fee Per Extra
-                                                            Data/Record
-                                                            usage
+                                                        <option value="extra-records">
+                                                            Additional Fee Per Extra Data/Record usage
                                                         </option>
                                                     </optgroup>
                                                 </select>
@@ -131,9 +130,9 @@
                         <!-- Start revenues reports segments -->
                         {% include 'reports_app/inc/revenues_reports.html' %}
                         <!-- End revenues reports segments -->
-                    {% elif request.path|slice_url_path == 'profit-share' %}
+                    {# elif request.path|slice_url_path == 'profit-share' #}
                         <!-- Start profit share reports segments -->
-                        {% include 'reports_app/inc/profit_share_reports.html' %}
+                        {# include 'reports_app/inc/profit_share_reports.html' #}
                         <!-- End profit share reports segments -->
                     {% endif %}
 

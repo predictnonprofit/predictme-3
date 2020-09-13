@@ -132,19 +132,26 @@ class ReportsRevenuesView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect(reverse('profile-overview'))
 
     def get(self, request, *args, **kwargs):
+        import random
         faker_obj = Faker()
         faker_holder = []
         tmp_item = []
         for _ in range(1, 25):
+            amount = faker_obj.pyfloat(left_digits=None, right_digits=2, positive=False, min_value=200,
+                                       max_value=600)
+            addition_records = random.choice([200, 400, 600])
+            amount_addition_records = 0.5 * addition_records
             faker_holder.append({
                 "id": _,
                 "name": faker_obj.name(),
+                "email": faker_obj.email(),
                 "pay_date": faker_obj.date_this_year(),
                 "sub_plan": faker_obj.word(SUB_PLANS),
                 # "fee": random.choice([200, 400, 600]),
-                'fee': faker_obj.pyfloat(left_digits=None, right_digits=2, positive=False, min_value=10,
-                                         max_value=1500),
-                'product': faker_obj.word(("Extra Records", 'Renewal Fee')),
+                'amount': amount,
+                "addition_records": addition_records,
+                "amount_addition_records": amount_addition_records,
+                "total_amount": round(amount + amount_addition_records, 2)
             })
 
         return render(request, "reports_app/list.html",
@@ -186,7 +193,7 @@ class ProfitShareView(LoginRequiredMixin, UserPassesTestMixin, View):
 class FetchReports(APIView):
     """
     API View to fetch required reports with its own filters and displayed columns
-    the data from the member uploaded file
+    and return the required data with columns
 
     * Requires token authentication.
     * Only admin users are able to access this view.
@@ -203,6 +210,10 @@ class FetchReports(APIView):
             all_filter_cookies = json.loads(all_filter_cookies)
             displayed_columns = request.POST.get("displayed_columns")
             displayed_columns = json.loads(displayed_columns)
+            cprint(reports_section_name, 'red')
+            cprint(all_filter_cookies, 'yellow')
+            cprint(len(all_filter_cookies), 'green')
+            cprint(displayed_columns, 'blue')
 
             return Response("Reports results", status=200)
 
