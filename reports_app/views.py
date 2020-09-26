@@ -11,6 +11,7 @@ from termcolor import cprint
 import random
 import os, sys, traceback, json
 from predict_me.my_logger import log_exception
+from reports_app.helper import *
 
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
@@ -30,7 +31,7 @@ class ReportsListView(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, "reports_app/list.html")
 
-
+    
 class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
@@ -55,8 +56,11 @@ class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "status": faker_obj.word(USERS_STATUS),
                 "sub_plan": faker_obj.word(SUB_PLANS),
             })
-
-        return render(request, "reports_app/list.html", context={"dummy_data": faker_holder, 'title': "Users"})
+        generic_filters = ReportFilterGenerator.get_generic_filters()
+        custom_users_filters = ReportFilterGenerator.get_custom_filters('users')
+        generic_filters.extend(custom_users_filters)
+        return render(request, "reports_app/list.html",
+                      context={"dummy_data": faker_holder, 'title': "Users", "filter_columns": generic_filters})
 
 
 class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -85,8 +89,11 @@ class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "usage": faker_obj.random_int(0, 100),
             })
 
+        generic_filters = ReportFilterGenerator.get_generic_filters()
+        custom_users_filters = ReportFilterGenerator.get_custom_filters('data_usage')
+        generic_filters.extend(custom_users_filters)
         return render(request, "reports_app/list.html",
-                      context={"dummy_data": faker_holder, 'title': "Data Records Using"})
+                      context={"dummy_data": faker_holder, 'title': "Data Usage", "filter_columns": generic_filters})
 
 
 class ReportsExtraUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -154,8 +161,11 @@ class ReportsRevenuesView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "total_amount": round(amount + amount_addition_records, 2)
             })
 
+        generic_filters = ReportFilterGenerator.get_generic_filters()
+        custom_users_filters = ReportFilterGenerator.get_custom_filters('revenue')
+        generic_filters.extend(custom_users_filters)
         return render(request, "reports_app/list.html",
-                      context={"dummy_data": faker_holder, 'title': 'Revenues reports'})
+                      context={"dummy_data": faker_holder, 'title': "Revenue", "filter_columns": generic_filters})
 
 
 class ProfitShareView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -214,8 +224,12 @@ class FetchReports(APIView):
             cprint(all_filter_cookies, 'yellow')
             cprint(len(all_filter_cookies), 'green')
             cprint(displayed_columns, 'blue')
+            report_obj = ReportGenerator(reports_section_name, displayed_columns, all_filter_cookies)
+            cprint(report_obj, 'magenta')
 
-            return Response("Reports results", status=200)
+            return Response(
+                {"table_header": report_obj.get_displayed_columns(), 'report_rows': report_obj.get_rows_file()},
+                status=200)
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')

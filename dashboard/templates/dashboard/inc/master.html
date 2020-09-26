@@ -37,6 +37,7 @@
     <link href="{% static 'dashboard/assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'dashboard/assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'dashboard/assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'dashboard/assets/css/countrySelect.css' %}" rel="stylesheet" type="text/css"/>
 
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
@@ -219,6 +220,7 @@
 <script src="{% static 'assets/js/custom/bootbox/bootbox.min.js' %}"></script>
 <script src="{% static 'assets/js/custom/bootbox/bootbox.all.min.js' %}"></script>
 <script src="{% static 'assets/js/custom/library/protip.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'dashboard/assets/js/countrySelect.js' %}"></script>
 
 <script>
     $(document).ready(function () {
@@ -234,7 +236,11 @@
         });
         $.protip();
          // Changed trigger from hover to click
-
+		 $('.datePickerInputs').datepicker({
+			autoclose: true,
+			todayHighlight: true,
+			// datesDisabled: ['06/06/2020', '06/21/2020'],
+		});	
 
     });
 </script>

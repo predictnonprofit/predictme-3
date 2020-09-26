@@ -17,6 +17,7 @@ button:disabled {
   pointer-events: all !important;
 }
 
+
 #data_handler_table td.fit,
 #data_handler_table th.fit {
     white-space: nowrap !important;
@@ -32,6 +33,7 @@ button:disabled {
 .not-allowed-cursor{
     cursor: not-allowed !important;
     pointer-events: auto !important;
+
 }
 
 
@@ -421,6 +423,80 @@ section#payExtraRecordsSection form#payExtraFeesForm input.form-control {
 
 /* End Data handler Wrapper */
 
-/* Start Custom Tabs */
+/* Start Reports Filter Section */
+.filter-name-item-wrapper{
+   /*  border-right: 0;
+    border-left: 0;
+    border-bottom: 1px solid #EBEDF3; */
+    height: 350px;
+    overflow: auto;
 
-/* End Custom Tabs */
+}
+li.generic-filter-li-item:first-child{
+    border-top: none;
+}
+.generic-filter-li-item, .generic-filter-item-selected{
+    cursor: pointer;
+    border-radius: 0 !important;
+    border-left: 0;
+    border-right: 0;
+}
+.generic-filter-li-item:hover, .generic-filter-item-selected:HOVER{
+    /* background-color: #EBEDF3; */
+    background-color: rgba(137, 80, 252, 0.08) !important;
+    /* background-color: #EBEDF3 !important; */
+}
+.generic-filter-li-item.disabled:HOVER{
+  background-color: unset !important;
+}
+/* .generic-filter-li-item.bg-primary-o-40:HOVER{
+    background-color: none !important;
+} */
+
+/* .generic-filter-item:disabled{
+    pointer-events: none;
+    cursor: not-allowed !important;
+} */
+
+select.select-filter{
+  height: 150px !important;
+}
+
+li.generic-filter-item-selected:first-child{
+    border-top: none;
+}
+
+.generic-filter-item-selected{
+    position: relative;
+    border-left: 0;
+    border-right: 0;
+
+}
+
+.generic-report-type{
+  font-weight: bold;
+  display: inline-block;
+  /* border-left: rgb(235, 237, 243) solid 3px; */
+  width: auto;
+  max-width: auto;
+  padding-left: 10px;
+}
+.generic-filter-li-item{
+  /* font-weight: bold; */
+  /* padding: 0 */
+  /* text-indent: 0.3125em; */
+  line-height: 40px;
+
+}
+.generic-filter-item{
+  /* font-weight: bold; */
+  display: inline-block;
+  border-right: rgb(235, 237, 243) solid 1px;
+  width: 60%;
+  max-width: 60%;
+}
+/* .generic-filter-item-selected span.label{
+    position: relative;
+    left: 39%;
+} */
+/* End Reports Filter Section */

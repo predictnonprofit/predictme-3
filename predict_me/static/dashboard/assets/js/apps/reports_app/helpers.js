@@ -183,10 +183,11 @@ function setReportTableColumns() {
         } else {
             displayedColumnsArray.splice(displayedColumnsArray.indexOf(colName), 1);
         }
+        // console.warn(displayedColumnsArray);
     });
 }
 
-
+/*
 // this function will run when filter submit button clicked
 function filterReportSubmitBtn() {
     $("#members-submit-filter-btn").on("click", function (event) {
@@ -205,4 +206,38 @@ function filterReportSubmitBtn() {
             usersReportsGenerator(displayedColumnsArray);
         }
     });
+}
+*/
+
+// report table draw function
+function drawReportTable(reportTableData, reportSectionName) {
+    //$("#data_handler_table > tbody tr").empty();
+    let tableJQObj = null;
+    let tableBodyElement = null;
+    let tableHeader = null;
+    const tableHeaderColumns = reportTableData['table_header'];
+    if(reportSectionName === "users"){
+        tableJQObj = $("#all-users-report-table");
+        tableHeader = $("#all-users-report-table > thead tr:last");
+        tableBodyElement = $("#all-users-report-table > tbody tr:last");
+    }
+
+    // first thing is display the table columns header
+    let allColumnsName = new Array();
+    for(let col of tableHeaderColumns){
+        let colJQ = $(`.lbl-reports-filter-display[data-col-name="${col}"]`);
+        allColumnsName.push(colJQ.data("display-name"));
+    }
+    let allTh = "";
+    tableHeader.empty();  // to avoid and duplicate columns name
+    for(let colN of allColumnsName){
+        allTh += `
+        <th data-header-name="${colN}">
+            ${colN}
+        </th>
+
+        `;
+    }
+    tableHeader.append(allTh);
+
 }

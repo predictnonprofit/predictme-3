@@ -28,7 +28,6 @@ $(document).ready(function () {
     setReportTableColumns();
 
     // this function will take care of filter submit button when clicked
-    filterReportSubmitBtn();
+    // filterReportSubmitBtn();
 
 });
-

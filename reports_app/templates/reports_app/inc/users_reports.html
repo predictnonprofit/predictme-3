@@ -1,10 +1,10 @@
 {% load reports_tags %}
 
 <section id="users-reports-wrapper">
+
     <!-- Start Generic Filters -->
     {% include 'reports_app/segments/generic_filters.html' %}
     <!-- End Generic Filters -->
-
     <!-- Start filter output area -->
     <section class="flex-row-fluid ml-lg-8 mt-5" id="table-reports-output">
         <div class="row">
@@ -82,63 +82,20 @@
                             <!-- Spinner -->
                             {% include 'reports_app/segments/reports_spinner.html' %}
                             <!-- Spinner -->
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover" id="all-users-report-table">
                                 <caption>Report of users</caption>
                                 <thead class="bg-primary-o-20">
                                 <tr>
-                                    <th width="12%">Full Name</th>
-                                    <th width="13%">Email</th>
-                                    <th width="7%">Register Date</th>
-                                    <th width="7%">Status</th>
-                                    <th width="7%">Plan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-
-                                {% for trow in dummy_data %}
-
+                                    <tr></tr>
+                                </tbody>
+                                <tfoot>
                                     <tr>
 
-
-                                        <td>
-                                            {{ trow.name }}
-                                        </td>
-                                        <td>
-                                            {{ trow.email }}
-                                        </td>
-                                        <td>
-                                            {{ trow.reg_date }}
-                                        </td>
-                                        <td>
-                                            {% if trow.status == 'Active' %}
-
-                                                <span class="label label-inline label-light-success font-weight-bold">
-                                                        {{ trow.status }}
-                                                    </span>
-
-                                            {% elif trow.status == 'Cancel' %}
-
-                                                <span class="label label-inline label-light-danger font-weight-bold">
-                                                    {{ trow.status }}
-                                                </span>
-
-                                            {% else %}
-
-                                                <span class="label label-inline label-light-info font-weight-bold">
-                                                    {{ trow.status }}
-                                                </span>
-
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {{ trow.sub_plan }}
-                                        </td>
-
                                     </tr>
-                                {% empty %}
-                                    <p class="text-danger h2">Sorry, no members in this report.</p>
-                                {% endfor %}
-                                </tbody>
+                                    </tfoot>
                             </table>
                         </section>
                         <!-- End Report Table -->

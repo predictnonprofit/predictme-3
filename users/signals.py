@@ -7,6 +7,7 @@ from data_handler.models import (DataFile, DataHandlerSession)
 import stripe
 import os
 from termcolor import cprint
+from prettyprinter import pprint
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 
@@ -29,6 +30,15 @@ def create_usermembership_memberdatafile(sender, instance, created, **kwargs):
             if user_membership_obj.stripe_member_id is None or user_membership_obj.stripe_member_id == "":
                 # member = instance
                 new_member_id = stripe.Customer.create(email=instance.email, name=instance.full_name)
+                subscription = stripe.Subscription.create(
+                    customer=new_member_id['id'],
+                    items=[
+                        {
+                            'price': 'price_CBb6IXqvTLXp3f',
+                        },
+                    ],
+                    billing_cycle_anchor=1602001965,
+                )
                 user_membership_obj.stripe_member_id = new_member_id['id']
                 instance.stripe_customer_id = new_member_id['id']
                 instance.save()
@@ -51,7 +61,7 @@ def create_usermembership_memberdatafile(sender, instance, created, **kwargs):
         return HttpResponseNotFound("Oops! Member Not found!")
     else:
         if created:
-            print("members data file, usermembership are created successfuly!")
+            print("members data file, usermembership are created successfully!")
 
 
 post_save.connect(create_usermembership_memberdatafile, sender=get_user_model())

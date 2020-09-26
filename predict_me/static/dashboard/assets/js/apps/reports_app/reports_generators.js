@@ -76,10 +76,11 @@ function runGenerateReportFunc(reportSectionName, columnsArray){
         reportsSpinner.hide();
         reportTable.show();
     }, 2000);
+    
     const fetchReportResponse = fetchReportRequest(urlName, columnsArray, fetchAllCookies());
     $.when(fetchReportResponse).done(function (data, textStatus, jqXHR){
         if((textStatus === 'success') && (jqXHR.status === 200)){
-            console.log(data);
+            drawReportTable(data, urlName);
         }
     });
 }

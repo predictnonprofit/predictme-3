@@ -3,54 +3,34 @@
 
     <div class="row mb-8">
         <div class="col-lg-3 mb-lg-0 mb-6">
-            <label class="checkbox checkbox-rounded my-1">First Name:
-                <input class="users-reports-filters-lbl-display" type="checkbox"
-                       data-col-name="first-name">
-                <span class="ml-1"></span>
-            </label>
-            <input type="text" class="form-control datatable-input reports-filter-input" placeholder="Enter First Name"
-                   id="users-filter-first-name" name="users-filter-first-name">
+            <div class="form-group">
+                <label class="checkbox checkbox-rounded my-1">New User:
+                    <input class="lbl-reports-filter-display" checked type="checkbox" data-col-name="all-users-filter-sub-plan">
+                    <span class="ml-1"></span>
+                </label>
+                <select class="form-control datatable-input reports-filter-input" name="all-users-filter-sub-plan"
+                    id="all-users-filter-sub-plan">
+                    <option value="all">All</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+
+            </div>
         </div>
         <div class="col-lg-3 mb-lg-0 mb-6">
-            <label class="checkbox checkbox-rounded my-1">Last Name:
-                <input class="users-reports-filters-lbl-display" type="checkbox"
-                       data-col-name="first-name">
-                <span class="ml-1"></span>
-            </label>
-            <input type="text" class="form-control datatable-input reports-filter-input" placeholder="Enter Last Name"
-                   id="users-filter-last-name" name="users-filter-last-name">
+            
         </div>
         <div class="col-lg-3 mb-lg-0 mb-6">
-            <label class="checkbox checkbox-rounded my-1">Email Address:
-                <input class="users-reports-filters-lbl-display" type="checkbox"
-                       data-col-name="first-name">
-                <span class="ml-1"></span>
-            </label>
-            <input type="text" class="form-control datatable-input reports-filter-input" placeholder="Email Address"
-                   id="users-filter-email" name="users-filter-email">
+            
         </div>
 
         <div class="col-lg-3 mb-lg-0 mb-6">
-            <label class="checkbox checkbox-rounded my-1">Address:
-                <input class="lbl-reports-filter-display" type="checkbox"
-                       data-col-name="address">
-                <span class="ml-1"></span>
-            </label>
-            <input type="text" class="form-control datatable-input reports-filter-input" placeholder="Address"
-                   id="gen-filter-address" name="gen-filter-address">
+            
         </div>
 
     </div>
     <div class="row mb-8">
-        <div class="col-lg-3 mb-lg-0 mb-6">
-            <label class="checkbox checkbox-rounded my-1">ZIP:
-                <input class="lbl-reports-filter-display" type="checkbox"
-                       data-col-name="zip">
-                <span class="ml-1"></span>
-            </label>
-            <input type="text" class="form-control datatable-input reports-filter-input" placeholder="ZIP"
-                   id="gen-filter-zip" name="gen-filter-zip">
-        </div>
+        
 
         <div class="col-lg-3 mb-lg-0 mb-6">
 
