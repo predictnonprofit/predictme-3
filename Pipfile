@@ -44,6 +44,7 @@ setuptools = "*"
 protobuf = "*"
 wheel = "*"
 google-api-core = "*"
+pygments = "*"
 
 [requires]
 python_version = "3.8"
