@@ -37,7 +37,7 @@ class DataFile(models.Model):
         db_table = 'member_data_files'
 
     def __str__(self):
-        return f"Data file object for {self.member}"
+        return f"Data file object for {self.member}, Allowed Records count {self.allowed_records_count}"
 
 
 class DataHandlerSession(models.Model):

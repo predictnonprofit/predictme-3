@@ -29,13 +29,26 @@ class Membership(models.Model):
 
 
 class Subscription(models.Model):
-    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription",
-                               null=True, blank=True)
+    member_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription",
+                                  null=True, blank=True)
+    stripe_customer_id = models.CharField(max_length=100, null=True, blank=True)
     stripe_subscription_id = models.CharField(max_length=60, null=True, blank=True)
-    active = models.BooleanField()
+    stripe_plan_id = models.ForeignKey(Membership, on_delete=models.CASCADE, blank=True, null=True)
+    subscription_status = models.BooleanField(null=True, blank=True)
+    subscription_period_start = models.DateTimeField(null=True, blank=True)
+    subscription_period_end = models.DateTimeField(null=True, blank=True)
+    card_expire = models.DateTimeField(null=True, blank=True)
     sub_range = models.CharField(max_length=20, choices=SUB_RANGE, null=True, blank=True)
-    subscription_start_date = models.DateField(blank=True, null=True)
-    subscription_end_date = models.DateField(blank=True, null=True)
+    card_brand = models.CharField(max_length=30, null=True, blank=True)
+    card_last_4_digits = models.CharField(max_length=5, null=True, blank=True)
+    stripe_card_id = models.CharField(max_length=50, null=True, blank=True)
+
+
+    def __str__(self):
+        return f"{self.member_id} Subscription Object"
+
+    class Meta:
+        db_table = "subscriptions"
 
 
 class UserMembership(models.Model):

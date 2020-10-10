@@ -21,7 +21,7 @@ Check out
     <!-- Stripe Form Checkout Form -->
   <div class="my-5">
 
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://js.stripe.com/v3/" data-key="{{stripe_key}}"></script>
     <form action="{% url 'checkout' %}" method="post" id="payment-form">
       {% csrf_token %}
       <fieldset>
@@ -31,7 +31,7 @@ Check out
             <label>Full Name</label>
             <div class="input-group">
               <div class="input-group-prepend"><span class="input-group-text"><i class="la la-user"></i></span></div>
-              <input type="text" readonly value="{{ user_membership.member.full_name }}" name="full_name" class="form-control" placeholder="Full Name">
+              <input type="text" readonly value="{{ subscription.member_id.full_name }}" name="full_name" class="form-control" placeholder="Full Name">
             </div>
             <!--                        <span class="form-text text-muted">Please enter your username</span>-->
           </div>
@@ -39,7 +39,7 @@ Check out
             <label>Email Address</label>
             <div class="input-group">
               <div class="input-group-prepend"><span class="input-group-text">@</span></div>
-              <input type="email" readonly class="form-control" name="email" placeholder="Email" value="{{ user_membership.member.email }}" aria-describedby="basic-addon1">
+              <input type="email" readonly class="form-control" name="email" placeholder="Email" value="{{ subscription.member_id.email }}" aria-describedby="basic-addon1">
             </div>
             <!--                        <span class="form-text text-muted">Some help content goes here</span>-->
           </div>
@@ -65,11 +65,11 @@ Check out
             <label>Subscription Range</label>
             <div class="radio-inline">
               <label class="radio">
-                <input type="radio" value="monthly" name="sub_range"> Monthly
+                <input type="radio" value="monthly" data-price="{{subscription.stripe_plan_id.monthly_fee}}" name="sub_range"> Monthly
                 <span></span>
               </label>
               <label class="radio">
-                <input type="radio" name="sub_range" checked value="yearly"> Yearly
+                <input type="radio" data-price="{{subscription.stripe_plan_id.yearly_fee}}" name="sub_range" checked value="yearly"> Yearly
                 <span></span>
               </label>
 
@@ -85,7 +85,7 @@ Check out
                 By checking the checkbox below, you agree to our <b><a target="_blank" href="{% url 'terms' %}">Terms of Use</a></b> and our
                 <b><a href="#" id="paymentTermsLink" data-toggle="modal" data-target="#paymentModal">Payment Terms</a></b>,
                 You may cancel at any time. <b><a href="/" target="_blank">Predict ME</a></b> will automatically continue your
-                membership and charge the membership fee <b id="sPrice">Currently ${{user_membership.membership.yearly_fee}}</b> to your payment method on a
+                membership and charge the membership fee <b id="sPrice">Currently ${{subscription.stripe_plan_id.yearly_fee}}</b> to your payment method on a
                 <b id="sRange">Month</b> basis until you cancel.
               </p>
             </span>

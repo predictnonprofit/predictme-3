@@ -98,9 +98,9 @@ $(document).ready(function () {
     $('input[name="sub_range"]').click(function () {
         let sRange = $("#sRange");
         let sPrice = $("#sPrice");
+        const ele = $(this);
         if ($(this).is(':checked')) {
             let rangeVal = $(this).closest('label').text().trim();
-
             // check if select monthly or yearly to print the correct "in Month", "in Year"
             if(rangeVal === "Monthly"){
                 sRange.text("Month");
@@ -110,9 +110,9 @@ $(document).ready(function () {
 
             // check if select monthly or yearly to print the correct value in accept payment block
             if(rangeVal === "Monthly"){
-                sPrice.text("Currently $" + 65 );  // the correct monthly value save it or parse it from context variable in django view
+                sPrice.text("Currently $" + ele.data('price') );  // the correct monthly value save it or parse it from context variable in django view
             }else{
-                sPrice.text("Currently $" + 65 * 12);
+                sPrice.text("Currently $" + ele.data('price'));
             }
         }
     });

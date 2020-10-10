@@ -14,7 +14,7 @@ from collections import defaultdict
 from .models import Member
 from django.http import HttpResponseRedirect
 from django.core.cache import cache
-
+from termcolor import cprint
 
 
 def login_view(request):

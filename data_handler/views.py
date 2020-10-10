@@ -17,6 +17,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 from rest_framework.permissions import IsAuthenticated
 from .validators import CheckInDataError
 from django.contrib.auth.decorators import login_required
+from prettyprinter import pprint
 
 DONOR_LBL = "Donation Field"
 UNIQUE_ID_LBL = "Unique Identifier (ID)"
@@ -50,6 +51,7 @@ class SessionDetailsView(LoginRequiredMixin, UserPassesTestMixin, View):
             member_data_file = DataFile.objects.get(member=request.user)
             member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file,
                                                                     pk=session_id).first()
+
             return render(request, "data_handler/details.html", context={"session_info": member_data_session})
 
         except DataHandlerSession.DoesNotExist:
@@ -88,7 +90,8 @@ class DataListView(LoginRequiredMixin, View):
             #     delete_data_file(member_data_file.data_file_path)
             #     delete_all_member_data_file_info(member_data_file)
             # cprint(context, 'blue')
-
+            # cprint(dir(request.user), "blue")
+            # pprint(dir(request.user))
             return render(request, "data_handler/list.html", context=context)
 
 
