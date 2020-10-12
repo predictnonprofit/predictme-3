@@ -132,3 +132,15 @@ class ReportGenerator:
                 "sub_plan": faker_obj.word(SUB_PLANS),
             })
         return faker_holder
+
+    @staticmethod
+    def generate_reports(filters_array):
+        print(filters_array)
+
+    @staticmethod
+    def generate_reports_table_header(filters_array):
+        all_columns = []
+        for col in filters_array:
+            all_columns.append(col['filter_name'])
+
+        return all_columns

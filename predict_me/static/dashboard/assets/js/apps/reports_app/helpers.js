@@ -187,28 +187,6 @@ function setReportTableColumns() {
     });
 }
 
-/*
-// this function will run when filter submit button clicked
-function filterReportSubmitBtn() {
-    $("#members-submit-filter-btn").on("click", function (event) {
-        const reportsWrapper = $("#reports-content-wrapper");
-        // first, get the children of the reportsWrapper [revenue-reports-wrapper, data-usage-reports-wrapper, extra-records-reports-wrapper, profit-share-reports-wrapper]
-        const firstReportSection = reportsWrapper.find('section').first();
-        if(firstReportSection.attr('id') === "revenue-reports-wrapper"){
-            revenueGenerator(displayedColumnsArray);
-        }else if(firstReportSection.attr('id') === "data-usage-reports-wrapper"){
-            dataUsageGenerator(displayedColumnsArray);
-        }else if(firstReportSection.attr('id') === "extra-records-reports-wrapper"){
-            extraRecordsGenerator(displayedColumnsArray);
-        }else if(firstReportSection.attr('id') === "profit-share-reports-wrapper"){
-            profitShareGenerator(displayedColumnsArray);
-        }else if(firstReportSection.attr('id') === "users-reports-wrapper"){
-            usersReportsGenerator(displayedColumnsArray);
-        }
-    });
-}
-*/
-
 // report table draw function
 function drawReportTable(reportTableData, reportSectionName) {
     //$("#data_handler_table > tbody tr").empty();
@@ -240,4 +218,23 @@ function drawReportTable(reportTableData, reportSectionName) {
     }
     tableHeader.append(allTh);
 
+}
+
+// this function will draw the table header
+function drawReportTableHeader(columns){
+    let reportSection = window.location.href.split("/");
+    reportSection = reportSection.pop();
+    // all-users-report-table, data-usage-report-table, profit-share-report-table, revenue-report-table
+    if(reportSection === "users"){
+      const table = $("#all-users-report-table");
+      table.empty();
+      let tableHeader = "<thead> <tr>";
+      for(let col of columns){
+        tableHeader += `
+            <th>${col}</th>
+        `;
+      }
+      tableHeader += "</tr></thead>";
+      table.html(tableHeader)
+    }
 }

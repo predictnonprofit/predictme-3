@@ -87,7 +87,7 @@
                             <!-- Spinner -->
                             {% include 'reports_app/segments/reports_spinner.html' %}
                             <!-- Spinner -->
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover" id='revenue-report-table'>
                                 <thead class="bg-primary-o-20">
                                 <tr>
                                     <th width="10%">Full Name</th>
@@ -119,7 +119,7 @@
                                          <td>
                                             {{trow.sub_plan}}
                                         </td>
-      
+
                                          <td>
                                             ${{trow.amount}}
                                         </td>
@@ -161,5 +161,5 @@
     <!-- End filter output area -->
 
 
-    
+
 </section>

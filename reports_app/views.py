@@ -234,3 +234,34 @@ class FetchReports(APIView):
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             log_exception(traceback.format_exc())
+
+
+class FilterReports(APIView):
+    """
+    API View to fetch required reports with its own filters and displayed columns
+    and return the required data with columns
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = (IsAuthenticated, IsAdminUser,)
+
+    def post(self, request, format=None):
+        try:
+            post_data = request.POST
+            filter_array = json.loads(request.POST.get("filtersArray"))
+            filter_report_section = request.POST.get("reportSectionName")
+            cprint(filter_array, "yellow")
+            cprint(filter_report_section, "red")
+            reports_headers = ReportGenerator.generate_reports_table_header(filter_array)
+            cprint(reports_headers, "green")
+            # ReportGenerator.generate_reports(filter_array)
+
+            return Response({"table_header": reports_headers}, status=200)
+
+
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())

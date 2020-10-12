@@ -10,5 +10,6 @@ urlpatterns = [
     path("revenues", ReportsRevenuesView.as_view(), name="reports-revenues"),
     path("api/", include([
         path("fetch", FetchReports.as_view(), name="reports-api-fetch"),
+        path("filters", FilterReports.as_view(), name="reports-api-filter"),
     ]), name="reports-api"),
 ]

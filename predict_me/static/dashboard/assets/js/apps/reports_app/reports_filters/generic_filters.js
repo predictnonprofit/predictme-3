@@ -44,12 +44,12 @@ function getAllClickedFilterData(element, rightOrLeft) {
     ];
   } else if (rightOrLeft === "R") {
     /*
-		filterId: "country"
-filterName: "Countries"
-filterValue: "ALL"
-hasOptions: true
-inputId: "li_country"
-reportSectionName: "users"
+  		filterId: "country"
+      filterName: "Countries"
+      filterValue: "ALL"
+      hasOptions: true
+      inputId: "li_country"
+      reportSectionName: "users"
 		*/
     const reportSectionName = element.data("report-section-name");
     const reportFilterName = element.data("filter-name");
@@ -99,21 +99,25 @@ function generateSelectedFilter(
 
 // this function will return selected column with its choosen option, when user clicked on right arrow btn
 function generateSelectedFilterAfterClick(inputObjValues) {
-  // console.log(inputObjValues)
+
   let multipleCode = "";
   if (inputObjValues["isMultiple"] === true) {
     multipleCode = `
 			<span id="filterSelectedOption" class="label label-light-info label-inline font-weight-bolder float-right">${inputObjValues["filterValue"].length}</span>
 		`;
+
   }
   const listItem = `
-		<li class="list-group-item generic-filter-item-selected" data-filter-value="${inputObjValues['filterValue']}" data-has-options="${inputObjValues['hasOptions']}" data-filter-id="${inputObjValues["filterInputID"]}" data-filter-name="${inputObjValues["filterName"]}" data-report-section-name="${inputObjValues["filterReportSectionName"]}" data-input-id="${inputObjValues['mainFilterID']}">
-			<span id="filterSelectedName">${inputObjValues["filterName"]}</span>
-			${multipleCode}
-		</li>
-	`;
+    <li class="list-group-item generic-filter-item-selected" data-filter-value="${inputObjValues['filterValue']}" data-has-options="${inputObjValues['hasOptions']}" data-filter-id="${inputObjValues["filterInputID"]}" data-filter-name="${inputObjValues["filterName"]}" data-report-section-name="${inputObjValues["filterReportSectionName"]}" data-input-id="${inputObjValues['mainFilterID']}">
+      <span id="filterSelectedName">${inputObjValues["filterName"]}</span>
+      ${multipleCode}
+    </li>
+  `;
 
   return listItem;
+
+
+
 }
 
 // this function will take an item and render it directly to right column if it has no options, otherwise will display the options in the middle column
@@ -432,11 +436,13 @@ function renderToRightFilterBlock(item) {
 
 // this function will prepare the json file from selectFilterBtn click event to render it by calling renderFilterToMiddleOrRightColumn function
 function prepareRenderElement(inputsArray) {
-  //generateSelectedFilterAfterClick
-  for (let arr of inputsArray) {
-    const rightItemCode = generateSelectedFilterAfterClick(arr);
-    selectedFilterUL.append(rightItemCode);
-  }
+  // for (let arr of inputsArray) {
+  //   // console.log(arr)
+  //   const rightItemCode = generateSelectedFilterAfterClick(arr);
+  //   selectedFilterUL.append(rightItemCode);
+  // }
+  const rightItemCode = generateSelectedFilterAfterClick(inputsArray[0]);
+  selectedFilterUL.append(rightItemCode);
 }
 
 // this function will fire the select and deselete buttons when user click on them
@@ -496,11 +502,13 @@ function selectAndDeselectFiltersBtns() {
           "mainFilterID": element.data("input-id"),
           "hasOptions": element.data('has-options')
         };
+        // console.log(savedElement)
         allInputsArray.push(savedElement);
       }
 
 
     });
+
     allInputsArray.push(savedElement);
     prepareRenderElement(allInputsArray);
     allInputsArray = []; // reset the array
@@ -576,6 +584,20 @@ function filterReportSubmitBtn() {
 			allFiltersArr.push(dataObj);
 		});
 		console.log(allFiltersArr)
+    const reportSection = window.location.href.split("/");
+    const filterRequest = sendFiltersValues(allFiltersArr, reportSection.pop());
+    $.when(filterRequest).done(function (data, textStatus, jqXHR) {
+        // console.log(Object.keys(data));
+         console.log(data);
+         // console.log(textStatus);
+         // console.log(jqXHR);
+        // console.log(jqXHR.status);
+        if ((textStatus === 'success') && (jqXHR.status === 200)) {
+          drawReportTableHeader(data['table_header']);
+
+        }
+
+    });
 
   });
 }
@@ -584,6 +606,7 @@ function filterReportSubmitBtn() {
 function setFilterOptionsFireFunc() {
   middleSelectFilterOptionBtn.on("click", function(event) {
     selectFilterOption(event);
+
   });
 }
 
