@@ -33,3 +33,33 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
+    def get_active_users(self):
+        queryset = self.get_queryset()
+        all_data = queryset.filter(status="active")
+        return all_data
+
+    def get_unverified_users(self):
+        queryset = self.get_queryset()
+        all_data = queryset.filter(status="unverified")
+        return all_data
+
+    def get_pending_users(self):
+        queryset = self.get_queryset()
+        all_data = queryset.filter(status="pending")
+        return all_data
+
+    def get_canceled_users(self):
+        queryset = self.get_queryset()
+        all_data = queryset.filter(status="canceled")
+        return all_data
+
+    def get_all_users(self):
+        queryset = self.get_queryset()
+        all_data = queryset.all()
+        return all_data
+
+    def get_users_by_register_date(self, full_date_range: str):
+        queryset = self.get_queryset()
+        start_date, end_date = full_date_range.split(" - ")
+        all_data = queryset.filter(date_joined__range=[start_date, end_date])
+        return all_data
