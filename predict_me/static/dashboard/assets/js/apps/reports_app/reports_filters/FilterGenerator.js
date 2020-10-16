@@ -71,6 +71,19 @@ class InputGenerator{
             $('.datePickerInputs').datepicker({
                 autoclose: true,
                 todayHighlight: true,
+                format: {
+
+                  toDisplay: function (date, format, language) {
+                      const d = new Date(date);
+                      d.setDate(d.getDate());
+                      return d.toISOString().slice(0, 10);
+                  },
+                  toValue: function (date, format, language) {
+                      const d = new Date(date);
+                      d.setDate(d.getDate());
+                      return new Date(d);
+                  }
+              }
             });
         });
 

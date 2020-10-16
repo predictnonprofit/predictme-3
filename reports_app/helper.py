@@ -1,5 +1,11 @@
 from faker import Faker
 from predict_me.my_logger import log_exception
+from termcolor import cprint
+from membership.models import (Subscription, UserMembership)
+from data_handler.models import (DataFile, DataHandlerSession)
+from users.models import Member
+from django.db.models import Q
+from collections import defaultdict
 
 # this dict will hold all terms used in the web page and what match in the DB model
 DB_TERMS = {
@@ -62,7 +68,8 @@ class ReportFilterGenerator:
             return [
                 {"filter_name": "Active Users", "report_section": "users", "input_name": report_name("Active Users"),
                  "has_options": False, "report_type": "Custom Filter"},
-                {"filter_name": "Cancelled Users", "report_section": "users", "input_name": report_name("Cancelled Users"),
+                {"filter_name": "Cancelled Users", "report_section": "users",
+                 "input_name": report_name("Cancelled Users"),
                  "has_options": False, "report_type": "Custom Filter"},
                 {"filter_name": "Days Left", "report_section": "users", "input_name": report_name("Days Left"),
                  "has_options": False, "report_type": "Custom Filter"},
@@ -77,9 +84,11 @@ class ReportFilterGenerator:
             ]
         elif report_section_name == "revenue":
             return [
-                {"filter_name": "Start Offer Date", "report_section": "revenue", "input_name": report_name("Start Offer Date"),
+                {"filter_name": "Start Offer Date", "report_section": "revenue",
+                 "input_name": report_name("Start Offer Date"),
                  "has_options": True, "report_type": "Custom Filter"},
-                {"filter_name": "Next Revenue Date", "report_section": "revenue", "input_name": report_name("Next Revenue Date"),
+                {"filter_name": "Next Revenue Date", "report_section": "revenue",
+                 "input_name": report_name("Next Revenue Date"),
                  "has_options": False, "report_type": "Custom Filter"},
 
             ]
@@ -144,3 +153,92 @@ class ReportGenerator:
             all_columns.append(col['filter_name'])
 
         return all_columns
+
+    @staticmethod
+    def generate_report(report_section_name, filter_list, report_table_header, user_id):
+        filter_keys = {}
+        # all_filters = defaultdict(list)
+        all_filters = {}
+        # cprint(type(filter_list), 'yellow')
+        for r_filter in filter_list:
+            # print(r_filter)
+            filter_keys[r_filter['filter_name']] = r_filter['filter_value']
+
+        # member = Member.objects.get(id=user_id)
+        # subscription = Subscription.objects.get(member_id=member)
+        all_members = list(Member.objects.all())
+        all_subscriptions = list(Subscription.objects.all())
+        # cprint(report_table_header, 'red')
+        for head in report_table_header:
+            head_name = head.lower().replace(" ", "_")
+            for index, member in enumerate(all_members):
+                ReportGenerator.report_maker(member, report_section_name, filter_list)
+                # all_filters['first_name'].append(member.first_name)
+                # all_filters['last_name'].append(member.last_name)
+                member_subscription = Subscription.objects.filter(member_id=member).first()
+                # usermembership = UserMembership.objects.filter(member=member).first()
+                if member_subscription is not None:
+                    member_plan = str(member_subscription.stripe_plan_id)
+
+                else:
+                    member_plan = "No Plan Yet"
+
+                all_filters[f"ROW_{index}"] = {
+                    "row": [
+                        member.first_name,
+                        member.last_name,
+                        member.email,
+                        member_plan,
+
+                    ]
+                }
+
+        # check the report section name
+        # cprint(all_filters, "green")
+        if report_section_name == 'users':
+            pass
+
+        return all_filters
+
+    @staticmethod
+    def report_maker(member_entity: Member, report_section_name: str, filter_list: list):
+        filter_map = dict()
+        member_subscription = Subscription.objects.filter(member_id=member_entity).first()
+        member_main_data_obj = DataFile.objects.filter(member=member_entity).first()
+        member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_main_data_obj).first()
+        # cprint(member_subscription, "cyan")
+        # a = Member.objects.get_users_by_register_date('2020-09-27 - 2020-09-30')
+        # cprint(a[2].date_joined, 'green')
+        if member_entity is not None:
+            filter_map['Member'] = member_entity.get_fields_as_list
+        if member_subscription is not None:
+            filter_map['Subscription'] = member_subscription.get_fields_as_list
+        if member_main_data_obj is not None:
+            filter_map['Main_Data'] = member_main_data_obj.get_fields_as_list
+        if member_data_session is not None:
+            filter_map['Data_Session'] = member_data_session.get_fields_as_list
+        # cprint(member_data_session, "magenta")
+        filter_keys = {}
+        all_filters = {}
+        # cprint(type(filter_list), 'yellow')
+        for r_filter in filter_list:
+            # print(r_filter)
+            # cprint(report_name(r_filter['filter_name']))
+            if report_name(r_filter['filter_name']) == "register_date":
+                filter_keys[report_name(r_filter['filter_name'])] = r_filter['filter_value']
+                # cprint("_" in r_filter['filter_value'], 'red')
+                # cprint(report_name(r_filter['filter_value']), 'green')
+            else:
+                filter_keys[report_name(r_filter['filter_name'])] = report_name(r_filter['filter_value'])
+
+            filter_keys["report_section_name"] = report_name(r_filter['report_section_name'])
+
+        # loop through filter_map to determine which model filters belongs to
+        for map_key, map_value in filter_map.items():
+            # print(map_key, "---> ", map_value)
+            for filter_key, filter_value in filter_keys.items():
+                # print(filter_key, "--> ", filter_value)
+                if filter_key in map_value:
+
+                    msg = f"The {filter_key} belongs to {map_key} "
+                    # cprint(msg, 'blue')

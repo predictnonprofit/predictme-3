@@ -583,18 +583,18 @@ function filterReportSubmitBtn() {
 			};
 			allFiltersArr.push(dataObj);
 		});
-		console.log(allFiltersArr)
+		// console.log(allFiltersArr)
     const reportSection = window.location.href.split("/");
     const filterRequest = sendFiltersValues(allFiltersArr, reportSection.pop());
     $.when(filterRequest).done(function (data, textStatus, jqXHR) {
         // console.log(Object.keys(data));
-         console.log(data);
+         // console.log(data);
          // console.log(textStatus);
          // console.log(jqXHR);
         // console.log(jqXHR.status);
         if ((textStatus === 'success') && (jqXHR.status === 200)) {
           drawReportTableHeader(data['table_header']);
-
+          drawGeneratedReportTable(data);
         }
 
     });

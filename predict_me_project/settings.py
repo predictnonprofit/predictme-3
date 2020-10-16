@@ -239,3 +239,13 @@ SESSION_EXPIRE_SECONDS = 5120  # 5 Mins
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 # SESSION_TIMEOUT_REDIRECT = 'login'
 
+# REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': (
+#        'rest_framework.authentication.TokenAuthentication',
+#    ),
+#    'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAdminUser'
+#    ),
+# }
+
+

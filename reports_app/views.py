@@ -31,7 +31,7 @@ class ReportsListView(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, "reports_app/list.html")
 
-    
+
 class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
@@ -253,14 +253,17 @@ class FilterReports(APIView):
             post_data = request.POST
             filter_array = json.loads(request.POST.get("filtersArray"))
             filter_report_section = request.POST.get("reportSectionName")
-            cprint(filter_array, "yellow")
-            cprint(filter_report_section, "red")
+            # cprint(filter_array, "yellow")
+            # cprint(filter_report_section, "red")
             reports_headers = ReportGenerator.generate_reports_table_header(filter_array)
-            cprint(reports_headers, "green")
+            # cprint(reports_headers, "green")
+            reports = ReportGenerator.generate_report(filter_report_section, filter_array, reports_headers,
+                                                      request.user.pk)
             # ReportGenerator.generate_reports(filter_array)
-
-            return Response({"table_header": reports_headers}, status=200)
-
+            # cprint(reports, 'red')
+            return Response(
+                {"table_header": reports_headers, "report_data": reports, "report_section_name": filter_report_section },
+                status=200)
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')

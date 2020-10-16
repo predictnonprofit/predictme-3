@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from data_handler.models import DataFile, DataHandlerSession
+from data_handler.models import (DataFile, DataHandlerSession)
+from .managers import SubscribeManager
 
 MEMBERSHIP_LABELS = (
     ("starter", "Starter"),
@@ -29,6 +30,7 @@ class Membership(models.Model):
 
 
 class Subscription(models.Model):
+    objects = SubscribeManager()
     member_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription",
                                   null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=100, null=True, blank=True)
@@ -43,12 +45,19 @@ class Subscription(models.Model):
     card_last_4_digits = models.CharField(max_length=5, null=True, blank=True)
     stripe_card_id = models.CharField(max_length=50, null=True, blank=True)
 
-
     def __str__(self):
         return f"{self.member_id} Subscription Object"
 
     class Meta:
         db_table = "subscriptions"
+
+    @property
+    def get_fields_as_list(self):
+        fields = self._meta.fields
+        fields_list = []
+        for fid in fields:
+            fields_list.append(fid.name)
+        return fields_list
 
 
 class UserMembership(models.Model):

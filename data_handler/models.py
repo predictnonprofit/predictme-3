@@ -39,6 +39,14 @@ class DataFile(models.Model):
     def __str__(self):
         return f"Data file object for {self.member}, Allowed Records count {self.allowed_records_count}"
 
+    @property
+    def get_fields_as_list(self):
+        fields = self._meta.fields
+        fields_list = []
+        for fid in fields:
+            fields_list.append(fid.name)
+        return fields_list
+
 
 class DataHandlerSession(models.Model):
     data_handler_id = models.ForeignKey(to=DataFile, on_delete=models.CASCADE, null=True, blank=True,
@@ -64,7 +72,15 @@ class DataHandlerSession(models.Model):
         db_table = 'data_handler_sessions'
 
     def __str__(self):
-        return f"{self.current_session_name}"
+        return f"{self.data_handler_session_label}"
+
+    @property
+    def get_fields_as_list(self):
+        fields = self._meta.fields
+        fields_list = []
+        for fid in fields:
+            fields_list.append(fid.name)
+        return fields_list
 
     @property
     def get_selected_columns_as_list(self):

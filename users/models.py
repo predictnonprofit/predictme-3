@@ -54,6 +54,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "members"
 
+    @property
+    def get_fields_as_list(self):
+        fields = self._meta.fields
+        fields_list = []
+        for fid in fields:
+            fields_list.append(fid.name)
+        return fields_list
+
 
 class UnverifiedMember(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
