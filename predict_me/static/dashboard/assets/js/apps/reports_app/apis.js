@@ -53,6 +53,7 @@ function sendFiltersValues(filtersArray, reportSectionName) {
         "filtersArray": JSON.stringify(filtersArray),
         "reportSectionName": reportSectionName
     };
+
     return $.ajax({
         url: webSiteUrl + "/dashboard/reports/api/filters",
         beforeSend: function (xhr, settings) {

@@ -45,6 +45,9 @@ protobuf = "*"
 wheel = "*"
 google-api-core = "*"
 pygments = "*"
+bpython = "*"
+simplejson = "*"
+urllib3 = "*"
 
 [requires]
 python_version = "3.8"

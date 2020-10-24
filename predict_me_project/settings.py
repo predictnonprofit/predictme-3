@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from django.contrib.messages import constants as messages
+
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
@@ -232,7 +233,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_AUTHENTICATION_METHOD = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
 
-
 #### Sessions config ###
 SESSION_EXPIRE_SECONDS = 5120  # 5 Mins
 # SESSION_EXPIRE_SECONDS = 10  # 20 Sec
@@ -247,5 +247,3 @@ SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 #         'rest_framework.permissions.IsAdminUser'
 #    ),
 # }
-
-

@@ -220,8 +220,18 @@ function drawReportTable(reportTableData, reportSectionName) {
   tableHeader.append(allTh);
 }
 
+// this function will take head name and return the name with small case and underscore instead space
+function fixTableHeadName(name){
+  return name.replace(" ", "_").toLocaleLowerCase();
+}
+
 // report table draw function
 function drawGeneratedReportTable(reportData) {
+  // console.log(Object.keys(reportData));
+  // const reportObj = JSON.parse(reportData['report_data']);
+  // console.log(reportData['report_data'])
+  let reportObj = reportData['report_data'];
+
   //$("#data_handler_table > tbody tr").empty();
   let tableTd = "";
   let allTableRow = "";
@@ -240,14 +250,16 @@ function drawGeneratedReportTable(reportData) {
   //   console.log(key, value)
   // }
   // console.log(reportData['report_data'])
-  for (let rowValue in reportData["report_data"]) {
-    const newReportData = reportData["report_data"][rowValue];
+  for (let rowKey in reportObj) {
+    const newReportData = reportData["report_data"][rowKey]['member_data'];
+    // console.log(newReportData['member_data']);
 
-
-    for (let rValue of newReportData["row"]) {
+    for (let name of reportData['table_header']){
+      const headName = fixTableHeadName(name);
+      // console.log(newReportData[headName])
       tmpTableTd += `
         <td>
-          ${rValue}
+          ${newReportData[headName]}
         </td>
       `;
     }
@@ -256,11 +268,9 @@ function drawGeneratedReportTable(reportData) {
         ${tmpTableTd}
       </tr>
       `);
-     // console.log(tmpTableTr);
-     // throw new Error("sdlf")
-
     tmpTableTr = "";
     tmpTableTd = "";
+
   }
 
   // console.log(tableRow)

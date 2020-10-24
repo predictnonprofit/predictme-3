@@ -1,7 +1,10 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import (reverse, redirect, render)
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
+import simplejson as simple_json
 from urllib.parse import quote_plus
+
+from rest_framework import authentication
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -244,13 +247,14 @@ class FilterReports(APIView):
     * Requires token authentication.
     * Only admin users are able to access this view.
     """
-    # authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = (authentication.SessionAuthentication, )
     # permission_classes = [permissions.IsAdminUser]
     permission_classes = (IsAuthenticated, IsAdminUser,)
 
     def post(self, request, format=None):
         try:
             post_data = request.POST
+            # cprint(request.POST, "blue")
             filter_array = json.loads(request.POST.get("filtersArray"))
             filter_report_section = request.POST.get("reportSectionName")
             # cprint(filter_array, "yellow")
@@ -260,9 +264,12 @@ class FilterReports(APIView):
             reports = ReportGenerator.generate_report(filter_report_section, filter_array, reports_headers,
                                                       request.user.pk)
             # ReportGenerator.generate_reports(filter_array)
-            # cprint(reports, 'red')
+            # cprint(reports.keys(), 'green')
+            # cprint(simple_json.dumps(reports.get("data")), 'green')
+            # cprint(json.dumps(reports.get("data")), 'green')
+            # cprint(type(reports.get("data")), 'cyan')
             return Response(
-                {"table_header": reports_headers, "report_data": reports, "report_section_name": filter_report_section },
+                {"table_header": reports_headers, "report_data": reports.get("data"), "report_section_name": filter_report_section },
                 status=200)
 
         except Exception as ex:

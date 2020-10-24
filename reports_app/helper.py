@@ -1,11 +1,13 @@
 from faker import Faker
 from predict_me.my_logger import log_exception
 from termcolor import cprint
-from membership.models import (Subscription, UserMembership)
+from membership.models import (Subscription, UserMembership, Membership)
 from data_handler.models import (DataFile, DataHandlerSession)
 from users.models import Member
 from django.db.models import Q
-from collections import defaultdict
+import decimal
+import json
+from django.core.exceptions import ObjectDoesNotExist
 
 # this dict will hold all terms used in the web page and what match in the DB model
 DB_TERMS = {
@@ -20,10 +22,25 @@ DB_TERMS = {
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
 
+ALL_MEMBERSHIP = {}  # this will hold all memberships with its own slug
+
+all_membership_obj = Membership.objects.all()
+for m in all_membership_obj:
+    ALL_MEMBERSHIP[m.slug] = m.id
+
 
 # this function will return filter name with lower and replaced space with underscore
 def report_name(name: str):
-    return name.lower().replace(" ", "_")
+    if type(name) is str:
+        return name.lower().replace(" ", "_")
+    else:
+        return name
+
+
+
+# this function will return the field name with capitalize case
+def capitalize_report_name(name: str):
+    return name.replace("_", " ").title()
 
 
 class ReportFilterGenerator:
@@ -67,31 +84,38 @@ class ReportFilterGenerator:
         if report_section_name == "users":
             return [
                 {"filter_name": "Active Users", "report_section": "users", "input_name": report_name("Active Users"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Users Filter"},
                 {"filter_name": "Cancelled Users", "report_section": "users",
                  "input_name": report_name("Cancelled Users"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Users Filter"},
                 {"filter_name": "Days Left", "report_section": "users", "input_name": report_name("Days Left"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Users Filter"},
             ]
         elif report_section_name == "data_usage":
             return [
                 {"filter_name": "Last Run", "report_section": "data_usage", "input_name": report_name("Last Run"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Data Usage Filter"},
                 {"filter_name": "Usage", "report_section": "data_usage", "input_name": report_name("Usage"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Data Usage Filter"},
 
             ]
         elif report_section_name == "revenue":
             return [
                 {"filter_name": "Start Offer Date", "report_section": "revenue",
                  "input_name": report_name("Start Offer Date"),
-                 "has_options": True, "report_type": "Custom Filter"},
+                 "has_options": True, "report_type": "Revenue Filter"},
                 {"filter_name": "Next Revenue Date", "report_section": "revenue",
                  "input_name": report_name("Next Revenue Date"),
-                 "has_options": False, "report_type": "Custom Filter"},
+                 "has_options": False, "report_type": "Revenue Filter"},
 
             ]
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
 
 
 class ReportGenerator:
@@ -156,75 +180,35 @@ class ReportGenerator:
 
     @staticmethod
     def generate_report(report_section_name, filter_list, report_table_header, user_id):
+        # cprint(filter_list, "blue")
+        # cprint(report_table_header, 'red')
         filter_keys = {}
-        # all_filters = defaultdict(list)
+        reports_holder = ''  # this to hold every report in single loop
         all_filters = {}
         # cprint(type(filter_list), 'yellow')
         for r_filter in filter_list:
             # print(r_filter)
             filter_keys[r_filter['filter_name']] = r_filter['filter_value']
 
-        # member = Member.objects.get(id=user_id)
-        # subscription = Subscription.objects.get(member_id=member)
-        all_members = list(Member.objects.all())
-        all_subscriptions = list(Subscription.objects.all())
         # cprint(report_table_header, 'red')
-        for head in report_table_header:
-            head_name = head.lower().replace(" ", "_")
-            for index, member in enumerate(all_members):
-                ReportGenerator.report_maker(member, report_section_name, filter_list)
-                # all_filters['first_name'].append(member.first_name)
-                # all_filters['last_name'].append(member.last_name)
-                member_subscription = Subscription.objects.filter(member_id=member).first()
-                # usermembership = UserMembership.objects.filter(member=member).first()
-                if member_subscription is not None:
-                    member_plan = str(member_subscription.stripe_plan_id)
+        # cprint(report_section_name, 'red')
+        reports_holder = ReportGenerator.report_maker(report_section_name, filter_list, report_table_header)
 
-                else:
-                    member_plan = "No Plan Yet"
-
-                all_filters[f"ROW_{index}"] = {
-                    "row": [
-                        member.first_name,
-                        member.last_name,
-                        member.email,
-                        member_plan,
-
-                    ]
-                }
-
-        # check the report section name
-        # cprint(all_filters, "green")
-        if report_section_name == 'users':
-            pass
-
-        return all_filters
+        return reports_holder
 
     @staticmethod
-    def report_maker(member_entity: Member, report_section_name: str, filter_list: list):
+    def report_maker(report_section_name: str, filter_list: list, report_table_header):
         filter_map = dict()
-        member_subscription = Subscription.objects.filter(member_id=member_entity).first()
-        member_main_data_obj = DataFile.objects.filter(member=member_entity).first()
-        member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_main_data_obj).first()
-        # cprint(member_subscription, "cyan")
-        # a = Member.objects.get_users_by_register_date('2020-09-27 - 2020-09-30')
-        # cprint(a[2].date_joined, 'green')
-        if member_entity is not None:
-            filter_map['Member'] = member_entity.get_fields_as_list
-        if member_subscription is not None:
-            filter_map['Subscription'] = member_subscription.get_fields_as_list
-        if member_main_data_obj is not None:
-            filter_map['Main_Data'] = member_main_data_obj.get_fields_as_list
-        if member_data_session is not None:
-            filter_map['Data_Session'] = member_data_session.get_fields_as_list
-        # cprint(member_data_session, "magenta")
+        report_data = {}  # this dict will hold every reports information
+        all_members = Member.objects.all()
+
         filter_keys = {}
-        all_filters = {}
-        # cprint(type(filter_list), 'yellow')
+        # cprint(filter_list, 'yellow')
         for r_filter in filter_list:
             # print(r_filter)
             # cprint(report_name(r_filter['filter_name']))
-            if report_name(r_filter['filter_name']) == "register_date":
+            if (report_name(r_filter['filter_name']) == "register_date") or (
+                    report_name(r_filter['filter_name']) == "annual_revenue"):
                 filter_keys[report_name(r_filter['filter_name'])] = r_filter['filter_value']
                 # cprint("_" in r_filter['filter_value'], 'red')
                 # cprint(report_name(r_filter['filter_value']), 'green')
@@ -233,12 +217,126 @@ class ReportGenerator:
 
             filter_keys["report_section_name"] = report_name(r_filter['report_section_name'])
 
-        # loop through filter_map to determine which model filters belongs to
-        for map_key, map_value in filter_map.items():
-            # print(map_key, "---> ", map_value)
-            for filter_key, filter_value in filter_keys.items():
-                # print(filter_key, "--> ", filter_value)
-                if filter_key in map_value:
+        # first check the section of the report to call the convenient method for it
+        if report_section_name == "users":
+            report_data = ReportGenerator.get_users_query(filter_keys, report_table_header)
 
-                    msg = f"The {filter_key} belongs to {map_key} "
-                    # cprint(msg, 'blue')
+        return report_data
+
+    @staticmethod
+    def get_users_query(filter_dict: dict, table_header: list):
+        section_name = filter_dict['report_section_name']
+        filter_d = filter_dict
+
+        del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
+        cprint(filter_d, 'green')
+        lookups = None
+        # lookups = lookups | Q(body__icontains='dfkl')
+        # cprint(type(lookups), 'yellow')
+        # lookups_query = ""
+        users_query = ""  # this to hold the Query
+        # cprint(member_subscription.stripe_plan_id, 'red')
+        # this if check if the any value not equal all, and it exists in the keys dictionary
+        if (filter_d.get("plan") != "all") and ("plan" in filter_d.keys()):
+            # users_query = Subscription.objects.filter(stripe_plan_id=ALL_MEMBERSHIP.get(filter_d['plan']))
+            tmp_subs = Subscription.objects.filter(stripe_plan_id=ALL_MEMBERSHIP.get(filter_d['plan']))
+            # cprint(tmp_subs, 'green')
+            # lookups = Q(member_subscription__in=tmp_subs)
+            lookups = Q(member_subscription__in=tmp_subs)
+            # cprint(tmp_subs.last().stripe_plan_id, "green")
+        if (filter_d.get("country") != "all") and ("country" in filter_d.keys()):
+            # users_query = Member.objects.filter(country=filter_d.get("country").capitalize())
+            lookups &= Q(country=filter_d.get("country").title())
+        if (filter_d.get("city") != "all") and ("city" in filter_d.keys()):
+            # users_query = Member.objects.filter(city__icontains=filter_d.get("city").capitalize())
+            lookups |= Q(city__icontains=filter_d.get("city").title())
+        if (filter_d.get("organization_type") != "all") and ("organization_type" in filter_d.keys()):
+            # users_query = Member.objects.filter(org_type__icontains=capitalize_report_name(filter_d.get("organization_type")))
+            lookups |= Q(org_type__icontains=capitalize_report_name(filter_d.get("organization_type")))
+        if (filter_d.get("register_date") != "all") and ("register_date" in filter_d.keys()):
+            # users_query = Member.objects.get_users_by_register_date(filter_d.get("register_date"))
+            start_date, end_date = filter_d.get("register_date").split(" - ")
+            lookups |= Q(date_joined__range=[start_date, end_date])
+        if (filter_d.get("job_title") != "all") and ("job_title" in filter_d.keys()):
+            # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
+            lookups |= Q(job_title__icontains=filter_d.get("job_title"))
+        if (filter_d.get("annual_revenue") != "all") and ("annual_revenue" in filter_d.keys()):
+            # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
+            lookups |= Q(annual_revenue__icontains=filter_d.get("annual_revenue"))
+        if (filter_d.get("total_staff") != "all") and ("total_staff" in filter_d.keys()):
+            # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
+            lookups |= Q(annual_revenue__exact=filter_d.get("total_staff"))
+        if (filter_d.get("number_of_volunteer") != "all") and ("number_of_volunteer" in filter_d.keys()):
+            # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
+            lookups |= Q(annual_revenue__exact=filter_d.get("number_of_volunteer"))
+        if (filter_d.get("number_of_board_members") != "all") and ("number_of_board_members" in filter_d.keys()):
+            # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
+            lookups |= Q(annual_revenue__exact=filter_d.get("number_of_board_members"))
+
+        users_query = Member.objects.filter(lookups)
+        # cprint(users_query, 'yellow')
+        # f = users_query[55]
+        # cprint(users_query[55].stripe_plan_id, 'red')
+        # cprint(Subscription.objects.filter(member_id=users_query.first()), 'cyan')
+        users_len = len(users_query)
+        # cprint(users_len, 'green')
+        users_reports = dict()  # this will hold every information of the report for the user
+        tmp_mem_sub_dict = None
+        # this try to handle if the subscription not exists for members who have not subscription
+        for idx, member in enumerate(users_query):
+            # first check if the member has subscription or not
+            # cprint(Subscription.objects.filter(member_id=member).exists(), 'yellow')
+            # if Subscription.objects.filter(member_id=member).exists() is True:
+            tmp_mem_sub = Subscription.objects.filter(member_id=member).first()
+            # cprint(tmp_mem_sub, 'white')
+            tmp_mem_sub_dict = {}
+
+            # cprint(member.date_joined.strftime("%d-%m-%Y"), 'red')
+            # cprint(datetime.strptime(str(member.date_joined), "%m-%d-%y"), "blue")
+            # cprint(float(member.total_staff), 'red')
+            subscript_details = {}
+            # if tmp_mem_sub is not None:
+            #     cprint(tmp_mem_sub.id, 'green')
+            #     subscript_details = {
+            #         "stripe_plan_id": tmp_subs.stripe_plan_id,
+            #         "subscription_status": tmp_subs.subscription_status,
+            #         "subscription_period_start": tmp_subs.subscription_period_start,
+            #         "subscription_period_end": tmp_subs.subscription_period_end,
+            #         "stripe_card_id": tmp_subs.stripe_card_id
+            #     }
+                # cprint(subscript_details, 'yellow')
+            tmp_mem_sub_dict = {
+                "member_data": {
+                    "first_name": member.first_name,
+                    "last_name": member.last_name,
+                    "full_name": member.full_name,
+                    "email": member.email,
+                    "register_date": member.date_joined.strftime("%d-%m-%Y"),
+                    "phone": member.phone,
+                    "country": member.country,
+                    "state": member.state,
+                    "street_address": member.street_address,
+                    "org_name": member.org_name,
+                    "organization_type": member.org_type,
+                    "org_website": member.org_website,
+                    "job_title": member.job_title,
+                    "annual_revenue": member.annual_revenue,
+                    "zip_code": member.zip_code,
+                    "total_staff": float(member.total_staff),
+                    "num_of_volunteer": member.num_of_volunteer,
+                    "num_of_board_members": member.num_of_board_members,
+                    "status": member.status,
+                    "plan": "NOT READY YET"
+                },
+                "subscription_data": subscript_details
+            }
+            users_reports[f"ROW_{idx}"] = tmp_mem_sub_dict
+
+        # cprint(tmp_mem_sub_dict, "cyan")
+
+        if len(users_reports) > 0:
+            # cprint(users_reports, 'blue')
+            cprint(len(users_reports), 'red')
+            return {"data": users_reports, "table_header": table_header, "total_results": len(users_reports)}
+        else:
+            return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
