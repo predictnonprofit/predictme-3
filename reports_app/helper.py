@@ -22,6 +22,8 @@ DB_TERMS = {
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
 
+GENERIC_TERMS = []  # this will hold all generic filters name
+
 ALL_MEMBERSHIP = {}  # this will hold all memberships with its own slug
 
 all_membership_obj = Membership.objects.all()
@@ -219,23 +221,29 @@ class ReportGenerator:
 
         # first check the section of the report to call the convenient method for it
         if report_section_name == "users":
-            report_data = ReportGenerator.get_users_query(filter_keys, report_table_header)
+            report_data = ReportGenerator.get_all_user_query(filter_keys, report_table_header, 'users')
+        elif report_section_name == 'data-usage':
+            report_data = ReportGenerator.get_data_usage_query(filter_keys, report_table_header, 'data-usage')
 
         return report_data
 
     @staticmethod
-    def get_users_query(filter_dict: dict, table_header: list):
-        section_name = filter_dict['report_section_name']
+    def get_all_user_query(filter_dict: dict, table_header: list, report_section_name: str):
+        # section_name = filter_dict['report_section_name']
         filter_d = filter_dict
-
         del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
-        cprint(filter_d, 'green')
+        # cprint(filter_d, 'green')
         lookups = None
         # lookups = lookups | Q(body__icontains='dfkl')
         # cprint(type(lookups), 'yellow')
         # lookups_query = ""
         users_query = ""  # this to hold the Query
-        # cprint(member_subscription.stripe_plan_id, 'red')
+
+        # check if data usage is the report
+        # if report_section_name == "data-usage":
+        #     data_usage_obj = DataFile.objects.all()
+        #     cprint(data_usage_obj, 'yellow')
+
         # this if check if the any value not equal all, and it exists in the keys dictionary
         if (filter_d.get("plan") != "all") and ("plan" in filter_d.keys()):
             # users_query = Subscription.objects.filter(stripe_plan_id=ALL_MEMBERSHIP.get(filter_d['plan']))
@@ -251,7 +259,6 @@ class ReportGenerator:
             # users_query = Member.objects.filter(city__icontains=filter_d.get("city").capitalize())
             lookups |= Q(city__icontains=filter_d.get("city").title())
         if (filter_d.get("organization_type") != "all") and ("organization_type" in filter_d.keys()):
-            # users_query = Member.objects.filter(org_type__icontains=capitalize_report_name(filter_d.get("organization_type")))
             lookups |= Q(org_type__icontains=capitalize_report_name(filter_d.get("organization_type")))
         if (filter_d.get("register_date") != "all") and ("register_date" in filter_d.keys()):
             # users_query = Member.objects.get_users_by_register_date(filter_d.get("register_date"))
@@ -272,41 +279,32 @@ class ReportGenerator:
         if (filter_d.get("number_of_board_members") != "all") and ("number_of_board_members" in filter_d.keys()):
             # users_query = Member.objects.filter(job_title__icontains=filter_d.get("job_title"))
             lookups |= Q(annual_revenue__exact=filter_d.get("number_of_board_members"))
+        if (filter_d.get("cancelled_users") != "all") and ("cancelled_users" in filter_d.keys()):
+            lookups |= Q(status__iexact="pending") | Q(status__iexact="unverified")
+        if (filter_d.get("active_users") != "all") and ("active_users" in filter_d.keys()):
+            lookups |= Q(status__iexact="active")
 
         users_query = Member.objects.filter(lookups)
-        # cprint(users_query, 'yellow')
-        # f = users_query[55]
-        # cprint(users_query[55].stripe_plan_id, 'red')
-        # cprint(Subscription.objects.filter(member_id=users_query.first()), 'cyan')
         users_len = len(users_query)
-        # cprint(users_len, 'green')
         users_reports = dict()  # this will hold every information of the report for the user
-        tmp_mem_sub_dict = None
         # this try to handle if the subscription not exists for members who have not subscription
         for idx, member in enumerate(users_query):
             # first check if the member has subscription or not
-            # cprint(Subscription.objects.filter(member_id=member).exists(), 'yellow')
-            # if Subscription.objects.filter(member_id=member).exists() is True:
-            tmp_mem_sub = Subscription.objects.filter(member_id=member).first()
-            # cprint(tmp_mem_sub, 'white')
-            tmp_mem_sub_dict = {}
-
-            # cprint(member.date_joined.strftime("%d-%m-%Y"), 'red')
-            # cprint(datetime.strptime(str(member.date_joined), "%m-%d-%y"), "blue")
-            # cprint(float(member.total_staff), 'red')
             subscript_details = {}
-            # if tmp_mem_sub is not None:
-            #     cprint(tmp_mem_sub.id, 'green')
-            #     subscript_details = {
-            #         "stripe_plan_id": tmp_subs.stripe_plan_id,
-            #         "subscription_status": tmp_subs.subscription_status,
-            #         "subscription_period_start": tmp_subs.subscription_period_start,
-            #         "subscription_period_end": tmp_subs.subscription_period_end,
-            #         "stripe_card_id": tmp_subs.stripe_card_id
-            #     }
-                # cprint(subscript_details, 'yellow')
+            tmp_mem_sub = Subscription.objects.filter(member_id=member).first()
+            if tmp_mem_sub is not None:
+                subscript_details = {
+                        "stripe_plan_id": tmp_subs.first().stripe_plan_id.slug,
+                        "subscription_status": tmp_subs.first().subscription_status,
+                        "subscription_period_start": tmp_subs.first().subscription_period_start.strftime("%d-%m-%Y"),
+                        "subscription_period_end": tmp_subs.first().subscription_period_end.strftime("%d-%m-%Y"),
+                        "stripe_card_id": tmp_subs.first().stripe_card_id
+                    }
+
+
             tmp_mem_sub_dict = {
                 "member_data": {
+                    "id": member.pk,
                     "first_name": member.first_name,
                     "last_name": member.last_name,
                     "full_name": member.full_name,
@@ -332,11 +330,46 @@ class ReportGenerator:
             }
             users_reports[f"ROW_{idx}"] = tmp_mem_sub_dict
 
-        # cprint(tmp_mem_sub_dict, "cyan")
 
         if len(users_reports) > 0:
-            # cprint(users_reports, 'blue')
+            # cprint(users_reports['ROW_57'], 'blue')
             cprint(len(users_reports), 'red')
             return {"data": users_reports, "table_header": table_header, "total_results": len(users_reports)}
         else:
             return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
+
+    @staticmethod
+    def get_data_usage_query(filter_dict: dict, table_header: list, report_section_name: str):
+        # section_name = filter_dict['report_section_name']
+        global GENERIC_TERMS
+        users_reports_dict = ReportGenerator.get_all_user_query(filter_dict, table_header, 'users')['data']
+        # cprint(users_reports_dict.keys(), 'cyan')
+        filter_d = filter_dict
+        GENERIC_TERMS = list(filter_d.keys())
+        # cprint(report_section_name, "blue")
+        # del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
+        # cprint(GENERIC_TERMS, 'green')
+        for key, value in users_reports_dict.items():
+            # cprint(value, 'yellow')
+            tmp_member_data_handler_obj = DataFile.objects.filter(member=value['member_data']['id']).first()
+            # check if the member has data file object
+            if tmp_member_data_handler_obj is not None:
+                tmp_usage_percentage = 0
+                tmp_data_handler_session_obj = DataHandlerSession.objects.filter(
+                    data_handler_id=tmp_member_data_handler_obj).first()
+                # cprint(tmp_member_data_handler_obj.allowed_records_count, 'yellow')
+                # check if data is int
+                if (type(tmp_member_data_handler_obj.allowed_records_count).__name__ == 'int') and (tmp_data_handler_session_obj is not None):
+
+                    # tmp_usage_percentage
+                    cprint(tmp_data_handler_session_obj, 'blue')
+
+                #    cprint(tmp_data_handler_session_obj.all_records_count, "blue" )
+                    if tmp_data_handler_session_obj is not None:
+                        # cprint(tmp_data_handler_session_obj.get_fields_as_list, 'cyan')
+                        # cprint(tmp_data_handler_session_obj.data_file_path, 'cyan')
+                        pass
+            # break
+
+
+        return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}

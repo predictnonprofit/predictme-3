@@ -231,7 +231,7 @@ function drawGeneratedReportTable(reportData) {
   // const reportObj = JSON.parse(reportData['report_data']);
   // console.log(reportData['report_data'])
   let reportObj = reportData['report_data'];
-
+  // console.log(reportData);
   //$("#data_handler_table > tbody tr").empty();
   let tableTd = "";
   let allTableRow = "";
@@ -245,23 +245,45 @@ function drawGeneratedReportTable(reportData) {
     tableJQObj = $("#all-users-report-table");
     tableHeader = $("#all-users-report-table > thead tr:last");
     tableBodyElement = $("#all-users-report-table > tbody");
+  }else if (reportData['report_section_name'] === 'data-usage'){
+    //data-usage-report-table
+    tableHeader = $("#data-usage-report-table > thead tr:last");
+    tableBodyElement = $("#data-usage-report-table > tbody");
   }
+  tableBodyElement.empty();
   // for(const [key, value] of Object.entries(reportData['report_data'])){
   //   console.log(key, value)
   // }
   // console.log(reportData['report_data'])
   for (let rowKey in reportObj) {
     const newReportData = reportData["report_data"][rowKey]['member_data'];
+    const subscriptionData = reportData['report_data'][rowKey]['subscription_data'];
     // console.log(newReportData['member_data']);
-
+    // console.log(Object.keys(subscriptionData));
     for (let name of reportData['table_header']){
-      const headName = fixTableHeadName(name);
-      // console.log(newReportData[headName])
-      tmpTableTd += `
-        <td>
-          ${newReportData[headName]}
-        </td>
-      `;
+      // console.log(fixTableHeadName(name))
+      // check if the cancelled_users or active_user is here
+      let headName = fixTableHeadName(name);
+      if((headName === "cancelled_users") || (headName === 'active_users')){
+        headName = "status"
+      }
+      // check for plan to call the subscription
+      if((headName === 'plan') && (Object.keys(subscriptionData).length > 0)){
+        // console.log(newReportData[headName])
+        tmpTableTd += `
+          <td>
+            ${subscriptionData['stripe_plan_id']}
+          </td>
+        `;
+      }else{
+        // console.log(newReportData[headName])
+        tmpTableTd += `
+          <td>
+            ${newReportData[headName]}
+          </td>
+        `;
+      }
+
     }
     tableBodyElement.append(`
       <tr>
@@ -282,17 +304,25 @@ function drawGeneratedReportTable(reportData) {
 function drawReportTableHeader(columns) {
   let reportSection = window.location.href.split("/");
   reportSection = reportSection.pop();
+  // console.log(reportSection)
   // all-users-report-table, data-usage-report-table, profit-share-report-table, revenue-report-table
+  let table;
   if (reportSection === "users") {
-    const table = $("#all-users-report-table > thead");
-    table.empty();
-    let tableHeader = "<tr>";
-    for (let col of columns) {
-      tableHeader += `
-            <th>${col}</th>
-        `;
-    }
-    tableHeader += "</thead>";
-    table.append(tableHeader);
+    table = $("#all-users-report-table > thead");
+
+
+  }else if (reportSection === "data-usage"){
+    table = $("#data-usage-report-table > thead");
+    
   }
+
+  table.empty();
+  let tableHeader = "<tr>";
+  for (let col of columns) {
+    tableHeader += `
+          <th>${col}</th>
+      `;
+  }
+  tableHeader += "</thead>";
+  table.append(tableHeader);
 }

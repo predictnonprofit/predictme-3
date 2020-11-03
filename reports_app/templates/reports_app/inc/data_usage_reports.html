@@ -83,93 +83,20 @@
                             {% include 'reports_app/segments/reports_spinner.html' %}
                             <!-- Spinner -->
                            <table class="table table-bordered table-hover" id="data-usage-report-table">
-                                <caption>Report of users</caption>
+                                <caption>Report of data usage</caption>
                                 <thead class="bg-primary-o-20">
                                 <tr>
-                                    <th width="5%">#</th>
-                                    <th width="15%">Member Name</th>
-                                    <th width="20%">Email</th>
-                                    <th width="18%">Last Run</th>
-                                    <th width="15%">Plan</th>
-                                    <th width="11%">Records Used</th>
-                                    <th>Usage</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-
-                                {% for trow in dummy_data %}
-
-                                    <tr>
-                                         <th scope="row">{{trow.id}}</th>
-                                         <td>{{trow.name}}</td>
-                                        <td>
-                                            {{trow.email}}
-                                        </td>
-                                        <td>
-                                            {{trow.last_run}}
-                                        </td>
-                                        <td>
-                                            {{trow.sub_plan}}
-                                        </td>
-                                        <td>
-                                            {{trow.total_rec_used}}
-                                        </td>
-                                        <td>
-                                            {% if trow.usage >= 0 and trow.usage <= 50 %}
-
-                                                <div class="d-flex flex-column w-100 mr-2">
-                                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                                        <span class="text-muted mr-2 font-size-sm font-weight-bold">
-                                                            {{trow.usage}}%
-                                                        </span>
-                                                        <span class="text-muted font-size-sm font-weight-bold">
-                                                            Used
-                                                        </span>
-                                                    </div>
-                                                    <div class="progress progress-xs w-100">
-                                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{trow.usage}}%;" aria-valuenow="{{trow.usage}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-
-                                            {% elif trow.usage >= 51 and trow.usage <= 80 %}
-
-                                                <div class="d-flex flex-column w-100 mr-2">
-                                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                                        <span class="text-muted mr-2 font-size-sm font-weight-bold">
-                                                            {{trow.usage}}%
-                                                        </span>
-                                                        <span class="text-muted font-size-sm font-weight-bold">
-                                                            Used
-                                                        </span>
-                                                    </div>
-                                                    <div class="progress progress-xs w-100">
-                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{trow.usage}}%;" aria-valuenow="{{trow.usage}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-
-                                            {% elif trow.usage >= 81 and trow.usage <= 100 %}
-
-                                                <div class="d-flex flex-column w-100 mr-2">
-                                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                                        <span class="text-muted mr-2 font-size-sm font-weight-bold">
-                                                            {{trow.usage}}%
-                                                        </span>
-                                                        <span class="text-muted font-size-sm font-weight-bold">
-                                                            Used
-                                                        </span>
-                                                    </div>
-                                                    <div class="progress progress-xs w-100">
-                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{trow.usage}}%;" aria-valuenow="{{trow.usage}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <p class="text-danger h2">Sorry, No Usage for this report.</p>
-                                {% endfor %}
+                                    <tr></tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+
+                                    </tr>
+                                    </tfoot>
                             </table>
                         </section>
                         <!-- End Report Table -->
