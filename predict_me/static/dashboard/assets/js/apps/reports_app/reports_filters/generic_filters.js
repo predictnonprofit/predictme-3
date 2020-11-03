@@ -175,11 +175,11 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       inputGenObj = new InputGenerator(
         filterIdx,
         "city",
+        "city",
         "text",
         "City",
         reportSection
       );
-      console.log(inputGenObj.cityInputGenerator())
       filterOptionsBlock.html(inputGenObj.cityInputGenerator());
       break;
 

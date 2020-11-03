@@ -7,11 +7,13 @@ class InputGenerator {
     this.placeholder = placeholder;
     this.reportSectionName = reportSectionName;
     this.allCities = fetchCities();
-
+    // console.log(inputDataID, inputID, inputName, inputType, placeholder, reportSectionName)
   }
   cityInputGenerator() {
     let input;
     let cityOptions = "";
+    let parent = this;
+    // console.log(parent)
     $.when(this.allCities).done(function(data, textStatus, jqXHR) {
       const allCities = data['all_cities'];
 
@@ -20,22 +22,22 @@ class InputGenerator {
             <option value="${city}">${city}</option>
           `;
       }
-
+      console.log(parent.reportSectionName)
       // this method will return only text input
       input = `
-        <div class="filter-options-wrapper" data-filter-name="${this.inputID}">
+        <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
         <div class="form-group m-2">
-            <label>${this.placeholder}</label>
-           <select multiple data-report-section-name="${this.reportSectionName}" name="${this.inputName}" class="form-control filter-input gen-filter-input" id="${this.inputID}" placeholder="${this.placeholder}" data-filter-name="${this.placeholder}" data-has-options="true">
+            <label>${parent.placeholder}</label>
+           <select multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
               ${cityOptions}
            </select>
        </div>
        <div class="btn-group" role="group" aria-label="Basic example">
-           <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
+           <button data-gen-filter-item-id="${parent.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${parent.inputID}">
            <i class="icon-xl la la-long-arrow-left"></i>
            </button>
 
-           <button data-gen-filter-item-id="${this.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${this.inputID}">
+           <button data-gen-filter-item-id="${parent.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${parent.inputID}">
                    <i class="icon-xl la la-long-arrow-right"></i>
                </button>
        </div>
