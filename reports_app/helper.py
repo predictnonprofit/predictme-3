@@ -103,11 +103,11 @@ class ReportFilterGenerator:
             ]
         elif report_section_name == "revenue":
             return [
-                {"filter_name": "Start Offer Date", "report_section": "revenue",
-                 "input_name": report_name("Start Offer Date"),
+                {"filter_name": "Plan Start Date", "report_section": "revenue",
+                 "input_name": report_name("Plan Start Date"),
                  "has_options": True, "report_type": "Revenue Filter"},
-                {"filter_name": "Next Revenue Date", "report_section": "revenue",
-                 "input_name": report_name("Next Revenue Date"),
+                {"filter_name": "Next Renewal Date", "report_section": "revenue",
+                 "input_name": report_name("Next Renewal Date"),
                  "has_options": False, "report_type": "Revenue Filter"},
 
             ]
