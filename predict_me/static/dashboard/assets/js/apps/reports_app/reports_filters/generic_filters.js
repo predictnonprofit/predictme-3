@@ -9,8 +9,8 @@ let currentClickedLeftItemData = {
   ITEM: {},
 };
 let currentClickedRightItemData = {
-  ITEM: {}
-}
+  ITEM: {},
+};
 const middleDeselectFilterOptionBtn = $("#middleDeselectFilterOptionBtn");
 const middleSelectFilterOptionBtn = $("#middleSelectFilterOptionBtn");
 const genericResetFilterBtn = $("#genericResetFilterBtn");
@@ -29,18 +29,18 @@ function getAllClickedFilterData(element, rightOrLeft) {
     const reportInputID = element.data("input-id");
     currentClickedLeftItemData["ITEM"] = {};
     currentClickedLeftItemData["ITEM"] = {
-      "idx": reportFilterIdx,
-      "filterName": reportFilterName,
-      "reportSectionName": reportSectionName,
-      "reportFilterHasOptions": reportFilterHasOptions,
-      "reportInputID": reportInputID
+      idx: reportFilterIdx,
+      filterName: reportFilterName,
+      reportSectionName: reportSectionName,
+      reportFilterHasOptions: reportFilterHasOptions,
+      reportInputID: reportInputID,
     };
     return [
       reportFilterIdx,
       reportSectionName,
       reportFilterName,
       reportFilterHasOptions,
-      reportInputID
+      reportInputID,
     ];
   } else if (rightOrLeft === "R") {
     /*
@@ -58,17 +58,17 @@ function getAllClickedFilterData(element, rightOrLeft) {
     const reportInputID = element.data("input-id");
     currentClickedRightItemData["ITEM"] = {};
     currentClickedRightItemData["ITEM"] = {
-      "filterName": reportFilterName,
-      "reportSectionName": reportSectionName,
-      "reportFilterHasOptions": reportFilterHasOptions,
-      "reportInputID": reportInputID
+      filterName: reportFilterName,
+      reportSectionName: reportSectionName,
+      reportFilterHasOptions: reportFilterHasOptions,
+      reportInputID: reportInputID,
     };
     return [
       reportSectionName,
       reportFilterName,
       reportFilterValue,
       reportFilterHasOptions,
-      reportInputID
+      reportInputID,
     ];
   }
 }
@@ -81,11 +81,11 @@ function generateSelectedFilter(
   filterOption,
   filterInputID
 ) {
-	let theValue = "";
+  let theValue = "";
   let theOption = "";
-	if(filterOption === "False"){
-		theValue = "All";
-	}
+  if (filterOption === "False") {
+    theValue = "All";
+  }
 
   const listItem = `
 		<li class="list-group-item generic-filter-item-selected" data-input-id="${filterInputID}" data-filter-id="${filterItemID}" data-filter-name="${filterName}" data-report-section-name="${reportSectionName}" data-has-options="${filterOption}" data-filter-value="${theValue}">
@@ -99,25 +99,20 @@ function generateSelectedFilter(
 
 // this function will return selected column with its choosen option, when user clicked on right arrow btn
 function generateSelectedFilterAfterClick(inputObjValues) {
-
   let multipleCode = "";
   if (inputObjValues["isMultiple"] === true) {
     multipleCode = `
 			<span id="filterSelectedOption" class="label label-light-info label-inline font-weight-bolder float-right">${inputObjValues["filterValue"].length}</span>
 		`;
-
   }
   const listItem = `
-    <li class="list-group-item generic-filter-item-selected" data-filter-value="${inputObjValues['filterValue']}" data-has-options="${inputObjValues['hasOptions']}" data-filter-id="${inputObjValues["filterInputID"]}" data-filter-name="${inputObjValues["filterName"]}" data-report-section-name="${inputObjValues["filterReportSectionName"]}" data-input-id="${inputObjValues['mainFilterID']}">
+    <li class="list-group-item generic-filter-item-selected" data-filter-value="${inputObjValues["filterValue"]}" data-has-options="${inputObjValues["hasOptions"]}" data-filter-id="${inputObjValues["filterInputID"]}" data-filter-name="${inputObjValues["filterName"]}" data-report-section-name="${inputObjValues["filterReportSectionName"]}" data-input-id="${inputObjValues["mainFilterID"]}">
       <span id="filterSelectedName">${inputObjValues["filterName"]}</span>
       ${multipleCode}
     </li>
   `;
 
   return listItem;
-
-
-
 }
 
 // this function will take an item and render it directly to right column if it has no options, otherwise will display the options in the middle column
@@ -128,11 +123,10 @@ function renderFilterToMiddleOrRightColumn(showOnly, lOrR) {
       reportSectionName,
       reportFilterName,
       reportFilterHasOptions,
-      reportInputID
+      reportInputID,
     ] = getAllClickedFilterData(currentClickedLeftItem, "L");
     // check if the element exists in the selected array
     if (selectedFiltersArray.includes(reportFilterName) === false) {
-
       const rightItem = generateSelectedFilter(
         reportFilterIdx,
         reportSectionName,
@@ -143,11 +137,11 @@ function renderFilterToMiddleOrRightColumn(showOnly, lOrR) {
       selectedFiltersArray.push(reportFilterName);
       if (showOnly === true) {
         selectedFilterUL.append(rightItem);
-        currentClickedLeftItem.addClass("disabled bg-gray-100 not-allowed-cursor");
+        currentClickedLeftItem.addClass(
+          "disabled bg-gray-100 not-allowed-cursor"
+        );
       }
     }
-
-
   } else if (lOrR === "R") {
     /*
     reportSectionName,
@@ -156,11 +150,7 @@ function renderFilterToMiddleOrRightColumn(showOnly, lOrR) {
     reportFilterHasOptions,
     reportInputID
     */
-
-
   }
-
-
 }
 
 function fetchReportOptions(filterIdx, filterName, reportSection) {
@@ -185,12 +175,12 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       inputGenObj = new InputGenerator(
         filterIdx,
         "city",
-        "city",
         "text",
         "City",
         reportSection
       );
-      filterOptionsBlock.html(inputGenObj.textInputGenerator());
+      console.log(inputGenObj.cityInputGenerator())
+      filterOptionsBlock.html(inputGenObj.cityInputGenerator());
       break;
 
     case "Organization Type":
@@ -289,29 +279,29 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       filterOptionsBlock.html(inputGenObj.textInputGenerator());
       break;
 
-      case "Plan":
-        inputGenObj = new InputGenerator(
-          filterIdx,
-          "plan",
-          "plan",
-          "",
-          "Plan",
-          reportSection
-        );
-        filterOptionsBlock.html(inputGenObj.planSelectGenerator());
-        break;
+    case "Plan":
+      inputGenObj = new InputGenerator(
+        filterIdx,
+        "plan",
+        "plan",
+        "",
+        "Plan",
+        reportSection
+      );
+      filterOptionsBlock.html(inputGenObj.planSelectGenerator());
+      break;
 
-      case "Start Offer Date":
-        inputGenObj = new InputGenerator(
-          filterIdx,
-          "start_offer_date",
-          "start_offer_date",
-          "date",
-          "Start Offer Date",
-          reportSection
-        );
-        filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
-        break;
+    case "Start Offer Date":
+      inputGenObj = new InputGenerator(
+        filterIdx,
+        "start_offer_date",
+        "start_offer_date",
+        "date",
+        "Start Offer Date",
+        reportSection
+      );
+      filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
+      break;
 
     default:
       break;
@@ -328,7 +318,7 @@ function getFilterOption(element, lOrR) {
     reportSectionName,
     reportFilterName,
     reportFilterHasOptions,
-    reportInputID
+    reportInputID,
   ] = getAllClickedFilterData(element, lOrR);
   // console.log(reportFilterIdx, reportFilterName, reportSectionName);
   // check if the filter name containe an options to filter, or otherwise directly move it to right (last column)
@@ -353,25 +343,29 @@ function selectFiltersOptions() {
     // console.log(item.data())
     const filterName = item.data("filter-name");
     currentClickedLeftItem = item;
-		// check if it is selected filter before
-    if(item.hasClass("disabled") === false){
-			$(".generic-filter-li-item.bg-primary-o-40").removeClass("bg-primary-o-40");
+    // check if it is selected filter before
+    if (item.hasClass("disabled") === false) {
+      $(".generic-filter-li-item.bg-primary-o-40").removeClass(
+        "bg-primary-o-40"
+      );
 
-	    currentClickedLeftItem.addClass("bg-primary-o-40");
-	    const [
-	      reportFilterIdx,
-	      reportSectionName,
-	      reportFilterName,
-	      reportFilterHasOptions,
-	      reportInputID
-	    ] = getAllClickedFilterData(currentClickedLeftItem, 'L');
-	    if ((currentClickedLeftItemData["ITEM"]["reportFilterHasOptions"] === "True")) {
-	      // generateSelectedFilter(filterItemID, filterName, reportSectionName, filterOption)
-	      getFilterOption(currentClickedLeftItem, "L");
-	    } else {
-	      filterOptionsBlock.html(noOptionsMsg);
-	    }
-		}
+      currentClickedLeftItem.addClass("bg-primary-o-40");
+      const [
+        reportFilterIdx,
+        reportSectionName,
+        reportFilterName,
+        reportFilterHasOptions,
+        reportInputID,
+      ] = getAllClickedFilterData(currentClickedLeftItem, "L");
+      if (
+        currentClickedLeftItemData["ITEM"]["reportFilterHasOptions"] === "True"
+      ) {
+        // generateSelectedFilter(filterItemID, filterName, reportSectionName, filterOption)
+        getFilterOption(currentClickedLeftItem, "L");
+      } else {
+        filterOptionsBlock.html(noOptionsMsg);
+      }
+    }
   });
 
   // double click function
@@ -380,7 +374,9 @@ function selectFiltersOptions() {
     // console.log(item.data())
     const filterName = item.data("filter-name");
     if (selectedFiltersArray.includes(filterName) === false) {
-      if (currentClickedLeftItemData["ITEM"]["reportFilterHasOptions"] === "True") {
+      if (
+        currentClickedLeftItemData["ITEM"]["reportFilterHasOptions"] === "True"
+      ) {
         // generateSelectedFilter(filterItemID, filterName, reportSectionName, filterOption)
         getFilterOption(currentClickedLeftItem, "L");
       } else {
@@ -388,49 +384,55 @@ function selectFiltersOptions() {
         currentClickedLeftItem = null;
         filterOptionsBlock.html(noOptionsMsg);
       }
-
     }
   });
 }
 
 // single and double click on left column function, this will fire the events
 function deselectFiltersOptions() {
-
   // single click function
-  $("#deselectedFilterUL").on("click", ".generic-filter-item-selected", function(event) {
-    const item = $(this);
-    // console.log(item.data());
-    currentClickedRightItem = item;
-    const [
-      reportSectionName,
-      reportFilterName,
-      reportFilterValue,
-      reportFilterHasOptions,
-      reportInputID
-    ] = getAllClickedFilterData(currentClickedRightItem, "R");
-    fetchReportOptions("", reportFilterName, reportSectionName);
-
-  });
+  $("#deselectedFilterUL").on(
+    "click",
+    ".generic-filter-item-selected",
+    function(event) {
+      const item = $(this);
+      // console.log(item.data());
+      currentClickedRightItem = item;
+      const [
+        reportSectionName,
+        reportFilterName,
+        reportFilterValue,
+        reportFilterHasOptions,
+        reportInputID,
+      ] = getAllClickedFilterData(currentClickedRightItem, "R");
+      fetchReportOptions("", reportFilterName, reportSectionName);
+    }
+  );
 
   // double click function
-  $("#deselectedFilterUL").on("dblclick", ".generic-filter-item-selected", function(event) {
-    const item = $(this);
-    currentClickedRightItem = item;
-    // console.log(item.data())
-    renderToRightFilterBlock(item);
-    filterOptionsBlock.html(noOptionsMsg);
-  });
-
+  $("#deselectedFilterUL").on(
+    "dblclick",
+    ".generic-filter-item-selected",
+    function(event) {
+      const item = $(this);
+      currentClickedRightItem = item;
+      // console.log(item.data())
+      renderToRightFilterBlock(item);
+      filterOptionsBlock.html(noOptionsMsg);
+    }
+  );
 }
 
 // this function will enable and hide deselected item from right
 function renderToRightFilterBlock(item) {
   //list-group-item generic-filter-li-item py-0 bg-primary-o-40 disabled bg-gray-100 not-allowed-cursor
-  const inputID = currentClickedRightItem.data('input-id');
+  const inputID = currentClickedRightItem.data("input-id");
   const tmpID = `.generic-filter-li-item[data-input-id='${inputID}']`;
   const leftItem = $(tmpID);
   // console.log(tmpID)
-  leftItem.removeClass("disabled bg-gray-100 not-allowed-cursor bg-primary-o-40");
+  leftItem.removeClass(
+    "disabled bg-gray-100 not-allowed-cursor bg-primary-o-40"
+  );
   item.detach();
 }
 
@@ -471,42 +473,38 @@ function selectAndDeselectFiltersBtns() {
       const filterName = element.data("filter-name");
 
       // first check if the inputs are date pick range
-      if(element.hasClass("datePickerInputs") === true){
-
-        if(filterName.includes("start_date") === true){
+      if (element.hasClass("datePickerInputs") === true) {
+        if (filterName.includes("start_date") === true) {
           startDate = element.val();
         }
-        if(filterName.includes("end_date") === true){
+        if (filterName.includes("end_date") === true) {
           endDate = element.val();
         }
         fullDate = startDate.concat(" - ").concat(endDate);
         savedElement = {
-          "filterName": element.data("input-full-name"),
-          "filterValue": fullDate,
-          "isMultiple": true ? Array.isArray(element.val()) : false,
-          "filterInputID": element.attr("id"),
-          "filterReportSectionName": element.data("report-section-name"),
-          "mainFilterID": element.data("input-id"),
-          "hasOptions": element.data('has-options')
+          filterName: element.data("input-full-name"),
+          filterValue: fullDate,
+          isMultiple: true ? Array.isArray(element.val()) : false,
+          filterInputID: element.attr("id"),
+          filterReportSectionName: element.data("report-section-name"),
+          mainFilterID: element.data("input-id"),
+          hasOptions: element.data("has-options"),
         };
         // console.log(savedElement)
-
-      }else{
+      } else {
         // normal inputs not date inputs
         savedElement = {
-          "filterName": filterName,
-          "filterValue": element.val(),
-          "isMultiple": true ? Array.isArray(element.val()) : false,
-          "filterInputID": element.attr("id"),
-          "filterReportSectionName": element.data("report-section-name"),
-          "mainFilterID": element.data("input-id"),
-          "hasOptions": element.data('has-options')
+          filterName: filterName,
+          filterValue: element.val(),
+          isMultiple: true ? Array.isArray(element.val()) : false,
+          filterInputID: element.attr("id"),
+          filterReportSectionName: element.data("report-section-name"),
+          mainFilterID: element.data("input-id"),
+          hasOptions: element.data("has-options"),
         };
         // console.log(savedElement)
         allInputsArray.push(savedElement);
       }
-
-
     });
 
     allInputsArray.push(savedElement);
@@ -534,26 +532,25 @@ function selectFilterOption(event) {
 
 // this function will reset the default filters
 function resetDefaultReports() {
-	currentClickedLeftItem = null;
-	currentClickedRightItem = null;
-	currentClickedLeftItemData = {
-	  ITEM: {},
-	};
-	currentClickedRightItemData = {
-	  ITEM: {}
-	}
-	filterOptionsBlock.html(noOptionsMsg);
-	selectedFiltersArray = [];
-	genericFilterItems.each(function(idx, element){
-		const ele = $(element);
-		ele.removeClass("disabled bg-gray-100 not-allowed-cursor bg-primary-o-40");
-	});
-	const allSelectedFilters = selectedFilterUL.find("li");
-	allSelectedFilters.each(function(idx, element){
-		const ele = $(element);
-		ele.remove();
-	});
-
+  currentClickedLeftItem = null;
+  currentClickedRightItem = null;
+  currentClickedLeftItemData = {
+    ITEM: {},
+  };
+  currentClickedRightItemData = {
+    ITEM: {},
+  };
+  filterOptionsBlock.html(noOptionsMsg);
+  selectedFiltersArray = [];
+  genericFilterItems.each(function(idx, element) {
+    const ele = $(element);
+    ele.removeClass("disabled bg-gray-100 not-allowed-cursor bg-primary-o-40");
+  });
+  const allSelectedFilters = selectedFilterUL.find("li");
+  allSelectedFilters.each(function(idx, element) {
+    const ele = $(element);
+    ele.remove();
+  });
 }
 
 // this function will run when filter submit button clicked
@@ -561,12 +558,12 @@ function filterReportSubmitBtn() {
   $("#members-submit-filter-btn").on("click", function(event) {
     const reportsWrapper = $("#reports-content-wrapper");
     // first, get the children of the reportsWrapper [revenue-reports-wrapper, data-usage-reports-wrapper, extra-records-reports-wrapper, profit-share-reports-wrapper]
-    const firstReportSection = reportsWrapper.find('section').first();
-		const allSelectedFilters = selectedFilterUL.find("li");
-		let allFiltersArr = [];
-		allSelectedFilters.each(function(idx, ele){
-			const element = $(ele);
-			/*
+    const firstReportSection = reportsWrapper.find("section").first();
+    const allSelectedFilters = selectedFilterUL.find("li");
+    let allFiltersArr = [];
+    allSelectedFilters.each(function(idx, ele) {
+      const element = $(ele);
+      /*
 			filterId: "state"
 			filterName: "State"
 			filterValue: "Alaska"
@@ -574,31 +571,29 @@ function filterReportSubmitBtn() {
 			inputId: "li_state"
 			reportSectionName: "users"
 			*/
-			const dataObj = {
-				"filter_id": element.data("filter-id"),
-				"filter_name": element.data("filter-name"),
-				"filter_value": element.data("filter-value"),
-				"report_section_name": element.data("report-section-name"),
-				"has_options": element.data("has-options")
-			};
-			allFiltersArr.push(dataObj);
-		});
-		// console.log(allFiltersArr)
+      const dataObj = {
+        filter_id: element.data("filter-id"),
+        filter_name: element.data("filter-name"),
+        filter_value: element.data("filter-value"),
+        report_section_name: element.data("report-section-name"),
+        has_options: element.data("has-options"),
+      };
+      allFiltersArr.push(dataObj);
+    });
+    // console.log(allFiltersArr)
     const reportSection = window.location.href.split("/");
     const filterRequest = sendFiltersValues(allFiltersArr, reportSection.pop());
-    $.when(filterRequest).done(function (data, textStatus, jqXHR) {
-        // console.log(Object.keys(data));
-         // console.log(data);
-         // console.log(textStatus);
-         // console.log(jqXHR);
-        // console.log(jqXHR.status);
-        if ((textStatus === 'success') && (jqXHR.status === 200)) {
-          drawReportTableHeader(data['table_header']);
-          drawGeneratedReportTable(data);
-        }
-
+    $.when(filterRequest).done(function(data, textStatus, jqXHR) {
+      // console.log(Object.keys(data));
+      // console.log(data);
+      // console.log(textStatus);
+      // console.log(jqXHR);
+      // console.log(jqXHR.status);
+      if (textStatus === "success" && jqXHR.status === 200) {
+        drawReportTableHeader(data["table_header"]);
+        drawGeneratedReportTable(data);
+      }
     });
-
   });
 }
 
@@ -606,7 +601,6 @@ function filterReportSubmitBtn() {
 function setFilterOptionsFireFunc() {
   middleSelectFilterOptionBtn.on("click", function(event) {
     selectFilterOption(event);
-
   });
 }
 
@@ -618,17 +612,16 @@ $(document).ready(function() {
   genericResetFilterBtn.on("click", function(event) {
     resetDefaultReports();
   });
-	filterReportSubmitBtn();
+  filterReportSubmitBtn();
   // enable states select menu when select country usa
-  $("#filterOptionsBlock").on("change", "#country", function(event){
+  $("#filterOptionsBlock").on("change", "#country", function(event) {
     const ele = $(this);
     const usa = ["United States of America", "United States"];
-    const found = ele.val().some(r=> usa.indexOf(r) >= 0);
-    if(found === true){
+    const found = ele.val().some((r) => usa.indexOf(r) >= 0);
+    if (found === true) {
       $("#state").removeClass("disabled").removeAttr("disabled");
-    }else{
+    } else {
       $("#state").addClass("disabled").attr("disabled", "disabled");
     }
-
   });
 });

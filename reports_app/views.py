@@ -15,7 +15,8 @@ import random
 import os, sys, traceback, json
 from predict_me.my_logger import log_exception
 from reports_app.helper import *
-
+from users.models import Member
+from django.http import JsonResponse
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
 
@@ -143,6 +144,10 @@ class ReportsRevenuesView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         import random
+        cities_query = Member.objects.all().values_list('city', flat=False)
+        all_cities = []
+        for ci in cities_query:
+            all_cities.append(ci[0])
         faker_obj = Faker()
         faker_holder = []
         tmp_item = []
@@ -168,7 +173,8 @@ class ReportsRevenuesView(LoginRequiredMixin, UserPassesTestMixin, View):
         custom_users_filters = ReportFilterGenerator.get_custom_filters('revenue')
         generic_filters.extend(custom_users_filters)
         return render(request, "reports_app/list.html",
-                      context={"dummy_data": faker_holder, 'title': "Revenue", "filter_columns": generic_filters})
+                      context={"dummy_data": faker_holder, 'title': "Revenue", "filter_columns": generic_filters,
+                               "cities": all_cities})
 
 
 class ProfitShareView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -247,7 +253,7 @@ class FilterReports(APIView):
     * Requires token authentication.
     * Only admin users are able to access this view.
     """
-    authentication_classes = (authentication.SessionAuthentication, )
+    authentication_classes = (authentication.SessionAuthentication,)
     # permission_classes = [permissions.IsAdminUser]
     permission_classes = (IsAuthenticated, IsAdminUser,)
 
@@ -269,9 +275,30 @@ class FilterReports(APIView):
             # cprint(json.dumps(reports.get("data")), 'green')
             # cprint(type(reports.get("data")), 'cyan')
             return Response(
-                {"table_header": reports_headers, "report_data": reports.get("data"), "report_section_name": filter_report_section },
+                {"table_header": reports_headers, "report_data": reports.get("data"),
+                 "report_section_name": filter_report_section},
                 status=200)
 
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             log_exception(traceback.format_exc())
+
+
+class CitiesAPI(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
+
+    def post(self, request, *args, **kwargs):
+        cities_query = Member.objects.all().values_list('city', flat=False)
+        all_cities = []
+        for ci in cities_query:
+            all_cities.append(ci[0])
+
+        return JsonResponse({"all_cities": all_cities}, status=200)

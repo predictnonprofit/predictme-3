@@ -11,5 +11,6 @@ urlpatterns = [
     path("api/", include([
         path("fetch", FetchReports.as_view(), name="reports-api-fetch"),
         path("filters", FilterReports.as_view(), name="reports-api-filter"),
+        path("cities", CitiesAPI.as_view(), name="reports-api-cities"),
     ]), name="reports-api"),
 ]

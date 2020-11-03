@@ -1,16 +1,58 @@
-class InputGenerator{
-    constructor(inputDataID, inputID, inputName, inputType, placeholder, reportSectionName){
-        this.inputDataID = inputDataID;
-        this.inputID = inputID;
-        this.inputName = inputName;
-        this.inputType = inputType;
-        this.placeholder = placeholder;
-        this.reportSectionName = reportSectionName;
-    }
+class InputGenerator {
+  constructor(inputDataID, inputID, inputName, inputType, placeholder, reportSectionName) {
+    this.inputDataID = inputDataID;
+    this.inputID = inputID;
+    this.inputName = inputName;
+    this.inputType = inputType;
+    this.placeholder = placeholder;
+    this.reportSectionName = reportSectionName;
+    this.allCities = fetchCities();
 
-    textInputGenerator(){
-        // this method will return only text input
-        const input = `
+  }
+  cityInputGenerator() {
+    let input;
+    let cityOptions = "";
+    $.when(this.allCities).done(function(data, textStatus, jqXHR) {
+      const allCities = data['all_cities'];
+
+      for (let city of allCities) {
+        cityOptions += `
+            <option value="${city}">${city}</option>
+          `;
+      }
+
+      // this method will return only text input
+      input = `
+        <div class="filter-options-wrapper" data-filter-name="${this.inputID}">
+        <div class="form-group m-2">
+            <label>${this.placeholder}</label>
+           <select multiple data-report-section-name="${this.reportSectionName}" name="${this.inputName}" class="form-control filter-input gen-filter-input" id="${this.inputID}" placeholder="${this.placeholder}" data-filter-name="${this.placeholder}" data-has-options="true">
+              ${cityOptions}
+           </select>
+       </div>
+       <div class="btn-group" role="group" aria-label="Basic example">
+           <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
+           <i class="icon-xl la la-long-arrow-left"></i>
+           </button>
+
+           <button data-gen-filter-item-id="${this.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${this.inputID}">
+                   <i class="icon-xl la la-long-arrow-right"></i>
+               </button>
+       </div>
+        </div>
+
+    `;
+
+    $("#filterOptionsBlock").html(input);
+  });
+    // console.log(input)
+    // return input;
+
+
+  }
+  textInputGenerator() {
+    // this method will return only text input
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="${this.inputID}">
         <div class="form-group m-2">
             <label>${this.placeholder}</label>
@@ -30,15 +72,15 @@ class InputGenerator{
     `;
 
     return input;
-    }
+  }
 
-    countrySelectGenerator(){
-        const input = allCountrySelect(this.inputDataID, this.inputID);
-        return input;
-    }
+  countrySelectGenerator() {
+    const input = allCountrySelect(this.inputDataID, this.inputID);
+    return input;
+  }
 
-    registerDateInputGenerator(){
-        const input = `
+  registerDateInputGenerator() {
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="register-date">
         <div class="form-group">
             <label>Register Date:</label>
@@ -67,31 +109,31 @@ class InputGenerator{
 
         </div>
         `;
-        $(document.getElementsByClassName('datePickerInputs')[0]).ready(function(){
-            $('.datePickerInputs').datepicker({
-                autoclose: true,
-                todayHighlight: true,
-                format: {
+    $(document.getElementsByClassName('datePickerInputs')[0]).ready(function() {
+      $('.datePickerInputs').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: {
 
-                  toDisplay: function (date, format, language) {
-                      const d = new Date(date);
-                      d.setDate(d.getDate());
-                      return d.toISOString().slice(0, 10);
-                  },
-                  toValue: function (date, format, language) {
-                      const d = new Date(date);
-                      d.setDate(d.getDate());
-                      return new Date(d);
-                  }
-              }
-            });
-        });
+          toDisplay: function(date, format, language) {
+            const d = new Date(date);
+            d.setDate(d.getDate());
+            return d.toISOString().slice(0, 10);
+          },
+          toValue: function(date, format, language) {
+            const d = new Date(date);
+            d.setDate(d.getDate());
+            return new Date(d);
+          }
+        }
+      });
+    });
 
-        return input;
-    }
+    return input;
+  }
 
-    dateInputsGenerator(){
-        const input = `
+  dateInputsGenerator() {
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="${this.inputName}_date">
         <div class="form-group">
             <label>${this.placeholder}:</label>
@@ -120,18 +162,18 @@ class InputGenerator{
 
         </div>
         `;
-        $(document.getElementsByClassName('datePickerInputs')[0]).ready(function(){
-            $('.datePickerInputs').datepicker({
-                autoclose: true,
-                todayHighlight: true,
-            });
-        });
+    $(document.getElementsByClassName('datePickerInputs')[0]).ready(function() {
+      $('.datePickerInputs').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+      });
+    });
 
-        return input;
-    }
+    return input;
+  }
 
-    orgTypeInputGenerator(){
-        const input = `
+  orgTypeInputGenerator() {
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="org-type">
         <div class="form-group m-2">
             <label>${this.placeholder}</label>
@@ -173,11 +215,11 @@ class InputGenerator{
         </div>
        `;
 
-        return input;
-    }
+    return input;
+  }
 
-    annoualInputGenerator(){
-        const input = `
+  annoualInputGenerator() {
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="annoual-revenue">
         <div class="form-group mt-8">
         <label>Other ${this.placeholder}</label>
@@ -205,11 +247,11 @@ class InputGenerator{
         </div>
        `;
 
-        return input;
-    }
+    return input;
+  }
 
-    planSelectGenerator(){
-        const input = `
+  planSelectGenerator() {
+    const input = `
         <div class="filter-options-wrapper" data-filter-name="annoual-revenue">
         <div class="form-group mt-8">
         <label>Other ${this.placeholder}</label>
@@ -232,6 +274,6 @@ class InputGenerator{
         </div>
        `;
 
-        return input;
-    }
+    return input;
+  }
 }
