@@ -228,6 +228,8 @@ function fixTableHeadName(name){
 // report table draw function
 function drawGeneratedReportTable(reportData) {
   // console.log(Object.keys(reportData));
+  // console.log(reportData);
+
   // const reportObj = JSON.parse(reportData['report_data']);
   // console.log(reportData['report_data'])
   let reportObj = reportData['report_data'];
@@ -313,7 +315,7 @@ function drawReportTableHeader(columns) {
 
   }else if (reportSection === "data-usage"){
     table = $("#data-usage-report-table > thead");
-    
+
   }
 
   table.empty();

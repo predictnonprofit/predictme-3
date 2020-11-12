@@ -48,6 +48,9 @@ pygments = "*"
 bpython = "*"
 simplejson = "*"
 urllib3 = "*"
+cryptography = "*"
+arabic-reshaper = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.8"

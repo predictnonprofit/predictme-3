@@ -228,7 +228,7 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
         "Job Title",
         reportSection
       );
-      filterOptionsBlock.html(inputGenObj.textInputGenerator());
+      filterOptionsBlock.html(inputGenObj.jobsInputGeneratro());
       break;
 
     case "Annual Revenue":
@@ -258,8 +258,8 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
     case "Number of Volunteer":
       inputGenObj = new InputGenerator(
         filterIdx,
-        "number_of_volunteer",
-        "number_of_volunteer",
+        "num_of_volunteer",
+        "num_of_volunteer",
         "number",
         "Number of Volunteer",
         reportSection
@@ -270,8 +270,8 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
     case "Number of Board Members":
       inputGenObj = new InputGenerator(
         filterIdx,
-        "number_of_board_members",
-        "number_of_board_members",
+        "num_of_board_members",
+        "num_of_board_members",
         "number",
         "Number of Board Members",
         reportSection
@@ -302,6 +302,18 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       );
       filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
       break;
+
+      case "User Status":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "user_status",
+          "user_status",
+          "date",
+          "User Status",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.userStatusMenu());
+        break;
 
     default:
       break;
@@ -443,8 +455,17 @@ function prepareRenderElement(inputsArray) {
   //   const rightItemCode = generateSelectedFilterAfterClick(arr);
   //   selectedFilterUL.append(rightItemCode);
   // }
-  const rightItemCode = generateSelectedFilterAfterClick(inputsArray[0]);
-  selectedFilterUL.append(rightItemCode);
+  const tmpId = inputsArray[0].filterInputID; //data-filter-id li[data-company='Microsoft']
+  const tmpElement = `li[data-filter-id="${tmpId}"]`;
+
+  const ch = selectedFilterUL.find(tmpElement);
+  // check if the element exists before
+  if(ch.length === 0){
+    const rightItemCode = generateSelectedFilterAfterClick(inputsArray[0]);
+    selectedFilterUL.append(rightItemCode);
+  }
+
+
 }
 
 // this function will fire the select and deselete buttons when user click on them
@@ -456,68 +477,92 @@ function selectAndDeselectFiltersBtns() {
 
 	}); */
   // select button
-  selectFilterBtn.on("click", function(event) {
-    let startDate = "";
-    let endDate = "";
-    let fullDate = "";
-    let savedElement = {};
-    currentClickedLeftItem.addClass(
-      "disabled bg-primary-o-40 not-allowed-cursor"
-    );
-    let allInputsArray = []; // this array will hold all inputs with its values in the middle block
-    const selectedInput = $("#" + $(this).data("filter-input-id")); // fetch the input in the middle block
-    const selectedFilterWrapper = $(this).closest(".filter-options-wrapper"); // get the parent of all inputs in the block
-    const allInputsInBlock = selectedFilterWrapper.find(".filter-input");
-    allInputsInBlock.each(function(index, el) {
-      const element = $(el);
-      const filterName = element.data("filter-name");
-
-      // first check if the inputs are date pick range
-      if (element.hasClass("datePickerInputs") === true) {
-        if (filterName.includes("start_date") === true) {
-          startDate = element.val();
-        }
-        if (filterName.includes("end_date") === true) {
-          endDate = element.val();
-        }
-        fullDate = startDate.concat(" - ").concat(endDate);
-        savedElement = {
-          filterName: element.data("input-full-name"),
-          filterValue: fullDate,
-          isMultiple: true ? Array.isArray(element.val()) : false,
-          filterInputID: element.attr("id"),
-          filterReportSectionName: element.data("report-section-name"),
-          mainFilterID: element.data("input-id"),
-          hasOptions: element.data("has-options"),
-        };
-        // console.log(savedElement)
-      } else {
-        // normal inputs not date inputs
-        savedElement = {
-          filterName: filterName,
-          filterValue: element.val(),
-          isMultiple: true ? Array.isArray(element.val()) : false,
-          filterInputID: element.attr("id"),
-          filterReportSectionName: element.data("report-section-name"),
-          mainFilterID: element.data("input-id"),
-          hasOptions: element.data("has-options"),
-        };
-        // console.log(savedElement)
-        allInputsArray.push(savedElement);
+    $("#filterOptionsBlock").on("click", "button.selectFilterBtn", function(event) {
+      let startDate = "";
+      let endDate = "";
+      let fullDate = "";
+      let savedElement = {};
+      let allSavedElement = [];
+      currentClickedLeftItem.addClass(
+        "disabled bg-primary-o-40 not-allowed-cursor"
+      );
+      let allInputsArray = []; // this array will hold all inputs with its values in the middle block
+      const selectedInput = $("#" + $(this).data("filter-input-id")); // fetch the input in the middle block
+      let allInputsArrayFilter = (array, fieldName) => {
+        let allKeys = new Set();
+        array.map(function(item){
+          // console.log(Object.keys(ar))
+          // allKeys.push(item.filterName);
+          // allKeys.add(item.filterName);
+          // console.log(allKeys)
+        });
+        // console.log(array, fieldName)
       }
+
+      const selectedFilterWrapper = $(this).closest(".filter-options-wrapper"); // get the parent of all inputs in the block
+      const allInputsInBlock = selectedFilterWrapper.find(".filter-input");
+      let appendedKeys = new Set();
+      allInputsInBlock.each(function(index, el) {
+        const element = $(el);
+        const filterName = element.data("filter-name");
+
+        // first check if the inputs are date pick range
+        if (element.hasClass("datePickerInputs") === true) {
+          if (filterName.includes("start_date") === true) {
+            startDate = element.val();
+          }
+          if (filterName.includes("end_date") === true) {
+            endDate = element.val();
+          }
+          fullDate = startDate.concat(" - ").concat(endDate);
+          savedElement = {
+            filterName: element.data("input-full-name"),
+            filterValue: fullDate,
+            isMultiple: true ? Array.isArray(element.val()) : false,
+            filterInputID: element.attr("id"),
+            filterReportSectionName: element.data("report-section-name"),
+            mainFilterID: element.data("input-id"),
+            hasOptions: element.data("has-options"),
+          };
+          // console.log(savedElement)
+          // console.log(allInputsArray)
+
+        } else {
+          // normal inputs not date inputs
+          // console.log(element.data())
+          savedElement = {
+            filterName: filterName,
+            filterValue: element.val(),
+            isMultiple: true ? Array.isArray(element.val()) : false,
+            filterInputID: element.attr("id"),
+            filterReportSectionName: element.data("report-section-name"),
+            mainFilterID: element.data("input-id"),
+            hasOptions: element.data("has-options"),
+          };
+          // console.log(savedElement)
+          // console.log(allInputsArray)
+          // allInputsArray.push(savedElement);
+          // allInputsArrayFilter(allInputsArray, "one")
+        }
+        // console.info(allInputsArray)
+      });
+
+      allInputsArray.push(savedElement);
+      // console.log(allInputsArray)
+      // console.log("base", allInputsArray)
+      // console.log(_.uniqBy(allInputsArray, 'filterName'))
+      prepareRenderElement(allInputsArray);
+      allInputsArray = []; // reset the array
+      // savedElement = {};
+      filterOptionsBlock.html(noOptionsMsg);
+
     });
 
-    allInputsArray.push(savedElement);
-    prepareRenderElement(allInputsArray);
-    allInputsArray = []; // reset the array
-    savedElement = {};
-    filterOptionsBlock.html(noOptionsMsg);
-  });
 
-  // deselect button
-  deSelectFilterBtn.on("click", function(event) {
-    console.log($(this).data());
-  });
+    // deselect button
+    $("#generic-filters-wrapper").on("click", "button.deSelectFilterBtn", function(event) {
+      console.log('deselect the value')
+    });
 }
 
 // this function will run when admin click on middle select filter button

@@ -7,11 +7,14 @@ class InputGenerator {
     this.placeholder = placeholder;
     this.reportSectionName = reportSectionName;
     this.allCities = fetchCities();
-    // console.log(inputDataID, inputID, inputName, inputType, placeholder, reportSectionName)
+    this.allJobs = fetchJobsTitles();
+    this.cities = [];
+
+
   }
   cityInputGenerator() {
     let input;
-    let cityOptions = "";
+    let cityOptions = `<option value='all'>ALL</option>`
     let parent = this;
     // console.log(parent)
     $.when(this.allCities).done(function(data, textStatus, jqXHR) {
@@ -22,7 +25,6 @@ class InputGenerator {
             <option value="${city}">${city}</option>
           `;
       }
-      console.log(parent.reportSectionName)
       // this method will return only text input
       input = `
         <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
@@ -52,13 +54,56 @@ class InputGenerator {
 
 
   }
+
+  jobsInputGeneratro() {
+    let input;
+    let jobOption = `<option value='all'>ALL</option>`
+    let parent = this;
+    // console.log(parent)
+    $.when(this.allJobs).done(function(data, textStatus, jqXHR) {
+      const allJobs = data['all_jobs'];
+
+      for (let job of allJobs) {
+        jobOption += `
+            <option value="${job}">${job}</option>
+          `;
+      }
+      // this method will return only text input
+      input = `
+        <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
+        <div class="form-group m-2">
+            <label>${parent.placeholder}</label>
+           <select multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
+              ${jobOption}
+           </select>
+       </div>
+       <div class="btn-group" role="group" aria-label="Basic example">
+           <button data-gen-filter-item-id="${parent.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${parent.inputID}">
+           <i class="icon-xl la la-long-arrow-left"></i>
+           </button>
+
+           <button data-gen-filter-item-id="${parent.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${parent.inputID}">
+                   <i class="icon-xl la la-long-arrow-right"></i>
+               </button>
+       </div>
+        </div>
+
+    `;
+
+    $("#filterOptionsBlock").html(input);
+  });
+    // console.log(input)
+    // return input;
+
+
+  }
   textInputGenerator() {
     // this method will return only text input
     const input = `
         <div class="filter-options-wrapper" data-filter-name="${this.inputID}">
         <div class="form-group m-2">
             <label>${this.placeholder}</label>
-           <input type="${this.inputType}" data-report-section-name="${this.reportSectionName}" name="${this.inputName}" class="form-control filter-input gen-filter-input" id="${this.inputID}" placeholder="${this.placeholder}" data-filter-name="${this.placeholder}" data-has-options="true"/>
+           <input type="${this.inputType}" data-report-section-name="${this.reportSectionName}" name="${this.inputName}" class="form-control filter-input gen-filter-input" id="${this.inputID}" placeholder="${this.placeholder}" data-filter-name="${this.inputID}" data-has-options="true"/>
        </div>
        <div class="btn-group" role="group" aria-label="Basic example">
            <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
@@ -115,19 +160,7 @@ class InputGenerator {
       $('.datePickerInputs').datepicker({
         autoclose: true,
         todayHighlight: true,
-        format: {
-
-          toDisplay: function(date, format, language) {
-            const d = new Date(date);
-            d.setDate(d.getDate());
-            return d.toISOString().slice(0, 10);
-          },
-          toValue: function(date, format, language) {
-            const d = new Date(date);
-            d.setDate(d.getDate());
-            return new Date(d);
-          }
-        }
+        format: "mm/dd/yyyy"
       });
     });
 
@@ -171,6 +204,34 @@ class InputGenerator {
       });
     });
 
+    return input;
+  }
+
+  userStatusMenu(){
+    const input = `
+    <div class="filter-options-wrapper" data-filter-name="org-type">
+    <div class="form-group m-2">
+        <label>${this.placeholder}</label>
+        <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_user_status" id="gen_filter_user_status" class="select-filter filter-input form-control gen-filter-input">
+            <option value="all" selected>All</option>
+            <option value="active">Active</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="pending">Pending</option>
+        </select>
+   </div>
+
+   <div class="btn-group" role="group" aria-label="Basic example">
+       <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
+       <i class="icon-xl la la-long-arrow-left"></i>
+       </button>
+
+       <button data-gen-filter-item-id="${this.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${this.inputID}">
+               <i class="icon-xl la la-long-arrow-right"></i>
+           </button>
+   </div>
+
+    </div>
+    `;
     return input;
   }
 

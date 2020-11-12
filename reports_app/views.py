@@ -3,11 +3,11 @@ from django.shortcuts import (reverse, redirect, render)
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 import simplejson as simple_json
 from urllib.parse import quote_plus
-
 from rest_framework import authentication
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+
 from faker import Faker
 from prettyprinter import pprint
 from termcolor import cprint
@@ -17,6 +17,7 @@ from predict_me.my_logger import log_exception
 from reports_app.helper import *
 from users.models import Member
 from django.http import JsonResponse
+
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
 
@@ -61,8 +62,8 @@ class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "sub_plan": faker_obj.word(SUB_PLANS),
             })
         generic_filters = ReportFilterGenerator.get_generic_filters()
-        custom_users_filters = ReportFilterGenerator.get_custom_filters('users')
-        generic_filters.extend(custom_users_filters)
+        # custom_users_filters = ReportFilterGenerator.get_custom_filters('users')
+        # generic_filters.extend(custom_users_filters)
         return render(request, "reports_app/list.html",
                       context={"dummy_data": faker_holder, 'title': "Users", "filter_columns": generic_filters})
 
@@ -274,6 +275,7 @@ class FilterReports(APIView):
             # cprint(simple_json.dumps(reports.get("data")), 'green')
             # cprint(json.dumps(reports.get("data")), 'green')
             # cprint(type(reports.get("data")), 'cyan')
+
             return Response(
                 {"table_header": reports_headers, "report_data": reports.get("data"),
                  "report_section_name": filter_report_section},
@@ -302,3 +304,23 @@ class CitiesAPI(LoginRequiredMixin, UserPassesTestMixin, View):
             all_cities.append(ci[0])
 
         return JsonResponse({"all_cities": all_cities}, status=200)
+
+
+class JobsAPI(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
+
+    def post(self, request, *args, **kwargs):
+        cities_query = Member.objects.all().values_list('job_title', flat=False)
+        all_cities = []
+        for ci in cities_query:
+            all_cities.append(ci[0])
+
+        return JsonResponse({"all_jobs": all_cities}, status=200)
