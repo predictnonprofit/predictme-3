@@ -25,6 +25,14 @@ class Membership(models.Model):
     additional_fee_per_extra_record = models.DecimalField(max_digits=2, decimal_places=2, null=True, blank=True)
     allowed_records_count = models.BigIntegerField(null=True, blank=True)
 
+    @property
+    def get_fields_as_list(self):
+        fields = self._meta.fields
+        fields_list = []
+        for fid in fields:
+            fields_list.append(fid.name)
+        return fields_list
+
     def __str__(self):
         return self.membership_type
 

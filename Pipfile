@@ -51,6 +51,7 @@ urllib3 = "*"
 cryptography = "*"
 arabic-reshaper = "*"
 pytz = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

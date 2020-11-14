@@ -229,11 +229,16 @@ function fixTableHeadName(name){
 function drawGeneratedReportTable(reportData) {
   // console.log(Object.keys(reportData));
   // console.log(reportData);
+  const obj = reportData['report_data']
+  const headerArray = reportData['table_header'];
+  for (let header in headerArray){
+    headerArray[header] = fixTableHeadName(headerArray[header]);
+  }
 
   // const reportObj = JSON.parse(reportData['report_data']);
   // console.log(reportData['report_data'])
   let reportObj = reportData['report_data'];
-  // console.log(reportData);
+  // console.log(reportObj);
   //$("#data_handler_table > tbody tr").empty();
   let tableTd = "";
   let allTableRow = "";
@@ -257,50 +262,43 @@ function drawGeneratedReportTable(reportData) {
   //   console.log(key, value)
   // }
   // console.log(reportData['report_data'])
-  for (let rowKey in reportObj) {
-    const newReportData = reportData["report_data"][rowKey]['member_data'];
-    const subscriptionData = reportData['report_data'][rowKey]['subscription_data'];
-    // console.log(newReportData['member_data']);
-    // console.log(Object.keys(subscriptionData));
+  for(let rowReport of reportObj){
+    // console.log(rowReport);
     for (let name of reportData['table_header']){
       // console.log(fixTableHeadName(name))
       // check if the cancelled_users or active_user is here
       let headName = fixTableHeadName(name);
-      if((headName === "cancelled_users") || (headName === 'active_users')){
-        headName = "status"
+      // console.log(reportData['table_header'])
+      if(headName === "user_status"){
+        headName = "status";
+      }else if(headName === "plan"){
+        headName = "slug";
       }
-      // check for plan to call the subscription
-      if((headName === 'plan') && (Object.keys(subscriptionData).length > 0)){
-        // console.log(newReportData[headName])
-        tmpTableTd += `
-          <td>
-            ${subscriptionData['stripe_plan_id']}
-          </td>
-        `;
-      }else{
-        // console.log(newReportData[headName])
-        tmpTableTd += `
-          <td>
-            ${newReportData[headName]}
-          </td>
-        `;
-      }
+      tmpTableTd += `
+        <td>
+          ${rowReport[headName]}
+        </td>
+      `;
+
 
     }
-    tableBodyElement.append(`
-      <tr>
-        ${tmpTableTd}
-      </tr>
-      `);
-    tmpTableTr = "";
-    tmpTableTd = "";
+      // console.log(headName, rowReport[headName])
+      tableBodyElement.append(`
+        <tr>
+          ${tmpTableTd}
+        </tr>
+        `);
+      tmpTableTr = "";
+      tmpTableTd = "";
+  }
+
 
   }
 
   // console.log(tableRow)
   // tableBodyElement.append(tableRow);
   // console.log(reportData['report_data']);
-}
+
 
 // this function will draw the table header
 function drawReportTableHeader(columns) {

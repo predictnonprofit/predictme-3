@@ -7,7 +7,7 @@ from rest_framework import authentication
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-
+from django.db import connection
 from faker import Faker
 from prettyprinter import pprint
 from termcolor import cprint
@@ -275,9 +275,11 @@ class FilterReports(APIView):
             # cprint(simple_json.dumps(reports.get("data")), 'green')
             # cprint(json.dumps(reports.get("data")), 'green')
             # cprint(type(reports.get("data")), 'cyan')
-
+            # cprint(reports, 'blue')
+            # cprint(reports_headers, 'red')
+            # cprint(reports.get("data"), 'blue')
             return Response(
-                {"table_header": reports_headers, "report_data": reports.get("data"),
+                {"table_header": reports_headers, "report_data": reports.get('data'),
                  "report_section_name": filter_report_section},
                 status=200)
 
@@ -286,7 +288,7 @@ class FilterReports(APIView):
             log_exception(traceback.format_exc())
 
 
-class CitiesAPI(LoginRequiredMixin, UserPassesTestMixin, View):
+class FetchReportData(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
     def test_func(self):
@@ -298,29 +300,9 @@ class CitiesAPI(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect(reverse('profile-overview'))
 
     def post(self, request, *args, **kwargs):
-        cities_query = Member.objects.all().values_list('city', flat=False)
-        all_cities = []
+        cities_query = Member.objects.all().values_list(request.POST.get("columnName"), flat=False)
+        rows = []
         for ci in cities_query:
-            all_cities.append(ci[0])
+            rows.append(ci[0])
 
-        return JsonResponse({"all_cities": all_cities}, status=200)
-
-
-class JobsAPI(LoginRequiredMixin, UserPassesTestMixin, View):
-    login_url = "login"
-
-    def test_func(self):
-        if self.request.user.is_staff:
-            return True
-        return False
-
-    def handle_no_permission(self):
-        return redirect(reverse('profile-overview'))
-
-    def post(self, request, *args, **kwargs):
-        cities_query = Member.objects.all().values_list('job_title', flat=False)
-        all_cities = []
-        for ci in cities_query:
-            all_cities.append(ci[0])
-
-        return JsonResponse({"all_jobs": all_cities}, status=200)
+        return JsonResponse({"data": rows}, status=200)

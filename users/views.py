@@ -75,7 +75,7 @@ def register_view(request):
         INPUTS_DATA['street_address'] = request.POST.get("street_address")
         INPUTS_DATA['org_name'] = request.POST.get("org_name")
         INPUTS_DATA['country'] = request.POST.get("country")
-        INPUTS_DATA['city'] = request.POST.get("city", "")
+        INPUTS_DATA['city'] = request.POST.get("city")
         INPUTS_DATA['state'] = request.POST.get("state")
         INPUTS_DATA['zip'] = request.POST.get("zip")
         INPUTS_DATA['job_title'] = request.POST.get("job_title")

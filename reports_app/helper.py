@@ -6,6 +6,7 @@ from data_handler.models import (DataFile, DataHandlerSession)
 from users.models import Member
 from django.db.models import Q
 from datetime import datetime
+from django.forms.models import model_to_dict
 from django.db import connection
 import decimal
 import json
@@ -68,7 +69,7 @@ class ReportFilterGenerator:
             {"filter_name": "Organization Type", "report_section": "users",
              "input_name": report_name("Organization Type"), "has_options": True, "report_type": "Generic Filter"},
             {"filter_name": "Organization Name", "report_section": "users",
-             "input_name": report_name("Organization Name"), "has_options": False, "report_type": "Generic Filter"},
+             "input_name": report_name("Organization Name"), "has_options": True, "report_type": "Generic Filter"},
             {"filter_name": "Register Date", "report_section": "users", "input_name": report_name("Register Date"),
              "has_options": True, "report_type": "Generic Filter"},
             {"filter_name": "Job Title", "report_section": "users", "input_name": report_name("Job Title"),
@@ -213,13 +214,20 @@ class ReportGenerator:
             if (report_name(r_filter['filter_name']) == "register_date") or (
                     report_name(r_filter['filter_name']) == "annual_revenue"):
                 filter_keys[report_name(r_filter['filter_name'])] = r_filter['filter_value']
+
                 # cprint("_" in r_filter['filter_value'], 'red')
                 # cprint(report_name(r_filter['filter_value']), 'green')
-            elif (report_name(r_filter['filter_name']) == "city") or (
-                    report_name(r_filter['filter_name']) == "organization_type"):
+            elif report_name(r_filter['filter_name']) == "city":
                 filter_keys[report_name(r_filter['filter_name'])] = r_filter['filter_value']
             else:
-                filter_keys[report_name(r_filter['filter_name'])] = report_name(r_filter['filter_value'])
+                if report_name(r_filter['filter_name']) == "organization_type":
+                    filter_keys["org_type"] = r_filter['filter_value']
+                elif report_name(r_filter['filter_name']) == "organization_name":
+                    filter_keys[report_name("org_name")] = r_filter['filter_value']
+                elif report_name(r_filter['filter_name']) == "user_status":
+                    filter_keys[report_name("status")] = report_name(r_filter['filter_value'])
+                else:
+                    filter_keys[report_name(r_filter['filter_name'])] = report_name(r_filter['filter_value'])
 
             filter_keys["report_section_name"] = report_name(r_filter['report_section_name'])
         # cprint(filter_list, 'magenta')
@@ -243,7 +251,7 @@ class ReportGenerator:
         # cprint(type(lookups), 'yellow')
         # lookups_query = ""
         users_query = ""  # this to hold the Query
-        ReportGenerator.test_custom_report_sql_generator(filter_d)
+        users_data = ReportGenerator.test_custom_report_sql_generator(filter_d)
         # check if data usage is the report
         # if report_section_name == "data-usage":
         #     data_usage_obj = DataFile.objects.all()
@@ -256,12 +264,10 @@ class ReportGenerator:
         users_reports = dict()  # this will hold every information of the report for the user
         # this try to handle if the subscription not exists for members who have not subscription
 
-        if len(users_reports) > 0:
-            # cprint(users_reports['ROW_57'], 'blue')
-            # cprint(len(users_reports), 'red')
-            return {"data": users_reports, "table_header": table_header, "total_results": len(users_reports)}
-        else:
-            return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
+        # if len(users_reports) > 0:
+        return {"data": users_data, "table_header": table_header, "total_results": len(users_data)}
+        # else:
+        #     return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
 
     @staticmethod
     def get_data_usage_query(filter_dict: dict, table_header: list, report_section_name: str):
@@ -302,74 +308,132 @@ class ReportGenerator:
     @staticmethod
     def test_custom_report_sql_generator(filter_dict: dict):
         WHERE_OPERATOR = "AND"
+        columns_keys = list(filter_dict.keys())
+        columns_keys.extend((
+            "slug",
+            "sub_range",
+            "status"
+        ))
+        # cprint(columns_keys, 'red')
+        all_rows = {}
         if len(filter_dict) > 0:
-            read_members_query = read_query("members", **filter_dict)
-            cprint(read_members_query, 'cyan')
-            user_status_value = filter_dict.get("user_status",
-                                                'active')  # this variable will hold the user status active, cancelled, pending, verify
-            # cprint(filter_dict, "green")
-            register_date = filter_dict.get("register_date", None)
-            # cprint(register_date, 'red')
-            register_date_query = ""
-            if register_date is not None:
-                start_date, end_date = register_date.split(" - ")
+            read_members_query = read_sql_generator("members", **filter_dict)
+            # cprint(read_members_query, 'blue')
+            # cprint(read_members_query, 'cyan')
+            all_data = []
+            with connection.cursor() as cursor:
+                cursor.execute(read_members_query)
+                # columns = [col for col in columns_keys]
+                columns = [col[0] for col in cursor.description]
+                # row = cursor.fetchall()
+                #     for row in cursor.fetchall():
+                #         row_dict = dict(zip(columns, row))
+                #         # cprint(row_dict, 'red')
+                #         for key, value in row_dict.items():
+                #             if type(value).__name__ == 'datetime':
+                #                 row_dict[key] = value.strftime("%m/%d/%Y")
+                #             all_data.append(row_dict)
+                # cprint(all_data[0], 'blue')
+                row = [
+                    dict(zip(columns, row))
+                    for row in cursor.fetchall()
+                ]
+            # cprint(row, 'green')
+            # cprint(row[0], 'cyan')
+            # query_object = Member.objects.raw(read_members_query)
+            # # cprint(query_object.columns, 'cyan')
+            # for index, q in enumerate(query_object):
+            #     # print(index, q)
+            #     # cprint(type(q), 'yellow')
+            #     query_as_dict = model_to_dict(q)
+            #     query_as_dict.pop("password")
+            #     # print(query_object, end="\n")
+            #     all_rows[f"ROW_{index}"] = query_as_dict
+            # 'columns', 'db', 'iterator', 'model', 'model_fields', 'params', 'prefetch_related', 'query', 'raw_query', 'resolve_model_init_order', 'translations', 'using'
+
+        # return all_rows
+        return row
+
+
+def read_sql_generator(table, **kwargs):
+    """ Generates SQL for a SELECT statement matching the kwargs passed. """
+    sql = list()
+    plan = ''
+    del kwargs['report_section_name']
+    # first get the check the plan in the kwargs
+    if "plan" in kwargs:
+        plan = kwargs.get("plan", "active")
+        # delete the plan from kwargs
+        del kwargs['plan']
+
+    membership_columns = ('membership.id', 'membership.slug', 'membership.membership_type',
+                          'membership.monthly_fee', 'membership.yearly_fee', 'membership.day_price',
+                          'membership.stripe_plane_id', 'membership.additional_fee_per_extra_record',
+                          'membership.allowed_records_count')
+
+    members_columns = ('member.id', 'member.first_name', 'member.last_name', 'member.full_name',
+                       'member.email', 'member.status', 'member.date_joined', 'member.phone',
+                       'member.street_address', 'member.state', 'member.city', 'member.country',
+                       'member.org_name', 'member.job_title', 'member.org_website', 'member.org_type',
+                       'member.annual_revenue', 'member.total_staff', 'member.num_of_volunteer',
+                       'member.num_of_board_members')
+
+    subscription_columns = ('subs.id', 'subs.member_id_id', 'subs.stripe_customer_id', 'subs.stripe_subscription_id',
+                            'subs.stripe_plan_id_id', 'subs.subscription_status', 'subs.subscription_period_start',
+                            'subs.subscription_period_end', 'subs.card_expire', 'subs.sub_range', 'subs.stripe_card_id')
+
+    members_and_subscription_merge_columns = members_columns + subscription_columns + membership_columns
+    # cprint(members_and_subscription_merge_columns, "cyan")
+    sql2 = list()
+    sql.append("SELECT * FROM %s " % table)
+    sql2.append("SELECT DISTINCT {} FROM {} AS member, membership_membership AS membership ".format(
+        ", ".join(members_and_subscription_merge_columns), table))
+    sql2.append(
+        "INNER JOIN subscriptions AS subs ON (member.id = subs.member_id_id) AND (subs.stripe_plan_id_id = membership.id) ")
+    sql2.append("WHERE")
+    numeric_fields = ('num_of_volunteer', "total_staff", "num_of_board_members")
+
+    if kwargs:
+        # first point make the first query
+        # va = kwargs.get(columns_name[0]) if kwargs.get(columns_name[0]) != "all" else "'%'"
+        # sql2.append(f" WHERE ({columns_name[0]} LIKE {va}) AND")
+        de = ((k, v) for k, v in kwargs.items())
+        # tt = "WHERE " + " AND ".join("%s = '%s'" % (k, v) for k, v in kwargs.items())
+        for d in de:
+            col_name = d[0]
+            col_value = ''
+            if (type(d[1]).__name__ == "str") and (d[1].lower() != "all"):
+                col_value = f" %{d[1].lower()}% ".strip()
+            elif type(d[1]).__name__ == "int":
+                col_value = d[1]
+            else:
+                col_value = "%%"
+
+            # check if the column belongs to one of the numeric columns
+            if col_name in numeric_fields:
+                # (num_of_board_members BETWEEN 0 AND '%')
+                sql2.append(f" ({col_name} BETWEEN 0 AND {col_value}) AND")
+            # check if the key is register date
+            elif col_name == "register_date":
+                clean_date_format = col_value[1:-1]
+                # cprint(clean_date_format, 'red')
+                start_date, end_date = clean_date_format.split(" - ")
                 start_date = start_date.replace("/", "-")
                 start_date = datetime.strptime(start_date, "%m-%d-%Y")
                 end_date = end_date.replace("/", "-")
                 end_date = datetime.strptime(end_date, "%m-%d-%Y")
-                register_date_query = f""" {WHERE_OPERATOR} (date_joined BETWEEN '{start_date}' AND '{end_date}') """
+
+                sql2.append(f" (date_joined BETWEEN '{start_date}' AND '{end_date}') AND")
             else:
-                register_date_query = f""
+                sql2.append(f" ({col_name} LIKE '{col_value}') AND")
 
-            members_query = f"SELECT id, first_name, last_name, full_name, phone, street_address, state, " \
-                            f"city, country, zip_code, org_name, job_title, org_website, org_type, " \
-                            f"annual_revenue, total_staff, num_of_volunteer, num_of_board_members, status " \
-                            f"FROM members WHERE (first_name LIKE %s) {WHERE_OPERATOR} (last_name LIKE %s) " \
-                            f"{WHERE_OPERATOR} (email LIKE %s) {WHERE_OPERATOR} (country LIKE %s) " \
-                            f"{WHERE_OPERATOR} (org_name LIKE %s) {WHERE_OPERATOR} (org_type LIKE %s) " \
-                            f"{WHERE_OPERATOR} (job_title LIKE %s) {WHERE_OPERATOR} (annual_revenue LIKE %s) " \
-                            f"{WHERE_OPERATOR} (status = '{user_status_value}') {register_date_query} " \
-                            f"{WHERE_OPERATOR} (total_staff BETWEEN 0 AND %s) {WHERE_OPERATOR} (num_of_volunteer BETWEEN 0 AND %s) " \
-                            f"{WHERE_OPERATOR} (num_of_board_members BETWEEN 0 AND %s)"
+        sql_with_no_and = "".join(sql2).rsplit(' ', 1)[0]
+        sql2 = sql_with_no_and.split()
+        sql2.append("GROUP BY member.id")
+        sql2.append(';')
+        # cprint(" ".join(sql2), "yellow")
 
-            members_query = members_query.strip()
-            members_query_params = [
-                "'%'", "'%'", "'%'", get_filter_value(filter_dict, "country"),
-                get_filter_value(filter_dict, "organization_name"), get_filter_value(filter_dict, "organization_type"),
-                get_filter_value(filter_dict, "job_title"), get_filter_value(filter_dict, "annual_revenue"),
-                get_filter_value(filter_dict, "total_staff"), get_filter_value(filter_dict, "num_of_volunteer"),
-                get_filter_value(filter_dict, "num_of_board_members")
-            ]
-            # `mems.id`, `mems.first_name`, `mems.last_name`, `mems.full_name`, `mems.email`, `mems.date_joined`,
-            # `mems.phone`, `mems.street_address`, `mems.state`, `mems.city`, `mems.country`, `mems.org_name`,
-            # `mems.job_title`, `mems.org_website`, `mems.org_type`, `mems.annual_revenue`, `mems.total_staff`,
-            # `mems.num_of_volunteer`, `mems.num_of_board_members`, `mems.status`
-
-            # cprint(members_query_params, 'yellow')
-            # get_filter_where_syntax(filter_dict)
-            #######
-            query_object = Member.objects.raw(members_query, members_query_params)
-            for q in query_object:
-                cprint(q, 'yellow')
-            # 'columns', 'db', 'iterator', 'model', 'model_fields', 'params', 'prefetch_related', 'query', 'raw_query', 'resolve_model_init_order', 'translations', 'using'
-
-            #######
-            # cprint(connection.queries[3]['sql'], 'blue')
-
-
-def read_query(table, **kwargs):
-    """ Generates SQL for a SELECT statement matching the kwargs passed. """
-    sql = list()
-    sql.append("SELECT * FROM %s " % table)
-    statement = list()
-    del kwargs['report_section_name']
-    # cprint("WHERE " + " AND ".join("%s = '%s'" % (k, v) for k, v in kwargs.items()), "red")
-    if kwargs:
-        # print("register_date" in kwargs)
-        # cprint(((k, v) for k, v in kwargs.items()), "red")
-        sql.append("WHERE " + " AND ".join("%s = '%s'" % (k, v) for k, v in kwargs.items()))
-    sql.append(";")
-    return "".join(sql)
+    return " ".join(sql2)
 
 
 def get_filter_value(filters_dict: dict, filter_name: str):

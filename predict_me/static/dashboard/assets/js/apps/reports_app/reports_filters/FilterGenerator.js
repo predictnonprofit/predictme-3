@@ -6,10 +6,10 @@ class InputGenerator {
     this.inputType = inputType;
     this.placeholder = placeholder;
     this.reportSectionName = reportSectionName;
-    this.allCities = fetchCities();
-    this.allJobs = fetchJobsTitles();
+    this.allCities = fetchDataForReports("city");
+    this.allJobs = fetchDataForReports("job_title");
+    this.allOrgsNames = fetchDataForReports("org_name");
     this.cities = [];
-
 
   }
   cityInputGenerator() {
@@ -18,7 +18,7 @@ class InputGenerator {
     let parent = this;
     // console.log(parent)
     $.when(this.allCities).done(function(data, textStatus, jqXHR) {
-      const allCities = data['all_cities'];
+      const allCities = data['data'];
 
       for (let city of allCities) {
         cityOptions += `
@@ -30,8 +30,51 @@ class InputGenerator {
         <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
         <div class="form-group m-2">
             <label>${parent.placeholder}</label>
-           <select multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
+           <select style='height: 250px' multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
               ${cityOptions}
+           </select>
+       </div>
+       <div class="btn-group" role="group" aria-label="Basic example">
+           <button data-gen-filter-item-id="${parent.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${parent.inputID}">
+           <i class="icon-xl la la-long-arrow-left"></i>
+           </button>
+
+           <button data-gen-filter-item-id="${parent.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${parent.inputID}">
+                   <i class="icon-xl la la-long-arrow-right"></i>
+               </button>
+       </div>
+        </div>
+
+    `;
+
+    $("#filterOptionsBlock").html(input);
+  });
+    // console.log(input)
+    // return input;
+
+
+  }
+
+  selectMenuGenerator() {
+    let input;
+    let orgNamesOptions = `<option value='all'>ALL</option>`
+    let parent = this;
+    // console.log(parent)
+    $.when(this.allOrgsNames).done(function(data, textStatus, jqXHR) {
+      const allOrgs = data['data'];
+
+      for (let orgNames of allOrgs) {
+        orgNamesOptions += `
+            <option value="${orgNames}">${orgNames}</option>
+          `;
+      }
+      // this method will return only text input
+      input = `
+        <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
+        <div class="form-group m-2">
+            <label>${parent.placeholder}</label>
+           <select style='height: 250px' multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
+              ${orgNamesOptions}
            </select>
        </div>
        <div class="btn-group" role="group" aria-label="Basic example">
@@ -61,7 +104,7 @@ class InputGenerator {
     let parent = this;
     // console.log(parent)
     $.when(this.allJobs).done(function(data, textStatus, jqXHR) {
-      const allJobs = data['all_jobs'];
+      const allJobs = data['data'];
 
       for (let job of allJobs) {
         jobOption += `
@@ -73,7 +116,7 @@ class InputGenerator {
         <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
         <div class="form-group m-2">
             <label>${parent.placeholder}</label>
-           <select multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
+           <select style='height: 250px' multiple data-report-section-name="${parent.reportSectionName}" name="${parent.inputName}" class="form-control filter-input gen-filter-input" id="${parent.inputID}" placeholder="${parent.placeholder}" data-filter-name="${parent.placeholder}" data-has-options="true">
               ${jobOption}
            </select>
        </div>
@@ -212,7 +255,7 @@ class InputGenerator {
     <div class="filter-options-wrapper" data-filter-name="org-type">
     <div class="form-group m-2">
         <label>${this.placeholder}</label>
-        <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_user_status" id="gen_filter_user_status" class="select-filter filter-input form-control gen-filter-input">
+        <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_status" id="gen_filter_status" class="select-filter filter-input form-control gen-filter-input">
             <option value="all" selected>All</option>
             <option value="active">Active</option>
             <option value="cancelled">Cancelled</option>

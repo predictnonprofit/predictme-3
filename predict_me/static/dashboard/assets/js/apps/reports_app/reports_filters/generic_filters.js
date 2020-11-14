@@ -186,8 +186,8 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
     case "Organization Type":
       inputGenObj = new InputGenerator(
         filterIdx,
-        "organization_type",
-        "organization_type",
+        "org_type",
+        "org_type",
         "text",
         "Organization Type",
         reportSection
@@ -198,13 +198,13 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
     case "Organization Name":
       inputGenObj = new InputGenerator(
         filterIdx,
-        "organization_name",
-        "organization_name",
+        "org_name",
+        "org_name",
         "text",
-        "Organization Nme",
+        "Organization Name",
         reportSection
       );
-      filterOptionsBlock.html(inputGenObj.textInputGenerator());
+      filterOptionsBlock.html(inputGenObj.selectMenuGenerator());
       break;
 
     case "Register Date":
@@ -306,8 +306,8 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       case "User Status":
         inputGenObj = new InputGenerator(
           filterIdx,
-          "user_status",
-          "user_status",
+          "status",
+          "status",
           "date",
           "User Status",
           reportSection
