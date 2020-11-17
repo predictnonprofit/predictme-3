@@ -1,5 +1,12 @@
 class InputGenerator {
-  constructor(inputDataID, inputID, inputName, inputType, placeholder, reportSectionName) {
+  constructor(
+    inputDataID,
+    inputID,
+    inputName,
+    inputType,
+    placeholder,
+    reportSectionName
+  ) {
     this.inputDataID = inputDataID;
     this.inputID = inputID;
     this.inputName = inputName;
@@ -10,15 +17,14 @@ class InputGenerator {
     this.allJobs = fetchDataForReports("job_title");
     this.allOrgsNames = fetchDataForReports("org_name");
     this.cities = [];
-
   }
   cityInputGenerator() {
     let input;
-    let cityOptions = `<option value='all'>ALL</option>`
+    let cityOptions = `<option value='all'>ALL</option>`;
     let parent = this;
     // console.log(parent)
-    $.when(this.allCities).done(function(data, textStatus, jqXHR) {
-      const allCities = data['data'];
+    $.when(this.allCities).done(function (data, textStatus, jqXHR) {
+      const allCities = data["data"];
 
       for (let city of allCities) {
         cityOptions += `
@@ -47,21 +53,19 @@ class InputGenerator {
 
     `;
 
-    $("#filterOptionsBlock").html(input);
-  });
+      $("#filterOptionsBlock").html(input);
+    });
     // console.log(input)
     // return input;
-
-
   }
 
   selectMenuGenerator() {
     let input;
-    let orgNamesOptions = `<option value='all'>ALL</option>`
+    let orgNamesOptions = `<option value='all'>ALL</option>`;
     let parent = this;
     // console.log(parent)
-    $.when(this.allOrgsNames).done(function(data, textStatus, jqXHR) {
-      const allOrgs = data['data'];
+    $.when(this.allOrgsNames).done(function (data, textStatus, jqXHR) {
+      const allOrgs = data["data"];
 
       for (let orgNames of allOrgs) {
         orgNamesOptions += `
@@ -90,21 +94,19 @@ class InputGenerator {
 
     `;
 
-    $("#filterOptionsBlock").html(input);
-  });
+      $("#filterOptionsBlock").html(input);
+    });
     // console.log(input)
     // return input;
-
-
   }
 
   jobsInputGeneratro() {
     let input;
-    let jobOption = `<option value='all'>ALL</option>`
+    let jobOption = `<option value='all'>ALL</option>`;
     let parent = this;
     // console.log(parent)
-    $.when(this.allJobs).done(function(data, textStatus, jqXHR) {
-      const allJobs = data['data'];
+    $.when(this.allJobs).done(function (data, textStatus, jqXHR) {
+      const allJobs = data["data"];
 
       for (let job of allJobs) {
         jobOption += `
@@ -133,12 +135,10 @@ class InputGenerator {
 
     `;
 
-    $("#filterOptionsBlock").html(input);
-  });
+      $("#filterOptionsBlock").html(input);
+    });
     // console.log(input)
     // return input;
-
-
   }
   textInputGenerator() {
     // this method will return only text input
@@ -199,13 +199,15 @@ class InputGenerator {
 
         </div>
         `;
-    $(document.getElementsByClassName('datePickerInputs')[0]).ready(function() {
-      $('.datePickerInputs').datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        format: "mm/dd/yyyy"
-      });
-    });
+    $(document.getElementsByClassName("datePickerInputs")[0]).ready(
+      function () {
+        $(".datePickerInputs").datepicker({
+          autoclose: true,
+          todayHighlight: true,
+          format: "mm/dd/yyyy",
+        });
+      }
+    );
 
     return input;
   }
@@ -240,17 +242,19 @@ class InputGenerator {
 
         </div>
         `;
-    $(document.getElementsByClassName('datePickerInputs')[0]).ready(function() {
-      $('.datePickerInputs').datepicker({
-        autoclose: true,
-        todayHighlight: true,
-      });
-    });
+    $(document.getElementsByClassName("datePickerInputs")[0]).ready(
+      function () {
+        $(".datePickerInputs").datepicker({
+          autoclose: true,
+          todayHighlight: true,
+        });
+      }
+    );
 
     return input;
   }
 
-  userStatusMenu(){
+  userStatusMenu() {
     const input = `
     <div class="filter-options-wrapper" data-filter-name="org-type">
     <div class="form-group m-2">
@@ -260,6 +264,36 @@ class InputGenerator {
             <option value="active">Active</option>
             <option value="cancelled">Cancelled</option>
             <option value="pending">Pending</option>
+        </select>
+   </div>
+
+   <div class="btn-group" role="group" aria-label="Basic example">
+       <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
+       <i class="icon-xl la la-long-arrow-left"></i>
+       </button>
+
+       <button data-gen-filter-item-id="${this.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${this.inputID}">
+               <i class="icon-xl la la-long-arrow-right"></i>
+           </button>
+   </div>
+
+    </div>
+    `;
+    return input;
+  }
+
+  dataUsageInputGenerator() {
+    const input = `
+    <div class="filter-options-wrapper" data-filter-name="org-type">
+    <div class="form-group m-2">
+        <label>${this.placeholder}</label>
+        <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_status" id="gen_filter_status" class="select-filter filter-input form-control gen-filter-input">
+            <option value="all" selected>All</option>
+            <option value="0">0%</option>
+            <option value="25">25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100">100%</option>
         </select>
    </div>
 

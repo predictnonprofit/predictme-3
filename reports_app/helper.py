@@ -100,9 +100,9 @@ class ReportFilterGenerator:
         if report_section_name == "data_usage":
             return [
                 {"filter_name": "Last Run", "report_section": "data_usage", "input_name": report_name("Last Run"),
-                 "has_options": False, "report_type": "Data Usage Filter"},
+                 "has_options": True, "report_type": "Data Usage Filter"},
                 {"filter_name": "Usage", "report_section": "data_usage", "input_name": report_name("Usage"),
-                 "has_options": False, "report_type": "Data Usage Filter"},
+                 "has_options": True, "report_type": "Data Usage Filter"},
 
             ]
         elif report_section_name == "revenue":
@@ -113,7 +113,21 @@ class ReportFilterGenerator:
                 {"filter_name": "Next Renewal Date", "report_section": "revenue",
                  "input_name": report_name("Next Renewal Date"),
                  "has_options": False, "report_type": "Revenue Filter"},
+                {"filter_name": "Revenue Date", "report_section": "revenue", "input_name": report_name("Revenue Date"),
+                 "has_options": True, "report_type": "Revenue Filter"},
 
+            ]
+        if report_section_name == "users_status":
+            return [
+                {"filter_name": "User Status", "report_section": "users",
+                 "input_name": report_name("User Status"), "has_options": True, "report_type": "Generic Filter"},
+                {"filter_name": "Register Date", "report_section": "users_status", "input_name": report_name("Register Date"),
+                 "has_options": True, "report_type": "Users Status"},
+                {"filter_name": "Days Left", "report_section": "users_status", "input_name": report_name("Days Left"),
+                 "has_options": True, "report_type": "Users Status"},
+                {"filter_name": "Revenue Start Date", "report_section": "users_status",
+                 "input_name": report_name("Revenue Start Date"),
+                 "has_options": True, "report_type": "Users Status"},
             ]
 
 
@@ -252,6 +266,8 @@ class ReportGenerator:
         # lookups_query = ""
         users_query = ""  # this to hold the Query
         users_data = ReportGenerator.test_custom_report_sql_generator(filter_d)
+        # cprint(users_data, "cyan")
+        # cprint(len(users_data), "cyan")
         # check if data usage is the report
         # if report_section_name == "data-usage":
         #     data_usage_obj = DataFile.objects.all()
@@ -298,8 +314,6 @@ class ReportGenerator:
 
                     #    cprint(tmp_data_handler_session_obj.all_records_count, "blue" )
                     if tmp_data_handler_session_obj is not None:
-                        # cprint(tmp_data_handler_session_obj.get_fields_as_list, 'cyan')
-                        # cprint(tmp_data_handler_session_obj.data_file_path, 'cyan')
                         pass
             # break
 
@@ -318,7 +332,8 @@ class ReportGenerator:
         all_rows = {}
         if len(filter_dict) > 0:
             read_members_query = read_sql_generator("members", **filter_dict)
-            # cprint(read_members_query, 'blue')
+
+            cprint(read_members_query, 'blue')
             # cprint(read_members_query, 'cyan')
             all_data = []
             with connection.cursor() as cursor:
@@ -352,88 +367,62 @@ class ReportGenerator:
             # 'columns', 'db', 'iterator', 'model', 'model_fields', 'params', 'prefetch_related', 'query', 'raw_query', 'resolve_model_init_order', 'translations', 'using'
 
         # return all_rows
+        # cprint(row[25], 'green')
         return row
 
 
 def read_sql_generator(table, **kwargs):
     """ Generates SQL for a SELECT statement matching the kwargs passed. """
-    sql = list()
-    plan = ''
-    del kwargs['report_section_name']
-    # first get the check the plan in the kwargs
-    if "plan" in kwargs:
-        plan = kwargs.get("plan", "active")
-        # delete the plan from kwargs
-        del kwargs['plan']
-
-    membership_columns = ('membership.id', 'membership.slug', 'membership.membership_type',
-                          'membership.monthly_fee', 'membership.yearly_fee', 'membership.day_price',
-                          'membership.stripe_plane_id', 'membership.additional_fee_per_extra_record',
-                          'membership.allowed_records_count')
-
-    members_columns = ('member.id', 'member.first_name', 'member.last_name', 'member.full_name',
-                       'member.email', 'member.status', 'member.date_joined', 'member.phone',
-                       'member.street_address', 'member.state', 'member.city', 'member.country',
-                       'member.org_name', 'member.job_title', 'member.org_website', 'member.org_type',
-                       'member.annual_revenue', 'member.total_staff', 'member.num_of_volunteer',
-                       'member.num_of_board_members')
-
-    subscription_columns = ('subs.id', 'subs.member_id_id', 'subs.stripe_customer_id', 'subs.stripe_subscription_id',
-                            'subs.stripe_plan_id_id', 'subs.subscription_status', 'subs.subscription_period_start',
-                            'subs.subscription_period_end', 'subs.card_expire', 'subs.sub_range', 'subs.stripe_card_id')
-
-    members_and_subscription_merge_columns = members_columns + subscription_columns + membership_columns
-    # cprint(members_and_subscription_merge_columns, "cyan")
-    sql2 = list()
-    sql.append("SELECT * FROM %s " % table)
-    sql2.append("SELECT DISTINCT {} FROM {} AS member, membership_membership AS membership ".format(
-        ", ".join(members_and_subscription_merge_columns), table))
-    sql2.append(
-        "INNER JOIN subscriptions AS subs ON (member.id = subs.member_id_id) AND (subs.stripe_plan_id_id = membership.id) ")
-    sql2.append("WHERE")
-    numeric_fields = ('num_of_volunteer', "total_staff", "num_of_board_members")
-
-    if kwargs:
-        # first point make the first query
-        # va = kwargs.get(columns_name[0]) if kwargs.get(columns_name[0]) != "all" else "'%'"
-        # sql2.append(f" WHERE ({columns_name[0]} LIKE {va}) AND")
-        de = ((k, v) for k, v in kwargs.items())
-        # tt = "WHERE " + " AND ".join("%s = '%s'" % (k, v) for k, v in kwargs.items())
-        for d in de:
-            col_name = d[0]
-            col_value = ''
-            if (type(d[1]).__name__ == "str") and (d[1].lower() != "all"):
-                col_value = f" %{d[1].lower()}% ".strip()
-            elif type(d[1]).__name__ == "int":
-                col_value = d[1]
-            else:
-                col_value = "%%"
-
-            # check if the column belongs to one of the numeric columns
-            if col_name in numeric_fields:
-                # (num_of_board_members BETWEEN 0 AND '%')
-                sql2.append(f" ({col_name} BETWEEN 0 AND {col_value}) AND")
-            # check if the key is register date
-            elif col_name == "register_date":
-                clean_date_format = col_value[1:-1]
-                # cprint(clean_date_format, 'red')
-                start_date, end_date = clean_date_format.split(" - ")
-                start_date = start_date.replace("/", "-")
-                start_date = datetime.strptime(start_date, "%m-%d-%Y")
-                end_date = end_date.replace("/", "-")
-                end_date = datetime.strptime(end_date, "%m-%d-%Y")
-
-                sql2.append(f" (date_joined BETWEEN '{start_date}' AND '{end_date}') AND")
-            else:
-                sql2.append(f" ({col_name} LIKE '{col_value}') AND")
-
-        sql_with_no_and = "".join(sql2).rsplit(' ', 1)[0]
-        sql2 = sql_with_no_and.split()
-        sql2.append("GROUP BY member.id")
-        sql2.append(';')
-        # cprint(" ".join(sql2), "yellow")
-
-    return " ".join(sql2)
+    sql_query = f"""
+        SELECT
+        member.id AS MID,
+        member.first_name,
+        member.last_name,
+        member.full_name,
+        member.email,
+        member.status,
+        member.date_joined,
+        member.phone,
+        member.street_address,
+        member.state,
+        member.city,
+        member.country,
+        member.org_name,
+        member.job_title,
+        member.org_website,
+        member.org_type,
+        member.annual_revenue,
+        member.total_staff,
+        member.num_of_volunteer,
+        member.num_of_board_members,
+        subs.id AS SUBSID,
+        subs.member_id_id,
+        subs.stripe_customer_id,
+        subs.stripe_subscription_id,
+        subs.stripe_plan_id_id,
+        subs.subscription_status,
+        subs.subscription_period_start,
+        subs.subscription_period_end,
+        subs.card_expire,
+        subs.sub_range,
+        subs.stripe_card_id,
+        membership.id AS MEMBERSHIPID,
+        membership.slug,
+        membership.membership_type,
+        membership.monthly_fee,
+        membership.yearly_fee,
+        membership.day_price,
+        membership.stripe_plane_id,
+        membership.additional_fee_per_extra_record,
+        membership.allowed_records_count
+    FROM
+        members AS member,
+        subscriptions AS subs,
+        membership_membership AS membership
+    GROUP BY
+        member.id;
+    """
+    return sql_query
 
 
 def get_filter_value(filters_dict: dict, filter_name: str):

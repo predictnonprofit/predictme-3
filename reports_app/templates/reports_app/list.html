@@ -58,7 +58,7 @@ List of reports
                                                 <option></option>
                                                 <optgroup label="Users">
                                                     <option value="users">Report on all users</option>
-                                                    <option value="users_status">Users Status</option>
+                                                    <option value="users-status">Users Status</option>
                                                 </optgroup>
                                                 <optgroup label="Sales/Revenue">
                                                     <!-- <option value="profit-share">
@@ -127,10 +127,10 @@ List of reports
                 <!-- Start revenues reports segments -->
                 {% include 'reports_app/inc/revenues_reports.html' %}
                 <!-- End revenues reports segments -->
-                {# elif request.path|slice_url_path == 'profit-share' #}
-                <!-- Start profit share reports segments -->
-                {# include 'reports_app/inc/profit_share_reports.html' #}
-                <!-- End profit share reports segments -->
+                {% elif request.path|slice_url_path == 'users-status' %}
+                <!-- Start Users Status reports segments -->
+                {% include 'reports_app/inc/users_status_reports.html' %}
+                <!-- End Users Status reports segments -->
                 {% endif %}
 
                 <!-- Start Default no filter -->

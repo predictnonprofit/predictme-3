@@ -93,14 +93,18 @@ function sendFiltersValues(filtersArray, reportSectionName) {
 
     });
 }
-
-
+// this is the loader where the report options show loading
+let loader = $(".loader-filter-options");
 // this function will fetch all data for custom column
 function fetchDataForReports(columnName) {
     return $.ajax({
         url: webSiteUrl + "/dashboard/reports/api/fetch-custom-report-data",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            loader.show();
+        },
+        complete: function (xhr, settings) {
+            loader.show();
         },
         method: "POST",
         data: {

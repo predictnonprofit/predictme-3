@@ -68,6 +68,38 @@ class ReportsUsersListView(LoginRequiredMixin, UserPassesTestMixin, View):
                       context={"dummy_data": faker_holder, 'title': "Users", "filter_columns": generic_filters})
 
 
+class ReportsUserStatusListView(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = "login"
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect(reverse('profile-overview'))
+
+    def get(self, request, *args, **kwargs):
+        cprint("list reports", 'yellow')
+        faker_obj = Faker()
+        faker_holder = []
+        for _ in range(1, 20):
+            faker_holder.append({
+                "id": _,
+                "name": faker_obj.name(),
+                "email": faker_obj.email(),
+                "reg_date": faker_obj.date_this_year(),
+                "status": faker_obj.word(USERS_STATUS),
+                "sub_plan": faker_obj.word(SUB_PLANS),
+            })
+        generic_filters = ReportFilterGenerator.get_generic_filters()
+        # custom_users_filters = ReportFilterGenerator.get_custom_filters('users')
+        # generic_filters.extend(custom_users_filters)
+        users_status_filter = ReportFilterGenerator.get_custom_filters("users_status")
+        return render(request, "reports_app/list.html",
+                      context={"dummy_data": faker_holder, "filter_columns": users_status_filter, 'title': "Users Status"})
+
+
 class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
 
@@ -94,11 +126,12 @@ class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "usage": faker_obj.random_int(0, 100),
             })
 
-        generic_filters = ReportFilterGenerator.get_generic_filters()
-        custom_users_filters = ReportFilterGenerator.get_custom_filters('data_usage')
-        generic_filters.extend(custom_users_filters)
+        # generic_filters = ReportFilterGenerator.get_generic_filters()
+        # custom_users_filters = ReportFilterGenerator.get_custom_filters('data_usage')
+        # generic_filters.extend(custom_users_filters)
+        data_usage_filters = ReportFilterGenerator.get_custom_filters("data_usage")
         return render(request, "reports_app/list.html",
-                      context={"dummy_data": faker_holder, 'title': "Data Usage", "filter_columns": generic_filters})
+                      context={"dummy_data": faker_holder, 'title': "Data Usage", "filter_columns": data_usage_filters})
 
 
 class ReportsExtraUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -170,11 +203,12 @@ class ReportsRevenuesView(LoginRequiredMixin, UserPassesTestMixin, View):
                 "total_amount": round(amount + amount_addition_records, 2)
             })
 
-        generic_filters = ReportFilterGenerator.get_generic_filters()
-        custom_users_filters = ReportFilterGenerator.get_custom_filters('revenue')
-        generic_filters.extend(custom_users_filters)
+        # generic_filters = ReportFilterGenerator.get_generic_filters()
+        # custom_users_filters = ReportFilterGenerator.get_custom_filters('revenue')
+        # generic_filters.extend(custom_users_filters)
+        revenue_filters = ReportFilterGenerator.get_custom_filters('revenue')
         return render(request, "reports_app/list.html",
-                      context={"dummy_data": faker_holder, 'title': "Revenue", "filter_columns": generic_filters,
+                      context={"dummy_data": faker_holder, 'title': "Revenue", "filter_columns": revenue_filters,
                                "cities": all_cities})
 
 

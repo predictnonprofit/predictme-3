@@ -315,6 +315,66 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
         filterOptionsBlock.html(inputGenObj.userStatusMenu());
         break;
 
+      case "Days Left":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "days_left",
+          "days_left",
+          "date",
+          "Days Left",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
+        break;
+
+      case "Revenue Start Date":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "revenue_start_date",
+          "revenue_start_date",
+          "date",
+          "Revenue Start Date",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
+        break;
+
+      case "Plan Start Date":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "plan_start_date",
+          "plan_start_date",
+          "date",
+          "Plan Start Date",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
+        break;
+
+      case "Last Run":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "last_run",
+          "last_run",
+          "date",
+          "Last Run",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.dateInputsGenerator());
+        break;
+
+      case "Usage":
+        inputGenObj = new InputGenerator(
+          filterIdx,
+          "usage",
+          "usage",
+          "select",
+          "Usage",
+          reportSection
+        );
+        filterOptionsBlock.html(inputGenObj.dataUsageInputGenerator());
+        break;
+
     default:
       break;
   }
@@ -625,20 +685,25 @@ function filterReportSubmitBtn() {
       };
       allFiltersArr.push(dataObj);
     });
-    // console.log(allFiltersArr)
-    const reportSection = window.location.href.split("/");
-    const filterRequest = sendFiltersValues(allFiltersArr, reportSection.pop());
-    $.when(filterRequest).done(function(data, textStatus, jqXHR) {
-      // console.log(Object.keys(data));
-      // console.log(data);
-      // console.log(textStatus);
-      // console.log(jqXHR);
-      // console.log(jqXHR.status);
-      if (textStatus === "success" && jqXHR.status === 200) {
-        drawReportTableHeader(data["table_header"]);
-        drawGeneratedReportTable(data);
-      }
-    });
+    // check if there is any filter selected then send the request
+    if(allFiltersArr.length > 0){
+      const reportSection = window.location.href.split("/");
+      const filterRequest = sendFiltersValues(allFiltersArr, reportSection.pop());
+      $.when(filterRequest).done(function(data, textStatus, jqXHR) {
+        // console.log(Object.keys(data));
+        // console.log(data);
+        // console.log(textStatus);
+        // console.log(jqXHR);
+        // console.log(jqXHR.status);
+        if (textStatus === "success" && jqXHR.status === 200) {
+          drawReportTableHeader(data["table_header"]);
+          drawGeneratedReportTable(data, allFiltersArr);
+        }
+      });
+    }else{
+      console.error("Please Select filter!!");
+    }
+
   });
 }
 
