@@ -334,6 +334,7 @@ function getTheReportData(preparedFilters, filterData) {
 
 // report table draw function
 function drawGeneratedReportTable(reportData, filtersArray) {
+  console.log(reportData)
   // this function will save the filter name with its value, from filtersArray
   const preparedArray = preparingReportsFiltersWithValues(filtersArray);
   const allReportData = getTheReportData(preparedArray, reportData['report_data']);

@@ -16,11 +16,99 @@ import os, sys, traceback, json
 from predict_me.my_logger import log_exception
 from reports_app.helper import *
 from users.models import Member
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.db.models import Q
+
+
+
 
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
 
+
+def testing_reports(request):
+    # fi = {'first_name': 'all', 'report_section_name': 'users', 'last_name': 'all', 'email': 'all',
+    #       'status': 'active', 'plan': 'starter', 'country': 'us', 'city': 'all', 'org_type': 'Higher Education',
+    #       'org_name': '', 'register_date': '08/30/2020 - 11/20/2020', 'job_title': 'all',
+    #       'annual_revenue': '$50,000 - $100,000', 'total_staff': 231, 'num_of_volunteer': 2223,
+    #       'num_of_board_members': 434}
+    from users.models import Member
+    from datetime import datetime
+    from membership.models import Subscription
+    # members_queryset_obj = Member.objects.defer("password").all().select_related("member_subscription")
+    # members_queryset_obj = Member.objects.defer("password").all()
+    # members_queryset_obj = Member.objects.defer("password").all()
+    members_queryset_obj = Subscription.objects.all()
+    # members_queryset_obj = Member.objects.defer("password").all().filter(member_subscription__id)
+    # members_queryset_obj = Member.objects.defer("password").prefetch_related('member_subscription').all()
+    # cprint(members_queryset_obj, 'red')
+    cprint(members_queryset_obj.count(), 'magenta')
+    for idx, me in enumerate(members_queryset_obj):
+        # cprint(me, 'yellow')
+        cprint(me.member_id.city, 'yellow')
+        # cprint(me.stripe_plan_id.slug, 'yellow')
+        # cprint(me.member_id.date_joined, 'yellow')
+        # cprint(me.member_subscription.all().count(), 'white')
+
+    status = "active"
+    # country = "oman"
+    # city = "Nihil"
+    city = "Est"
+    # plan = "professional"
+    # plan = "starter"
+    plan = "expert"
+    start_date, end_date = "10/01/2020 - 10/30/2020".split(" - ")
+    start_date = datetime.strptime(start_date, "%m/%d/%Y")
+    end_date = datetime.strptime(end_date, "%m/%d/%Y")
+    org_type = "Arts and Culture"
+    num_of_board_members = 559
+    annual_revenue = "$50,000 - $100,000"
+    job_title = "consequat"
+    org_name = "April"
+    num_of_volunteer = 560
+
+    # cprint(type(all_members), "yellow")
+    # get_info(members_queryset_obj)
+    # cprint(is_valid_queryparams("one"), 'red')
+    if is_valid_queryparams(status):
+        members_queryset_obj = members_queryset_obj.filter(member_id__status=status)
+    # if is_valid_queryparams(country):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__country__iexact=country)
+    # if is_valid_queryparams(city):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id___city__icontains=city)
+    if is_valid_queryparams(plan):
+        members_queryset_obj = members_queryset_obj.filter(stripe_plan_id__slug=plan)
+    # if is_valid_queryparams(start_date) and is_valid_queryparams(end_date):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__date_joined__range=(start_date, end_date))
+    # if is_valid_queryparams(org_type):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__org_type__iexact=org_type)
+    # if is_valid_queryparams(num_of_board_members):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__num_of_board_members=num_of_board_members)
+    # if is_valid_queryparams(annual_revenue):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__annual_revenue__iexact=annual_revenue)
+    # if is_valid_queryparams(job_title):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__job_title__icontains=job_title)
+    # if is_valid_queryparams(org_name):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__org_name__icontains=org_name)
+    # if is_valid_queryparams(num_of_volunteer):
+    #     members_queryset_obj = members_queryset_obj.filter(member_id__num_of_volunteer=num_of_volunteer)
+
+
+    # cprint(members_queryset_obj, 'green')
+    cprint(members_queryset_obj.count(), 'blue')
+    cprint(members_queryset_obj.query, 'blue')
+
+    from django.db import connection
+    # cprint(connection.queries, "cyan")
+
+    data = quick_converter(members_queryset_obj)
+    # cprint(", ".join(data), 'red')
+    html = " %s " % " <br /> <br />".join(str(v) for v in data)
+    html += f"<br /> <br /> Rows Total: {members_queryset_obj.count()}"
+    # cprint(html, 'yellow')
+    # return HttpResponse(html, content_type="text/plain")
+    return HttpResponse(html)
+    # return JsonResponse({"data": html, "length": members_queryset_obj.count()}, status=200)
 
 class ReportsListView(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = "login"
@@ -129,7 +217,8 @@ class ReportsDataUsageView(LoginRequiredMixin, UserPassesTestMixin, View):
         # generic_filters = ReportFilterGenerator.get_generic_filters()
         # custom_users_filters = ReportFilterGenerator.get_custom_filters('data_usage')
         # generic_filters.extend(custom_users_filters)
-        data_usage_filters = ReportFilterGenerator.get_custom_filters("data_usage")
+        data_usage_filters = ReportFilterGenerator.get_minimum_generic_filters("users")
+        data_usage_filters.extend(ReportFilterGenerator.get_custom_filters("data_usage"))
         return render(request, "reports_app/list.html",
                       context={"dummy_data": faker_holder, 'title': "Data Usage", "filter_columns": data_usage_filters})
 

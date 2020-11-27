@@ -5,7 +5,8 @@ class InputGenerator {
     inputName,
     inputType,
     placeholder,
-    reportSectionName
+    reportSectionName,
+    msg
   ) {
     this.inputDataID = inputDataID;
     this.inputID = inputID;
@@ -17,6 +18,7 @@ class InputGenerator {
     this.allJobs = fetchDataForReports("job_title");
     this.allOrgsNames = fetchDataForReports("org_name");
     this.cities = [];
+    this.msg = (typeof msg !== "undefined") ? msg : "";
   }
   cityInputGenerator() {
     let input;
@@ -256,7 +258,7 @@ class InputGenerator {
 
   userStatusMenu() {
     const input = `
-    <div class="filter-options-wrapper" data-filter-name="org-type">
+    <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
     <div class="form-group m-2">
         <label>${this.placeholder}</label>
         <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_status" id="gen_filter_status" class="select-filter filter-input form-control gen-filter-input">
@@ -282,9 +284,44 @@ class InputGenerator {
     return input;
   }
 
+  yesNoInputGenerator(inputsName) {
+    const input = `
+    <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
+    <div class="form-group">
+        <label>${this.msg}</label>
+        <div class="radio-list">
+              <label class="radio">
+                  <input type="radio" data-input-id='li_${this.inputID}' data-has-options="true" data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" id="${this.inputID}" name="${inputsName}" value="all" class="filter-input" data-tmp-value="ALL" />
+                  <span></span> All
+              </label>
+            <label class="radio">
+                <input type="radio" data-input-id='li_${this.inputID}' data-has-options="true" data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" id="${this.inputID}" name="${inputsName}" class="filter-input" value="1" data-tmp-value="YES" />
+                <span></span> Yes
+            </label>
+                <label class="radio">
+                <input type="radio" data-input-id='li_${this.inputID}' data-has-options="true" data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" id="${this.inputID}" name="${inputsName}" value="0" class="filter-input" data-tmp-value="NO" />
+                <span></span> No
+                </label>
+        </div>
+    </div>
+   <div class="btn-group" role="group" aria-label="Basic example">
+       <button data-gen-filter-item-id="${this.inputDataID}" type="button" class="btn btn-light-danger deSelectFilterBtn" data-toggle="tooltip" title="Deselect the filter" font-weight-bold" data-filter-input-id="${this.inputID}">
+       <i class="icon-xl la la-long-arrow-left"></i>
+       </button>
+
+       <button data-gen-filter-item-id="${this.inputDataID}" data-toggle="tooltip" title="Select the filter" type="button" class="btn btn-light-primary font-weight-bold selectFilterBtn" data-filter-input-id="${this.inputID}">
+               <i class="icon-xl la la-long-arrow-right"></i>
+           </button>
+   </div>
+
+    </div>
+    `;
+    return input;
+  }
+
   dataUsageInputGenerator() {
     const input = `
-    <div class="filter-options-wrapper" data-filter-name="org-type">
+    <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
     <div class="form-group m-2">
         <label>${this.placeholder}</label>
         <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" name="gen_filter_status" id="gen_filter_status" class="select-filter filter-input form-control gen-filter-input">
@@ -392,7 +429,7 @@ class InputGenerator {
 
   planSelectGenerator() {
     const input = `
-        <div class="filter-options-wrapper" data-filter-name="annoual-revenue">
+        <div class="filter-options-wrapper" data-filter-name="${parent.inputID}">
         <div class="form-group mt-8">
         <label>Other ${this.placeholder}</label>
         <select data-input-id='li_${this.inputID}' data-has-options="true" multiple data-report-section-name="${this.reportSectionName}" data-filter-name="${this.placeholder}" class="form-control filter-input select-filter form-control-solid gen-filter-input" data-has-options="true" id="plan" name="plan">

@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path("", ReportsListView.as_view(), name="reports-list-view"),
+    path("testing", testing_reports, name="reports-test-view"),
     path("users", ReportsUsersListView.as_view(), name="reports-users-list-view"),
     path("users-status", ReportsUserStatusListView.as_view(), name="reports-users-status-list-view"),
     path("data-usage", ReportsDataUsageView.as_view(), name="reports-data-usage-list-view"),

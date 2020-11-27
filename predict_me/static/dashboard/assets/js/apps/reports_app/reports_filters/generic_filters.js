@@ -231,6 +231,19 @@ function fetchReportOptions(filterIdx, filterName, reportSection) {
       filterOptionsBlock.html(inputGenObj.jobsInputGeneratro());
       break;
 
+    case "Run Model":
+      inputGenObj = new InputGenerator(
+        filterIdx,
+        "run_model",
+        "run_model",
+        "radio",
+        "Run Model",
+        reportSection,
+        "Members who run the model or not"
+      );
+      filterOptionsBlock.html(inputGenObj.yesNoInputGenerator("run_model"));
+      break;
+
     case "Annual Revenue":
       inputGenObj = new InputGenerator(
         filterIdx,
@@ -537,7 +550,10 @@ function selectAndDeselectFiltersBtns() {
 
 	}); */
   // select button
-    $("#filterOptionsBlock").on("click", "button.selectFilterBtn", function(event) {
+    // $("#filterOptionsBlock").on("click", "button.selectFilterBtn", function(event) {
+    $("#filterOptionsBlock").off().on("click", "button.selectFilterBtn", function(event) {
+      // i used off to prevent any repeating for event fireing
+    // $("#filterOptionsBlock button.selectFilterBtn").one("click", function(event) {
       let startDate = "";
       let endDate = "";
       let fullDate = "";
@@ -561,6 +577,11 @@ function selectAndDeselectFiltersBtns() {
 
       const selectedFilterWrapper = $(this).closest(".filter-options-wrapper"); // get the parent of all inputs in the block
       const allInputsInBlock = selectedFilterWrapper.find(".filter-input");
+      // console.log(allInputsInBlock, "\n")
+      // const checkElements = allInputsInBlock.(function(item){
+      //   console.log(item);
+      // });
+      // console.log(checkElements)
       let appendedKeys = new Set();
       allInputsInBlock.each(function(index, el) {
         const element = $(el);
@@ -589,7 +610,8 @@ function selectAndDeselectFiltersBtns() {
 
         } else {
           // normal inputs not date inputs
-          // console.log(element.data())
+          // console.log(element.val())
+          // console.log(element.data("tmpValue"))
           savedElement = {
             filterName: filterName,
             filterValue: element.val(),
@@ -606,7 +628,7 @@ function selectAndDeselectFiltersBtns() {
         }
         // console.info(allInputsArray)
       });
-
+      // console.log(savedElement)
       allInputsArray.push(savedElement);
       // console.log(allInputsArray)
       // console.log("base", allInputsArray)

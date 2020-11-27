@@ -101,6 +101,7 @@ function fetchDataForReports(columnName) {
         url: webSiteUrl + "/dashboard/reports/api/fetch-custom-report-data",
         beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            // $("#filterOptionsBlock").html("");
             loader.show();
         },
         complete: function (xhr, settings) {

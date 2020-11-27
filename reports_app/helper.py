@@ -12,6 +12,23 @@ import decimal
 import json
 from django.core.exceptions import ObjectDoesNotExist
 
+
+def is_valid_queryparams(param):
+    return param != "" and param is not None and param != 'all'
+
+def quick_converter(obj):
+    data = []
+    for o in obj:
+        data.append(o)
+
+    return data
+
+def get_info(obj):
+    for op in dir(obj):
+        if not op.startswith("__"):
+            print(op)
+
+
 # this dict will hold all terms used in the web page and what match in the DB model
 DB_TERMS = {
     "gen-filter-state": 'state', 'gen-filter-users-country': 'country',
@@ -24,6 +41,10 @@ DB_TERMS = {
 }
 USERS_STATUS = ("Active", 'Pending', 'Cancel')
 SUB_PLANS = ("Starter", 'Professional', 'Expert')
+
+DEFAULT_COLUMNS = (
+    ""
+)  # this will hold all default columns which will display in all reports
 
 GENERIC_TERMS = []  # this will hold all generic filters name
 
@@ -47,17 +68,22 @@ def capitalize_report_name(name: str):
     return name.replace("_", " ").title()
 
 
+# this function will get the percentage usage of data handler of every user
+def data_handler_percent_usage(total, record_used):
+    return (record_used / total) * 100
+
+
 class ReportFilterGenerator:
 
     @staticmethod
     def get_generic_filters():
         return [
-            {"filter_name": "First Name", "report_section": "users", "input_name": report_name("First Name"),
-             "has_options": False, "report_type": "Generic Filter"},
-            {"filter_name": "Last Name", "report_section": "users", "input_name": report_name("Last Name"),
-             "has_options": False, "report_type": "Generic Filter"},
-            {"filter_name": "Email", "report_section": "users", "input_name": report_name("Email"),
-             "has_options": False, "report_type": "Generic Filter"},
+            # {"filter_name": "First Name", "report_section": "users", "input_name": report_name("First Name"),
+            #  "has_options": False, "report_type": "Generic Filter"},
+            # {"filter_name": "Last Name", "report_section": "users", "input_name": report_name("Last Name"),
+            #  "has_options": False, "report_type": "Generic Filter"},
+            # {"filter_name": "Email", "report_section": "users", "input_name": report_name("Email"),
+            #  "has_options": False, "report_type": "Generic Filter"},
             {"filter_name": "User Status", "report_section": "users",
              "input_name": report_name("User Status"), "has_options": True, "report_type": "Generic Filter"},
             {"filter_name": "Plan", "report_section": "users",
@@ -86,6 +112,26 @@ class ReportFilterGenerator:
         ]
 
     @staticmethod
+    def get_minimum_generic_filters(report_section_name=None):
+        """
+        this method will return the minimum of the generic filters to join it with specific filters section
+        """
+        if report_section_name is not None:
+            if report_section_name == "users":
+                return [
+                    # {"filter_name": "First Name", "report_section": "users", "input_name": report_name("First Name"),
+                    #  "has_options": False, "report_type": "Generic Filter"},
+                    # {"filter_name": "Last Name", "report_section": "users", "input_name": report_name("Last Name"),
+                    #  "has_options": False, "report_type": "Generic Filter"},
+                    # {"filter_name": "Email", "report_section": "users", "input_name": report_name("Email"),
+                    #  "has_options": False, "report_type": "Generic Filter"},
+                    {"filter_name": "User Status", "report_section": "users",
+                     "input_name": report_name("User Status"), "has_options": True, "report_type": "Generic Filter"},
+                    {"filter_name": "Plan", "report_section": "users",
+                     "input_name": report_name("Plan"), "has_options": True, "report_type": "Generic Filter"},
+                ]
+
+    @staticmethod
     def get_custom_filters(report_section_name):
         if report_section_name == "users":
             return [
@@ -102,6 +148,8 @@ class ReportFilterGenerator:
                 {"filter_name": "Last Run", "report_section": "data_usage", "input_name": report_name("Last Run"),
                  "has_options": True, "report_type": "Data Usage Filter"},
                 {"filter_name": "Usage", "report_section": "data_usage", "input_name": report_name("Usage"),
+                 "has_options": True, "report_type": "Data Usage Filter"},
+                {"filter_name": "Run Model", "report_section": "data_usage", "input_name": report_name("Run Model"),
                  "has_options": True, "report_type": "Data Usage Filter"},
 
             ]
@@ -121,7 +169,8 @@ class ReportFilterGenerator:
             return [
                 {"filter_name": "User Status", "report_section": "users",
                  "input_name": report_name("User Status"), "has_options": True, "report_type": "Generic Filter"},
-                {"filter_name": "Register Date", "report_section": "users_status", "input_name": report_name("Register Date"),
+                {"filter_name": "Register Date", "report_section": "users_status",
+                 "input_name": report_name("Register Date"),
                  "has_options": True, "report_type": "Users Status"},
                 {"filter_name": "Days Left", "report_section": "users_status", "input_name": report_name("Days Left"),
                  "has_options": True, "report_type": "Users Status"},
@@ -259,25 +308,33 @@ class ReportGenerator:
         filter_d = filter_dict
         if filter_d.get("report_section") is not None:
             del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
-        cprint(filter_d, 'green')
-        lookups = None
-        # lookups = lookups | Q(body__icontains='dfkl')
-        # cprint(type(lookups), 'yellow')
-        # lookups_query = ""
+        # cprint(filter_d, 'green')
+
         users_query = ""  # this to hold the Query
-        users_data = ReportGenerator.test_custom_report_sql_generator(filter_d)
-        # cprint(users_data, "cyan")
-        # cprint(len(users_data), "cyan")
-        # check if data usage is the report
-        # if report_section_name == "data-usage":
-        #     data_usage_obj = DataFile.objects.all()
-        #     cprint(data_usage_obj, 'yellow')
+        data_usage_data = ReportGenerator.get_correct_sql_func(filter_d)
 
         # this if check if the any value not equal all, and it exists in the keys dictionary
 
-        # users_query = Member.objects.filter(lookups)
-        users_len = len(users_query)
-        users_reports = dict()  # this will hold every information of the report for the user
+        # this try to handle if the subscription not exists for members who have not subscription
+        # cprint(data_usage_data, 'magenta')
+        # if len(users_reports) > 0:
+        return {"data": data_usage_data, "table_header": table_header, "total_results": len(data_usage_data)}
+        # else:
+        #     return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
+
+    @staticmethod
+    def get_data_usage_query(filter_dict: dict, table_header: list, report_section_name: str):
+        # section_name = filter_dict['report_section_name']
+        filter_d = filter_dict
+        if filter_d.get("report_section") is not None:
+            del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
+        # cprint(filter_d, 'green')
+
+        users_query = ""  # this to hold the Query
+        users_data = ReportGenerator.get_correct_sql_func(filter_d)
+
+        # this if check if the any value not equal all, and it exists in the keys dictionary
+
         # this try to handle if the subscription not exists for members who have not subscription
 
         # if len(users_reports) > 0:
@@ -286,43 +343,13 @@ class ReportGenerator:
         #     return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
 
     @staticmethod
-    def get_data_usage_query(filter_dict: dict, table_header: list, report_section_name: str):
-        # section_name = filter_dict['report_section_name']
-        global GENERIC_TERMS
-        users_reports_dict = ReportGenerator.get_all_user_query(filter_dict, table_header, 'users')['data']
-        # cprint(users_reports_dict.keys(), 'cyan')
-        filter_d = filter_dict
-        GENERIC_TERMS = list(filter_d.keys())
-        # cprint(report_section_name, "blue")
-        # del filter_d['report_section_name']  # this to delete the section name to get only the field with its values
-        # cprint(GENERIC_TERMS, 'green')
-        for key, value in users_reports_dict.items():
-            # cprint(value, 'yellow')
-            tmp_member_data_handler_obj = DataFile.objects.filter(member=value['member_data']['id']).first()
-            # check if the member has data file object
-            if tmp_member_data_handler_obj is not None:
-                tmp_usage_percentage = 0
-                tmp_data_handler_session_obj = DataHandlerSession.objects.filter(
-                    data_handler_id=tmp_member_data_handler_obj).first()
-                # cprint(tmp_member_data_handler_obj.allowed_records_count, 'yellow')
-                # check if data is int
-                if (type(tmp_member_data_handler_obj.allowed_records_count).__name__ == 'int') and (
-                        tmp_data_handler_session_obj is not None):
-
-                    # tmp_usage_percentage
-                    cprint(tmp_data_handler_session_obj, 'blue')
-
-                    #    cprint(tmp_data_handler_session_obj.all_records_count, "blue" )
-                    if tmp_data_handler_session_obj is not None:
-                        pass
-            # break
-
-        return {"data": "NO DATA TO DISPLAY FOR USERS!!", "table_header": table_header, "total_results": 0}
-
-    @staticmethod
-    def test_custom_report_sql_generator(filter_dict: dict):
+    def get_correct_sql_func(filter_dict: dict):
         WHERE_OPERATOR = "AND"
+        read_sql_query = ""
+        cprint(filter_dict, 'green')
         columns_keys = list(filter_dict.keys())
+        report_section_name = filter_dict.get("report_section_name", "users")
+        # cprint(report_section_name, 'magenta')
         columns_keys.extend((
             "slug",
             "sub_range",
@@ -331,13 +358,14 @@ class ReportGenerator:
         # cprint(columns_keys, 'red')
         all_rows = {}
         if len(filter_dict) > 0:
-            read_members_query = read_sql_generator("members", **filter_dict)
+            if report_section_name == "users":
+                read_sql_query = read_member_subscription_query("members", **filter_dict)
+            elif report_section_name == "data_usage":
+                read_sql_query = read_data_handler_query()
 
-            cprint(read_members_query, 'blue')
-            # cprint(read_members_query, 'cyan')
-            all_data = []
+            # cprint(read_sql_query, 'blue')
             with connection.cursor() as cursor:
-                cursor.execute(read_members_query)
+                cursor.execute(read_sql_query)
                 # columns = [col for col in columns_keys]
                 columns = [col[0] for col in cursor.description]
                 # row = cursor.fetchall()
@@ -353,17 +381,8 @@ class ReportGenerator:
                     dict(zip(columns, row))
                     for row in cursor.fetchall()
                 ]
-            # cprint(row, 'green')
-            # cprint(row[0], 'cyan')
-            # query_object = Member.objects.raw(read_members_query)
-            # # cprint(query_object.columns, 'cyan')
-            # for index, q in enumerate(query_object):
-            #     # print(index, q)
-            #     # cprint(type(q), 'yellow')
-            #     query_as_dict = model_to_dict(q)
-            #     query_as_dict.pop("password")
-            #     # print(query_object, end="\n")
-            #     all_rows[f"ROW_{index}"] = query_as_dict
+                # cprint(row, 'green')
+                cprint(len(row), 'red')
             # 'columns', 'db', 'iterator', 'model', 'model_fields', 'params', 'prefetch_related', 'query', 'raw_query', 'resolve_model_init_order', 'translations', 'using'
 
         # return all_rows
@@ -371,7 +390,7 @@ class ReportGenerator:
         return row
 
 
-def read_sql_generator(table, **kwargs):
+def read_member_subscription_query(table, **kwargs):
     """ Generates SQL for a SELECT statement matching the kwargs passed. """
     sql_query = f"""
         SELECT
@@ -425,28 +444,63 @@ def read_sql_generator(table, **kwargs):
     return sql_query
 
 
-def get_filter_value(filters_dict: dict, filter_name: str):
-    # cprint(filters_dict, 'cyan')
-    # cprint(len(filters_dict), 'yellow')
-    not_allowed_filters = ("register_date", "active_users", "cancelled_users", "days_left")
+def read_data_handler_query():
+    """
+    Generate sql query for data handler and data handler sessions
+    """
+    sql_query = f"""
+        SELECT
+            data_handler.id AS DHID,
+            data_handler.member_id,
+            data_handler.allowed_records_count,
+            data_handler.join_date,
+            data_handler.has_sessions,
+            data_handler.last_uploaded_session,
+            data_session.id AS DSID,
+            data_session.data_handler_id_id,
+            data_session.file_upload_procedure,
+            data_session.data_file_path,
+            data_session.current_session_name,
+            data_session.run_modal_date_time,
+            data_session.data_handler_session_label,
+            data_session.selected_columns,
+            data_session.selected_columns_dtypes,
+            data_session.donor_id_column,
+            data_session.is_donor_id_selected,
+            data_session.unique_id_column,
+            data_session.all_columns_with_dtypes,
+            data_session.is_process_complete,
+            data_session.all_records_count,
+            data_session.upload_date,
+            data_session.file_name,
+            member.id AS MID,
+            member.first_name,
+            member.last_name,
+            member.email,
+            member.status,
+            member.date_joined,
+            member.phone,
+            member.street_address,
+            member.state,
+            member.city,
+            member.country,
+            member.org_name,
+            member.job_title,
+            member.org_website,
+            member.org_type,
+            member.annual_revenue,
+            member.total_staff,
+            member.num_of_volunteer,
+            member.num_of_board_members
+        FROM
+            member_data_files AS data_handler,
+            data_handler_sessions AS data_session,
+            members AS member
+        WHERE
+            (data_session.data_handler_id_id = data_handler.id)
+            AND (data_handler.member_id = member.id)
+        GROUP BY
+            member.id;
+    """
 
-    # cprint(filter_name, 'yellow')
-    # cprint(filters_dict[filter_name], 'red')
-    # check if the key of filter send in the filter_names_list to add it to all_filters_list
-    try:
-        if filter_name not in not_allowed_filters:
-            if filters_dict.get(filter_name) == "all":
-                # print('%')
-                return "'%'"
-
-            else:
-                tmp_value = filters_dict.get(filter_name, "")
-
-                if type(tmp_value).__name__ == "int":
-                    return tmp_value
-                elif (type(tmp_value).__name__ == 'str') and (tmp_value != ""):
-                    return f"'%{tmp_value}%'"
-                else:
-                    return f"'%'"
-    except KeyError:
-        cprint("key not exists", 'red')
+    return sql_query
