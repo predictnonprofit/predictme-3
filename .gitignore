@@ -290,6 +290,8 @@ custom_requirements.txt
 *.wps
 .log
 *.sql
+TESTING.py
+data_handler/PM_Model/_DATA
 
 ### VisualStudioCode ###
 .vscode/*
