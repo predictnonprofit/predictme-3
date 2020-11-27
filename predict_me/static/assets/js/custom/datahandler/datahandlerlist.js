@@ -2,6 +2,7 @@ let undoValue = "";  // the undo value
 let undoValue2 = '';  // the undo value which will save when save button clicked
 let undoElement = null;  // the undo input element
 let isDownloaded = false;  // if true mean the member download the data template
+let acceptDownloadObj = {};
 $(function () {
 
     // this to delay the donner files but show the spinner first
@@ -73,18 +74,23 @@ $(function () {
     let closeUploadInstBtn = $('#closeUploadInstBtn');
     let acceptUploadInstBtn = $("#acceptUploadInstBtn");
     let downloadTemplateLink = $("#downloadTemplateLink");
-    var acceptDownloadObj = {};
+
     downloadTemplateLink.on('click', function (evt) {
-        isDownloaded = true;
-        // check if the two options checked enable the check button in the modal
-        $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
-        $("#uploadDataFileBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
-        $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-success la la-check-double" id="acceptsCheckMark"></i>');
-        /*dataUploadBtn.attr("disabled", "disabled");
-        $("#semitransparent").removeClass("d-none");
-        $("#donerFile").attr("disabled", "disabled");
-        $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
-        $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');*/
+        // check if the download button is disabled or not
+        if($(this).hasClass('disabled') === false){
+          isDownloaded = true;
+
+          // check if the two options checked enable the check button in the modal
+          $("#acceptUploadInstBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+          $("#uploadDataFileBtn").removeClass("disabled notAllowedCur").removeAttr("disabled");
+          $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-success la la-check-double" id="acceptsCheckMark"></i>');
+          /*dataUploadBtn.attr("disabled", "disabled");
+          $("#semitransparent").removeClass("d-none");
+          $("#donerFile").attr("disabled", "disabled");
+          $("#acceptUploadInstBtn").addClass("disabled notAllowedCur").attr("disabled", "disabled");
+          $("#acceptsCheckMark").replaceWith('<i class="icon-lg text-danger la la-times" id="acceptsCheckMark"></i>');*/
+        }
+
 
     });
 
@@ -103,15 +109,19 @@ $(function () {
         agreeDataHandlerCheckBox.prop("checked", true);
         $(".instruction-check-btn").each(function (index, item) {
             const elem = $(item);
-            // elem.is(":checked")
-            if (elem.data('action') === "agree") {
-                acceptDownloadObj['is_accept_terms'] = true;
+            // check if the checkbox checked
+            if(elem.is(":checked")){
+              if (elem.data('action') === "agree") {
+                  acceptDownloadObj['is_accept_terms'] = true;
+              }
+              if (elem.data('action') === "download") {
+                  acceptDownloadObj['is_accept_download_template'] = true;
+              }
             }
-            if (elem.data('action') === "download") {
-                acceptDownloadObj['is_accept_download_template'] = true;
-            }
+
         });
         acceptDownloadObj['is_download_template'] = isDownloaded;
+
         const acceptDownloadResponse = saveMemberAccepts(acceptDownloadObj);
         $.when(acceptDownloadResponse).done(function (data, textStatus, jqXHR) {
             if ((textStatus === "success") && (jqXHR.status === 200)) {
@@ -743,6 +753,3 @@ $(document).ready(function () {
 $(document).ajaxError(function () {
     console.error('Triggered ajaxError handler.');
 });
-
-
-

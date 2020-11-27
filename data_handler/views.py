@@ -18,7 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from .validators import CheckInDataError
 from django.contrib.auth.decorators import login_required
 from prettyprinter import pprint
-
+from .PM_Model.PredictME_Model import run_model
+from django.core.signing import Signer
 DONOR_LBL = "Donation Field"
 UNIQUE_ID_LBL = "Unique Identifier (ID)"
 
@@ -126,10 +127,18 @@ class DataHandlerFileUpload(APIView):
             from data_handler.models import (DataFile, DataHandlerSession)
             data_file = DataFile.objects.get(member=request.user)
             dfile = request.FILES['donor_file']
+            base_file_content = ContentFile(dfile.read())
             # this to make file name unique
             file_id = uuid.uuid4()
             new_file_name_id = f"{file_id.time_hi_version}_{dfile.name}"
-            path = default_storage.save(f"data/{new_file_name_id}", ContentFile(dfile.read()))
+
+            path = default_storage.save(f"data/{new_file_name_id}", base_file_content)
+            # this step to save the base path with the old data type without convert the dtypes of the columns
+            unique_user_data_file_ids = f"{str(data_file.id)}_{str(data_file.member.id)}"
+            signer = Signer(algorithm='md5')
+            base_path_name = f"{unique_user_data_file_ids}-{signer.sign(unique_user_data_file_ids)}_{dfile.name}"
+            base_path = default_storage.save(f"data/base/{base_path_name}", base_file_content)
+            tmp_base_path = os.path.join(settings.MEDIA_ROOT, base_path)
             tmp_file = os.path.join(settings.MEDIA_ROOT, path)
             row_count = get_row_count(tmp_file)  # get total rows of the uploaded file
 
@@ -138,6 +147,7 @@ class DataHandlerFileUpload(APIView):
                 resp = {"is_allowed": False, "row_count": row_count,
                         "msg": "The file is empty please re-upload correct file", "is_empty": True}
                 delete_data_file(tmp_file)
+                delete_data_file(tmp_base_path)
                 # delete_all_member_data_file_info(data_file)
                 return Response(resp, status=200)
             else:
@@ -152,6 +162,7 @@ class DataHandlerFileUpload(APIView):
                     member_data_session = DataHandlerSession.objects.get(data_handler_id=data_file,
                                                                          pk=data_or_num)
                     member_data_session.data_file_path = tmp_file
+                    member_data_session.base_data_file_path = tmp_base_path
                     member_data_session.file_name = file_name
                     member_data_session.data_handler_session_label = session_label
                     member_data_session.save()
@@ -166,7 +177,8 @@ class DataHandlerFileUpload(APIView):
                                                                             all_records_count=row_count,
                                                                             data_handler_session_label=session_label,
                                                                             file_name=file_name,
-                                                                            all_columns_with_dtypes=all_main_cols_str)
+                                                                            all_columns_with_dtypes=all_main_cols_str,
+                                                                            base_data_file_path=tmp_base_path)
                     data_file.last_uploaded_session = member_data_session.pk
                     data_file.save()
 
@@ -209,6 +221,7 @@ class SaveColumnsView(APIView):
         try:
             from data_handler.models import (DataFile, DataHandlerSession)
             member_data_file = DataFile.objects.get(member=request.user)
+
             columns_name = request.POST.getlist(
                 "columns[]")  # to save columns as text in db, [] -> this because the key send "columns[]"
             columns_name_dtypes = request.POST.get("columns_with_datatype")  # to save columns with the data types
@@ -612,8 +625,17 @@ class ValidateColumnsView(APIView):
         try:
             from data_handler.models import (DataFile, DataHandlerSession)
             member_data_file = DataFile.objects.get(member=request.user)
+            member_data_session = None
             params = request.POST.get('parameters')
             data_or_num = check_data_or_num(params)
+            columns = request.POST.get("columns")  # as a dict
+            columns_json = json.loads(columns)  # as a dict
+            # loop and save only donation fields
+            donation_fields = []
+            for key, value in columns_json.items():
+                if "donation" in value:
+                    donation_fields.append(f"'{key}'")
+            donation_fields_as_string = f"[{', '.join(donation_fields)}]"
             if isinstance(data_or_num, int) is True:
                 # if the member edit exists session
                 member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
@@ -624,11 +646,11 @@ class ValidateColumnsView(APIView):
                                                                      pk=member_data_file.last_uploaded_session)
 
                 # cprint(member_data_session.file_name, 'yellow')
+            member_data_session.donation_columns = donation_fields_as_string
+            member_data_session.save()
             data_file = member_data_session.data_file_path
             columns_list = member_data_session.get_selected_columns_as_list
-            columns = request.POST.get("columns")  # as a dict
-            columns_json = json.loads(columns)  # as a dict
-            # print(columns_json)
+
             validate_columns_result = validate_data_type_in_dualbox(columns_json, data_file, columns_list)
             # print(validate_columns_result)
             if len(columns_json) > 3:
@@ -923,6 +945,7 @@ class DeleteSessionView(APIView):
                 member_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
                 for dfile in member_session:
                     delete_data_file(dfile.data_file_path)
+                    delete_data_file(dfile.base_data_file_path)
                 member_session.delete()
             return Response("Delete Session View", status=200)
         except Exception as ex:
@@ -955,6 +978,30 @@ class RenameSessionView(APIView):
                 member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file, pk=data_or_num)
                 member_session.data_handler_session_label = session_name.strip()
                 member_session.save()
+
+            return Response("Session Renamed Successfully!", status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            cprint(str(ex), 'red')
+            log_exception(ex)
+
+
+class RunModel(APIView):
+    """
+        this api view will run the model
+        """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+
+        try:
+            from datetime import datetime
+            from data_handler.models import DataFile, DataHandlerSession
+            member_data_file = DataFile.objects.get(member=request.user)
+            data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
+            session_name = request.POST.get('session_name')
+            donation_cols = data_session.donation_columns
+            run_model(data_session.base_data_file_path, donation_cols)
 
             return Response("Session Renamed Successfully!", status=200)
         except Exception as ex:

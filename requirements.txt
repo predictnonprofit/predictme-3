@@ -27,7 +27,7 @@ et-xmlfile==1.0.1
 Faker==4.14.2
 future==0.18.2
 google-api-core==1.23.0
-google-api-python-client==1.12.5
+google-api-python-client==1.12.7
 google-auth==1.23.0
 google-auth-httplib2==0.0.4
 google-auth-oauthlib==0.4.2
@@ -80,3 +80,6 @@ webencodings==0.5.1
 whitenoise==5.2.0
 xhtml2pdf==0.2.5
 xlrd==1.2.0
+matplotlib==3.1.0
+seaborn==0.9.0
+fpdf==1.7.2

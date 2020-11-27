@@ -25,6 +25,7 @@ urlpatterns = [
         path("set-session-label", SetSessionLabel.as_view(), name="data-handler-set-session-label"),
         path("delete-data-session", DeleteSessionView.as_view(), name="data-handler-delete-session"),
         path("rename-data-session", RenameSessionView.as_view(), name="data-handler-rename-session"),
+        path("run-model", RunModel.as_view(), name="data-handler-run-model"),
     ])),
 
 

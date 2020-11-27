@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "members_app",
     "site_settings",
     "membership",
+    "user_logger",
     "activity_app",
     "predictme_context_processors",
     "data_handler.apps.DataHandlerConfig",
@@ -248,3 +249,4 @@ SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 #         'rest_framework.permissions.IsAdminUser'
 #    ),
 # }
+# DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M:%S',)

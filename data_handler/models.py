@@ -31,6 +31,7 @@ class DataFile(models.Model):
     join_date = models.DateTimeField(auto_now_add=True)
     has_sessions = models.BooleanField(default=False)
     last_uploaded_session = models.IntegerField(null=True, blank=True)
+    is_run_the_model = models.BooleanField(null=True, blank=True, default=False)
 
     class Meta:
         # verbose_name = "member_data_file"
@@ -53,6 +54,8 @@ class DataHandlerSession(models.Model):
                                         related_name='data_sessions_set')
     file_upload_procedure = models.CharField(max_length=20, null=True, blank=True, choices=UPLOAD_PROCEDURES)
     data_file_path = models.CharField(max_length=255, blank=True, null=True)
+    base_data_file_path = models.CharField(max_length=255, blank=True, null=True)
+    donation_columns = models.CharField(max_length=255, blank=True, null=True)
     current_session_name = models.CharField(max_length=70, null=True, blank=True, choices=DATA_HANDLER_SESSION_NAMES)
     run_modal_date_time = models.CharField(null=True, blank=True, max_length=60)
     data_handler_session_label = models.CharField(max_length=70, null=True, blank=True)

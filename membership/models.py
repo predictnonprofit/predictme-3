@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from data_handler.models import (DataFile, DataHandlerSession)
 from .managers import SubscribeManager
+from users.models import Member
 
 MEMBERSHIP_LABELS = (
     ("starter", "Starter"),
@@ -39,8 +40,8 @@ class Membership(models.Model):
 
 class Subscription(models.Model):
     objects = SubscribeManager()
-    member_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="member_subscription",
-                                  null=True, blank=True)
+    member_id = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="member_subscription",
+                                  null=True, blank=True, related_query_name="member_subscription")
     stripe_customer_id = models.CharField(max_length=100, null=True, blank=True)
     stripe_subscription_id = models.CharField(max_length=60, null=True, blank=True)
     stripe_plan_id = models.ForeignKey(Membership, on_delete=models.CASCADE, blank=True, null=True)
