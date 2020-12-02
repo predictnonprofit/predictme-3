@@ -294,6 +294,7 @@ custom_requirements.txt
 *.sql
 TESTING.py
 data_handler/PM_Model/_DATA
+*.rtl.css
 
 ### VisualStudioCode ###
 .vscode/*
