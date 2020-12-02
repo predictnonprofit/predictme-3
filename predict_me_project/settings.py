@@ -30,7 +30,7 @@ SECRET_KEY = 'xdr3k(sy^bog(0#(a$&+1%zqa4$b(97qzu^3w8(x)9f4j!3_1i'
 DEBUG = True
 
 if DEBUG is True:
-    ALLOWED_HOSTS = ["127.0.0.1", "predictme2.herokuapp.com"]
+    ALLOWED_HOSTS = ["127.0.0.1", "predictme.herokuapp.com"]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
