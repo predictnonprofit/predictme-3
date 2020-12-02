@@ -660,3 +660,22 @@ def check_data_or_num(params: str):
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         log_exception(traceback.format_exc())
+
+
+def remove_spaces_from_columns_names(file_path):
+    """
+    this function will take dataframe path and save the file without
+    spaces in the columns name
+    """
+    try:
+        path_obj = Path(file_path)
+        df = get_df_from_data_file(file_path)
+        df.columns = df.columns.str.strip()
+        delete_data_file(file_path)
+        if path_obj.suffix == ".xlsx":
+            df.to_excel(path_obj.as_posix(), index=False)
+        elif path_obj.suffix == ".csv":
+            df.to_csv(path_obj.as_posix(), index=False, sep=',')
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        log_exception(traceback.format_exc())

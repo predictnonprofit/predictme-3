@@ -283,6 +283,8 @@ fabric.properties
 *.pages
 *.rtf
 notes.txt
+heroku_vars.txt
+vars.sh
 bugs.txt
 changes.txt
 custom_requirements.txt

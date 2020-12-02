@@ -153,6 +153,7 @@ class DataHandlerFileUpload(APIView):
             else:
                 # here the file not empty
                 save_data_file_rounded(tmp_file)
+                remove_spaces_from_columns_names(tmp_base_path)
                 columns = extract_all_columns_with_dtypes(tmp_file)  # extract the columns from the uploaded file
                 params = request.POST.get('parameters')
                 session_label = request.POST.get('session-label')
@@ -1001,7 +1002,7 @@ class RunModel(APIView):
             data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
             session_name = request.POST.get('session_name')
             donation_cols = data_session.donation_columns
-            run_model(data_session.base_data_file_path, donation_cols)
+            run_model(data_session.data_file_path, donation_cols)
 
             return Response("Session Renamed Successfully!", status=200)
         except Exception as ex:

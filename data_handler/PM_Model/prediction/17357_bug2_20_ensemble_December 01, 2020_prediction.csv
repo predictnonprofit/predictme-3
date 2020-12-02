@@ -1,0 +1,20 @@
+Home Address,City,State,Zip,Volunteered in the past,2019 Gift,2018 Gift,2017 Gift,2016 Gift,2015 Gift,2014 Gift,2013 Gift,2012 Gift,2011 Gift,CompTotal,Assigned Target Value,Model Name: ensemble: Donor Probability Score,Model Name: ensemble: Donor Predicted Classification (>= Threshold Value)
+6736 Udall   Way,Lisbon,Oregon,68770,False,96535.6,35990.85,65466.67,74071.05,43463.61,91870.99,98652.49,16559.39,75884.58,523,1,0.42,1
+6932 Bethwin  Road,Honolulu,Alaska,74240,False,55681.79,9108.68,6440.71,42169.22,99415.06,76032.01,15683.99,87287.97,9083.66,44,1,0.33,0
+6620 Enford   Boulevard,Columbus,Utah,29863,False,,,,,,,,,,0,0,0.33,0
+8615 Clerkenwell Drive,Fort Lauderdale,Connecticut,74586,False,,,,,,,,,,0,0,0.3,0
+7371 Bury  Crossroad,New York,Oregon,58789,False,,,,,,,,,,0,0,0.42,1
+8765 South Lane,Omaha,New York,79560,True,,,,,,,,,,0,0,0.33,0
+7622 Coborn  Rue,Garland,Florida,44899,True,,,,,,,,,,0,0,0.32,0
+4323 Bliss  Grove,Fremont,Iowa,20364,True,,,,,,,,,,116000,0,0.35,0
+2516 Monroe Walk,Minneapolis,Connecticut,47742,False,,,,,,,,,,0,0,0.3,0
+5936 Bendall   Route,Tallahassee,Florida,15851,True,,,,,,,,,,25000,0,0.32,0
+5130 Yoakley Rue,Garland,Colorado,45838,True,,,,,,,,,,31000,0,0.36,0
+915 Calvin   Hill,St. Louis,Massachussets,94042,True,,,,,,,,,,1100,0,0.32,0
+5996 Cheney  Boulevard,San Francisco,South Dakota,95808,True,,,,,,,,,,3000,0,0.35,0
+8714 Beaconsfield  Alley,Escondido,Connecticut,88649,True,,,,,,,,,,66001,0,0.33,0
+7526 Carolina  Vale,Jacksonville,Alabama,19625,True,,,17489.99,95855.82,83463.68,42076.67,32014.91,49960.0,60798.48,0,1,0.34,0
+922 Calderwood   Avenue,Berna,Arizona,29163,False,,,69117.01,65335.74,21426.46,23526.38,83992.22,49099.04,41748.69,7000,1,0.33,0
+8362 West Walk,Prague,Colorado,45635,False,,,81297.47,,,50199.52,,,3700.27,79000,0,0.33,0
+8470 Cleaver Drive,El Paso,Montana,93641,True,,,53257.33,,,95443.27,,,13223.68,105000,0,0.33,0
+8567 Jackson Grove,Lancaster,Massachussets,64943,False,,,29834.44,,,35785.59,,,35668.73,83400,0,0.29,0
