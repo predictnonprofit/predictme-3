@@ -74,6 +74,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+*.log
 
 # Translations
 *.mo
@@ -295,6 +296,8 @@ custom_requirements.txt
 TESTING.py
 data_handler/PM_Model/_DATA
 *.rtl.css
+.pydevproject.bak
+.tern-project
 
 ### VisualStudioCode ###
 .vscode/*
