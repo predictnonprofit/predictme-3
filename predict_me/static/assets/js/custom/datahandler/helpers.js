@@ -1537,39 +1537,14 @@ function confirmRunModal() {
     reverseButtons: true,
     timerProgressBar: true,
     onAfterClose: () => {
-      alert("done")
+      // alert("done")
     }
   }).then((result) => {
     if (result.value) {
-      const runModelReq = runModel();
-      console.log(runModelReq)
-      let timerInterval
-      Swal.fire({
-        title: 'Auto close alert!',
-        html: 'I will close in <b></b> milliseconds.',
-        timer: 2000,
-        timerProgressBar: true,
-        willOpen: () => {
-          Swal.showLoading()
-          timerInterval = setInterval(() => {
-            const content = Swal.getContent()
-            if (content) {
-              const b = content.querySelector('b')
-              if (b) {
-                b.textContent = Swal.getTimerLeft()
-              }
-            }
-          }, 100)
-        },
-        willClose: () => {
-          clearInterval(timerInterval)
-        }
-      }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer')
-        }
-      })
+      // const runModelReq = runModel();
+      // console.log(runModelReq)
+      runSocket();
+
 
     } else if (
       /* Read more about handling dismissals below */

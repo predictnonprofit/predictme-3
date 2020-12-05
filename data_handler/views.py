@@ -18,8 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from .validators import CheckInDataError
 from django.contrib.auth.decorators import login_required
 from prettyprinter import pprint
-from .PM_Model.PredictME_Model import run_model
 from django.core.signing import Signer
+from django.http import HttpResponse
 DONOR_LBL = "Donation Field"
 UNIQUE_ID_LBL = "Unique Identifier (ID)"
 
@@ -82,6 +82,7 @@ class DataListView(LoginRequiredMixin, View):
                 context['has_session'] = True
             else:
                 context['has_session'] = False
+
             # this step will work when the member upload the file but did not pick any column
             # file_path = member_data_file.data_file_path
             # file_columns = member_data_file.get_selected_columns_as_list
@@ -986,26 +987,53 @@ class RenameSessionView(APIView):
             cprint(str(ex), 'red')
             log_exception(ex)
 
+@login_required
+def download_report_file(request, report_type):
+    from data_handler.models import DataFile, DataHandlerSession
+    member_data_file = DataFile.objects.get(member=request.user)
+    member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
+    file_path = ""
+    mime_type = ''
+    if member_session.is_process_complete:
+        if report_type == "pdf":
+            file_path = member_session.pdf_report_file_path
+            mime_type = 'application/pdf'
+        elif report_type == 'csv':
+            file_path = member_session.csv_report_file_path
+            mime_type = "text/csv"
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type=mime_type)
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
 
-class RunModel(APIView):
-    """
-        this api view will run the model
-        """
-    permission_classes = (IsAuthenticated,)
 
-    def post(self, request, format=None):
 
-        try:
-            from datetime import datetime
-            from data_handler.models import DataFile, DataHandlerSession
-            member_data_file = DataFile.objects.get(member=request.user)
-            data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
-            session_name = request.POST.get('session_name')
-            donation_cols = data_session.donation_columns
-            run_model(data_session.data_file_path, donation_cols)
 
-            return Response("Session Renamed Successfully!", status=200)
-        except Exception as ex:
-            cprint(traceback.format_exc(), 'red')
-            cprint(str(ex), 'red')
-            log_exception(ex)
+# class RunModel(APIView):
+#     """
+#         this api view will run the model
+#         """
+#     permission_classes = (IsAuthenticated,)
+#
+#     def post(self, request, format=None):
+#
+#         try:
+#             from datetime import datetime
+#             from data_handler.models import DataFile, DataHandlerSession
+#             member_data_file = DataFile.objects.get(member=request.user)
+#             data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
+#             session_name = request.POST.get('session_name')
+#             donation_cols = data_session.donation_columns
+#             # run_model(data_session.data_file_path, donation_cols)
+#             run_model(data_session.base_data_file_path, donation_cols)
+#
+#             return Response("Session Renamed Successfully!", status=200)
+#         except Exception as ex:
+#             cprint(traceback.format_exc(), 'red')
+#             cprint(str(ex), 'red')
+#             log_exception(ex)
+
+
+
+

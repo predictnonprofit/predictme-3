@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 INSTALLED_APPS = [
+    "channels",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -87,7 +88,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.dropbox',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.microsoft',
+    'allauth.socialaccount.providers.microsoft'
 
 ]
 
@@ -114,6 +115,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'predict_me_project.wsgi.application'
+ASGI_APPLICATION = 'predict_me_project.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

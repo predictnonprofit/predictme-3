@@ -69,6 +69,8 @@ class DataHandlerSession(models.Model):
     all_records_count = models.BigIntegerField(null=True, blank=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     file_name = models.CharField(max_length=50, blank=True, null=True)
+    pdf_report_file_path = models.CharField(max_length=255, blank=True, null=True)
+    csv_report_file_path = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         # verbose_name = "member_data_file"

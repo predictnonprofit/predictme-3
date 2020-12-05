@@ -1,4 +1,7 @@
 {% load socialaccount %}
+<!-- Run Model Modal   -->
+{% include "data_handler/inc/run_model_dialog.html" %}
+<!-- ./Run Model Modal  -->
 <div class="card card-custom gutter-b">
 
     <div class="card-body">
@@ -90,6 +93,7 @@
             </div>
             <div class="card-body">
                 <div class="container">
+
                     <div class="alert alert-custom alert-notice alert-light-warning fade show" role="alert">
                         <div class="alert-icon"><i class="flaticon-warning"></i></div>
                         <div class="alert-text font-weight-bolder h4">You cant run the model until validate all data
@@ -102,6 +106,14 @@
                             </button>
                         </div>
                     </div>
+
+                    {% if session_info.is_process_complete == True %}
+                    <div id="downloadPDFCSVFilesWrapper">
+                      <a href="{% url 'data-handler-download-pdf-report' 'pdf' %}">Download Report as PDF</a> <br  />
+                      <a href="{% url 'data-handler-download-pdf-report' 'csv' %}">Download Report as CSV</a>
+                    </div>
+                    {% endif %}
+
 
                     <p class="text-center my-10">
                         <!--begin::Button-->

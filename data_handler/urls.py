@@ -6,6 +6,7 @@ urlpatterns = [
     path("init", data_handler_init, name="data-handler-init"),
     # path("test_box", data_handler_test_dual, name="data-handler-test-dual"),
     re_path("^upload/(?P<filename>[^/]+)$", DataHandlerFileUpload.as_view(), name="data-handler-upload"),
+    path("download/report/<str:report_type>/", download_report_file, name='data-handler-download-pdf-report'),
     path("api/", include([
         path("save-columns", SaveColumnsView.as_view(), name="data-handler-save-columns-names"),
         path("get-columns", GetColumnsView.as_view(), name="data-handler-get-columns"),
@@ -25,7 +26,7 @@ urlpatterns = [
         path("set-session-label", SetSessionLabel.as_view(), name="data-handler-set-session-label"),
         path("delete-data-session", DeleteSessionView.as_view(), name="data-handler-delete-session"),
         path("rename-data-session", RenameSessionView.as_view(), name="data-handler-rename-session"),
-        path("run-model", RunModel.as_view(), name="data-handler-run-model"),
+        # path("run-model", RunModel.as_view(), name="data-handler-run-model"),
     ])),
 
 

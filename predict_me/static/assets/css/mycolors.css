@@ -500,3 +500,11 @@ li.generic-filter-item-selected:first-child{
     left: 39%;
 } */
 /* End Reports Filter Section */
+
+#modelRunResultWrapper{
+  padding: 10px 10px 10px 10px;
+}
+
+#modelRunResultWrapper > #runModalResults{
+  font-size: 17px;
+}

@@ -95,6 +95,8 @@ PyPDF2 = "==1.26.0"
 Pyphen = "==0.9.5"
 scikit-learn = "*"
 imblearn = "*"
+channels = "*"
+daphne = "*"
 
 [requires]
 python_version = "3.8"

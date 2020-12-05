@@ -172,6 +172,8 @@
     {% include "data_handler/inc/count_records_progress_modal.html" %}
     <!-- ./Records Counter Box  -->
 
+
+
     <section id="sessions-list-table">
         {# first check if the member has previous sessions or not #}
         {% if has_session == True %}
@@ -183,7 +185,7 @@
             </div>
             <!-- End Spinner   -->
             <!-- Start Session List Table -->
-            {% include 'data_handler/segments/sessions_list.html' with member_sessions=member_sessions %}
+            {% include 'data_handler/segments/sessions_list.html' with member_sessions=member_sessions  %}
             <!-- End Session List Table -->
 
         {% else %}

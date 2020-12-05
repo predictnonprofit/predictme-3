@@ -44,12 +44,15 @@ import ast
 import glob
 import operator
 import math
+import time
 
 import locale
 
 # locale.setlocale(locale.LC_ALL, 'en_US')
 font_style = 'Arial'
 
+# this dictionary to save pdfreport file path, csv file
+MODEL_FILES_PATH = {}
 
 class CustomPDF(FPDF):
     def footer(self):
@@ -67,6 +70,7 @@ pdf.set_font(font_style, size=10)
 pdf.add_page()
 image_index = 0
 
+send_data_obj = None
 
 def convert_number_format(d):
     return locale.format("%d", d, grouping=True)
@@ -577,7 +581,9 @@ def model_selection(X, y, X_pred, donation_columns, cat_col, donor_df, no_donati
         classification_full_pred_prob[m['label']] = model.predict_proba(X_pred)
 
         print("Classifier: {} and time(seconds): {}".format(m['label'], round(time.time() - start_time, 3)))
+        send_data_obj.send(text_data="Classifier: {} and time(seconds): {}".format(m['label'], round(time.time() - start_time, 3)))
         print()
+        time.sleep(1)
 
         model_f1_score[m['label']] = round(f1_score(y_test, y_pred, average='weighted'), 2)
 
@@ -1147,8 +1153,11 @@ def delete_old_plots():
 skewed_target_value = False
 skewed_target_value_similar = False
 # Run the model from the view
-def run_model(data_file_path, donation_cols):
-    global skewed_target_value
+
+
+def run_model(data_file_path, donation_cols, send_obj):
+    global skewed_target_value, send_data_obj
+    send_data_obj = send_obj
     start_time = time.time()
     pdf.ln(2)
     today = date.today()
@@ -1279,11 +1288,20 @@ def run_model(data_file_path, donation_cols):
                                                     skewed_target_value_similar, top3_models, is_similar_file)
 
     prediction_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "prediction"))
+    # print("prediction_path -> ", prediction_path)
     pdf_report_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "PdfReport"))
+    # print("pdf_report_path -> ", pdf_report_path)
     file_path = file_path.split("/")[-1]
+    # print("file_path -> ", file_path)
     pdf.output("{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
+    # print("PDF _PAT  => ", "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
+    MODEL_FILES_PATH['PDF_FILE'] = "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date)
     df_final.to_csv(
         "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date),
         index=None)
-
+    # print("CSV FILE - > ", "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date))
     print("total run time is {}".format(round(time.time() - start_time, 3)))
+    MODEL_FILES_PATH['CSV_FILE'] = "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date)
+
+    return MODEL_FILES_PATH
+
