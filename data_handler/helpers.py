@@ -544,6 +544,7 @@ def delete_all_member_data_file_info(member_data_file):
     """
     try:
         from data_handler.models import DataHandlerSession
+
         for dfile in DataHandlerSession.objects.filter(data_handler_id=member_data_file):
             delete_data_file(dfile.data_file_path)
         DataHandlerSession.objects.filter(data_handler_id=member_data_file).delete()

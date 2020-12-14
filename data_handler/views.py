@@ -572,7 +572,7 @@ class SaveNewRowsUpdateView(APIView):
 
 class DeleteDataFileView(APIView):
     """
-    ### Developement only ###
+    ### Development only ###
     API View to save all updated rows from data table form, 
 
     * Requires token authentication.
@@ -596,6 +596,7 @@ class DeleteDataFileView(APIView):
             else:
                 member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
                                                                      pk=member_data_file.last_uploaded_session)
+
             delete_data_file(member_data_session.data_file_path)
 
             member_data_session.delete()
@@ -945,6 +946,13 @@ class DeleteSessionView(APIView):
                 member_session.delete()
             elif session_id == 'all':
                 member_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
+                # cprint(member_session.first().pdf_report_file_path, "green")
+                # cprint(member_session.first().csv_report_file_path, "blue")
+                # check if the member run the model or not, to remove the model files output
+                if member_session.first().is_process_complete:
+                    delete_data_file(member_session.first().pdf_report_file_path)
+                    delete_data_file(member_session.first().csv_report_file_path)
+
                 for dfile in member_session:
                     delete_data_file(dfile.data_file_path)
                     delete_data_file(dfile.base_data_file_path)
