@@ -729,6 +729,7 @@ function runSocket() {
     // onclose connection
     socket.onclose = function(event) {
       if (event.wasClean) {
+        console.log(event)
         // alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         // console.log(event);
         // swAlert("Info", `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`, "info");
