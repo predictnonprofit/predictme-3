@@ -293,11 +293,16 @@ custom_requirements.txt
 *.wps
 .log
 *.sql
+db.zip
 TESTING.py
 data_handler/PM_Model/_DATA
 *.rtl.css
 .pydevproject.bak
 .tern-project
+data_handler/PM_Model/PdfReport/*.pdf
+data_handler/PM_Model/Plots/*.png
+data_handler/PM_Model/prediction/*.csv
+
 
 ### VisualStudioCode ###
 .vscode/*
