@@ -1012,8 +1012,8 @@ def download_report_file(request, report_type):
             elif report_type == 'csv':
                 file_path = member_session.csv_report_file_path
                 mime_type = "text/csv"
-            cprint(file_path, 'blue')
-            cprint(os.path.exists(file_path), 'red')
+            # cprint(file_path, 'blue')
+            # cprint(os.path.exists(file_path), 'red')
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type=mime_type)
