@@ -19,7 +19,9 @@ from .validators import CheckInDataError
 from django.contrib.auth.decorators import login_required
 from prettyprinter import pprint
 from django.core.signing import Signer
-from django.http import HttpResponse
+from django.http import (HttpResponse, Http404)
+from django.utils.encoding import smart_str
+import uuid
 DONOR_LBL = "Donation Field"
 UNIQUE_ID_LBL = "Unique Identifier (ID)"
 
@@ -124,20 +126,19 @@ class DataHandlerFileUpload(APIView):
 
     def post(self, request, filename, format=None):
         try:
-            import uuid
             from data_handler.models import (DataFile, DataHandlerSession)
             data_file = DataFile.objects.get(member=request.user)
             dfile = request.FILES['donor_file']
             base_file_content = ContentFile(dfile.read())
             # this to make file name unique
             file_id = uuid.uuid4()
-            new_file_name_id = f"{file_id.time_hi_version}_{dfile.name}"
+            new_file_name_id = f"{file_id.time_hi_version}-{dfile.name}"
 
             path = default_storage.save(f"data/{new_file_name_id}", base_file_content)
             # this step to save the base path with the old data type without convert the dtypes of the columns
             unique_user_data_file_ids = f"{str(data_file.id)}_{str(data_file.member.id)}"
             signer = Signer(algorithm='md5')
-            base_path_name = f"{unique_user_data_file_ids}-{signer.sign(unique_user_data_file_ids)}_{dfile.name}"
+            base_path_name = f"{unique_user_data_file_ids}_{uuid.uuid4().hex[:6].upper()}_{dfile.name}"
             base_path = default_storage.save(f"data/base/{base_path_name}", base_file_content)
             tmp_base_path = os.path.join(settings.MEDIA_ROOT, base_path)
             tmp_file = os.path.join(settings.MEDIA_ROOT, path)
@@ -997,23 +998,32 @@ class RenameSessionView(APIView):
 
 @login_required
 def download_report_file(request, report_type):
-    from data_handler.models import DataFile, DataHandlerSession
-    member_data_file = DataFile.objects.get(member=request.user)
-    member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
-    file_path = ""
-    mime_type = ''
-    if member_session.is_process_complete:
-        if report_type == "pdf":
-            file_path = member_session.pdf_report_file_path
-            mime_type = 'application/pdf'
-        elif report_type == 'csv':
-            file_path = member_session.csv_report_file_path
-            mime_type = "text/csv"
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-                return response
+    try:
+        from data_handler.models import DataFile, DataHandlerSession
+        member_data_file = DataFile.objects.get(member=request.user)
+        member_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
+        file_path = ""
+        mime_type = ''
+        if member_session.is_process_complete:
+
+            if report_type == "pdf":
+                file_path = member_session.pdf_report_file_path
+                mime_type = 'application/pdf'
+            elif report_type == 'csv':
+                file_path = member_session.csv_report_file_path
+                mime_type = "text/csv"
+            cprint(file_path, 'blue')
+            cprint(os.path.exists(file_path), 'red')
+            if os.path.exists(file_path):
+                with open(file_path, 'rb') as fh:
+                    response = HttpResponse(fh.read(), content_type=mime_type)
+                    response['Content-Disposition'] = 'attachment; filename=' + smart_str(os.path.basename(file_path))
+                    return response
+
+    except Exception as ex:
+        cprint(traceback.format_exc(), 'red')
+        cprint(str(ex), 'red')
+        log_exception(ex)
 
 
 
