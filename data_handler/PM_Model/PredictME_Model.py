@@ -1158,10 +1158,12 @@ skewed_target_value_similar = False
 def run_model(data_file_path, donation_cols, send_obj):
     global skewed_target_value, send_data_obj
     send_data_obj = send_obj
+    import random
     start_time = time.time()
     pdf.ln(2)
     today = date.today()
-    today_date = today.strftime("%B %d, %Y")
+    # today_date = today.strftime("%B %d, %Y")
+    today_date = random.sample(range(1, 100), 1)[0]
     pdf.set_font(font_style, 'B', size=10)
     pdf.multi_cell(h=5.0, w=0, txt="Predictive Modeling Results", align="C")
     pdf.ln(0.5)
@@ -1294,14 +1296,21 @@ def run_model(data_file_path, donation_cols, send_obj):
     file_path = file_path.split("/")[-1]
     # print("file_path -> ", file_path)
     pdf.output("{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
+    # pdf.output("{}/report.pdf".format(pdf_report_path))
     # print("PDF _PAT  => ", "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
+    # MODEL_FILES_PATH['PDF_FILE'] = "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date)
     MODEL_FILES_PATH['PDF_FILE'] = "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date)
+    print(file_path.split(".")[0], file_path.split("."))
+    # df_final.to_csv(
+    #     "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date),
+    #     index=None)
     df_final.to_csv(
         "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date),
         index=None)
     # print("CSV FILE - > ", "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date))
     print("total run time is {}".format(round(time.time() - start_time, 3)))
+    # MODEL_FILES_PATH['CSV_FILE'] = "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date)
     MODEL_FILES_PATH['CSV_FILE'] = "{}/{}_{}_{}_prediction.csv".format(prediction_path, file_path.split(".")[0], best_model, today_date)
-
+    # print(MODEL_FILES_PATH)
     return MODEL_FILES_PATH
 
