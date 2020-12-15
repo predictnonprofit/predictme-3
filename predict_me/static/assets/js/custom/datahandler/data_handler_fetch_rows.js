@@ -700,10 +700,13 @@ function runSocket() {
   try {
     $("#runModelModal").modal("show");
     $('#runModelModal').modal('handleUpdate');
+    const locOrigin = location.origin;
+    const replacedUrl = locOrigin.replace(/http|https/gi, "ws").concat("/dashboard/data/ws/run-model");
     const url = webSiteUrl.replace("http", "ws") + "/dashboard/data/ws/run-model";
     if (!window.WebSocket) alert("WebSocket not supported by this browser");
     // const url = webSiteUrl + "/dashboard/data/api/socket";
-    socket = new WebSocket(url);
+    console.info(replacedUrl)
+    socket = new WebSocket(replacedUrl);
     // if (socket.readyState == WebSocket.OPEN) {
     //   console.log("oelsadfi")
     // }
@@ -719,12 +722,13 @@ function runSocket() {
       const content = document.querySelector("#runModalResults").innerHTML;
       document.querySelector("#runModalResults").innerHTML = content + "<br />" + event.data;
       if(event.data === "Complete Successfully!"){
-        console.log(event)
+        console.log(event);
+        socket.close();
         // console.log("the model complete running");
         // $("#runModalResults").addClass("text-success");
-        // setTimeout(function() {
-        //   window.location.href = webSiteUrl + "/profile";
-        // }, 1000);
+        setTimeout(function() {
+          window.location.href = webSiteUrl + "/profile";
+        }, 2000);
       }
     };
 
@@ -732,6 +736,7 @@ function runSocket() {
     socket.onclose = function(event) {
       if (event.wasClean === true) {
         console.log(event)
+        socket.close();
         // alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         // console.log(event);
         // swAlert("Info", `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`, "info");
@@ -739,7 +744,8 @@ function runSocket() {
       } else {
         // e.g. server process killed or network down
         // event.code is usually 1006 in this case
-        console.info(event)
+        console.info(event);
+        socket.close();
         // alert('[close] Connection died');
         swAlert("Error", "There is problem(s) with the connection!!!", "error");
         // $("#runModelModal").modal("hide");
@@ -751,7 +757,7 @@ function runSocket() {
     socket.onerror = function(error) {
       // alert(`[error] ${error.message}`);
       swAlert("Error", `[error] ${error.message}`, "error");
-      socket.destroy();
+      socket.close();
     };
 
     // close
@@ -759,7 +765,7 @@ function runSocket() {
   } catch (error) {
     // console.error(error);
     console.error(error);
-    socket.destroy();
+    socket.close();
   }
 
 }
