@@ -43,7 +43,8 @@ class RunModelConsumer(WebsocketConsumer):
                 data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file)
                 donation_cols = data_session.donation_columns
                 # run_model(data_session.data_file_path, donation_cols)
-                run_model_data = run_model(data_session.base_data_file_path, donation_cols, self)
+                # run_model_data = run_model(data_session.base_data_file_path, donation_cols, self)
+                run_model_data = run_model(data_session.data_file_path, donation_cols, self)
                 if run_model_data:
                     cprint("Run model completed!", 'green')
                     data_session.pdf_report_file_path = run_model_data.get('PDF_FILE')
@@ -74,4 +75,5 @@ def send_data(obj):
     except Exception as ex:
         cprint(traceback.format_exc(), 'red')
         cprint(str(ex), 'red')
+        obj.send(text_data=str(ex))  # to display the error in the session modal
         log_exception(ex)
