@@ -297,6 +297,7 @@ db.zip
 TESTING.py
 data_handler/PM_Model/_DATA
 *.rtl.css
+packages_dependencies.txt
 .pydevproject.bak
 .tern-project
 data_handler/PM_Model/PdfReport/*.pdf
