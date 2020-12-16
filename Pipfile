@@ -42,12 +42,12 @@ xhtml2pdf = "*"
 psycopg2-binary = "*"
 simplejson = "*"
 imblearn = "*"
-
-[dev-packages]
 termcolor = "*"
 pypika = "*"
 prettyprinter = "*"
 bpython = "*"
+
+[dev-packages]
 
 [requires]
 python_version = "3.8"
