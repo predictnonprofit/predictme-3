@@ -47,6 +47,7 @@ pypika = "*"
 prettyprinter = "*"
 bpython = "*"
 gunicorn = "*"
+fpdf2 = "*"
 
 [dev-packages]
 
