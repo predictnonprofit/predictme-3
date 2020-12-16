@@ -46,6 +46,7 @@ termcolor = "*"
 pypika = "*"
 prettyprinter = "*"
 bpython = "*"
+gunicorn = "*"
 
 [dev-packages]
 
