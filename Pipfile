@@ -25,7 +25,6 @@ pandas = "*"
 openpyxl = "*"
 pandas-datareader = "*"
 numpy = "*"
-fpdf = "*"
 scikit-learn = "*"
 seaborn = "*"
 matplotlib = "*"
@@ -48,6 +47,7 @@ prettyprinter = "*"
 bpython = "*"
 gunicorn = "*"
 fpdf2 = "*"
+fpdf = "*"
 
 [dev-packages]
 
