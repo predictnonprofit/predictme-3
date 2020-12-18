@@ -1295,6 +1295,7 @@ def run_model(data_file_path, donation_cols, send_obj):
     # print("pdf_report_path -> ", pdf_report_path)
     file_path = file_path.split("/")[-1]
     # print("file_path -> ", file_path)
+    # print("{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
     pdf.output("{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
     # pdf.output("{}/report.pdf".format(pdf_report_path))
     # print("PDF _PAT  => ", "{}/{}_{}_{}_report.pdf".format(pdf_report_path, file_path.split(".")[0], best_model, today_date))
