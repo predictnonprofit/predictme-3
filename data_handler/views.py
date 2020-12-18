@@ -82,8 +82,12 @@ class DataListView(LoginRequiredMixin, View):
             context['member_sessions'] = member_data_session
             if member_data_file.data_sessions_set.count() > 0:
                 context['has_session'] = True
+                context['is_process_complete'] = member_data_session.first().is_process_complete
             else:
                 context['has_session'] = False
+                context['is_process_complete'] = False
+
+
 
             # this step will work when the member upload the file but did not pick any column
             # file_path = member_data_file.data_file_path

@@ -169,8 +169,19 @@ class ProfileOverview(LoginRequiredMixin, View):
     login_url = "login"
 
     def get(self, request):
+        context = {}
         member = Member.objects.get(email=request.user.email)
-        return render(request, "members_app/profile/overview.html", context={"member": member})
+        context['member'] = member
+        from data_handler.models import (DataFile, DataHandlerSession)
+        member_data_file = DataFile.objects.get(member=member)
+        member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
+        if member_data_file.data_sessions_set.count() > 0:
+            context['has_session'] = True
+            context['is_process_complete'] = member_data_session.first().is_process_complete
+        else:
+            context['has_session'] = False
+            context['is_process_complete'] = False
+        return render(request, "members_app/profile/overview.html", context=context)
 
 
 class ProfileDashboard(LoginRequiredMixin, View):
