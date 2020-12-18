@@ -269,26 +269,44 @@
                                         class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                     Download as PDF
                                 </button>
+
                             {% endif %}
                             <!-- ./Temp button -->
                             {% if request.resolver_match.url_name != "data-handler-default" %}
+
                                 {% if  request.resolver_match.url_name == "data-handler-session-details" %}
                                     <a href="{% url 'data-handler-default' %}"
                                        class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                         Back
                                     </a>
+
                                 {% endif %}
+
                                 <a href="{% url 'profile-overview' %}"
                                    class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                     Profile
                                 </a>
+
+
                                 <!-- Start Sessions table dropdown -->
                                 {% include 'data_handler/segments/sessions_table_dropdown.html' %}
                                 <!-- End Sessions table dropdown -->
 
+                                <!-- Start the modela action if exists -->
+                                {% if is_process_complete == True %}
+                                    {% include 'data_handler/segments/modal_dowloads_dropdown.html' %}
+                                {% else %}
+                                  <span style="cursor: not-allowed;" class="btn btn-transparent-white font-weight-bold py-3 px-6 mx-2 disabled" data-toggle='tooltip' title="No did not run the model yet">
+                                      Model
+                                  </span>
+                                {% endif %}
+                                <!--  End the modela action if exists -->
+
+
+
 
                             {% else %}
-
+                              {# Here in  /profile/data #}
                                 <a href="{% url 'data-handler-default' %}"
                                    class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                     Back
@@ -297,6 +315,14 @@
                                    class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
                                     Profile
                                 </a>
+                                {# {{request.user}} #}
+                                {% if is_process_complete == False %}
+                                    <span style="cursor: not-allowed;" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2 disabled" data-toggle='tooltip' title="No did not run the model yet">
+                                        Model
+                                    </span>
+                                    {% else %}
+                                      {% include 'data_handler/segments/modal_dowloads_dropdown.html' %}
+                                {% endif %}
                             {% endif %}
 
                             <!--end::Button-->
