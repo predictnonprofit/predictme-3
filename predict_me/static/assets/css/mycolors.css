@@ -508,3 +508,17 @@ li.generic-filter-item-selected:first-child{
 #modelRunResultWrapper > #runModalResults{
   font-size: 17px;
 }
+
+span.tabNoValidLabel, span.tabValidLabel{
+  height: 10px;
+  width: 10px;
+  background-color: #f05454;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  left: 5px;
+}
+
+span.tabValidLabel{
+  background-color: #70af85;
+}
