@@ -17,6 +17,7 @@ urlpatterns = [
         path("update-rows", SaveNewRowsUpdateView.as_view(), name="data-handler-update-rows"),
         path("delete-file", DeleteDataFileView.as_view(), name="data-handler-delete-file"),
         path("validate-columns", ValidateColumnsView.as_view(), name="data-handler-validate-columns"),
+        path("not-validate-columns", NotValidateColumnsView.as_view(), name="data-handler-not-validate-columns"),
         path("filter-rows", FilterRowsView.as_view(), name="data-handler-filter-rows"),
         path("accepts-download", AcceptsDownload.as_view(), name="data-handler-accepts-download"),
         path("check-upload-member", CheckMemberUpload.as_view(), name="data-handler-check-upload-member"),
