@@ -71,6 +71,9 @@ class DataHandlerSession(models.Model):
     file_name = models.CharField(max_length=50, blank=True, null=True)
     pdf_report_file_path = models.CharField(max_length=255, blank=True, null=True)
     csv_report_file_path = models.CharField(max_length=255, blank=True, null=True)
+    is_validate_data = models.BooleanField(null=True, blank=True)
+    not_validate_columns = models.CharField(null=True, blank=True, max_length=255)
+
 
     class Meta:
         # verbose_name = "member_data_file"
