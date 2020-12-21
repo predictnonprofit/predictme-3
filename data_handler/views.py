@@ -22,6 +22,7 @@ from django.core.signing import Signer
 from django.http import (HttpResponse, Http404)
 from django.utils.encoding import smart_str
 import uuid
+
 DONOR_LBL = "Donation Field"
 UNIQUE_ID_LBL = "Unique Identifier (ID)"
 
@@ -86,8 +87,6 @@ class DataListView(LoginRequiredMixin, View):
             else:
                 context['has_session'] = False
                 context['is_process_complete'] = False
-
-
 
             # this step will work when the member upload the file but did not pick any column
             # file_path = member_data_file.data_file_path
@@ -671,6 +670,67 @@ class ValidateColumnsView(APIView):
             log_exception(ex)
 
 
+class NotValidateColumnsView(APIView):
+    """
+    ### Developement only ###
+    API View to save not validate columns in the db
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = (IsAuthenticated,)
+
+    # parser_classes = (MultiPartParser, FormParser,)
+
+    def post(self, request, format=None):
+        try:
+            from data_handler.models import (DataFile, DataHandlerSession)
+            member_data_file = DataFile.objects.get(member=request.user)
+            member_data_session = None
+            params = request.POST.get('parameters')
+            data_or_num = check_data_or_num(params)
+            columns = request.POST.get("columns")  # as a dict
+            columns_json = json.loads(columns)  # as a dict
+            # loop and save only donation fields
+            donation_fields = []
+            for key, value in columns_json.items():
+                if "donation" in value:
+                    donation_fields.append(f"'{key}'")
+            donation_fields_as_string = f"[{', '.join(donation_fields)}]"
+            if isinstance(data_or_num, int) is True:
+                # if the member edit exists session
+                member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
+                                                                     pk=data_or_num)
+            else:
+                # here if the member try to upload new session
+                member_data_session = DataHandlerSession.objects.get(data_handler_id=member_data_file,
+                                                                     pk=member_data_file.last_uploaded_session)
+
+            # check if there is no validate columns
+            all_not_valid_cols = []
+            tmp_col_string = ""
+            if len(columns_json) > 0:
+                # {'Home Address': {'from': 'Text', 'to': 'Numeric'}, 'City': {'from': 'Text', 'to': 'Donation'}}
+                for key, value in columns_json.items():
+                    tmp_col_string = f"{key}:{value}"
+                    all_not_valid_cols.append(tmp_col_string)
+
+                all_not_valid_cols = "|".join(all_not_valid_cols)
+                member_data_session.is_validate_data = False
+                member_data_session.not_validate_columns = all_not_valid_cols
+            else:
+                member_data_session.is_validate_data = True
+
+            member_data_session.save()
+            return Response({"msg": "Not validated columns saved!"}, status=200, content_type='application/json')
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(ex)
+            return Response({"msg": "There is an error when save not valid columns!!", "error": True}, status=200, content_type='application/json')
+
+
 class FilterRowsView(APIView):
     """
     ### Developement only ###
@@ -1000,6 +1060,7 @@ class RenameSessionView(APIView):
             cprint(str(ex), 'red')
             log_exception(ex)
 
+
 @login_required
 def download_report_file(request, report_type):
     try:
@@ -1029,9 +1090,6 @@ def download_report_file(request, report_type):
         cprint(str(ex), 'red')
         log_exception(ex)
 
-
-
-
 # class RunModel(APIView):
 #     """
 #         this api view will run the model
@@ -1055,7 +1113,3 @@ def download_report_file(request, report_type):
 #             cprint(traceback.format_exc(), 'red')
 #             cprint(str(ex), 'red')
 #             log_exception(ex)
-
-
-
-
