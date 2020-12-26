@@ -18,6 +18,9 @@ from django.http import HttpResponse
 import traceback
 from predict_me.my_logger import (log_info, log_exception)
 from django.contrib import messages
+from datetime import datetime
+from .helper import calculate_records_left_percentage
+from django.http import JsonResponse
 
 ANNUAL_REVENUE = (
     '$5,000 - $50,000', '$50,000 - $100,000',
@@ -166,22 +169,58 @@ def download_dashboard_pdf(request):
 
 
 class ProfileOverview(LoginRequiredMixin, View):
+    """
+    this view for profile of the member
+    """
     login_url = "login"
 
     def get(self, request):
-        context = {}
-        member = Member.objects.get(email=request.user.email)
-        context['member'] = member
-        from data_handler.models import (DataFile, DataHandlerSession)
-        member_data_file = DataFile.objects.get(member=member)
-        member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
-        if member_data_file.data_sessions_set.count() > 0:
-            context['has_session'] = True
-            context['is_process_complete'] = member_data_session.first().is_process_complete
-        else:
-            context['has_session'] = False
-            context['is_process_complete'] = False
-        return render(request, "members_app/profile/overview.html", context=context)
+        try:
+            context = {}
+            member = Member.objects.get(email=request.user.email)
+            context['member'] = member
+            from data_handler.models import (DataFile, DataHandlerSession)
+            from membership.models import Subscription
+            import pytz
+            from django.utils import timezone
+            subscription_obj = Subscription.objects.filter(member_id=member).first()
+            context['sub_obj'] = subscription_obj
+            member_data_file = DataFile.objects.get(member=member)
+            member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
+            today = datetime.now(tz=pytz.UTC)
+            between = subscription_obj.subscription_period_end - today  # this to get how many days left to end of subscription
+            records_left = calculate_records_left_percentage(member_data_file, member_data_session.first())
+            if member_data_file.data_sessions_set.count() > 0:
+                context['has_session'] = True
+                context['is_process_complete'] = member_data_session.first().is_process_complete
+                context['data_session'] = member_data_session.first()
+                context['days_left'] = between.days,
+                context['records_left'] = records_left
+            else:
+                context['has_session'] = False
+                context['is_process_complete'] = False
+                context['data_session'] = None
+                context['days_left'] = None
+                context['records_left'] = None
+
+            return render(request, "members_app/profile/overview.html", context=context)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+
+    def post(self, request):
+        try:
+            if request.is_ajax():
+                from data_handler.models import (DataFile, DataHandlerSession)
+                member = Member.objects.get(email=request.user.email)
+                member_data_file = DataFile.objects.get(member=member)
+                member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
+                records_left = calculate_records_left_percentage(member_data_file, member_data_session.first())
+            return JsonResponse(data={"value": int(records_left)}, status=200)
+        except Exception as ex:
+            cprint(traceback.format_exc(), 'red')
+            log_exception(traceback.format_exc())
+
 
 
 class ProfileDashboard(LoginRequiredMixin, View):
