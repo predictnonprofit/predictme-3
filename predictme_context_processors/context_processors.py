@@ -16,6 +16,17 @@ def get_data_handler_obj(request):
         return data_handler_obj
 
 
+def get_data_handler_and_session(request):
+    if request.user.is_authenticated:
+        from data_handler.models import (DataFile, DataHandlerSession)
+        data_handler_obj = DataFile.objects.filter(member=request.user).first()
+        data_session_obj = DataHandlerSession.objects.filter(data_handler_id=data_handler_obj).first()
+        return {
+            "data_obj": data_handler_obj,
+            "session_obj": data_session_obj
+        }
+
+
 def get_all_member_objects(request):
     """
     this function will return dictionary of all user data (subscription, data handler, data handler session, and member) objects
@@ -43,10 +54,10 @@ def get_all_member_objects(request):
         return all_objs
 
 
-
 def return_all_context(request):
     return {
         "get_user_membership": get_user_subscription(request),  # fix this in all places that call it
         "get_data_handler_obj": get_data_handler_obj(request),
-        "get_all_member_info": get_all_member_objects(request)
+        "get_all_member_info": get_all_member_objects(request),
+        "get_data_handler_and_session": get_data_handler_and_session(request),
     }

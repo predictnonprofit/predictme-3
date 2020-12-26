@@ -1,4 +1,5 @@
 from django import template
+
 register = template.Library()
 
 
@@ -11,4 +12,25 @@ def sub_records(all_recs, allowed_recs):
 @register.filter
 def extra_fee_records(records_total):
     if records_total:
-        return float(records_total * 0.50) 
+        return float(records_total * 0.50)
+
+
+@register.filter
+def get_type(value):
+    return type(value)
+
+
+@register.filter
+def extract_first_value_from_iterator(value):
+    first_value = None
+    if (type(value).__name__ == 'list') or type(value).__name__ == 'tuple':
+        first_value = value[0]
+    return first_value
+
+
+@register.filter
+def get_how_many_left(value):
+    left_value = None
+    value = int(value)
+    left_value = 100 - value
+    return left_value
