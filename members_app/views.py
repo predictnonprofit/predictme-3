@@ -222,7 +222,6 @@ class ProfileOverview(LoginRequiredMixin, View):
             log_exception(traceback.format_exc())
 
 
-
 class ProfileDashboard(LoginRequiredMixin, View):
     login_url = "login"
 

@@ -30,7 +30,10 @@ def extract_first_value_from_iterator(value):
 
 @register.filter
 def get_how_many_left(value):
-    left_value = None
-    value = int(value)
-    left_value = 100 - value
-    return left_value
+    try:
+        left_value = None
+        value = int(value)
+        left_value = 100 - value
+        return left_value
+    except TypeError:
+        return 0
