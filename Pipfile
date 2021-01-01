@@ -48,6 +48,9 @@ bpython = "*"
 gunicorn = "*"
 fpdf2 = "*"
 fpdf = "*"
+reportlab = "*"
+setuptools = "*"
+wheel = "*"
 
 [dev-packages]
 
