@@ -21,6 +21,7 @@ from django.contrib import messages
 from datetime import datetime
 from .helper import calculate_records_left_percentage
 from django.http import JsonResponse
+from .tasks import *
 
 ANNUAL_REVENUE = (
     '$5,000 - $50,000', '$50,000 - $100,000',
@@ -190,6 +191,9 @@ class ProfileOverview(LoginRequiredMixin, View):
             today = datetime.now(tz=pytz.UTC)
             between = subscription_obj.subscription_period_end - today  # this to get how many days left to end of subscription
             records_left = calculate_records_left_percentage(member_data_file, member_data_session.first())
+            # for i in dir(member_data_file):
+            #     if not i.startswith("__"):
+            #         cprint(i, 'cyan')
             if member_data_file.data_sessions_set.count() > 0:
                 context['has_session'] = True
                 context['is_process_complete'] = member_data_session.first().is_process_complete
@@ -211,12 +215,18 @@ class ProfileOverview(LoginRequiredMixin, View):
     def post(self, request):
         try:
             if request.is_ajax():
+                add(4, 5)
                 from data_handler.models import (DataFile, DataHandlerSession)
                 member = Member.objects.get(email=request.user.email)
                 member_data_file = DataFile.objects.get(member=member)
                 member_data_session = DataHandlerSession.objects.filter(data_handler_id=member_data_file)
-                records_left = calculate_records_left_percentage(member_data_file, member_data_session.first())
-            return JsonResponse(data={"value": int(records_left)}, status=200)
+                # check if there is session to return the correct value to display on the dashboard
+                if member_data_session.count() > 0:
+                    records_left = calculate_records_left_percentage(member_data_file, member_data_session.first())
+                    return JsonResponse(data={"value": int(records_left)}, status=200)
+                else:
+                    return JsonResponse(data={"value": int(0)}, status=200)
+
         except Exception as ex:
             cprint(traceback.format_exc(), 'red')
             log_exception(traceback.format_exc())
