@@ -3402,7 +3402,13 @@ var KTWidgets = function () {
 
         $.when(profileChartRequest).done(function (data, textStatus, jqXHR) {
             if ((textStatus === "success") && (jqXHR.status === 200)) {
+              // check the retured value
+              if(data.value > 0){
                 chartValue = data.value;
+              }else{
+                chartValue = 0;
+                profileChartRequest.abort();
+              }
                 if (!element) {
                     return;
                 }
