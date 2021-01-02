@@ -22,9 +22,14 @@ def get_type(value):
 
 @register.filter
 def extract_first_value_from_iterator(value):
-    first_value = None
-    if (type(value).__name__ == 'list') or type(value).__name__ == 'tuple':
-        first_value = value[0]
+    first_value = '(Not Ready Yet)'
+    # check if the value is None or not
+    if value is not None:
+        if (type(value).__name__ == 'list') or type(value).__name__ == 'tuple':
+            first_value = value[0]
+        else:
+            first_value = 0
+
     return first_value
 
 
