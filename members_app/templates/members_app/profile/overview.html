@@ -309,6 +309,12 @@ Profile Overview
             <!--end::Svg Icon-->
           </span>
           {% endif %}
+          {# Check the subscription status #}
+          {% if sub_obj.subscription_status == True %}
+            <h5 class="m-auto" data-toggle='tooltip' title="your subscription plan is active"><span class="badge badge-success">Active</span></h5>
+          {% else %}
+            <h5 class="m-auto" data-toggle='tooltip' title="your subscription plan has been expired please update"><span class="badge badge-danger">Not Active</span></h5>
+          {% endif %}
 
         </h3>
 
