@@ -21,7 +21,6 @@ from django.contrib import messages
 from datetime import datetime
 from .helper import calculate_records_left_percentage
 from django.http import JsonResponse
-from .tasks import *
 
 ANNUAL_REVENUE = (
     '$5,000 - $50,000', '$50,000 - $100,000',
@@ -215,7 +214,6 @@ class ProfileOverview(LoginRequiredMixin, View):
     def post(self, request):
         try:
             if request.is_ajax():
-                add(4, 5)
                 from data_handler.models import (DataFile, DataHandlerSession)
                 member = Member.objects.get(email=request.user.email)
                 member_data_file = DataFile.objects.get(member=member)
