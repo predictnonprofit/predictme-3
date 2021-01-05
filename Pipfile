@@ -53,6 +53,7 @@ setuptools = "*"
 wheel = "*"
 celery = "*"
 redis = "*"
+scipy = "*"
 
 [dev-packages]
 
