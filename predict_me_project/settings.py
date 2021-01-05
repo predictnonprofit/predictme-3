@@ -252,3 +252,12 @@ SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 #    ),
 # }
 # DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M:%S',)
+
+## CELERY configurations
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'predict_me_project.settings')
+# Celery Configuration Options
+CELERY_TIMEZONE = "Etc/UTC"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+# CELERY_BROKER_URL = 'predict_me_project.transports.MyTransport://localhost'
+CELERY_BROKER_URL = "redis://127.0.0.1:6379"
