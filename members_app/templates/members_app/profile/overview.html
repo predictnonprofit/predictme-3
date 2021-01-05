@@ -248,8 +248,8 @@ Profile Overview
       <!--begin::Header-->
       <div class="card-header border-0">
         <h3 class="card-title font-weight-bolder text-dark">
-          {{sub_obj.stripe_plan_id.membership_type.capitalize}} Fundraising&nbsp;
-          {% if sub_obj.stripe_plan_id.membership_type == "starter"  %}
+          {{sub_obj.stripe_plan_id.parent.capitalize}} Fundraising&nbsp;
+          {% if sub_obj.stripe_plan_id.parent == "starter"  %}
           <span class="svg-icon svg-icon-3x svg-icon-primary">
             <!--begin::Svg Icon | path:assets/media/svg/icons/Home/Flower3.svg-->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -262,7 +262,7 @@ Profile Overview
             </svg>
             <!--end::Svg Icon-->
           </span>
-          {% elif sub_obj.stripe_plan_id.membership_type == "professional" %}
+          {% elif sub_obj.stripe_plan_id.parent == "professional" %}
           <span class="svg-icon svg-icon-3x svg-icon-warning">
             <!--begin::Svg Icon | path:assets/media/svg/icons/Tools/Compass.svg-->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -278,7 +278,7 @@ Profile Overview
             </svg>
             <!--end::Svg Icon-->
           </span>
-          {% elif sub_obj.stripe_plan_id.membership_type == "expert" %}
+          {% elif sub_obj.stripe_plan_id.parent == "expert" %}
           <span class="svg-icon svg-icon-3x svg-icon-danger">
             <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Cart2.svg-->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
