@@ -7,6 +7,18 @@ from users.models import Member
 MEMBERSHIP_LABELS = (
     ("starter", "Starter"),
     ("professional", "Professional",),
+    ("expert", "Expert"),
+    ("starter_monthly", "Starter Monthly"),
+    ("starter_yearly", "Starter Yearly"),
+    ("professional_monthly", "Professional Monthly"),
+    ("professional_yearly", "Professional Yearly"),
+    ("expert_monthly", "Expert Monthly"),
+    ("expert_yearly", "Expert Yearly")
+)
+
+PARENTS_MEMBERSHIP_LABELS = (
+    ("starter", "Starter"),
+    ("professional", "Professional",),
     ("expert", "Expert")
 )
 
@@ -23,8 +35,11 @@ class Membership(models.Model):
     yearly_fee = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     day_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     stripe_plane_id = models.CharField(max_length=100, null=True, blank=True)
+    stripe_price_id = models.CharField(max_length=100, null=True, blank=True)
     additional_fee_per_extra_record = models.DecimalField(max_digits=2, decimal_places=2, null=True, blank=True)
     allowed_records_count = models.BigIntegerField(null=True, blank=True)
+    parent = models.CharField(choices=PARENTS_MEMBERSHIP_LABELS, max_length=20, null=True, blank=True)
+    range_label = models.CharField(max_length=20, choices=SUB_RANGE, null=True, blank=True)
 
     @property
     def get_fields_as_list(self):
