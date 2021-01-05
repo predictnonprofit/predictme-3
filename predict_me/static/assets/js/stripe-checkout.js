@@ -116,4 +116,12 @@ $(document).ready(function () {
             }
         }
     });
+
+
+    // disable the button after click
+    const paymentBtn = $('#paymentBtn');
+    paymentBtn.on("click", function(event){
+      this.attr("disabled", "disabled");
+      this.addClass("disabled not-allowed-cursor");
+    });
 })
