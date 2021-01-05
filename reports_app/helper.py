@@ -360,8 +360,10 @@ class ReportGenerator:
         if len(filter_dict) > 0:
             if report_section_name == "users":
                 read_sql_query = read_member_subscription_query("members", **filter_dict)
+                # read_sql_query = ''
             elif report_section_name == "data_usage":
                 read_sql_query = read_data_handler_query()
+                # read_sql_query = 'read_data_handler_query()'
 
             # cprint(read_sql_query, 'blue')
             with connection.cursor() as cursor:
