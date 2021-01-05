@@ -5,7 +5,6 @@ from django.views import View
 from membership.models import (Membership, UserMembership, Subscription)
 from data_handler.models import (DataFile)
 from termcolor import cprint
-from prettyprinter import pprint
 import stripe
 import os
 
@@ -33,9 +32,10 @@ class PricingView(View):
 
     def post(self, request):
         member_type = request.POST['type']
-        # print(member_type)
+        # cprint(request.POST, 'cyan')
         member = request.user
         # print(member.full_name)
+        # membership2 = Membership.objects.filter(Q(range_label=member_type) & Q(parent='starter')).first()
         membership = Membership.objects.get(slug=member_type)
         member_data_file = DataFile.objects.get(member=member)
         # print(membership)
